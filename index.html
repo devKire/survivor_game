@@ -36,10 +36,11 @@
 
     <div id="boss-hud" hidden>
       <span id="boss-name"></span>
+      <small id="boss-phase"></small>
       <div><i id="boss-fill"></i></div>
     </div>
 
-    <div class="inventory">
+    <div class="build-bar">
       <div>
         <small>ARSENAL</small>
         <div id="weapons" class="slots"></div>
@@ -50,8 +51,19 @@
       </div>
     </div>
 
+    <div class="run-inventory" aria-label="Itens da expedição">
+      <small>ITENS</small>
+      <div id="run-items" class="item-slots"></div>
+    </div>
+
+    <div id="interaction-prompt" class="interaction-prompt" hidden>
+      <button id="interaction-button" type="button" aria-label="Interagir com objeto próximo">
+        <kbd>E</kbd> <span id="interaction-name">INTERAGIR</span>
+      </button>
+    </div>
+
     <pre id="debug" hidden></pre>
-    <div class="controls-note">WASD / SETAS · MOVER &nbsp; ESC / P · PAUSA</div>
+    <div class="controls-note">WASD / SETAS · MOVER &nbsp; E · INTERAGIR &nbsp; 1–4 · ITENS &nbsp; ESC / P · PAUSA</div>
   </div>
 
   <main id="screen" role="dialog" aria-modal="true" aria-label="Menu do Limiar"></main>
