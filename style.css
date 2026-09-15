@@ -799,3 +799,13 @@ noscript {
 }
 .item-slots button.item-slot { padding:3px 4px; }
 .item-slots button.item-slot:hover:not(:disabled) { transform:none; background:#213a3f; }
+
+
+/* v1.3 — modos de expedição e legibilidade */
+.mode select { min-width: min(360px, 100%); }
+.result-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+@media (max-width: 550px) {
+  .mode select { width: 100%; min-width: 0; }
+  .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
