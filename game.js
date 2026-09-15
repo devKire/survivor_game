@@ -162,96 +162,316 @@ const CHARACTER_DEFINITIONS = {
 
 const ENEMY_DEFINITIONS = {
   husk: {
-    name:"Errante de Xisto", hp:24, speed:56, damage:12,
-    r:13, xp:2, color:"#718d83", shape:5,
-    behavior:"chase", resist:0.1
+    name:"Errante de Xisto",
+    hp:34,
+    speed:66,
+    damage:15,
+    r:13,
+    xp:2,
+    color:"#718d83",
+    shape:5,
+    behavior:"chase",
+    resist:0.15
   },
+
   dart: {
-    name:"Rasante", hp:20, speed:108, damage:9,
-    r:10, xp:3, color:"#bd9fa5", shape:3,
-    behavior:"chase", resist:0
+    name:"Rasante",
+    hp:28,
+    speed:126,
+    damage:12,
+    r:10,
+    xp:3,
+    color:"#bd9fa5",
+    shape:3,
+    behavior:"chase",
+    resist:0.05
   },
+
   tank: {
-    name:"Muralha Oca", hp:145, speed:40, damage:23,
-    r:24, xp:10, color:"#8898b5", shape:6,
-    behavior:"chase", resist:0.85
+    name:"Muralha Oca",
+    hp:210,
+    speed:47,
+    damage:30,
+    r:24,
+    xp:10,
+    color:"#8898b5",
+    shape:6,
+    behavior:"chase",
+    resist:0.9
   },
+
   swarm: {
-    name:"Cisco Vivo", hp:11, speed:88, damage:6,
-    r:7, xp:1, color:"#cdbd8c", shape:4,
-    behavior:"chase", resist:0
+    name:"Cisco Vivo",
+    hp:16,
+    speed:103,
+    damage:8,
+    r:7,
+    xp:1,
+    color:"#cdbd8c",
+    shape:4,
+    behavior:"chase",
+    resist:0.05
   },
+
   ranged: {
-    name:"Cantor de Fendas", hp:62, speed:59, damage:15,
-    r:16, xp:6, color:"#c38dc0", shape:4,
-    behavior:"ranged", resist:0.25
+    name:"Cantor de Fendas",
+    hp:88,
+    speed:68,
+    damage:20,
+    r:16,
+    xp:6,
+    color:"#c38dc0",
+    shape:4,
+    behavior:"ranged",
+    resist:0.35
   },
+
   elite: {
-    name:"Arauto de Basalto", hp:360, speed:63, damage:27,
-    r:28, xp:40, color:"#e9ba7e", shape:6,
-    behavior:"chase", resist:0.8
+    name:"Arauto de Basalto",
+    hp:560,
+    speed:72,
+    damage:36,
+    r:28,
+    xp:40,
+    color:"#e9ba7e",
+    shape:6,
+    behavior:"chase",
+    resist:0.88
   },
+
   boss: {
-    name:"Custódio", hp:1080, speed:43, damage:31,
-    r:46, xp:110, color:"#e8958e", shape:8,
-    behavior:"boss", resist:0.95
+    name:"Custódio",
+    hp:1850,
+    speed:52,
+    damage:42,
+    r:46,
+    xp:125,
+    color:"#e8958e",
+    shape:8,
+    behavior:"boss",
+    resist:0.97
   },
+
   final: {
-    name:"A Boca do Firmamento", hp:1000000, speed:148, damage:95,
-    r:64, xp:500, color:"#eff5dc", shape:9,
-    behavior:"final", resist:1
+    name:"A Boca do Firmamento",
+    hp:1000000,
+    speed:148,
+    damage:95,
+    r:64,
+    xp:500,
+    color:"#eff5dc",
+    shape:9,
+    behavior:"final",
+    resist:1
   }
 };
 
 const WAVE_TABLE = [
   {
-    start:0, end:90, rate:1.2, cap:85,
-    enemies:[["husk",10]], elite:100,
-    formation:"scatter", name:"O despertar"
+    start:0,
+    end:60,
+    rate:1.8,
+    cap:100,
+    enemies:[
+      ["husk",8],
+      ["swarm",2]
+    ],
+    elite:75,
+    formation:"scatter",
+    name:"O despertar"
   },
+
   {
-    start:90, end:300, rate:2.7, cap:170,
-    enemies:[["husk",8],["dart",2]], elite:90,
-    formation:"flank", name:"Passos na névoa"
+    start:60,
+    end:150,
+    rate:3.5,
+    cap:160,
+    enemies:[
+      ["husk",6],
+      ["dart",3],
+      ["swarm",2]
+    ],
+    elite:60,
+    formation:"flank",
+    name:"Passos na névoa"
   },
+
   {
-    start:300, end:600, rate:4.5, cap:270,
-    enemies:[["husk",5],["dart",4],["tank",1]], elite:75,
-    formation:"ring", name:"Pedra e nervo"
+    start:150,
+    end:240,
+    rate:5.5,
+    cap:230,
+    enemies:[
+      ["husk",4],
+      ["dart",4],
+      ["tank",1],
+      ["swarm",3]
+    ],
+    elite:50,
+    formation:"ring",
+    name:"Pedra e nervo"
   },
+
   {
-    start:600, end:900, rate:7, cap:400,
-    enemies:[["husk",3],["dart",2],["tank",2],["swarm",6],["ranged",1]],
-    elite:65, formation:"swarm", name:"O coro das fendas"
+    start:240,
+    end:360,
+    rate:7.5,
+    cap:320,
+    enemies:[
+      ["husk",3],
+      ["dart",4],
+      ["tank",2],
+      ["swarm",5],
+      ["ranged",1]
+    ],
+    elite:40,
+    formation:"swarm",
+    name:"O coro das fendas"
   },
+
   {
-    start:900, end:1200, rate:9, cap:540,
-    enemies:[["dart",4],["tank",3],["swarm",5],["ranged",3]],
-    elite:55, formation:"flank", name:"Maré de estilhaços"
+    start:360,
+    end:480,
+    rate:10,
+    cap:420,
+    enemies:[
+      ["dart",5],
+      ["tank",2],
+      ["swarm",6],
+      ["ranged",2]
+    ],
+    elite:32,
+    formation:"flank",
+    name:"Maré de estilhaços"
   },
+
   {
-    start:1200, end:1500, rate:12, cap:680,
-    enemies:[["husk",2],["dart",4],["tank",4],["swarm",6],["ranged",3]],
-    elite:45, formation:"ring", name:"A ruína respira"
+    start:480,
+    end:600,
+    rate:13,
+    cap:520,
+    enemies:[
+      ["husk",2],
+      ["dart",5],
+      ["tank",3],
+      ["swarm",7],
+      ["ranged",3]
+    ],
+    elite:25,
+    formation:"ring",
+    name:"A ruína respira"
   },
+
   {
-    start:1500, end:1800, rate:16, cap:820,
-    enemies:[["dart",5],["tank",5],["swarm",7],["ranged",4]],
-    elite:35, formation:"swarm", name:"Antes do silêncio"
+    start:600,
+    end:720,
+    rate:17,
+    cap:650,
+    enemies:[
+      ["dart",5],
+      ["tank",4],
+      ["swarm",8],
+      ["ranged",4]
+    ],
+    elite:20,
+    formation:"swarm",
+    name:"O céu se fecha"
   },
+
   {
-    start:1800, end:Infinity, rate:22, cap:900,
-    enemies:[["dart",5],["tank",5],["swarm",7],["ranged",4]],
-    elite:25, formation:"ring", name:"Além do limiar"
+    start:720,
+    end:840,
+    rate:21,
+    cap:760,
+    enemies:[
+      ["dart",6],
+      ["tank",5],
+      ["swarm",9],
+      ["ranged",5]
+    ],
+    elite:16,
+    formation:"flank",
+    name:"Antes do silêncio"
+  },
+
+  {
+    start:840,
+    end:Infinity,
+    rate:27,
+    cap:900,
+    enemies:[
+      ["husk",1],
+      ["dart",7],
+      ["tank",6],
+      ["swarm",10],
+      ["ranged",6]
+    ],
+    elite:12,
+    formation:"ring",
+    name:"Além do limiar"
   }
 ];
 
 const BOSS_EVENTS = [
-  {at:300, name:"O Sineiro de Pedra", pattern:"ring"},
-  {at:600, name:"A Corça de Cobre", pattern:"charge"},
-  {at:900, name:"Mãe das Fendas", pattern:"summon"},
-  {at:1200, name:"O Cartógrafo Cego", pattern:"spiral"},
-  {at:1500, name:"A Catedral Errante", pattern:"pulse"}
+  {
+    at:120,
+    name:"O Sineiro de Pedra",
+    pattern:"ring"
+  },
+
+  {
+    at:240,
+    name:"A Corça de Cobre",
+    pattern:"charge"
+  },
+
+  {
+    at:360,
+    name:"Mãe das Fendas",
+    pattern:"summon"
+  },
+
+  {
+    at:480,
+    name:"O Cartógrafo Cego",
+    pattern:"spiral"
+  },
+
+  {
+    at:600,
+    name:"A Catedral Errante",
+    pattern:"pulse"
+  },
+
+  {
+    at:690,
+    name:"O Peregrino Sem Face",
+    pattern:"charge"
+  },
+
+  {
+    at:780,
+    name:"O Olho Sob a Pedra",
+    pattern:"spiral"
+  },
+
+  {
+    at:870,
+    name:"O Rei das Cinzas",
+    pattern:"summon"
+  },
+
+  {
+    at:960,
+    name:"A Voz do Abismo",
+    pattern:"pulse"
+  },
+
+  {
+    at:1050,
+    name:"O Último Custódio",
+    pattern:"ring"
+  }
 ];
 
 const META_DEFINITIONS = {
