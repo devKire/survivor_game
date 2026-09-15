@@ -2,7 +2,7 @@
 "use strict";
 
 const DEBUG = false;
-const VERSION = "1.2.0";
+const VERSION = "1.3.0";
 const TAU = Math.PI * 2;
 const SAVE_KEY = "limiar.save.v1"; // chave preservada para migrar saves 1.0
 const MAX_WEAPONS = 6;
@@ -483,6 +483,86 @@ const BOSS_EVENTS = [
   }
 ];
 
+const MODE_DEFINITIONS = {
+  normal:{
+    name:"Padrão",label:"Padrão · 30 minutos",summary:"Padrão · 30 min",hud:"PADRÃO",
+    duration:1800,endless:false,clockRate:1,savesProgress:true,xpMultiplier:1,
+    hpMultiplier:1,damageMultiplier:1,speedMultiplier:1,spawnMultiplier:1,enemyCapMultiplier:1,
+    eliteFrequency:1,eliteHpMultiplier:1,eliteDamageMultiplier:1,
+    bossHpMultiplier:1,bossDamageMultiplier:1,bossAttackRate:1,
+    formationSizeMultiplier:1,formationIntervalMultiplier:1,goldDropMultiplier:1,
+    rewardMultiplier:1,completionBase:250
+  },
+  nightmare:{
+    name:"Pesadelo",label:"Pesadelo · 30 minutos",summary:"Pesadelo · 30 min",hud:"PESADELO",
+    duration:1800,endless:false,clockRate:1,savesProgress:true,xpMultiplier:1,
+    hpMultiplier:1.35,damageMultiplier:1.30,speedMultiplier:1.08,spawnMultiplier:1.35,enemyCapMultiplier:1.20,
+    eliteFrequency:1.25,eliteHpMultiplier:1.55,eliteDamageMultiplier:1.35,
+    bossHpMultiplier:1.50,bossDamageMultiplier:1.20,bossAttackRate:1.12,
+    formationSizeMultiplier:1.15,formationIntervalMultiplier:.86,goldDropMultiplier:1,
+    rewardMultiplier:1.25,completionBase:250
+  },
+  endless:{
+    name:"Infinito",label:"Infinito · sobreviva o máximo possível",summary:"Infinito · sem limite",hud:"INFINITO",
+    duration:null,endless:true,endlessStart:1800,clockRate:1,savesProgress:true,xpMultiplier:1,
+    hpMultiplier:1,damageMultiplier:1,speedMultiplier:1,spawnMultiplier:1,enemyCapMultiplier:1,
+    eliteFrequency:1,eliteHpMultiplier:1,eliteDamageMultiplier:1,
+    bossHpMultiplier:1,bossDamageMultiplier:1,bossAttackRate:1,
+    formationSizeMultiplier:1,formationIntervalMultiplier:1,goldDropMultiplier:1,
+    rewardMultiplier:1,completionBase:0,bossInterval:120,bossEscortAfter:2400,doubleBossAfter:3000,
+    post30:{
+      hpPerMinute:1.11,damagePerMinute:1.07,spawnPerMinute:1.06,
+      bossHpPerMinute:1.11,bossDamagePerMinute:1.07,bossAttackPerMinute:1.008,
+      elitePerMinute:.045,eliteMax:2.6,capPerMinute:.018,capMax:1.34,
+      formationPerMinute:.025,formationMax:1.75,
+      formationIntervalPerMinute:.012,formationIntervalMin:.62
+    }
+  },
+  test:{
+    name:"Teste",label:"Teste · relógio 5× · sem salvar recompensas",summary:"Teste · relógio 5×",hud:"TESTE",
+    duration:1800,endless:false,clockRate:5,savesProgress:false,xpMultiplier:5,
+    hpMultiplier:1,damageMultiplier:1,speedMultiplier:1,spawnMultiplier:1,enemyCapMultiplier:1,
+    eliteFrequency:1,eliteHpMultiplier:1,eliteDamageMultiplier:1,
+    bossHpMultiplier:1,bossDamageMultiplier:1,bossAttackRate:1,
+    formationSizeMultiplier:1,formationIntervalMultiplier:1,goldDropMultiplier:1,
+    rewardMultiplier:1,completionBase:250
+  }
+};
+
+function getModeDefinition(id) {
+  return MODE_DEFINITIONS[id] || MODE_DEFINITIONS.normal;
+}
+
+function getModeScaling(id,time=0) {
+  const mode=getModeDefinition(id);
+  const scale={
+    hp:mode.hpMultiplier,damage:mode.damageMultiplier,speed:mode.speedMultiplier,
+    spawn:mode.spawnMultiplier,cap:mode.enemyCapMultiplier,elite:mode.eliteFrequency,
+    eliteHp:mode.eliteHpMultiplier,eliteDamage:mode.eliteDamageMultiplier,
+    bossHp:mode.bossHpMultiplier,bossDamage:mode.bossDamageMultiplier,bossAttack:mode.bossAttackRate,
+    formation:mode.formationSizeMultiplier,formationInterval:mode.formationIntervalMultiplier,
+    goldDrop:mode.goldDropMultiplier,reward:mode.rewardMultiplier
+  };
+  if (!mode.endless || time<mode.endlessStart) return scale;
+  const minutes=Math.max(0,(time-mode.endlessStart)/60);
+  const p=mode.post30;
+  scale.hp*=Math.min(1e6,p.hpPerMinute**minutes);
+  scale.damage*=Math.min(1e4,p.damagePerMinute**minutes);
+  scale.spawn*=Math.min(8,p.spawnPerMinute**minutes);
+  scale.bossHp*=Math.min(1e6,p.bossHpPerMinute**minutes);
+  scale.bossDamage*=Math.min(1e4,p.bossDamagePerMinute**minutes);
+  scale.bossAttack*=Math.min(2.2,p.bossAttackPerMinute**minutes);
+  scale.elite*=Math.min(p.eliteMax,1+minutes*p.elitePerMinute);
+  scale.cap*=Math.min(p.capMax,1+minutes*p.capPerMinute);
+  scale.formation*=Math.min(p.formationMax,1+minutes*p.formationPerMinute);
+  scale.formationInterval*=Math.max(p.formationIntervalMin,1-minutes*p.formationIntervalPerMinute);
+  return scale;
+}
+
+const MAX_ACTIVE_ENEMIES = 1100;
+const MAX_PRIORITY_ENEMIES = 8;
+const MAX_WORLD_PICKUPS = 260;
+
 const META_DEFINITIONS = {
   might:{name:"Potência", text:"+5% de dano", base:45},
   speed:{name:"Agilidade", text:"+4% de movimento", base:40},
@@ -497,16 +577,16 @@ const META_DEFINITIONS = {
 const ACHIEVEMENTS = [
   {
     id:"survive", name:"Ainda há luz", text:"Sobreviva 5 minutos.",
-    character:"orin", check:g=>g.run.time>=300
+    character:"orin", modes:["normal"], check:g=>g.run.time>=300
   },
   {
     id:"thousand", name:"Mil ecos",
     text:"Derrote 1.000 inimigos em uma partida.",
-    character:"ivo", check:g=>g.run.kills>=1000
+    character:"ivo", modes:["normal"], check:g=>g.run.kills>=1000
   },
   {
     id:"evolve", name:"Outra forma de arder", text:"Evolua uma arma.",
-    character:"sena", check:g=>g.run.evolutions>0
+    character:"sena", modes:["normal"], check:g=>g.run.evolutions>0
   },
   {
     id:"level", name:"Uma página adiante", text:"Alcance o nível 30.",
@@ -518,7 +598,7 @@ const ACHIEVEMENTS = [
   },
   {
     id:"complete", name:"Limiar atravessado", text:"Sobreviva aos 30 minutos.",
-    reward:200, check:g=>g.run.completed
+    modes:["normal"], reward:200, check:g=>g.run.completed
   },
   {id:"first_structure",name:"A pedra responde",text:"Utilize sua primeira estrutura do mundo.",reward:35,check:g=>(g.run.structuresUsed||0)>0},
   {id:"urn_hundred",name:"Poeira de cem memórias",text:"Quebre 100 urnas em uma expedição.",reward:80,check:g=>(g.run.urnsBroken||0)>=100},
@@ -626,7 +706,7 @@ const MAP_DEFINITIONS = {
   ruins:{
     name:"Ruínas do Obelisco",icon:"◇",unlocked:true,
     description:"Pedra, névoa e fragmentos de uma arquitetura que ainda observa.",
-    floor:"#101e24",water:false,structureDensity:1,
+    floor:"#101e24",water:false,structureDensity:.58,terrainDensity:.48,
     palette:{floor:"#101e24",accent:"#71998b",hazard:"#a65b85",water:"#153b40"},
     structures:["urn","fountain","exchange","memory","rift_altar","silence","chest","obelisk","column","wall","stone","tree","ruin","rift"],
     enemyPool:["husk","dart","tank","swarm","ranged","burrower","sentinel","charger","splitter"],
@@ -637,7 +717,7 @@ const MAP_DEFINITIONS = {
   gardens:{
     name:"Jardins Submersos",icon:"≋",unlocked:true,
     description:"Ruínas alagadas, vegetação arcana e caminhos de pedra sob água rasa.",
-    floor:"#0d2528",water:true,structureDensity:1.15,
+    floor:"#0d2528",water:true,structureDensity:.68,terrainDensity:.55,
     palette:{floor:"#0d2528",accent:"#72aca1",hazard:"#749b77",water:"#153b40"},
     structures:["urn","fountain","exchange","memory","rift_altar","silence","chest","obelisk","column","stone","tree","ruin","platform","thorn"],
     enemyPool:["husk","dart","swarm","ranged","herald","weaver","burrower","splitter"],
@@ -774,12 +854,14 @@ function validateRunSnapshot(s,strict=true) {
   const finiteSigned=(n,limit)=>Number.isFinite(n)&&Math.abs(n)<=limit;
   if (!Object.hasOwn(MAP_DEFINITIONS,s.mapId)) return false;
   if (!Object.hasOwn(CHARACTER_DEFINITIONS,s.character)) return false;
+  if (s.mode!=null && !Object.hasOwn(MODE_DEFINITIONS,s.mode)) return false;
   if (typeof s.worldSeed!=="string" || s.worldSeed.length<4 || s.worldSeed.length>80) return false;
   if (!finite(s.time,0,1e6)||!finite(s.level,1,999)||!finite(s.health,0,1e7)||!finite(s.xp,0,1e12)) return false;
   if (!finiteSigned(s.x,1e8)||!finiteSigned(s.y,1e8)) return false;
   for (const key of ["gold","kills","totalDamage","bossKills","evolutions","structuresBroken","urnsBroken","structuresUsed","itemsUsed","phase3BossKills"]) {
     if (s[key]!=null && !finite(s[key],0,1e12)) return false;
   }
+  if (s.completionGold!=null && !finite(s.completionGold,0,1e12)) return false;
   for (const key of ["rerolls","banishments","skips"]) {
     if (s[key]!=null && (!Number.isInteger(s[key])||s[key]<0||s[key]>999)) return false;
   }
@@ -1037,7 +1119,7 @@ class World {
     const allowedStructures=new Set(this.map.structures||Object.keys(STRUCTURE_DEFINITIONS));
     const entries=Object.entries(STRUCTURE_DEFINITIONS).filter(([id])=>allowedStructures.has(id));
     const totalWeight=entries.reduce((a,[,d])=>a+d.weight,0);
-    const count=Math.floor((7+rng()*8)*this.map.structureDensity);
+    const count=Math.max(2,Math.floor((4+rng()*7)*this.map.structureDensity));
 
     for (let i=0;i<count;i++) {
       let roll=rng()*totalWeight, chosen=entries[0];
@@ -1533,6 +1615,8 @@ class WaveDirector {
     this.eliteClock=80;
     this.formationClock=24;
     this.eventIndex=0;
+    this.nextEndlessBossAt=1920;
+    this.endlessBossIndex=0;
   }
 
   wavePool(g,wave) {
@@ -1546,10 +1630,38 @@ class WaveDirector {
     return [...pool,...additions].length?[...pool,...additions]:[["husk",1]];
   }
 
+  spawnEndlessBosses(g,t) {
+    const mode=g.modeDef;
+    if (!mode.endless || t<mode.endlessStart) return;
+    if (!Number.isFinite(this.nextEndlessBossAt) || this.nextEndlessBossAt<mode.endlessStart+mode.bossInterval) {
+      this.nextEndlessBossAt=mode.endlessStart+mode.bossInterval;
+    }
+    while (t>=this.nextEndlessBossAt) {
+      const mapBosses=g.world?.map.bosses||BOSS_EVENTS.map((_,i)=>i);
+      const bossIndex=mapBosses[this.endlessBossIndex%mapBosses.length];
+      const base=BOSS_EVENTS[bossIndex]||BOSS_EVENTS[0];
+      const count=t>=mode.doubleBossAfter?2:1;
+      for (let i=0;i<count;i++) {
+        const alternate=BOSS_EVENTS[mapBosses[(this.endlessBossIndex+i)%mapBosses.length]]||base;
+        g.spawn("boss",i?Math.PI:null,{...alternate,eventIndex:null,endless:true});
+      }
+      if (t>=mode.bossEscortAfter) {
+        const escorts=t>=mode.doubleBossAfter?2:1;
+        for (let i=0;i<escorts;i++) g.spawn("elite");
+      }
+      this.endlessBossIndex+=count;
+      this.nextEndlessBossAt+=mode.bossInterval;
+      g.announce(base.name,t>=mode.doubleBossAfter?"Dois custódios atravessam a névoa.":"Outro custódio responde ao chamado.");
+      g.sound.play("boss");
+    }
+  }
+
   update(g,dt) {
     const t=g.run.time;
     while (this.index<WAVE_TABLE.length-1 && t>=WAVE_TABLE[this.index].end) this.index++;
     const wave=WAVE_TABLE[this.index];
+    const scale=g.modeScaling(t);
+    const cap=g.currentEnemyCap(wave,scale);
 
     while (this.eventIndex<BOSS_EVENTS.length && t>=BOSS_EVENTS[this.eventIndex].at) {
       const mapBosses=g.world?.map.bosses||BOSS_EVENTS.map((_,i)=>i);
@@ -1563,29 +1675,30 @@ class WaveDirector {
         g.sound.play("boss");
       }
     }
+    this.spawnEndlessBosses(g,t);
 
     const mapMods=g.world?.map.waveModifiers||{};
     const eventRate=g.run.silenceTime>0?.32:g.run.surgeTime>0?1.6:1;
-    this.spawnClock+=dt*wave.rate*(mapMods.rate||1)*eventRate*(t<12?.45:1);
-    let budget=14;
+    this.spawnClock+=dt*wave.rate*(mapMods.rate||1)*eventRate*(t<12?.45:1)*scale.spawn;
+    let budget=Math.min(24,Math.max(14,Math.ceil(14*scale.spawn)));
     const pool=this.wavePool(g,wave);
     while (this.spawnClock>=1 && budget-->0) {
       this.spawnClock--;
-      if (g.enemies.length<wave.cap) g.spawn(weighted(pool,x=>x[1])[0]);
+      if (g.enemies.length<cap) g.spawn(weighted(pool,x=>x[1])[0]);
     }
 
-    this.eliteClock-=dt*g.clockRate*(g.run.surgeTime>0?1.5:1);
+    this.eliteClock-=dt*g.clockRate*(g.run.surgeTime>0?1.5:1)*scale.elite;
     if (this.eliteClock<=0) {
       this.eliteClock=wave.elite/Math.max(.25,mapMods.elite||1);
-      if (g.enemies.length<wave.cap) g.spawn("elite");
+      if (g.enemies.length<cap) g.spawn("elite");
     }
 
-    this.formationClock-=dt*g.clockRate;
+    this.formationClock-=dt*g.clockRate/Math.max(.2,scale.formationInterval);
     if (this.formationClock<=0) {
       this.formationClock=rand(26,40);
-      const count=Math.min(18,4+Math.floor(t/110));
+      const count=Math.min(28,Math.ceil(Math.min(18,4+Math.floor(t/110))*scale.formation));
       const angle=rand(0,TAU);
-      for (let i=0;i<count && g.enemies.length<wave.cap;i++) {
+      for (let i=0;i<count && g.enemies.length<cap;i++) {
         const a=wave.formation==="ring"?i/count*TAU:angle+(i-count/2)*.07;
         const id=wave.formation==="swarm"&&g.world.map.enemyPool.includes("swarm")?"swarm":weighted(pool,x=>x[1])[0];
         g.spawn(id,a);
@@ -1624,6 +1737,8 @@ class Game {
     this.sound = new Sound();
     this.input = new Input(this);
     this.camera = {x:0,y:0};
+    this.mode="normal";
+    this.modeDef=getModeDefinition(this.mode);
     this.clockRate = 1;
     this.accumulator = 0;
     this.lastFrame = 0;
@@ -1672,10 +1787,13 @@ class Game {
       this.fps = this.fps*.96+Math.min(240,1/raw)*.04;
     }
 
+    const crowd=this.enemies.length;
+    const autoFx=crowd>=800?.28:crowd>=600?.38:crowd>=420?.52:crowd>=260?.72:1;
     this.fx =
       save.settings.particles==="off" ? 0 :
       save.settings.particles==="low" ? .3 :
-      save.settings.particles==="auto" && this.fps<43 ? .35 : 1;
+      save.settings.particles==="high" ? 1 :
+      Math.min(autoFx,this.fps<43?.35:1);
 
     if (this.state==="playing") {
       if (this.hitstop>0) {
@@ -1713,8 +1831,9 @@ class Game {
     if (!Object.hasOwn(MAP_DEFINITIONS,mapId)) mapId="ruins";
 
     this.setState("playing");
-    this.mode=mode;
-    this.clockRate=mode==="test"?5:1;
+    this.mode=Object.hasOwn(MODE_DEFINITIONS,mode)?mode:"normal";
+    this.modeDef=getModeDefinition(this.mode);
+    this.clockRate=this.modeDef.clockRate;
 
     this.player=new Player(character);
     this.player.weapons.push(new Weapon(CHARACTER_DEFINITIONS[character].weapon));
@@ -1723,12 +1842,12 @@ class Game {
       schemaVersion:SAVE_SCHEMA,
       gameVersion:VERSION,
       time:0,simTime:0,kills:0,gold:0,totalDamage:0,bossKills:0,evolutions:0,
-      completed:false,settled:false,
+      completed:false,settled:false,completionGold:null,
       mapId,worldSeed:String(seed||makeWorldSeed()),worldChanges:{},
       inventory:Array(RUN_INVENTORY_SLOTS).fill(null),
       rerolls:2,banishments:2,skips:1,banned:[],
       structuresBroken:0,urnsBroken:0,structuresUsed:0,itemsUsed:0,synergies:[],usedExchange:false,phase3BossKills:0,
-      event:null,eventTime:0,silenceTime:0,surgeTime:0,
+      event:null,eventTime:0,silenceTime:0,surgeTime:0,endlessAnnounced:false,
       autosave:20,bossHistory:[]
     };
 
@@ -1752,10 +1871,32 @@ class Game {
 
     this.announce(
       MAP_DEFINITIONS[mapId].name,
-      mode==="test"
+      this.mode==="test"
         ? `TESTE • relógio 5× • seed ${this.run.worldSeed}`
-        : `Seed ${this.run.worldSeed} · explore, lute e atravesse a névoa.`
+        : `${this.modeDef.name} · seed ${this.run.worldSeed} · explore, lute e atravesse a névoa.`
     );
+  }
+
+  modeScaling(time=this.run?.time||0) {
+    return getModeScaling(this.mode,time);
+  }
+
+  currentEnemyCap(wave=WAVE_TABLE[this.director?.index||0],scale=this.modeScaling()) {
+    return Math.min(MAX_ACTIVE_ENEMIES,Math.max(1,Math.floor(wave.cap*scale.cap)));
+  }
+
+  canSpawnPriority() {
+    return this.enemies.length<MAX_ACTIVE_ENEMIES+MAX_PRIORITY_ENEMIES;
+  }
+
+  pushPickup(item) {
+    if (this.pickups.length>=MAX_WORLD_PICKUPS) {
+      const replace=this.pickups.findIndex(p=>p.type!=="chest"&&p.type!=="item");
+      if (replace>=0) this.pickups[replace]=item;
+      return replace>=0;
+    }
+    this.pickups.push(item);
+    return true;
   }
 
   resetTransientRunState() {
@@ -1787,7 +1928,7 @@ class Game {
       }));
     return {
       schemaVersion:SAVE_SCHEMA,gameVersion:VERSION,mapId:this.run.mapId,worldSeed:this.run.worldSeed,
-      mode:this.mode,time:this.run.time,simTime:this.run.simTime,completed:this.run.completed===true,character:p.character,x:p.x,y:p.y,
+      mode:this.mode,time:this.run.time,simTime:this.run.simTime,completed:this.run.completed===true,completionGold:this.run.completionGold,character:p.character,x:p.x,y:p.y,
       health:p.health,maxHealth:p.maxHealth,level:p.level,xp:p.xp,xpToNextLevel:p.xpToNextLevel,
       weapons:p.weapons.map(w=>({id:w.id,level:w.level,evolved:w.evolved,path:w.path,pathLevel:w.pathLevel,
         damageDealt:w.damageDealt,kills:w.kills,shots:w.shots,hits:w.hits,timer:w.timer})),
@@ -1797,15 +1938,16 @@ class Game {
       evolutions:this.run.evolutions,structuresBroken:this.run.structuresBroken,urnsBroken:this.run.urnsBroken||0,structuresUsed:this.run.structuresUsed,
       itemsUsed:this.run.itemsUsed,synergies:[...this.run.synergies],usedExchange:this.run.usedExchange===true,phase3BossKills:this.run.phase3BossKills||0,worldChanges:{...this.run.worldChanges},
       event:this.run.event,eventTime:this.run.eventTime,nextMapEvent:this.run.nextMapEvent,silenceTime:this.run.silenceTime,surgeTime:this.run.surgeTime,
-      silenceAfter:this.run.silenceAfter||0,riftPending:this.run.riftPending?{...this.run.riftPending}:null,
+      silenceAfter:this.run.silenceAfter||0,riftPending:this.run.riftPending?{...this.run.riftPending}:null,endlessAnnounced:this.run.endlessAnnounced===true,
       director:{index:this.director.index,spawnClock:this.director.spawnClock,eliteClock:this.director.eliteClock,
-        formationClock:this.director.formationClock,eventIndex:this.director.eventIndex},
+        formationClock:this.director.formationClock,eventIndex:this.director.eventIndex,
+        nextEndlessBossAt:this.director.nextEndlessBossAt,endlessBossIndex:this.director.endlessBossIndex},
       enemies,pickups:this.pickups.filter(o=>o.type==="chest"||o.type==="item").slice(0,80).map(o=>({...o})),bossHistory:[...(this.run.bossHistory||[])]
     };
   }
 
   saveSnapshot(force=false) {
-    if (this.mode==="test" || !this.run || this.run.settled) return false;
+    if (!this.modeDef?.savesProgress || !this.run || this.run.settled) return false;
     if (!force && this.run.autosave>0) return false;
     const snap=this.serializeRun();
     if (!snap) return false;
@@ -1817,8 +1959,9 @@ class Game {
   continueRun() {
     const s=save.activeRun;
     if (!validateRunSnapshot(s,false)) { save.activeRun=null; saveGame(); this.ui.main(); return; }
-    this.mode=s.mode==="test"?"normal":s.mode||"normal";
-    this.clockRate=1;
+    this.mode=Object.hasOwn(MODE_DEFINITIONS,s.mode)&&s.mode!=="test"?s.mode:"normal";
+    this.modeDef=getModeDefinition(this.mode);
+    this.clockRate=this.modeDef.clockRate;
     this.player=new Player(s.character);
     const p=this.player;
     p.x=s.x; p.y=s.y; p.level=s.level; p.xp=s.xp; p.xpToNextLevel=s.xpToNextLevel||xpNeed(s.level);
@@ -1826,12 +1969,13 @@ class Game {
     p.weapons=s.weapons.map(o=>{ const w=new Weapon(o.id); Object.assign(w,o); return w; });
     this.run={
       schemaVersion:SAVE_SCHEMA,gameVersion:VERSION,time:s.time,simTime:s.simTime||s.time,kills:s.kills||0,gold:s.gold||0,
-      totalDamage:s.totalDamage||0,bossKills:s.bossKills||0,evolutions:s.evolutions||0,completed:s.completed===true,settled:false,
+      totalDamage:s.totalDamage||0,bossKills:s.bossKills||0,evolutions:s.evolutions||0,completed:s.completed===true,settled:false,completionGold:Number.isFinite(s.completionGold)?s.completionGold:null,
       mapId:s.mapId,worldSeed:s.worldSeed,worldChanges:{...(s.worldChanges||{})},inventory:s.inventory.map(x=>x?{...x}:null),
       rerolls:s.rerolls??2,banishments:s.banishments??2,skips:s.skips??1,banned:[...(s.banned||[])],
       structuresBroken:s.structuresBroken||0,urnsBroken:s.urnsBroken||0,structuresUsed:s.structuresUsed||0,itemsUsed:s.itemsUsed||0,
       synergies:[...(s.synergies||[])],usedExchange:s.usedExchange===true,phase3BossKills:s.phase3BossKills||0,event:s.event||null,eventTime:s.eventTime||0,nextMapEvent:s.nextMapEvent,
-      silenceTime:s.silenceTime||0,surgeTime:s.surgeTime||0,silenceAfter:s.silenceAfter||0,riftPending:s.riftPending?{...s.riftPending}:null,autosave:20,bossHistory:[...(s.bossHistory||[])]
+      silenceTime:s.silenceTime||0,surgeTime:s.surgeTime||0,silenceAfter:s.silenceAfter||0,riftPending:s.riftPending?{...s.riftPending}:null,
+      endlessAnnounced:s.endlessAnnounced===true,autosave:20,bossHistory:[...(s.bossHistory||[])]
     };
     this.resetTransientRunState();
     this.world=new World(this,s.mapId,s.worldSeed,this.run.worldChanges);
@@ -1842,7 +1986,7 @@ class Game {
       if (e) this.enemyId=Math.max(this.enemyId,e.id||0);
     }
     for (const o of s.pickups||[]) {
-      if (["chest","item"].includes(o.type) && Number.isFinite(o.x)&&Number.isFinite(o.y)) this.pickups.push({...o});
+      if (["chest","item"].includes(o.type) && Number.isFinite(o.x)&&Number.isFinite(o.y)) this.pushPickup({...o});
     }
     this.camera.x=p.x; this.camera.y=p.y; this.world.update();
     this.setState("playing"); this.ui.hide(); this.ui.hud(true); this.ui.updateHUD();
@@ -1925,8 +2069,8 @@ class Game {
   dropItemWeighted(x,y,itemId=null) {
     const d=itemId?ITEM_DEFINITIONS[itemId]:this.weightedItem();
     const id=itemId||d?.id;
-    if (!id || !ITEM_DEFINITIONS[id] || this.pickups.length>=260) return;
-    this.pickups.push({type:"item",itemId:id,x,y,value:1,life:120});
+    if (!id || !ITEM_DEFINITIONS[id] || this.pickups.length>=MAX_WORLD_PICKUPS) return;
+    this.pushPickup({type:"item",itemId:id,x,y,value:1,life:120});
   }
 
   addItem(id,qty=1) {
@@ -2115,8 +2259,15 @@ class Game {
 
     if (this.state!=="playing") return;
 
-    if (r.time>=1800 && !r.completed) {
+    const duration=this.modeDef.duration;
+    if (this.modeDef.endless && r.time>=this.modeDef.endlessStart && !r.endlessAnnounced) {
+      r.endlessAnnounced=true;
+      this.announce("ALÉM DO LIMIAR","A névoa já não conhece limites.");
+      this.sound.play("phase");
+      this.saveSnapshot(true);
+    } else if (!this.modeDef.endless && duration!=null && r.time>=duration && !r.completed) {
       r.completed = true;
+      r.completionGold=r.gold;
       this.spawn("final");
       this.checkAchievements();
       this.setState("goal");
@@ -2151,12 +2302,21 @@ class Game {
   spawnAt(type,x,y,event=null,restore=null) {
     const d=ENEMY_DEFINITIONS[type];
     if (!d) return null;
+    const priority=type==="boss"||type==="final"||type==="elite";
+    if ((!priority && this.enemies.length>=MAX_ACTIVE_ENEMIES) || (priority && !this.canSpawnPriority())) return null;
     const min=this.run.time/60;
-    const hpScale=(1+.10*min+.006*min*min)*(this.world?.map.waveModifiers?.hp||1);
+    const modeScale=this.modeScaling();
+    const temporalMinute=this.modeDef.endless?Math.min(min,30):min;
+    const temporalHp=(1+.10*temporalMinute+.006*temporalMinute*temporalMinute)*(this.world?.map.waveModifiers?.hp||1);
+    const bossLike=type==="boss"||type==="final";
+    const elite=type==="elite";
+    const hpMode=bossLike?modeScale.bossHp:elite?modeScale.hp*modeScale.eliteHp:modeScale.hp;
+    const damageMode=bossLike?modeScale.bossDamage:elite?modeScale.damage*modeScale.eliteDamage:modeScale.damage;
+    const hpScale=(type==="final"?1:temporalHp)*hpMode;
     const e={
       ...d,type,id:restore?.id||++this.enemyId,x,y,
-      hp:d.hp*(type==="final"?1:hpScale),maxHp:d.hp*(type==="final"?1:hpScale),
-      speed:d.speed*(1+Math.min(.32,min*.007)),damage:d.damage*(1+min*.04),
+      hp:d.hp*hpScale,maxHp:d.hp*hpScale,
+      speed:d.speed*(1+Math.min(.32,temporalMinute*.007))*modeScale.speed,damage:d.damage*(1+temporalMinute*.04)*damageMode,
       name:event?.name||d.name,pattern:event?.pattern||"ring",bossEventIndex:event?.eventIndex??null,
       dead:false,kx:0,ky:0,flash:0,attack:rand(1.5,3.5),wind:0,charge:0,aimX:0,aimY:0,
       bossPhase:1,phase:0,statuses:{},burrow:0,shield:0,buffAura:0,specialClock:rand(1.2,3.5)
@@ -2281,7 +2441,7 @@ class Game {
       }
 
       if (special) {
-        e.attack-=dt;
+        e.attack-=dt*this.modeScaling().bossAttack;
         if (e.type==="final") speed+=Math.min(280,Math.max(0,this.run.time-1800)*.6);
         const windTime=e.bossPhase>=3?.48:.65;
         if (e.attack<windTime && e.wind===0) { e.wind=windTime; e.aimX=dx/d; e.aimY=dy/d; }
@@ -2302,7 +2462,7 @@ class Game {
             }
             if (e.pattern==="summon" || e.type==="final" || phase>=3) {
               const count=phase>=3?9:7;
-              for (let i=0;i<count && this.enemies.length<900;i++) this.spawn(phase>=3&&i%3===0?"charger":"swarm");
+              for (let i=0;i<count && this.enemies.length<this.currentEnemyCap();i++) this.spawn(phase>=3&&i%3===0?"charger":"swarm");
             }
             e.attack=e.type==="final"?1.9:e.pattern==="spiral"?(phase>=3?1.15:1.7):(phase>=3?2.6:4.4);
           }
@@ -2482,7 +2642,8 @@ class Game {
       e.kx+=dx/d*knock*(1-e.resist)*mult; e.ky+=dy/d*knock*(1-e.resist)*mult;
     }
 
-    if (save.settings.numbers && Math.random()<(critical?1:.35)) {
+    const numberChance=this.enemies.length>=600?.12:this.enemies.length>=350?.20:.35;
+    if (save.settings.numbers && Math.random()<(critical?1:numberChance)) {
       this.float(e.x,e.y,Math.ceil(amount),critical?"#ffe399":"#dbe5df",critical?18:12);
     }
     this.spark(e.x,e.y,w?.definition.color||"#ffdfb2",critical?4:2);
@@ -2494,8 +2655,8 @@ class Game {
       e.dead=true; this.run.kills++; if (w) w.kills++;
       this.dropXP(e.x,e.y,e.xp);
 
-      if (e.behavior==="splitter") {
-        for (let i=0;i<3;i++) {
+      if (e.behavior==="splitter" && this.enemies.length<MAX_ACTIVE_ENEMIES) {
+        for (let i=0;i<3 && this.enemies.length<MAX_ACTIVE_ENEMIES;i++) {
           const a=i/3*TAU+rand(-.2,.2);
           this.spawnAt("shardling",e.x+Math.cos(a)*18,e.y+Math.sin(a)*18);
         }
@@ -2508,13 +2669,13 @@ class Game {
       if (e.riftSource && this.run.riftPending?.id===e.riftSource) {
         this.run.riftPending.count--;
         if (this.run.riftPending.count<=0) {
-          this.pickups.push({type:"chest",x:e.x,y:e.y,value:180,life:Infinity,worldReward:true});
+          this.pushPickup({type:"chest",x:e.x,y:e.y,value:180,life:Infinity,worldReward:true});
           this.run.riftPending=null;
           this.announce("A fenda se fecha","Um baú enriquecido permaneceu no chão.");
           this.saveSnapshot(true);
         }
       } else if (e.type==="elite" || e.type==="boss" || e.type==="final") {
-        this.pickups.push({type:"chest",x:e.x,y:e.y,value:e.type==="elite"?35:100,life:Infinity});
+        this.pushPickup({type:"chest",x:e.x,y:e.y,value:e.type==="elite"?35:100,life:Infinity});
         if (e.type!=="elite") {
           this.run.bossKills++;
           if ((e.bossPhase||1)>=3) this.run.phase3BossKills=(this.run.phase3BossKills||0)+1;
@@ -2524,7 +2685,8 @@ class Game {
         this.saveSnapshot(true);
       } else {
         const luck=this.player.stats.luck*(this.player.luckBuff>0?1.45:1)*(this.run.surgeTime>0?1.15:1);
-        if (Math.random()<.14*luck) this.drop("gold",e.x+9,e.y,Math.ceil(rand(1,3)*(this.run.surgeTime>0?1.5:1)));
+        const goldChance=clamp(.055*luck*this.modeScaling().goldDrop,0,.12);
+        if (Math.random()<goldChance) this.drop("gold",e.x+9,e.y,Math.ceil(rand(1,3)*(this.run.surgeTime>0?1.5:1)));
         const roll=Math.random()/luck;
         if (roll<.0045) this.dropItemWeighted(e.x,e.y);
         else if (roll<.011) this.drop("heal",e.x-8,e.y,25);
@@ -2654,7 +2816,7 @@ class Game {
   }
 
   drop(type,x,y,value=1) {
-    if (this.pickups.length<260) {
+    if (this.pickups.length<MAX_WORLD_PICKUPS) {
       this.pickups.push({type,x,y,value,life:100});
     }
   }
@@ -2697,7 +2859,7 @@ class Game {
       }
 
       if (d<20) {
-        p.xp += gem.value*p.stats.growth*(this.mode==="test"?5:1)*(this.run.event==="deep_fog"?1.25:1);
+        p.xp += gem.value*p.stats.growth*this.modeDef.xpMultiplier*(this.run.event==="deep_fog"?1.25:1);
 
         if (this.gemCells.get(gem.key)===gem) {
           this.gemCells.delete(gem.key);
@@ -2938,6 +3100,7 @@ class Game {
     let changed = false;
 
     for (const a of ACHIEVEMENTS) {
+      if (a.modes && !a.modes.includes(this.mode)) continue;
       if (!save.achievements.includes(a.id) && a.check(this)) {
         save.achievements.push(a.id);
 
@@ -2971,7 +3134,12 @@ class Game {
 
     this.run.settled = true;
     this.run.abandoned = abandoned;
-    this.run.bonus = this.run.completed?250:0;
+    const baseBonus=this.run.completed?this.modeDef.completionBase:0;
+    const rewardGold=Number.isFinite(this.run.completionGold)?this.run.completionGold:this.run.gold;
+    const difficultyBonus=this.run.completed&&this.modeDef.rewardMultiplier>1
+      ? Math.floor(rewardGold*(this.modeDef.rewardMultiplier-1)) : 0;
+    this.run.bonus = baseBonus+difficultyBonus;
+    this.run.difficultyBonus=difficultyBonus;
 
     this.run.score = Math.floor(
       this.run.kills*10 +
@@ -2981,7 +3149,7 @@ class Game {
       (this.run.completed?10000:0)
     );
 
-    if (this.mode!=="test") {
+    if (this.modeDef.savesProgress) {
       save.activeRun = null;
       save.gold += this.run.gold+this.run.bonus;
       save.runs++;
@@ -3409,6 +3577,7 @@ class UI {
           ${hasRun?`<div class="run-summary">
             <span>ECO<b>${CHARACTER_DEFINITIONS[run.character].name}</b></span>
             <span>LIMIAR<b>${MAP_DEFINITIONS[run.mapId].name}</b></span>
+            <span>EXPEDIÇÃO<b>${getModeDefinition(run.mode).name}</b></span>
             <span>TEMPO<b>${clock(run.time)}</b></span>
           </div>`:""}
           <div class="menu-grid">
@@ -3467,13 +3636,12 @@ class UI {
         </button>`).join("")}
       </div>
       <div class="mode"><label for="run-mode">Expedição</label><select id="run-mode">
-        <option value="normal" ${this.mode==="normal"?"selected":""}>Padrão · 30 minutos</option>
-        <option value="test" ${this.mode==="test"?"selected":""}>Teste · relógio 5× · sem recompensas permanentes</option>
+        ${Object.entries(MODE_DEFINITIONS).map(([id,m])=>`<option value="${id}" ${this.mode===id?"selected":""}>${m.label}</option>`).join("")}
       </select></div>
       <div class="run-summary">
         <span>ECO<b>${CHARACTER_DEFINITIONS[save.selected].name}</b></span>
         <span>LIMIAR<b>${MAP_DEFINITIONS[save.selectedMap].name}</b></span>
-        <span>EXPEDIÇÃO<b>${this.mode==="test"?"Teste 5×":"Padrão · 30 min"}</b></span>
+        <span>EXPEDIÇÃO<b>${getModeDefinition(this.mode).summary}</b></span>
       </div>
       <div class="actions">${this.button("start","ATRAVESSAR A NÉVOA",true)}${this.button("back","Voltar")}</div>
     `,{
@@ -3481,7 +3649,7 @@ class UI {
       map:b=>{save.selectedMap=b.dataset.id;saveGame();this.characters();},
       start:()=>this.begin(),back:()=>this.main()
     },true);
-    this.onInput=t=>{if(t.id==="run-mode")this.mode=t.value;};
+    this.onInput=t=>{if(t.id==="run-mode"){this.mode=Object.hasOwn(MODE_DEFINITIONS,t.value)?t.value:"normal";this.characters();}};
   }
 
   begin() {
@@ -3503,7 +3671,9 @@ class UI {
             Arma nível 8 + passivo parceiro + baú = evolução.
           </p>
           <p>
-            Sobreviva <b>30 minutos</b>.
+            ${getModeDefinition(this.mode).endless
+              ? "No <b>Infinito</b>, atravesse 30 minutos e sobreviva ao escalonamento além do Limiar."
+              : "Sobreviva <b>30 minutos</b> para concluir a expedição."}
             No touch, arraste o dedo sobre a arena.
           </p>
           <p>
@@ -3845,7 +4015,7 @@ class UI {
       <div class="chest-reveal">
         <span class="sigil">✧</span>
         <p>
-          Encerre a expedição com vitória e <b>250 de ouro extra</b>,
+          Encerre a expedição com vitória e <b>${this.g.modeDef.name==="Pesadelo"?"250 de ouro + 25% do ouro coletado":"250 de ouro extra"}</b>,
           ou continue contra uma presença que fica mais veloz
           a cada segundo.
         </p>
@@ -3883,8 +4053,8 @@ class UI {
           : r.abandoned
             ? "Até a próxima noite."
             : "A névoa o alcançou.",
-        `${g.mode==="test"
-          ? "MODO TESTE · recompensas e recordes não salvos"
+        `${g.modeDef.hud} · ${g.mode==="test"
+          ? "recompensas e recordes não salvos"
           : "Expedição contabilizada"
         }${!storageAvailable?" · Armazenamento indisponível":""}`
       ) + `
@@ -3892,6 +4062,8 @@ class UI {
         <span>TEMPO<b>${clock(r.time)}</b></span>
         <span>NÍVEL<b>${p.level}</b></span>
         <span>INIMIGOS<b>${fmt(r.kills)}</b></span>
+        <span>CHEFES<b>${fmt(r.bossKills)}</b></span>
+        <span>EVOLUÇÕES<b>${fmt(r.evolutions)}</b></span>
         <span>OURO<b>${fmt(r.gold+r.bonus)}</b></span>
         <span>DANO TOTAL<b>${fmt(r.totalDamage)}</b></span>
         <span>PONTUAÇÃO<b>${fmt(r.score)}</b></span>
@@ -3899,7 +4071,7 @@ class UI {
 
       <p class="muted">
         Arma com mais dano: <b>${top.name}</b>
-        ${r.bonus?` · Bônus de conclusão: ${r.bonus} ouro`:""}.
+        ${r.bonus?` · Bônus de conclusão: ${r.bonus} ouro${r.difficultyBonus?` (${r.difficultyBonus} do Pesadelo)`:""}`:""}.
       </p>
 
       <div class="table-scroll">
@@ -3940,7 +4112,7 @@ class UI {
         ${this.button("menu","Menu principal")}
       </div>
     `,{
-      again:()=>g.start(p.character,g.mode),
+      again:()=>g.start(p.character,g.mode,r.mapId),
       menu:()=>g.menu()
     },true);
   }
@@ -3953,7 +4125,9 @@ class UI {
     n["xp-fill"].style.width=`${clamp(100*p.xp/p.xpToNextLevel,0,100)}%`;
     n.level.textContent="NV. "+p.level;n.timer.textContent=clock(r.time);
     const event=r.event==="deep_fog"?" · NÉVOA PROFUNDA":r.surgeTime>0?" · CÉU PARTIDO":"";
-    n.wave.textContent=(g.mode==="test"?`TESTE ${g.clockRate}× · `:"")+WAVE_TABLE[g.director.index].name+(p.buff>0?" · ÂMBAR":"")+(p.inWater?" · ÁGUA RASA":"")+event;
+    const phase=g.modeDef.endless&&r.time>=g.modeDef.endlessStart?"ALÉM DO LIMIAR":WAVE_TABLE[g.director.index].name;
+    const modeTag=g.mode==="normal"?"":g.mode==="test"?`TESTE ${g.clockRate}× · `:`${g.modeDef.hud} · `;
+    n.wave.textContent=modeTag+phase+(p.buff>0?" · ÂMBAR":"")+(p.inWater?" · ÁGUA RASA":"")+event;
     n.gold.textContent=fmt(r.gold);n.kills.textContent=fmt(r.kills);
 
     const key=p.weapons.map(w=>`${w.id}:${w.level}:${w.evolved}:${w.path||"-"}`).join("|")+JSON.stringify(p.passives)+JSON.stringify(r.inventory);
@@ -3983,7 +4157,7 @@ class UI {
       n.debug.textContent=`FPS ${Math.round(g.fps)} | Enemies ${g.enemies.length} | Projectiles ${g.bullets.items.length}\n`+
         `Particles ${g.particles.items.length} | Pickups ${g.gems.length+g.pickups.length} | Areas ${g.areas.length}\n`+
         `Structures ${g.world?.nearby.length||0} | Chunks ${g.world?.chunks.size||0} | Interactive ${g.world?.countInteractive()||0}\n`+
-        `Spatial cells ${g.grid.cells.size} | Seed ${r.worldSeed} | ${g.clockRate}× ${g.debug.god?"INVENCÍVEL":""}`;
+        `Spatial cells ${g.grid.cells.size} | Mode ${g.modeDef.name} | Seed ${r.worldSeed} | ${g.clockRate}× ${g.debug.god?"INVENCÍVEL":""}`;
     }
   }
 
@@ -4323,28 +4497,48 @@ class Renderer {
     c.fillRect(left,top,g.viewW+60,g.viewH+60);
 
     if (map?.water) {
-      const cell=180;
+      const cell=220;
       const minX=Math.floor(left/cell)-1,maxX=Math.ceil((left+g.viewW+60)/cell)+1;
       const minY=Math.floor(top/cell)-1,maxY=Math.ceil((top+g.viewH+60)/cell)+1;
       for(let cy=minY;cy<=maxY;cy++)for(let cx=minX;cx<=maxX;cx++){
         const x=cx*cell,y=cy*cell;
         if(!g.world.isWater(x+cell*.2,y+cell*.2)&&!g.world.isWater(x+cell*.8,y+cell*.8))continue;
-        c.fillStyle=(map.palette?.water||"#153b40")+"66";c.fillRect(x,y,cell,cell);
-        c.strokeStyle="#6fa3a329";c.lineWidth=1;
-        for(let i=0;i<3;i++){
-          c.beginPath();c.moveTo(x+20,y+35+i*48+Math.sin(g.run.simTime+i+cx)*5);c.lineTo(x+cell-20,y+35+i*48+Math.cos(g.run.simTime*.8+i+cy)*5);c.stroke();
+        c.fillStyle=(map.palette?.water||"#153b40")+"45";c.fillRect(x,y,cell,cell);
+        const hash=hashString(`${g.run.worldSeed}|water|${cx}|${cy}`);
+        if(hash%3===0){
+          c.strokeStyle="#6fa3a31d";c.lineWidth=1;
+          c.beginPath();
+          const rippleY=y+cell*.52+Math.sin(g.run.simTime*.55+(hash%17))*4;
+          c.moveTo(x+45,rippleY);c.lineTo(x+cell-45,rippleY+Math.cos(g.run.simTime*.45+cy)*3);c.stroke();
         }
       }
-    } else {
-      const cell=360;
-      for(let x=Math.floor(left/cell);x<Math.ceil((left+g.viewW+60)/cell);x++)for(let y=Math.floor(top/cell);y<Math.ceil((top+g.viewH+60)/cell);y++){
-        const hash=((x*73856093)^(y*19349663))>>>0;if(hash%5!==0)continue;
-        const px=x*cell+((hash>>>3)%180),py=y*cell+((hash>>>10)%180);
-        c.fillStyle="#09161e88";c.beginPath();c.ellipse(px+15,py+28,25,10,-.3,0,TAU);c.fill();
-        c.fillStyle="#263b41";c.strokeStyle="#395253";this.polygon(px,py,20,4,Math.PI/4);c.fill();c.stroke();
-        c.fillStyle="#344b4b";c.beginPath();c.moveTo(px-11,py);c.lineTo(px,py-58);c.lineTo(px+10,py);c.closePath();c.fill();
-        c.strokeStyle="#7dc5ab44";c.beginPath();c.moveTo(px,py-43);c.lineTo(px,py-15);c.stroke();
+    }
+
+    const cell=560;
+    const density=map?.terrainDensity??.5;
+    const minX=Math.floor(left/cell)-1,maxX=Math.ceil((left+g.viewW+60)/cell)+1;
+    const minY=Math.floor(top/cell)-1,maxY=Math.ceil((top+g.viewH+60)/cell)+1;
+    for(let cy=minY;cy<=maxY;cy++)for(let cx=minX;cx<=maxX;cx++){
+      const hash=hashString(`${g.run?.worldSeed||"menu"}|terrain|${g.world?.mapId||"ruins"}|${cx}|${cy}`);
+      if((hash%100)>=Math.round(18*density))continue;
+      const px=cx*cell+90+((hash>>>4)%(cell-180));
+      const py=cy*cell+90+((hash>>>12)%(cell-180));
+      const kind=(hash>>>20)%3;
+      c.save();
+      c.globalAlpha=map?.water ? .18 : .22;
+      c.strokeStyle=map?.palette?.accent||"#71998b";
+      c.fillStyle="#26383b";
+      c.lineWidth=1;
+      if(kind===0){
+        c.beginPath();c.ellipse(px,py,48,17,(hash%31)/31,0,TAU);c.stroke();
+        c.beginPath();c.ellipse(px+8,py-2,25,8,(hash%19)/19,0,TAU);c.stroke();
+      }else if(kind===1){
+        this.polygon(px,py,22,4,Math.PI/4);c.stroke();
+        this.polygon(px+34,py+10,11,5,0);c.stroke();
+      }else{
+        c.beginPath();c.moveTo(px-34,py+12);c.lineTo(px-7,py-14);c.lineTo(px+18,py+3);c.lineTo(px+43,py-18);c.stroke();
       }
+      c.restore();
     }
 
     if (g.debug.chunks && g.world) {
@@ -4365,7 +4559,8 @@ class Renderer {
       c.font="9px system-ui";c.fillText(`${Math.round(Math.hypot(s.x-g.player.x,s.y-g.player.y))}m`,x,y+12);c.textAlign="left";return;
     }
     c.save();c.translate(s.x,s.y);c.rotate((s.angle||0)+(s.type==="rift"?time*.08:0));
-    c.globalAlpha=(s.used||s.opened)?.48:1;
+    const gameplayAlpha=d.kind==="HAZARD"?1:d.interactive?.95:d.destructible?.76:s.type==="platform"?.58:d.collidable?.56:.38;
+    c.globalAlpha=(s.used||s.opened)?gameplayAlpha*.46:gameplayAlpha;
     c.fillStyle="#07111688";c.beginPath();c.ellipse(5,s.r*.7,s.r*.9,s.r*.35,0,0,TAU);c.fill();
     c.strokeStyle=d.color;c.fillStyle=d.color;c.lineWidth=1.5;
     if(s.type==="urn"){
@@ -4547,6 +4742,7 @@ try {
       WEAPON_PATHS,
       SYNERGY_DEFINITIONS,
       STATUS_DEFINITIONS,
+      MODE_DEFINITIONS,
       WAVE_TABLE,
       Weapon,
       Player,
@@ -4568,7 +4764,8 @@ try {
         collisions:v=>game.debug.collisions=v??!game.debug.collisions,
         startSeed:seed=>game.start(save.selected,"test",save.selectedMap,String(seed)),
         saveSnapshot:()=>game.saveSnapshot(true),
-        loadSnapshot:()=>game.continueRun()
+        loadSnapshot:()=>game.continueRun(),
+        modeScaling:(mode,time)=>getModeScaling(mode,time)
       },
       get save() { return save; }
     };
