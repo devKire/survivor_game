@@ -1,0 +1,75 @@
+{
+  "clients": 5,
+  "metrics": [
+    {
+      "simulatedRttMs": 0,
+      "serverSeconds": 3.200000000000003,
+      "correctionMeanPx": 1.913999999999992,
+      "correctionP95Px": 17.099999999999998,
+      "snapshots": [
+        54,
+        54,
+        54,
+        54,
+        54
+      ]
+    },
+    {
+      "simulatedRttMs": 50,
+      "serverSeconds": 3.1999999999999886,
+      "correctionMeanPx": 1.3301250000000062,
+      "correctionP95Px": 8.619999999999997,
+      "snapshots": [
+        86,
+        86,
+        86,
+        86,
+        86
+      ]
+    },
+    {
+      "simulatedRttMs": 100,
+      "serverSeconds": 3.27999999999993,
+      "correctionMeanPx": 1.3357575757575764,
+      "correctionP95Px": 17.11999999999999,
+      "snapshots": [
+        119,
+        119,
+        119,
+        119,
+        119
+      ]
+    },
+    {
+      "simulatedRttMs": 150,
+      "serverSeconds": 3.3199999999999292,
+      "correctionMeanPx": 1.3444848484848475,
+      "correctionP95Px": 8.64,
+      "snapshots": [
+        152,
+        152,
+        152,
+        152,
+        152
+      ]
+    },
+    {
+      "simulatedRttMs": 250,
+      "serverSeconds": 3.4799999999999276,
+      "correctionMeanPx": 2.143542857142857,
+      "correctionP95Px": 17.19999999999999,
+      "snapshots": [
+        187,
+        187,
+        187,
+        187,
+        187
+      ]
+    }
+  ],
+  "droppedSnapshots": 3,
+  "resyncs": 9,
+  "reconnect": true,
+  "noDuplicatePlayers": true,
+  "transport": "Real TCP/WebSocket; artificial delay both directions; application snapshot drops (TCP itself retransmits)."
+}

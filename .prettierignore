@@ -1,0 +1,8 @@
+baseline
+src/generated
+node_modules
+.next
+index.html
+style.css
+game.js
+package-lock.json

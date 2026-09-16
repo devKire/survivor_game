@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+}
+datasource db {
+  provider = "postgresql"
+  schemas = ["limiar"]
+}
+model User {
+  id String @id
+  name String
+  email String @unique
+  emailVerified Boolean @default(false)
+  image String?
+  username String? @unique
+  displayUsername String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastSeenAt DateTime?
+  sessions Session[]
+  accounts Account[]
+  progress UserProgress?
+  sentRequests Friendship[] @relation("from")
+  receivedRequests Friendship[] @relation("to")
+  memberships TeamMember[]
+  messages ChatMessage[] @relation("sender")
+  receivedMessages ChatMessage[] @relation("recipient")
+  games GameSessionMember[]
+  @@schema("limiar")
+}
+model Session {
+  id String @id
+  expiresAt DateTime
+  token String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@index([userId])
+  @@schema("limiar")
+}
+model Account {
+  id String @id
+  accountId String
+  providerId String
+  userId String
+  accessToken String?
+  refreshToken String?
+  idToken String?
+  accessTokenExpiresAt DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope String?
+  password String? @map("passwordHash")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@unique([providerId,accountId])
+  @@index([userId])
+  @@schema("limiar")
+}
+model Verification {
+  id String @id
+  identifier String
+  value String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([identifier])
+  @@schema("limiar")
+}
+model UserProgress {
+  userId String @id
+  version Int @default(1)
+  data Json
+  localArchive Json?
+  importResolved Boolean @default(false)
+  updatedAt DateTime @updatedAt
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@schema("limiar")
+}
+model Friendship {
+  id String @id @default(cuid())
+  pair String @unique
+  fromId String
+  toId String
+  status String @default("PENDING")
+  createdAt DateTime @default(now())
+  from User @relation("from",fields:[fromId],references:[id],onDelete:Cascade)
+  to User @relation("to",fields:[toId],references:[id],onDelete:Cascade)
+  @@index([fromId,status])
+  @@index([toId,status])
+  @@schema("limiar")
+}
+model Team {
+  id String @id @default(cuid())
+  code String @unique
+  leaderId String
+  expiresAt DateTime
+  status String @default("LOBBY")
+  mapId String @default("ruins")
+  mode String @default("normal")
+  createdAt DateTime @default(now())
+  members TeamMember[]
+  messages ChatMessage[]
+  games GameSession[]
+  @@schema("limiar")
+}
+model TeamMember {
+  id String @id @default(cuid())
+  teamId String
+  userId String @unique
+  slot Int
+  character String @default("nara")
+  ready Boolean @default(false)
+  joinedAt DateTime @default(now())
+  team Team @relation(fields:[teamId],references:[id],onDelete:Cascade)
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@unique([teamId,slot])
+  @@schema("limiar")
+}
+model ChatMessage {
+  id String @id @default(cuid())
+  senderId String
+  recipientId String?
+  teamId String?
+  text String
+  createdAt DateTime @default(now())
+  sender User @relation("sender",fields:[senderId],references:[id],onDelete:Cascade)
+  recipient User? @relation("recipient",fields:[recipientId],references:[id],onDelete:Cascade)
+  team Team? @relation(fields:[teamId],references:[id],onDelete:Cascade)
+  @@index([teamId,createdAt,id])
+  @@index([senderId,recipientId,createdAt,id])
+  @@schema("limiar")
+}
+model GameSession {
+  id String @id @default(cuid())
+  teamId String
+  seed String
+  mapId String
+  mode String
+  partySize Int
+  status String @default("RUNNING")
+  startedAt DateTime @default(now())
+  endedAt DateTime?
+  result Json?
+  team Team @relation(fields:[teamId],references:[id])
+  members GameSessionMember[]
+  @@schema("limiar")
+}
+model GameSessionMember {
+  id String @id @default(cuid())
+  sessionId String
+  userId String
+  character String
+  result Json?
+  reward Int @default(0)
+  survived Boolean @default(false)
+  session GameSession @relation(fields:[sessionId],references:[id],onDelete:Cascade)
+  user User @relation(fields:[userId],references:[id])
+  @@unique([sessionId,userId])
+  @@schema("limiar")
+}
+model RateLimit {
+  id String @id @default(cuid())
+  key String @unique
+  count Int
+  lastRequest BigInt
+  @@schema("limiar")
+}

@@ -1,0 +1,352 @@
+[
+  {
+    "cx": -3,
+    "cy": 1,
+    "key": "-3,1",
+    "structures": [
+      {
+        "id": "-3:1:stone:0",
+        "type": "stone",
+        "x": -1837.6722283195704,
+        "y": 915.6152283842675,
+        "r": 20,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 2.6236278437164,
+        "variant": 3
+      },
+      {
+        "id": "-3:1:stone:2",
+        "type": "stone",
+        "x": -1627.224981870968,
+        "y": 1178.3666978008114,
+        "r": 20,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 0.3115289784438287,
+        "variant": 2
+      },
+      {
+        "id": "-3:1:urn:3",
+        "type": "urn",
+        "x": -1445.9839550568722,
+        "y": 766.4697119826451,
+        "r": 15,
+        "hp": 34,
+        "maxHp": 34,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 1.624784797711415,
+        "variant": 3
+      }
+    ]
+  },
+  {
+    "cx": -2,
+    "cy": 1,
+    "key": "-2,1",
+    "structures": [
+      {
+        "id": "-2:1:column:0",
+        "type": "column",
+        "x": -965.8315882529132,
+        "y": 804.3001964036375,
+        "r": 23,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 3.85597051690096,
+        "variant": 0
+      },
+      {
+        "id": "-2:1:wall:1",
+        "type": "wall",
+        "x": -721.9782574032433,
+        "y": 705.2742383047007,
+        "r": 31,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 5.124851579164658,
+        "variant": 1
+      },
+      {
+        "id": "-2:1:chest:2",
+        "type": "chest",
+        "x": -1159.5952995494008,
+        "y": 981.8482756591402,
+        "r": 25,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 0.5847475088065774,
+        "variant": 1
+      },
+      {
+        "id": "-2:1:urn:3",
+        "type": "urn",
+        "x": -767.1070628752932,
+        "y": 1036.9375002826564,
+        "r": 15,
+        "hp": 34,
+        "maxHp": 34,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 5.312630877771888,
+        "variant": 3
+      }
+    ]
+  },
+  {
+    "cx": -1,
+    "cy": 1,
+    "key": "-1,1",
+    "structures": [
+      {
+        "id": "-1:1:urn:0",
+        "type": "urn",
+        "x": -542.3930905805901,
+        "y": 1216.7445712536573,
+        "r": 15,
+        "hp": 34,
+        "maxHp": 34,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 1.1436351800356923,
+        "variant": 3
+      },
+      {
+        "id": "-1:1:memory:1",
+        "type": "memory",
+        "x": -560.7481169211678,
+        "y": 963.6607160326093,
+        "r": 27,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 3.640438497847241,
+        "variant": 3
+      },
+      {
+        "id": "-1:1:urn:2",
+        "type": "urn",
+        "x": -187.5663444120437,
+        "y": 758.7160347867757,
+        "r": 15,
+        "hp": 34,
+        "maxHp": 34,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 0.5640762920188546,
+        "variant": 3
+      }
+    ]
+  },
+  {
+    "cx": 0,
+    "cy": 1,
+    "key": "0,1",
+    "structures": [
+      {
+        "id": "0:1:tree:0",
+        "type": "tree",
+        "x": 434.8717569024302,
+        "y": 760.6617781985551,
+        "r": 20,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 4.318826870645955,
+        "variant": 1
+      },
+      {
+        "id": "0:1:memory:1",
+        "type": "memory",
+        "x": 415.0047260406427,
+        "y": 1023.7317409226671,
+        "r": 27,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 2.591575318840083,
+        "variant": 3
+      },
+      {
+        "id": "0:1:fountain:2",
+        "type": "fountain",
+        "x": 337.5447150785476,
+        "y": 1204.5921240211464,
+        "r": 25,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 5.424551165026803,
+        "variant": 1
+      },
+      {
+        "id": "0:1:rift:3",
+        "type": "rift",
+        "x": 344.4708163314499,
+        "y": 865.7458414882421,
+        "r": 36,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 3.1854700681859454,
+        "variant": 1
+      }
+    ]
+  },
+  {
+    "cx": 1,
+    "cy": 1,
+    "key": "1,1",
+    "structures": [
+      {
+        "id": "1:1:stone:0",
+        "type": "stone",
+        "x": 1006.3104695221409,
+        "y": 1082.4919043015689,
+        "r": 20,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 5.677587191255816,
+        "variant": 3
+      },
+      {
+        "id": "1:1:urn:1",
+        "type": "urn",
+        "x": 1150.2970773121342,
+        "y": 882.5808583339676,
+        "r": 15,
+        "hp": 34,
+        "maxHp": 34,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 4.322014062971022,
+        "variant": 1
+      },
+      {
+        "id": "1:1:urn:2",
+        "type": "urn",
+        "x": 1078.5706233535893,
+        "y": 967.5120331160724,
+        "r": 15,
+        "hp": 34,
+        "maxHp": 34,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 2.931512268978531,
+        "variant": 0
+      },
+      {
+        "id": "1:1:stone:3",
+        "type": "stone",
+        "x": 813.3748798444867,
+        "y": 1111.7201754357666,
+        "r": 20,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 2.1646805928698027,
+        "variant": 3
+      }
+    ]
+  },
+  {
+    "cx": 2,
+    "cy": 1,
+    "key": "2,1",
+    "structures": [
+      {
+        "id": "2:1:wall:0",
+        "type": "wall",
+        "x": 1767.0778281823732,
+        "y": 749.0640650270507,
+        "r": 31,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 0.6635304662272671,
+        "variant": 2
+      },
+      {
+        "id": "2:1:column:1",
+        "type": "column",
+        "x": 1771.7080293246545,
+        "y": 1089.322788324207,
+        "r": 23,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 2.541235887875011,
+        "variant": 0
+      },
+      {
+        "id": "2:1:stone:2",
+        "type": "stone",
+        "x": 1379.5195444230922,
+        "y": 1033.1004063109867,
+        "r": 20,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 4.543047698526294,
+        "variant": 1
+      },
+      {
+        "id": "2:1:column:3",
+        "type": "column",
+        "x": 1776.5005944576114,
+        "y": 873.8343025511131,
+        "r": 23,
+        "hp": 0,
+        "maxHp": 0,
+        "used": false,
+        "destroyed": false,
+        "opened": false,
+        "angle": 0.5000078517911544,
+        "variant": 1
+      }
+    ]
+  }
+]

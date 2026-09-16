@@ -1,0 +1,27 @@
+services:
+  web:
+    build:
+      context: .
+      secrets: [env]
+      args:
+        NEXT_PUBLIC_REALTIME_URL: ${NEXT_PUBLIC_REALTIME_URL}
+    env_file: .env
+    environment:
+      NODE_ENV: production
+    ports: ["3000:3000"]
+    restart: unless-stopped
+  realtime:
+    build:
+      context: .
+      secrets: [env]
+      args:
+        NEXT_PUBLIC_REALTIME_URL: ${NEXT_PUBLIC_REALTIME_URL}
+    env_file: .env
+    environment:
+      NODE_ENV: production
+    command: ["node", "--import", "tsx", "src/realtime/server.ts"]
+    ports: ["3001:3001"]
+    restart: unless-stopped
+secrets:
+  env:
+    file: .env
