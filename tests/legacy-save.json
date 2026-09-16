@@ -1,0 +1,135 @@
+{
+  "version": 2,
+  "gameVersion": "1.3.0",
+  "gold": 0,
+  "upgrades": {},
+  "unlocked": [
+    "nara"
+  ],
+  "achievements": [],
+  "discovered": {
+    "items": [],
+    "enemies": [
+      "husk"
+    ],
+    "maps": [
+      "ruins"
+    ],
+    "synergies": [],
+    "structures": []
+  },
+  "selected": "nara",
+  "selectedMap": "ruins",
+  "tutorial": true,
+  "highScore": 0,
+  "bestTime": 0,
+  "bestKills": 0,
+  "runs": 0,
+  "completed": 0,
+  "activeRun": {
+    "schemaVersion": 2,
+    "gameVersion": "1.3.0",
+    "mapId": "ruins",
+    "worldSeed": "A7A39192728DFE42",
+    "mode": "normal",
+    "time": 1.6166666666666658,
+    "simTime": 1.6166666666666658,
+    "completed": false,
+    "completionGold": null,
+    "character": "nara",
+    "x": 343.1999999999994,
+    "y": 0,
+    "health": 110,
+    "maxHealth": 110,
+    "level": 1,
+    "xp": 0,
+    "xpToNextLevel": 9,
+    "weapons": [
+      {
+        "id": "ember",
+        "level": 1,
+        "evolved": false,
+        "path": null,
+        "pathLevel": 0,
+        "damageDealt": 0,
+        "kills": 0,
+        "shots": 0,
+        "hits": 0,
+        "timer": 0.7333333333333315
+      }
+    ],
+    "passives": {},
+    "inventory": [
+      null,
+      null,
+      null,
+      null
+    ],
+    "rerolls": 2,
+    "banishments": 2,
+    "skips": 1,
+    "banned": [],
+    "gold": 0,
+    "kills": 0,
+    "totalDamage": 0,
+    "bossKills": 0,
+    "evolutions": 0,
+    "structuresBroken": 0,
+    "urnsBroken": 0,
+    "structuresUsed": 0,
+    "itemsUsed": 0,
+    "synergies": [],
+    "usedExchange": false,
+    "phase3BossKills": 0,
+    "worldChanges": {},
+    "event": null,
+    "eventTime": 0,
+    "nextMapEvent": 320,
+    "silenceTime": 0,
+    "surgeTime": 0,
+    "silenceAfter": 0,
+    "riftPending": null,
+    "endlessAnnounced": false,
+    "director": {
+      "index": 0,
+      "spawnClock": 0.309499999999999,
+      "eliteClock": 78.38333333333343,
+      "formationClock": 22.383333333333425,
+      "eventIndex": 0,
+      "nextEndlessBossAt": 1920,
+      "endlessBossIndex": 0
+    },
+    "enemies": [
+      {
+        "type": "husk",
+        "id": 1,
+        "x": -492.51475327046666,
+        "y": 501.2996078781164,
+        "hp": 34.070921875,
+        "maxHp": 34.070921875,
+        "speed": 66.009625,
+        "damage": 15.0125,
+        "name": "Errante de Xisto",
+        "pattern": "ring",
+        "attack": 3.4446920740196783,
+        "wind": 0,
+        "charge": 0,
+        "aimX": 0,
+        "aimY": 0,
+        "bossPhase": 1,
+        "bossEventIndex": null,
+        "statuses": {}
+      }
+    ],
+    "pickups": [],
+    "bossHistory": []
+  },
+  "settings": {
+    "volume": 0.35,
+    "sounds": true,
+    "mute": false,
+    "shake": true,
+    "numbers": true,
+    "particles": "auto"
+  }
+}

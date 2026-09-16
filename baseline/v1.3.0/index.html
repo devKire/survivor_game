@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102027">
+  <meta name="description" content="Limiar — Ecos do Obelisco. Um survivor arcano original, offline, com ataques automáticos e builds evolutivas.">
+  <title>Limiar — Ecos do Obelisco</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <canvas id="game" aria-label="Arena do jogo Limiar"></canvas>
+
+  <div id="hud" hidden>
+    <div class="xp-track"><i id="xp-fill"></i></div>
+
+    <div class="hud-top">
+      <div class="health">
+        <div><span>VITALIDADE</span><b id="hp-text">110 / 110</b></div>
+        <div class="hp-track"><i id="hp-fill"></i></div>
+        <strong id="level">NV. 1</strong>
+      </div>
+
+      <div class="time">
+        <b id="timer">00:00</b>
+        <span id="wave">O despertar</span>
+      </div>
+
+      <div class="counters">
+        <span class="gold">◈ <b id="gold">0</b></span>
+        <span>✕ <b id="kills">0</b></span>
+        <button id="pause-button" aria-label="Pausar jogo" title="Esc / P">Ⅱ</button>
+      </div>
+    </div>
+
+    <div id="boss-hud" hidden>
+      <span id="boss-name"></span>
+      <small id="boss-phase"></small>
+      <div><i id="boss-fill"></i></div>
+    </div>
+
+    <div class="build-bar">
+      <div>
+        <small>ARSENAL</small>
+        <div id="weapons" class="slots"></div>
+      </div>
+      <div>
+        <small>RELICÁRIO</small>
+        <div id="passives" class="slots"></div>
+      </div>
+    </div>
+
+    <div class="run-inventory" aria-label="Itens da expedição">
+      <small>ITENS</small>
+      <div id="run-items" class="item-slots"></div>
+    </div>
+
+    <div id="interaction-prompt" class="interaction-prompt" hidden>
+      <button id="interaction-button" type="button" aria-label="Interagir com objeto próximo">
+        <kbd>E</kbd> <span id="interaction-name">INTERAGIR</span>
+      </button>
+    </div>
+
+    <pre id="debug" hidden></pre>
+    <div class="controls-note">WASD / SETAS · MOVER &nbsp; E · INTERAGIR &nbsp; 1–4 · ITENS &nbsp; ESC / P · PAUSA</div>
+  </div>
+
+  <main id="screen" role="dialog" aria-modal="true" aria-label="Menu do Limiar"></main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <noscript>Ative o JavaScript no navegador para jogar Limiar.</noscript>
+</body>
+</html>
