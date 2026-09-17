@@ -23,6 +23,7 @@ export class RemoteGame extends BrowserGame {
   corrections = 0;
   sendClock = 0;
   rtt = 0;
+  fxSeen = new Set<string>();
   packetRate = 0;
   snapshotRate = 0;
   metricsAt = 0;
@@ -97,6 +98,14 @@ export class RemoteGame extends BrowserGame {
     if (!this.active) {
       super.start("nara", snapshot.mode, snapshot.mapId, snapshot.seed);
       this.ui.hide();
+    }
+    for (const fx of snapshot.fx) {
+      if (this.fxSeen.has(fx.id)) continue;
+      this.fxSeen.add(fx.id);
+      if (this.fxSeen.size > 512) this.fxSeen.delete(this.fxSeen.values().next().value as string);
+      const color = WEAPON_DEFINITIONS[fx.weapon]?.color || "#dbe5df";
+      this.ring(fx.x, fx.y, fx.radius, color);
+      this.spark(fx.x, fx.y, color, fx.variant === "evolved" ? 20 : 10);
     }
     this.before = new Map([...this.entities].map(([id, e]) => {
       const visual = this.visuals.get(id);

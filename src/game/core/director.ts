@@ -77,7 +77,7 @@ export class WaveDirector {
 
   update(g: GameSimulation, dt: number) {
     const t = g.run.time;
-    const schedule = [240, 480, 720, 1020, 1380, 1740];
+    const schedule = g.expeditionProfile.bossSchedule;
     while (
       this.index < WAVE_TABLE.length - 1 &&
       t >= WAVE_TABLE[this.index].end

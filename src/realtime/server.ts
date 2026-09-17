@@ -289,7 +289,7 @@ wss.on("connection", (ws) => {
           c.userId,
           v.type === "READY"
             ? { ready: v.ready }
-            : { character: v.character, mapId: v.mapId, mode: v.mode },
+            : { character: v.character, mapId: v.mapId, mode: v.mode, duration: v.duration },
         );
         await refreshTeam(team.id);
       }
@@ -315,6 +315,7 @@ wss.on("connection", (ws) => {
           session.mode,
           session.mapId,
           session.seed,
+          session.duration,
         );
         const r: Room = {
           id: session.id,

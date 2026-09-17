@@ -8,6 +8,7 @@ import {
   ITEM_DEFINITIONS,
   MAP_DEFINITIONS,
   META_DEFINITIONS,
+  EXPEDITION_LENGTHS,
   MODE_DEFINITIONS,
   PASSIVE_DEFINITIONS,
   RARITY,
@@ -728,6 +729,9 @@ class UI {
           )
           .join("")}
       </select></div>
+      <div class="mode"><label for="run-duration">Duração</label><select id="run-duration">
+        ${Object.values(EXPEDITION_LENGTHS).map((p) => `<option value="${p.duration}" ${this.g.save.selectedExpeditionLength === p.duration ? "selected" : ""}>${p.duration / 60} min · x${p.rewardMultiplier.toFixed(2).replace(".", ",")}</option>`).join("")}
+      </select></div>
       <div class="run-summary">
         <span>ECO<b>${CHARACTER_DEFINITIONS[this.g.save.selected].name}</b></span>
         <span>LIMIAR<b>${MAP_DEFINITIONS[this.g.save.selectedMap].name}</b></span>
@@ -756,6 +760,11 @@ class UI {
         this.mode = Object.hasOwn(MODE_DEFINITIONS, t.value)
           ? t.value
           : "normal";
+        this.characters();
+      }
+      if (t.id === "run-duration") {
+        this.g.save.selectedExpeditionLength = [600, 900, 1800].includes(Number(t.value)) ? Number(t.value) : 1800;
+        this.g.persist();
         this.characters();
       }
     };

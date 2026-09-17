@@ -112,6 +112,7 @@ export const runSchema = z.object({
   gameVersion: z.string().default("1.3.0"),
   mode: ids(C.MODE_DEFINITIONS).default("normal"),
   mapId: ids(C.MAP_DEFINITIONS),
+  expeditionLength: z.union([z.literal(600), z.literal(900), z.literal(1800)]).default(1800),
   character: ids(C.CHARACTER_DEFINITIONS),
   worldSeed: z.string().min(4).max(80),
   worldVersion: z.number().int().min(1).max(3).optional(),
@@ -236,6 +237,7 @@ export function freshSave(): SaveData {
     },
     selected: "nara",
     selectedMap: "ruins",
+    selectedExpeditionLength: 1800,
     tutorial: false,
     highScore: 0,
     bestTime: 0,
@@ -269,6 +271,7 @@ export const saveSchema = z.object({
     .default([]),
   selected: ids(C.CHARACTER_DEFINITIONS).default("nara"),
   selectedMap: ids(C.MAP_DEFINITIONS).default("ruins"),
+  selectedExpeditionLength: z.union([z.literal(600), z.literal(900), z.literal(1800)]).default(1800),
   tutorial: z.boolean().default(false),
   discovered: z
     .object({

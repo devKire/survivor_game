@@ -5,7 +5,7 @@ import {
   CHARACTER_DEFINITIONS,
   STRUCTURE_DEFINITIONS,
 } from "../content/catalog";
-import { DECISION_TIMES, telemetry, xpNeed } from "./progression";
+import { telemetry, xpNeed } from "./progression";
 import type {
   GameInput,
   InventorySlot,
@@ -114,12 +114,13 @@ export class CoopSimulation extends GameSimulation {
     mode: string,
     mapId: string,
     seed: string,
+    expeditionLength = 1800,
   ) {
     if (players.length < 1 || players.length > 5)
       throw new Error("Equipe deve ter 1–5 jogadores.");
     super(freshSave());
     this.partySizeAtStart = players.length;
-    super.start("nara", mode, mapId, seed);
+    super.start("nara", mode, mapId, seed, expeditionLength);
     this.run.telemetry = telemetry(players.length);
     this.fx = 0;
     this.ui = {
@@ -542,7 +543,7 @@ export class CoopSimulation extends GameSimulation {
       ((this.manual >= 26 &&
         this.run.time - (this.run.lastDecisionAt ?? -100) >= 20) ||
         (this.manual < 26 &&
-          this.run.time >= (DECISION_TIMES[this.manual] ?? Infinity)))
+          this.run.time >= (this.expeditionProfile.decisionSchedule[this.manual] ?? Infinity)))
     ) {
       this.teamXp -= xpNeed(this.teamLevel++);
       const manual = this.manual++ < 26;
@@ -586,6 +587,6 @@ export class CoopSimulation extends GameSimulation {
         this.run.telemetry!.levels[minute] === undefined
       )
         this.run.telemetry!.levels[minute] = this.teamLevel;
-    if (this.mode !== "endless" && this.run.time >= 1800) this.finish(true);
+    if (this.mode !== "endless" && this.run.time >= this.expeditionProfile.duration) this.finish(true);
   }
 }

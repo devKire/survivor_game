@@ -11,6 +11,7 @@ export const clientMessage = z.discriminatedUnion("type", [
       character: z.enum(["nara", "orin", "ivo", "sena"]).optional(),
       mapId: z.enum(["ruins", "gardens"]).optional(),
       mode: z.enum(["normal", "nightmare", "endless"]).optional(),
+      duration: z.union([z.literal(600), z.literal(900), z.literal(1800)]).optional(),
     })
     .strict(),
   z.object({ type: z.literal("START") }).strict(),
@@ -123,6 +124,7 @@ export interface Snapshot {
   upsert: NetEntity[];
   patch: EntityPatch[];
   remove: string[];
+  fx: FxEvent[];
   structures: import("../core/types").Structure[];
   own: {
     stats: import("../core/types").Stats;
@@ -145,8 +147,19 @@ export interface Snapshot {
   seed: string;
   mapId: string;
   mode: string;
+  duration: number;
   ended: boolean;
   votes: { id: string; count: number; needed: number }[];
+}
+export interface FxEvent {
+  id: string;
+  tick: number;
+  ownerId: string | null;
+  weapon: string;
+  x: number;
+  y: number;
+  radius: number;
+  variant: "normal" | "evolved";
 }
 export const SNAPSHOT_HZ = 10;
 export const TICK_HZ = 25;
@@ -233,6 +246,7 @@ export const snapshotSchema: z.ZodType<Snapshot> = z.object({
   upsert: z.array(entity).max(5000),
   patch: z.array(entity.partial().required({ id: true })).max(5000),
   remove: z.array(z.string()).max(5000),
+  fx: z.array(z.object({ id: z.string(), tick: z.number(), ownerId: z.string().nullable(), weapon: z.string(), x: z.number(), y: z.number(), radius: z.number(), variant: z.enum(["normal", "evolved"]) })).max(100),
   structures: z
     .array(
       z.object({
@@ -283,6 +297,7 @@ export const snapshotSchema: z.ZodType<Snapshot> = z.object({
   seed: z.string(),
   mapId: z.string(),
   mode: z.string(),
+  duration: z.number(),
   ended: z.boolean(),
   votes: z
     .array(z.object({ id: z.string(), count: z.number(), needed: z.number() }))
@@ -309,6 +324,7 @@ export const teamSchema = z.object({
   status: z.string(),
   mapId: z.string(),
   mode: z.string(),
+  duration: z.number(),
   members: z
     .array(
       z.object({

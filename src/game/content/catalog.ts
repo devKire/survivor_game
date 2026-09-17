@@ -4,6 +4,7 @@ import type {
   BossEvent,
   CharacterDefinition,
   EnemyDefinition,
+  ExpeditionProfile,
   ItemDefinition,
   MapDefinition,
   MetaDefinition,
@@ -222,7 +223,7 @@ export const CHARACTER_DEFINITIONS: Record<string, CharacterDefinition> = {
   orin: {
     name: "Orin",
     title: "O geômetra exilado",
-    weapon: "orbit",
+    weapon: "well",
     icon: "◈",
     color: "#78e5ca",
     bonus: "+20% de área. Regenera 0,3 de vida por segundo.",
@@ -231,7 +232,7 @@ export const CHARACTER_DEFINITIONS: Record<string, CharacterDefinition> = {
   ivo: {
     name: "Ivo",
     title: "O portador de prismas",
-    weapon: "spear",
+    weapon: "disc",
     icon: "⋈",
     color: "#c6b7ff",
     bonus: "+1 projétil. −15% de vida máxima.",
@@ -240,7 +241,7 @@ export const CHARACTER_DEFINITIONS: Record<string, CharacterDefinition> = {
   sena: {
     name: "Sena",
     title: "A leitora do céu",
-    weapon: "meteor",
+    weapon: "chain",
     icon: "✦",
     color: "#fa9ba0",
     bonus: "+25% de experiência. +8% de dano.",
@@ -646,6 +647,19 @@ export const BOSS_EVENTS: BossEvent[] = [
   },
 ];
 
+const scaledDecisions = (duration: number) =>
+  [30, 65, 105, 150, 200, 250, 300, 350, 405, 465, 530, 600, 675, 750, 830, 915, 1000, 1090, 1180, 1270, 1360, 1440, 1520, 1600, 1675, 1745]
+    .map((t) => Math.round((t / 1800) * duration))
+    .filter((t, i, a) => t > 0 && (i === 0 || t > a[i - 1]));
+export const EXPEDITION_LENGTHS: Record<number, ExpeditionProfile> = {
+  600: { duration: 600, rewardMultiplier: 0.45, completionBase: 110, decisionSchedule: scaledDecisions(600), bossSchedule: [150, 330, 480], pathTiming: 120, evolutionTiming: 240, waveCompression: 1.35, finalPhase: 480 },
+  900: { duration: 900, rewardMultiplier: 0.7, completionBase: 175, decisionSchedule: scaledDecisions(900), bossSchedule: [180, 420, 660, 810], pathTiming: 180, evolutionTiming: 360, waveCompression: 1.15, finalPhase: 720 },
+  1800: { duration: 1800, rewardMultiplier: 1, completionBase: 250, decisionSchedule: scaledDecisions(1800), bossSchedule: [240, 480, 720, 1020, 1380, 1740], pathTiming: 360, evolutionTiming: 600, waveCompression: 1, finalPhase: 1500 },
+};
+export function getExpeditionProfile(duration = 1800) {
+  return EXPEDITION_LENGTHS[duration] || EXPEDITION_LENGTHS[1800];
+}
+
 export const MODE_DEFINITIONS: Record<string, ModeDefinition> = {
   normal: {
     endlessStart: 1800,
@@ -842,14 +856,14 @@ export const MAX_PRIORITY_ENEMIES = 8;
 export const MAX_WORLD_PICKUPS = 260;
 
 export const META_DEFINITIONS: Record<string, MetaDefinition> = {
-  might: { name: "Potência", text: "+5% de dano", base: 45 },
-  speed: { name: "Agilidade", text: "+4% de movimento", base: 40 },
-  armor: { name: "Proteção", text: "+1 de armadura", base: 65 },
-  vitality: { name: "Vitalidade", text: "+6% de vida", base: 40 },
-  recovery: { name: "Recuperação", text: "+0,15 vida / s", base: 55 },
-  growth: { name: "Aprendizado", text: "+3% de XP", base: 55 },
-  pickup: { name: "Alcance", text: "+10% de coleta", base: 35 },
-  luck: { name: "Fortuna", text: "+8% de sorte", base: 40 },
+  might: { name: "Potência", text: "+5% de dano", base: 45, perLevel: 5, unit: "percent" },
+  speed: { name: "Agilidade", text: "+4% de movimento", base: 40, perLevel: 4, unit: "percent" },
+  armor: { name: "Proteção", text: "+1 de armadura", base: 65, perLevel: 1, unit: "flat" },
+  vitality: { name: "Vitalidade", text: "+6% de vida", base: 40, perLevel: 6, unit: "percent" },
+  recovery: { name: "Recuperação", text: "+0,15 vida / s", base: 55, perLevel: 0.15, unit: "perSecond" },
+  growth: { name: "Aprendizado", text: "+3% de XP", base: 55, perLevel: 3, unit: "percent" },
+  pickup: { name: "Alcance", text: "+10% de coleta", base: 35, perLevel: 10, unit: "percent" },
+  luck: { name: "Fortuna", text: "+8% de sorte", base: 40, perLevel: 8, unit: "percent" },
 };
 
 export const ACHIEVEMENTS: AchievementDefinition[] = [

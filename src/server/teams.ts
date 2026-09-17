@@ -4,6 +4,7 @@ import { db } from "./db";
 import { limit, UserError } from "./security";
 import { publicUser } from "./social";
 import { Prisma } from "../generated/prisma/client";
+import { EXPEDITION_LENGTHS } from "../game/content/catalog";
 export const MAX_PARTY = 5;
 const include = {
   members: {
@@ -140,6 +141,7 @@ export const lobbyChoice = z
     character: z.enum(["nara", "orin", "ivo", "sena"]).optional(),
     mapId: z.enum(["ruins", "gardens"]).optional(),
     mode: z.enum(["normal", "nightmare", "endless"]).optional(),
+    duration: z.number().int().refine((v) => Object.hasOwn(EXPEDITION_LENGTHS, v)).optional(),
   })
   .strict();
 export async function updateTeam(userId: string, input: unknown) {
@@ -152,12 +154,12 @@ export async function updateTeam(userId: string, input: unknown) {
       where: { id: member.teamId },
     });
     if (team.status !== "LOBBY") throw new UserError("Expedição já iniciada.");
-    if (v.mapId || v.mode) {
+    if (v.mapId || v.mode || v.duration) {
       if (team.leaderId !== userId)
         throw new UserError("Somente o líder escolhe mapa e modo.");
       await tx.team.update({
         where: { id: team.id },
-        data: { mapId: v.mapId, mode: v.mode },
+        data: { mapId: v.mapId, mode: v.mode, duration: v.duration },
       });
       await tx.teamMember.updateMany({
         where: { teamId: team.id },
@@ -204,6 +206,7 @@ export async function startTeam(userId: string) {
         seed: crypto.randomUUID(),
         mapId: team.mapId,
         mode: team.mode,
+        duration: team.duration,
         partySize: team.members.length,
         members: {
           create: team.members.map((m) => ({

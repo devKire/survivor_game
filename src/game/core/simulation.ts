@@ -1,4 +1,4 @@
-import { DECISION_TIMES, PROGRESSION, telemetry } from "./progression";
+import { PROGRESSION, telemetry } from "./progression";
 import {
   ACHIEVEMENTS,
   BOSS_EVENTS,
@@ -26,6 +26,8 @@ import {
 } from "../content/catalog";
 import { Pool, SpatialGrid } from "./collections";
 import { WaveDirector } from "./director";
+import { getExpeditionProfile } from "../content/catalog";
+import type { FxEvent } from "../network/protocol";
 import { Player, Weapon } from "./entities";
 import {
   MAX_PASSIVES,
@@ -159,6 +161,9 @@ export class GameSimulation {
     collisions: false,
   };
   hudClock = 0;
+  fxEvents: FxEvent[] = [];
+  fxSequence = 0;
+  expeditionProfile = getExpeditionProfile();
   viewW = 1200;
   viewH = 800;
   choices: T.Upgrade[] = [];
@@ -183,6 +188,7 @@ export class GameSimulation {
     mode: string = "normal",
     mapId: string = this.save.selectedMap,
     seed: string | null = null,
+    expeditionLength = this.save.selectedExpeditionLength || 1800,
   ) {
     if (!Object.hasOwn(CHARACTER_DEFINITIONS, character)) character = "nara";
     if (!this.save.unlocked.includes(character)) character = "nara";
@@ -192,6 +198,7 @@ export class GameSimulation {
     this.setState("playing");
     this.mode = Object.hasOwn(MODE_DEFINITIONS, mode) ? mode : "normal";
     this.modeDef = getModeDefinition(this.mode);
+    this.expeditionProfile = getExpeditionProfile(expeditionLength);
     this.clockRate = this.modeDef.clockRate;
 
     this.player = new Player(character, this.save.upgrades);
@@ -213,6 +220,7 @@ export class GameSimulation {
       settled: false,
       completionGold: null,
       mapId,
+      expeditionLength: this.expeditionProfile.duration,
       worldSeed: String(seed || makeWorldSeed()),
       worldVersion: 3,
       worldChanges: {},
@@ -379,6 +387,7 @@ export class GameSimulation {
       schemaVersion: SAVE_SCHEMA,
       gameVersion: VERSION,
       mapId: this.run.mapId,
+      expeditionLength: this.run.expeditionLength,
       worldSeed: this.run.worldSeed,
       worldVersion: this.run.worldVersion,
       mode: this.mode,
@@ -513,6 +522,7 @@ export class GameSimulation {
         ? s.completionGold
         : null,
       mapId: s.mapId,
+      expeditionLength: s.expeditionLength ?? 1800,
       worldSeed: s.worldSeed,
       worldVersion: s.worldVersion ?? s.schemaVersion,
       worldChanges: { ...(s.worldChanges || {}) },
@@ -1050,7 +1060,7 @@ export class GameSimulation {
 
     if (this.state !== "playing") return;
 
-    const duration = this.modeDef.duration;
+    const duration = this.modeDef.endless ? null : this.expeditionProfile.duration;
     if (
       this.modeDef.endless &&
       r.time >= this.modeDef.endlessStart &&
@@ -1918,6 +1928,10 @@ export class GameSimulation {
     freeze: number = 0,
     opts: { noStructure?: boolean; synergy?: boolean } = {},
   ) {
+    if (w) {
+      this.fxEvents.push({ id: `${this.run.simTime.toFixed(3)}-${++this.fxSequence}`, tick: Math.floor(this.run.simTime * 25), ownerId: w.ownerId || null, weapon: w.id, x, y, radius: r, variant: w.evolved ? "evolved" : "normal" });
+      if (this.fxEvents.length > 256) this.fxEvents.splice(0, this.fxEvents.length - 256);
+    }
     this.grid.query(x, y, r + 68, (e) => {
       if ((e.x - x) ** 2 + (e.y - y) ** 2 < (r + e.r) ** 2) {
         this.damageEnemy(e, damage, w, 110, true, {
@@ -2238,7 +2252,7 @@ export class GameSimulation {
       )
         result.push({ kind: "passive", id, weight: d.weight });
     }
-    if (!existingOnly && this.run.time >= PROGRESSION.pathAfter)
+    if (!existingOnly && this.run.time >= this.expeditionProfile.pathTiming)
       for (const w of p.weapons)
         if (w.level >= 4 && !w.path)
           result.push(
@@ -2313,7 +2327,7 @@ export class GameSimulation {
     if (automatic && r.time - (r.lastDecisionAt ?? -100) < 20) return;
     if (
       !automatic &&
-      (r.time < (DECISION_TIMES[manual] ?? Infinity) ||
+      (r.time < (this.expeditionProfile.decisionSchedule[manual] ?? Infinity) ||
         r.time - (r.lastDecisionAt ?? -100) < PROGRESSION.decisionGap)
     )
       return;
@@ -2459,7 +2473,7 @@ export class GameSimulation {
   }
 
   eligibleEvolution() {
-    if (this.run.time < PROGRESSION.evolutionAfter) return undefined;
+    if (this.run.time < this.expeditionProfile.evolutionTiming) return undefined;
     return this.player.weapons.find(
       (w) =>
         w.level === 8 &&

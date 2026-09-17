@@ -167,6 +167,7 @@ export class SnapshotStream {
       upsert,
       patch,
       remove,
+      fx: g.fxEvents.filter((e) => e.tick > base && e.tick <= tick).slice(-100),
       structures: g.world.nearby
         .filter((s) => near(s.x, s.y))
         .map((s) => ({ ...s, used: s.used || m.personalStructures.has(s.id) })),
@@ -202,6 +203,7 @@ export class SnapshotStream {
       seed: g.run.worldSeed,
       mapId: g.run.mapId,
       mode: g.mode,
+      duration: g.expeditionProfile.duration,
       ended: g.ended,
       votes: [...g.votes].map(([id, v]) => ({
         id,

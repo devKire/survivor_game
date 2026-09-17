@@ -94,10 +94,23 @@ export interface ModeDefinition {
   doubleBossAfter: number;
   post30: Record<string, number>;
 }
+export interface ExpeditionProfile {
+  duration: number;
+  rewardMultiplier: number;
+  completionBase: number;
+  decisionSchedule: number[];
+  bossSchedule: number[];
+  pathTiming: number;
+  evolutionTiming: number;
+  waveCompression: number;
+  finalPhase: number;
+}
 export interface MetaDefinition {
   name: string;
   text: string;
   base: number;
+  perLevel: number;
+  unit: "percent" | "flat" | "perSecond";
 }
 export interface ItemDefinition {
   id?: string;
@@ -337,6 +350,7 @@ export interface SaveData {
   discovered: Record<string, string[]>;
   selected: string;
   selectedMap: string;
+  selectedExpeditionLength: number;
   tutorial: boolean;
   highScore: number;
   bestTime: number;
@@ -364,6 +378,7 @@ export interface RunState {
   settled: boolean;
   completionGold: number | null;
   mapId: string;
+  expeditionLength: number;
   worldSeed: string;
   worldVersion?: number;
   worldChanges: Record<string, StructureChange>;

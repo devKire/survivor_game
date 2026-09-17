@@ -101,6 +101,7 @@ model Team {
   status String @default("LOBBY")
   mapId String @default("ruins")
   mode String @default("normal")
+  duration Int @default(1800)
   createdAt DateTime @default(now())
   members TeamMember[]
   messages ChatMessage[]
@@ -140,6 +141,7 @@ model GameSession {
   seed String
   mapId String
   mode String
+  duration Int @default(1800)
   partySize Int
   status String @default("RUNNING")
   startedAt DateTime @default(now())

@@ -27,6 +27,13 @@ import {
 } from "../../game/content/catalog";
 import { freshSave, migrateSave } from "../../game/core/save";
 import type { SaveData, Upgrade } from "../../game/core/types";
+function metaValue(id: string, level: number) {
+  const m = META_DEFINITIONS[id];
+  const value = m.perLevel * level;
+  if (m.unit === "percent") return `+${value}%`;
+  if (m.unit === "perSecond") return `+${value.toFixed(2).replace(".", ",")} HP/s`;
+  return `+${value} armadura`;
+}
 export default function AccountClient({
   user,
 }: {
@@ -311,6 +318,18 @@ export default function AccountClient({
                       </select>
                     </label>
                     <label>
+                      Expedição
+                      <select
+                        disabled={team.leaderId !== user.id || team.status !== "LOBBY"}
+                        value={team.duration}
+                        onChange={(e) => connection.current?.send({ type: "CONFIG", duration: Number(e.target.value) as 600 | 900 | 1800 })}
+                      >
+                        <option value={600}>10 min · x0,45</option>
+                        <option value={900}>15 min · x0,70</option>
+                        <option value={1800}>30 min · x1,00</option>
+                      </select>
+                    </label>
+                    <label>
                       Mapa
                       <select
                         disabled={
@@ -460,6 +479,7 @@ export default function AccountClient({
                     <p key={a.id}>
                       {progress.achievements.includes(a.id) ? "✓" : "◇"}{" "}
                       {a.name} — {a.text}
+                      <br />Recompensa: {a.character ? `desbloqueia ${CHARACTER_DEFINITIONS[a.character].name}` : `◈ ${a.reward ?? 0}`}
                     </p>
                   ))}
                   <p>
@@ -478,6 +498,8 @@ export default function AccountClient({
                       onClick={() => void action({ type: "buy", id })}
                     >
                       {m.name} · {progress.upgrades[id] || 0}/5
+                      <br />Atual: {metaValue(id, progress.upgrades[id] || 0)}
+                      <br />Próximo: {(progress.upgrades[id] || 0) >= 5 ? "MÁXIMO" : metaValue(id, (progress.upgrades[id] || 0) + 1)}
                       <br />◈{" "}
                       {Math.ceil(m.base * 1.7 ** (progress.upgrades[id] || 0))}
                     </button>
