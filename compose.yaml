@@ -19,7 +19,7 @@ services:
     env_file: .env
     environment:
       NODE_ENV: production
-    command: ["node", "--import", "tsx", "src/realtime/server.ts"]
+    command: ["node", "--conditions=react-server", "--import", "tsx", "src/realtime/server.ts"]
     ports: ["3001:3001"]
     restart: unless-stopped
 secrets:

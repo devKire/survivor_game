@@ -13,6 +13,11 @@ import { CoopSimulation } from "../game/core/coop";
 import { SnapshotStream } from "./snapshots";
 import { settle } from "./settlement";
 import { UserError } from "../server/security";
+import {
+  getRealtimeOrigin,
+  getRealtimePort,
+  getRealtimeSecret,
+} from "../server/env";
 interface Connection {
   ws: WebSocket;
   userId: string;
@@ -48,7 +53,9 @@ const connections = new Set<Connection>(),
   rooms = new Map<string, Room>(),
   nonces = new Map<string, number>(),
   ips = new Map<string, { n: number; at: number }>();
-const origin = process.env.REALTIME_ORIGIN || "http://localhost:3000";
+const origin = getRealtimeOrigin();
+const port = getRealtimePort();
+getRealtimeSecret();
 const server = createServer((req, res) => {
   if (req.url === "/health") {
     res.setHeader("Content-Type", "application/json");
@@ -518,7 +525,7 @@ await db().team.updateMany({
   where: { status: "RUNNING" },
   data: { status: "LOBBY" },
 });
-server.listen(Number(process.env.REALTIME_PORT || 3001), "0.0.0.0", () =>
+server.listen(port, "0.0.0.0", () =>
   console.log(`LIMIAR realtime · ${TICK_HZ} Hz · snapshots ${SNAPSHOT_HZ} Hz`),
 );
 function close() {

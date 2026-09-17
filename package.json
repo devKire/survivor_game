@@ -11,8 +11,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src tests scripts",
     "test": "vitest run",
-    "test:browser": "playwright test",
-    "realtime": "tsx --env-file=.env src/realtime/server.ts"
+    "test:browser": "node --conditions=react-server node_modules/@playwright/test/cli.js test",
+    "realtime": "node --conditions=react-server --import tsx src/realtime/server.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",

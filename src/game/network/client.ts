@@ -4,6 +4,7 @@ import {
   type ClientMessage,
   type ServerMessage,
 } from "./protocol";
+import { getRealtimeUrl } from "./environment";
 export class RealtimeClient {
   socket?: WebSocket;
   closed = false;
@@ -19,13 +20,20 @@ export class RealtimeClient {
   ) {}
   async connect() {
     if (this.closed) return;
+    let url: string;
+    try {
+      url = getRealtimeUrl();
+    } catch {
+      this.status(
+        "Multijogador indisponível: endereço do servidor não configurado corretamente.",
+      );
+      return;
+    }
     this.status("Conectando…");
     try {
       const ticket = await this.ticket();
       if (this.closed) return;
-      const socket = new WebSocket(
-        process.env.NEXT_PUBLIC_REALTIME_URL || "ws://localhost:3001",
-      );
+      const socket = new WebSocket(url);
       this.socket = socket;
       socket.onopen = () => {
         this.attempt = 0;

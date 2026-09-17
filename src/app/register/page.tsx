@@ -2,6 +2,7 @@ import AuthForm from "../AuthForm";
 import Link from "next/link";
 import { configurationError } from "../../server/config";
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 export default function Page() {
   const error = configurationError();
   return error ? (

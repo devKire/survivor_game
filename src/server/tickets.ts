@@ -1,5 +1,6 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
+import { getRealtimeSecret } from "./env";
 const schema = z
   .object({
     userId: z.string(),
@@ -8,14 +9,6 @@ const schema = z
     expiresAt: z.number(),
   })
   .strict();
-function secret() {
-  const s = process.env.REALTIME_SECRET;
-  if (!s || s.length < 32)
-    throw new Error(
-      "Configure REALTIME_SECRET com pelo menos 32 caracteres aleatórios.",
-    );
-  return s;
-}
 export function issueTicket(userId: string, sessionId: string) {
   const payload = Buffer.from(
     JSON.stringify({
@@ -28,13 +21,17 @@ export function issueTicket(userId: string, sessionId: string) {
   return (
     payload +
     "." +
-    createHmac("sha256", secret()).update(payload).digest("base64url")
+    createHmac("sha256", getRealtimeSecret())
+      .update(payload)
+      .digest("base64url")
   );
 }
 export function verifyTicket(ticket: string) {
   const [payload, sig, ...extra] = ticket.split(".");
   if (!payload || !sig || extra.length) throw new Error("Ticket inválido");
-  const expected = createHmac("sha256", secret()).update(payload).digest(),
+  const expected = createHmac("sha256", getRealtimeSecret())
+      .update(payload)
+      .digest(),
     actual = Buffer.from(sig, "base64url");
   if (actual.length !== expected.length || !timingSafeEqual(actual, expected))
     throw new Error("Ticket inválido");

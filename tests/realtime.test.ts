@@ -139,7 +139,7 @@ describe.skipIf(!enabled)(
     beforeAll(async () => {
       processServer = spawn(
         process.execPath,
-        ["--import", "tsx", "src/realtime/server.ts"],
+        ["--conditions=react-server", "--import", "tsx", "src/realtime/server.ts"],
         {
           env: {
             ...process.env,

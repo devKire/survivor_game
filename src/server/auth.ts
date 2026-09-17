@@ -7,16 +7,12 @@ import { headers } from "next/headers";
 import argon2 from "argon2";
 import { db } from "./db";
 import { UserError } from "./security";
+import { getBetterAuthSecret, getBetterAuthUrl } from "./env";
 function createAuth() {
-  const secret = process.env.BETTER_AUTH_SECRET;
-  if (!secret || secret.length < 32)
-    throw new Error(
-      "Configure BETTER_AUTH_SECRET com pelo menos 32 caracteres aleatórios.",
-    );
   return betterAuth({
     appName: "LIMIAR",
-    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
-    secret,
+    baseURL: getBetterAuthUrl(),
+    secret: getBetterAuthSecret(),
     database: prismaAdapter(db(), { provider: "postgresql" }),
     emailAndPassword: {
       enabled: true,

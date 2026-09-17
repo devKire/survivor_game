@@ -1,15 +1,17 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
+import { getDatabaseUrl } from "./env";
 const globalDb = globalThis as typeof globalThis & { limiarDb?: PrismaClient };
 export function db(): PrismaClient {
-  const url = process.env.DATABASE_URL;
-  if (!url?.trim())
-    throw new Error(
-      "DATABASE_URL precisa ser configurada no .env para habilitar contas online.",
-    );
+  const url = getDatabaseUrl();
   return (globalDb.limiarDb ??= new PrismaClient({
     adapter: new PrismaPg(
-      { connectionString: secureConnectionString(url), max: 8 },
+      {
+        connectionString: secureConnectionString(url),
+        max: 8,
+        connectionTimeoutMillis: 10000,
+        idleTimeoutMillis: 10000,
+      },
       { schema: "limiar" },
     ),
   }));

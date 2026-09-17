@@ -44,6 +44,11 @@ npm run realtime
 
 Configure HTTPS/WSS e as URLs da aplicação. O processo WebSocket precisa ser persistente: não executá-lo dentro de uma função serverless. `compose.yaml` e `Dockerfile` fornecem a topologia web + realtime. Uma instância realtime; múltiplas réplicas exigem coordenação de salas. Não há deploy automático para GitHub Pages.
 
+Na Vercel, siga a [auditoria de ambiente e checklist de deployment](docs/VERCEL-ENVIRONMENT.md).
+`BETTER_AUTH_URL` exige HTTPS e `NEXT_PUBLIC_REALTIME_URL` exige WSS em produção;
+esta última precisa existir durante o build. O comando realtime usa a condição
+Node `react-server` para importar os mesmos serviços protegidos por `server-only`.
+
 ## Verificação
 
 ```bash
