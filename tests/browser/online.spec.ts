@@ -21,6 +21,7 @@ for (const count of [2, 3])
           permissions: ["clipboard-read", "clipboard-write"],
         });
         contexts.push(context);
+        await context.addInitScript(() => sessionStorage.setItem("limiar.diagnostics", "1"));
         const page = await context.newPage();
         pages.push(page);
         page.on("websocket", (socket) =>
@@ -180,6 +181,15 @@ for (const count of [2, 3])
         runPrefix + "_" + (count - 1),
         { timeout: 20000 },
       );
+      if (process.env.STABILITY_BASELINE) {
+        await pages[0].waitForTimeout(30000);
+        const metrics = await Promise.all(pages.map((p) => p.evaluate(() => {
+          const d = (window as unknown as { limiarDiagnostics: { frames: number[] } }).limiarDiagnostics;
+          const frames = [...d.frames].sort((a,b) => a-b);
+          return { ...d, frames: undefined, fps: 1000 / (frames.reduce((a,b) => a+b,0) / frames.length), low1: 1000 / frames[Math.floor(frames.length * 0.99)] };
+        })));
+        writeFileSync("docs/stability-baseline.json", JSON.stringify(metrics, null, 2));
+      }
       const fps = await pages[0].evaluate(
         () =>
           new Promise<number>((resolve) => {

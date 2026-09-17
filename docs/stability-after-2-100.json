@@ -1,0 +1,50 @@
+{
+  "seconds": 603.931,
+  "metrics": [
+    {
+      "remoteGameInstances": 0,
+      "remoteGameCreated": 2,
+      "rafLoops": 0,
+      "reactGameMounts": 2,
+      "accountRenders": 245,
+      "canvasResizes": 1,
+      "snapshots": 1097,
+      "fullSnapshots": 1,
+      "resyncRequests": 0,
+      "duplicateSnapshots": 29,
+      "inputs": 2684,
+      "payloadBytes": 7816856,
+      "corrections": 227,
+      "rtt": 0.8000000002793968,
+      "entities": 221,
+      "longTasks": 2,
+      "longTaskMs": 2395,
+      "enabled": true,
+      "fps": 36.22946952652065,
+      "low1": 19.96007984032864
+    },
+    {
+      "remoteGameInstances": 0,
+      "remoteGameCreated": 2,
+      "rafLoops": 0,
+      "reactGameMounts": 2,
+      "accountRenders": 277,
+      "canvasResizes": 1,
+      "snapshots": 1097,
+      "fullSnapshots": 1,
+      "resyncRequests": 0,
+      "duplicateSnapshots": 29,
+      "inputs": 2736,
+      "payloadBytes": 8582619,
+      "corrections": 1,
+      "rtt": 0.5,
+      "entities": 216,
+      "longTasks": 1,
+      "longTaskMs": 264,
+      "enabled": true,
+      "fps": 37.31457746311185,
+      "low1": 20
+    }
+  ],
+  "errors": []
+}

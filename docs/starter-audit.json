@@ -1,0 +1,933 @@
+{
+  "method": "3 fixed seeds, no meta, level-one weapon, same reactive avoidance bot; no invulnerability. Measures simulation, not human readability.",
+  "results": [
+    {
+      "character": "nara",
+      "weapon": "ember",
+      "seed": 17,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 29,
+          "damage": 966.150548250666,
+          "hp": 102,
+          "damageTaken": 8,
+          "enemies": 75
+        },
+        {
+          "seconds": 90,
+          "kills": 44,
+          "damage": 1482.565777674666,
+          "hp": 102,
+          "damageTaken": 8,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 74,
+          "damage": 3052.9742877013387,
+          "hp": 88.70559999999998,
+          "damageTaken": 21.294400000000024,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "nara",
+      "weapon": "ember",
+      "seed": 29,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 30,
+          "damage": 980.4997639519995,
+          "hp": 102,
+          "damageTaken": 8,
+          "enemies": 74
+        },
+        {
+          "seconds": 90,
+          "kills": 43,
+          "damage": 1496.3849206719995,
+          "hp": 89.424,
+          "damageTaken": 20.575999999999993,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 80,
+          "damage": 3023.2570131573348,
+          "hp": 56.41759999999992,
+          "damageTaken": 53.58240000000008,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "nara",
+      "weapon": "ember",
+      "seed": 43,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 28,
+          "damage": 1013.0899643946663,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 76
+        },
+        {
+          "seconds": 90,
+          "kills": 40,
+          "damage": 1551.763525653333,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 72,
+          "damage": 3075.385947104004,
+          "hp": 69.66447999999997,
+          "damageTaken": 40.33552000000003,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "orin",
+      "weapon": "orbit",
+      "seed": 17,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 0,
+          "damage": 66,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 100
+        },
+        {
+          "seconds": 90,
+          "kills": 0,
+          "damage": 121,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 0,
+          "damage": 226.60000000000002,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "orin",
+      "weapon": "orbit",
+      "seed": 29,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 0,
+          "damage": 99,
+          "hp": 88.50560000000036,
+          "damageTaken": 30.782399999999996,
+          "enemies": 100
+        },
+        {
+          "seconds": 90,
+          "kills": 0,
+          "damage": 198,
+          "hp": 84.9456000000007,
+          "damageTaken": 43.3424,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 1,
+          "damage": 557.8198400000001,
+          "hp": 33.62221333333489,
+          "damageTaken": 121.66578666666683,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "orin",
+      "weapon": "orbit",
+      "seed": 43,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 0,
+          "damage": 33,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 100
+        },
+        {
+          "seconds": 90,
+          "kills": 1,
+          "damage": 105.91847359999998,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 2,
+          "damage": 333.5778696960001,
+          "hp": 38.7141333333335,
+          "damageTaken": 78.76186666666678,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "orin",
+      "weapon": "frost",
+      "seed": 17,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 0,
+          "damage": 70,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 100
+        },
+        {
+          "seconds": 90,
+          "kills": 0,
+          "damage": 140,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 1,
+          "damage": 327.0057216000001,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "orin",
+      "weapon": "frost",
+      "seed": 29,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 0,
+          "damage": 80,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 100
+        },
+        {
+          "seconds": 90,
+          "kills": 0,
+          "damage": 180,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 0,
+          "damage": 380,
+          "hp": 107.8506666666669,
+          "damageTaken": 8.821333333333357,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "orin",
+      "weapon": "frost",
+      "seed": 43,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 1,
+          "damage": 87.23656959999998,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 100
+        },
+        {
+          "seconds": 90,
+          "kills": 3,
+          "damage": 143.12791488,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 3,
+          "damage": 291.12791488,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "orin",
+      "weapon": "well",
+      "seed": 17,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 44,
+          "damage": 1259.065600266666,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 60
+        },
+        {
+          "seconds": 90,
+          "kills": 105,
+          "damage": 3555.8473324,
+          "hp": 108.44634666666693,
+          "damageTaken": 8.33365333333333,
+          "enemies": 105
+        },
+        {
+          "seconds": 180,
+          "kills": 254,
+          "damage": 10105.479109269372,
+          "hp": 94.69872000000056,
+          "damageTaken": 41.93493333333346,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "orin",
+      "weapon": "well",
+      "seed": 29,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 32,
+          "damage": 948.438679557333,
+          "hp": 110,
+          "damageTaken": 8,
+          "enemies": 72
+        },
+        {
+          "seconds": 90,
+          "kills": 62,
+          "damage": 1991.2665183093318,
+          "hp": 110,
+          "damageTaken": 8,
+          "enemies": 152
+        },
+        {
+          "seconds": 180,
+          "kills": 178,
+          "damage": 6453.132252752021,
+          "hp": 75.23013333333347,
+          "damageTaken": 48.81786666666676,
+          "enemies": 227
+        }
+      ]
+    },
+    {
+      "character": "orin",
+      "weapon": "well",
+      "seed": 43,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 46,
+          "damage": 1636.0322903733331,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 58
+        },
+        {
+          "seconds": 90,
+          "kills": 113,
+          "damage": 3678.8491327679985,
+          "hp": 89.09752000000029,
+          "damageTaken": 28.114479999999986,
+          "enemies": 97
+        },
+        {
+          "seconds": 180,
+          "kills": 265,
+          "damage": 10403.015279072048,
+          "hp": 54.36706666666783,
+          "damageTaken": 89.84493333333347,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "ivo",
+      "weapon": "spear",
+      "seed": 17,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 3,
+          "damage": 270.3652019253333,
+          "hp": 86,
+          "damageTaken": 8,
+          "enemies": 100
+        },
+        {
+          "seconds": 90,
+          "kills": 4,
+          "damage": 362.0963619253332,
+          "hp": 86,
+          "damageTaken": 8,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 5,
+          "damage": 479.1682079733335,
+          "hp": 86,
+          "damageTaken": 8,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "ivo",
+      "weapon": "spear",
+      "seed": 29,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 2,
+          "damage": 51.822031509333314,
+          "hp": 94,
+          "damageTaken": 0,
+          "enemies": 98
+        },
+        {
+          "seconds": 90,
+          "kills": 4,
+          "damage": 242.18353948266653,
+          "hp": 94,
+          "damageTaken": 0,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 5,
+          "damage": 525.8300318346669,
+          "hp": 37.4433599999999,
+          "damageTaken": 56.5566400000001,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "ivo",
+      "weapon": "spear",
+      "seed": 43,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 3,
+          "damage": 77.5827858773333,
+          "hp": 94,
+          "damageTaken": 0,
+          "enemies": 100
+        },
+        {
+          "seconds": 90,
+          "kills": 7,
+          "damage": 217.20206909866658,
+          "hp": 94,
+          "damageTaken": 0,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 7,
+          "damage": 271.2020690986666,
+          "hp": 45.46154666666656,
+          "damageTaken": 48.53845333333344,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "ivo",
+      "weapon": "disc",
+      "seed": 17,
+      "survivedSeconds": 171.7200000000001,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 38,
+          "damage": 1038.119975738666,
+          "hp": 94,
+          "damageTaken": 0,
+          "enemies": 66
+        },
+        {
+          "seconds": 90,
+          "kills": 87,
+          "damage": 2686.4063975786653,
+          "hp": 94,
+          "damageTaken": 0,
+          "enemies": 123
+        }
+      ]
+    },
+    {
+      "character": "ivo",
+      "weapon": "disc",
+      "seed": 29,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 32,
+          "damage": 819.4666136746663,
+          "hp": 94,
+          "damageTaken": 0,
+          "enemies": 72
+        },
+        {
+          "seconds": 90,
+          "kills": 62,
+          "damage": 1832.7058353866655,
+          "hp": 81.29599999999998,
+          "damageTaken": 12.704000000000022,
+          "enemies": 152
+        },
+        {
+          "seconds": 180,
+          "kills": 175,
+          "damage": 6588.364479248026,
+          "hp": 81.29599999999998,
+          "damageTaken": 12.704000000000022,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "ivo",
+      "weapon": "disc",
+      "seed": 43,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 41,
+          "damage": 1089.5127414933322,
+          "hp": 94,
+          "damageTaken": 0,
+          "enemies": 63
+        },
+        {
+          "seconds": 90,
+          "kills": 73,
+          "damage": 2097.725710191999,
+          "hp": 81.44,
+          "damageTaken": 12.560000000000002,
+          "enemies": 137
+        },
+        {
+          "seconds": 180,
+          "kills": 202,
+          "damage": 7108.594046549353,
+          "hp": 10.611893333333224,
+          "damageTaken": 83.38810666666677,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "ivo",
+      "weapon": "ember",
+      "seed": 17,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 44,
+          "damage": 1428.747002922666,
+          "hp": 94,
+          "damageTaken": 0,
+          "enemies": 60
+        },
+        {
+          "seconds": 90,
+          "kills": 74,
+          "damage": 2351.151745274667,
+          "hp": 86,
+          "damageTaken": 8,
+          "enemies": 140
+        },
+        {
+          "seconds": 180,
+          "kills": 149,
+          "damage": 5274.092871418683,
+          "hp": 86,
+          "damageTaken": 8,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "ivo",
+      "weapon": "ember",
+      "seed": 29,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 38,
+          "damage": 1280.7510326773324,
+          "hp": 86,
+          "damageTaken": 8,
+          "enemies": 66
+        },
+        {
+          "seconds": 90,
+          "kills": 66,
+          "damage": 2312.212609333332,
+          "hp": 86,
+          "damageTaken": 8,
+          "enemies": 148
+        },
+        {
+          "seconds": 180,
+          "kills": 128,
+          "damage": 5304.018956661351,
+          "hp": 8.777706666666496,
+          "damageTaken": 85.22229333333351,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "ivo",
+      "weapon": "ember",
+      "seed": 43,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 49,
+          "damage": 1436.9094035146654,
+          "hp": 94,
+          "damageTaken": 0,
+          "enemies": 55
+        },
+        {
+          "seconds": 90,
+          "kills": 82,
+          "damage": 2439.020370079999,
+          "hp": 85.64970666666667,
+          "damageTaken": 8.350293333333326,
+          "enemies": 132
+        },
+        {
+          "seconds": 180,
+          "kills": 147,
+          "damage": 5458.656842960017,
+          "hp": 85.64970666666667,
+          "damageTaken": 8.350293333333326,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "sena",
+      "weapon": "meteor",
+      "seed": 17,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 21,
+          "damage": 670.5729877813329,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 83
+        },
+        {
+          "seconds": 90,
+          "kills": 49,
+          "damage": 1544.5848823733324,
+          "hp": 101.64501333333334,
+          "damageTaken": 8.354986666666662,
+          "enemies": 152
+        },
+        {
+          "seconds": 180,
+          "kills": 94,
+          "damage": 3649.2797362720084,
+          "hp": 52.971039999999924,
+          "damageTaken": 57.028960000000076,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "sena",
+      "weapon": "meteor",
+      "seed": 29,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 34,
+          "damage": 1000.6952643146661,
+          "hp": 102,
+          "damageTaken": 8,
+          "enemies": 70
+        },
+        {
+          "seconds": 90,
+          "kills": 51,
+          "damage": 1556.5382785226655,
+          "hp": 102,
+          "damageTaken": 8,
+          "enemies": 160
+        },
+        {
+          "seconds": 180,
+          "kills": 119,
+          "damage": 4150.223660005346,
+          "hp": 77.77359999999994,
+          "damageTaken": 32.226400000000055,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "sena",
+      "weapon": "meteor",
+      "seed": 43,
+      "survivedSeconds": 163.12000000000182,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 28,
+          "damage": 788.446872890666,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 76
+        },
+        {
+          "seconds": 90,
+          "kills": 49,
+          "damage": 1450.6409808906658,
+          "hp": 102,
+          "damageTaken": 8,
+          "enemies": 158
+        }
+      ]
+    },
+    {
+      "character": "sena",
+      "weapon": "chain",
+      "seed": 17,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 43,
+          "damage": 1491.4767349973329,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 57
+        },
+        {
+          "seconds": 90,
+          "kills": 68,
+          "damage": 2497.1178809866665,
+          "hp": 94.406,
+          "damageTaken": 15.593999999999994,
+          "enemies": 146
+        },
+        {
+          "seconds": 180,
+          "kills": 147,
+          "damage": 5746.075245360017,
+          "hp": 94.406,
+          "damageTaken": 15.593999999999994,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "sena",
+      "weapon": "chain",
+      "seed": 29,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 40,
+          "damage": 1333.599798234666,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 64
+        },
+        {
+          "seconds": 90,
+          "kills": 69,
+          "damage": 2296.823999946664,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 145
+        },
+        {
+          "seconds": 180,
+          "kills": 336,
+          "damage": 13314.13314576538,
+          "hp": 34.90293333333318,
+          "damageTaken": 75.09706666666682,
+          "enemies": 126
+        }
+      ]
+    },
+    {
+      "character": "sena",
+      "weapon": "chain",
+      "seed": 43,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 44,
+          "damage": 1551.422979594666,
+          "hp": 102,
+          "damageTaken": 8,
+          "enemies": 60
+        },
+        {
+          "seconds": 90,
+          "kills": 68,
+          "damage": 2580.5554968,
+          "hp": 93.58101333333333,
+          "damageTaken": 16.41898666666667,
+          "enemies": 142
+        },
+        {
+          "seconds": 180,
+          "kills": 140,
+          "damage": 6044.784289082684,
+          "hp": 47.95439999999995,
+          "damageTaken": 62.04560000000005,
+          "enemies": 230
+        }
+      ]
+    },
+    {
+      "character": "sena",
+      "weapon": "well",
+      "seed": 17,
+      "survivedSeconds": 164.7600000000015,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 45,
+          "damage": 1506.2457037546637,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 55
+        },
+        {
+          "seconds": 90,
+          "kills": 69,
+          "damage": 2420.983662325329,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 141
+        }
+      ]
+    },
+    {
+      "character": "sena",
+      "weapon": "well",
+      "seed": 29,
+      "survivedSeconds": 153.7200000000037,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 44,
+          "damage": 1379.5773291999978,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 56
+        },
+        {
+          "seconds": 90,
+          "kills": 144,
+          "damage": 4746.3598178826605,
+          "hp": 94.28,
+          "damageTaken": 15.719999999999999,
+          "enemies": 66
+        }
+      ]
+    },
+    {
+      "character": "sena",
+      "weapon": "well",
+      "seed": 43,
+      "survivedSeconds": 179.99999999999847,
+      "checkpoints": [
+        {
+          "seconds": 60,
+          "kills": 39,
+          "damage": 1182.980748559998,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 65
+        },
+        {
+          "seconds": 90,
+          "kills": 67,
+          "damage": 2297.776411919995,
+          "hp": 110,
+          "damageTaken": 0,
+          "enemies": 143
+        },
+        {
+          "seconds": 180,
+          "kills": 259,
+          "damage": 9782.551747440102,
+          "hp": 31.57487999999982,
+          "damageTaken": 78.42512000000018,
+          "enemies": 230
+        }
+      ]
+    }
+  ]
+}

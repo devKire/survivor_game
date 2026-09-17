@@ -112,14 +112,20 @@ export class SnapshotStream {
       const previous = this.previous.get(e.id);
       if (full || !previous) upsert.push(e);
       else {
-        const fields = Object.entries(e).filter(([key, value]) => {
-          const old = previous[key as keyof NetEntity];
-          return Array.isArray(value) && Array.isArray(old)
+        let changes: EntityPatch | undefined;
+        // Avoid one pair-array per field for every entity, recipient and snapshot.
+        for (const field in e) {
+          const key = field as keyof NetEntity;
+          const value = e[key], old = previous[key];
+          const changed = Array.isArray(value) && Array.isArray(old)
             ? value.length !== old.length || value.some((v, i) => v !== old[i])
             : value !== old;
-        });
-        if (fields.length)
-          patch.push({ id: e.id, ...Object.fromEntries(fields) });
+          if (changed) {
+            changes ??= { id: e.id };
+            Reflect.set(changes, key, value);
+          }
+        }
+        if (changes) patch.push(changes);
       }
     }
     const remove = [...this.previous.keys()].filter((id) => !now.has(id));

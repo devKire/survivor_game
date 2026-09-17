@@ -37,6 +37,13 @@ V13. Formatos locais não constituem mérito online; import explícito com prove
 V14. Verificações reais; registrar bloqueios e métricas medidas, nunca resultados supostos.
 V15. Escolhas/recompensas pendentes sobrevivem ao resume; status restaurados sem protótipos perdidos.
 
+V16. Snapshot aplicado uma vez por tick/sala; RTT/React não reaplicam delta. Resync preserva cena e inputs não confirmados.
+V17. Sessão online mantém 1 engine/RAF/Input/Canvas; resize sem mudança não limpa framebuffer. Diagnóstico opt-in e memória limitada.
+V18. FX transitórios compactos e deduplicados; 8 armas base/evoluídas legíveis para owner/observer; dano sempre servidor.
+V19. Perfis 10/15/30 compartilhados: progressão, bosses, paths, evolução, conclusão e recompensa; líder escolhe antes do start, sessão persiste autoridade.
+V20. Meta efeito/descrição/current/next/max compartilham definição/unidades; conquistas registradas nunca pagam retroativamente.
+V21. HUD online isolada do menu; drawer não pausa; chat recolhido; starter muda sem alterar bônus do personagem.
+
 ## §T
 
 | id | status | tarefa | cites |
@@ -58,6 +65,13 @@ V15. Escolhas/recompensas pendentes sobrevivem ao resume; status restaurados sem
 | T15 | x | Carga 5 clients, latência/reconnect | V8,V12,V14 |
 | T16 | x | Balanceamento com telemetria | V10,V14 |
 | T17 | ~ | QA final e relatório | V1,V14 |
+
+| T18 | ~ | P0: baseline Chrome, instrumentação, causa, correção, estabilidade | V8,V14,V16,V17 |
+| T19 | . | Paridade FX das oito armas e evoluções | V5,V18 |
+| T20 | . | Perfis 10/15/30, persistência e recompensa | V5,V6,V19 |
+| T21 | . | Starter weapons, metas e recompensas de conquistas | V6,V20,V21 |
+| T22 | . | UX lobby/HUD/drawer/chat | V11,V17,V21 |
+| T23 | . | QA 2/5 players, carga, 10 min contínuos, solo e build | V14,V16,V17,V18,V19,V20,V21 |
 
 ## §B
 
@@ -89,3 +103,8 @@ V15. Escolhas/recompensas pendentes sobrevivem ao resume; status restaurados sem
 | B15 | 2026-09-15 | Next build não podia iniciar subprocesso TypeScript no sandbox (EPERM) | Reexecutado com permissão; sem alteração funcional, V14 |
 
 | B16 | 2026-09-16 | Reutilização de objeto Pool podia reutilizar identidade de projétil no snapshot | ID por disparo e remoção explícita; V8 |
+
+| B17 | 2026-09-17 | PONG/settings reaplicam delta, tick igual pede RESYNC; full apaga inputs sem ACK | V16 |
+| B18 | 2026-09-17 | Snapshot no React pode coalescer deltas e renderiza menus; objetos visuais recriados em todo frame | V17 |
+| B19 | 2026-09-17 | Cliente novo reinicia sequence abaixo do ACK após reconnect | V8,V16 |
+| B20 | 2026-09-17 | Esc fecha chat, desfoca input e propaga para pausa da engine | V21 |

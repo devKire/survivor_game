@@ -1,3 +1,4 @@
+import { diagnostics } from "../client/diagnostics";
 import {
   clientMessage,
   serverMessage,
@@ -62,6 +63,10 @@ export class RealtimeClient {
           return;
         }
         this.packets++;
+        if (v.data.type === "SNAPSHOT") {
+          diagnostics.snapshots++;
+          diagnostics.payloadBytes += e.data.length;
+        }
         if (v.data.type === "ACCOUNT") this.status("Online");
         if (v.data.type === "PONG") this.rtt = performance.now() - v.data.at;
         this.receive(v.data);
@@ -94,6 +99,7 @@ export class RealtimeClient {
     );
   }
   send(message: ClientMessage) {
+    if (message.type === "INPUT") diagnostics.inputs++;
     if (this.socket?.readyState === WebSocket.OPEN)
       this.socket.send(JSON.stringify(clientMessage.parse(message)));
   }

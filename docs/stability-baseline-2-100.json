@@ -1,0 +1,53 @@
+{
+  "seconds": 35.36,
+  "metrics": [
+    {
+      "remoteGameInstances": 1,
+      "remoteGameCreated": 2,
+      "rafLoops": 1,
+      "reactGameMounts": 2,
+      "accountRenders": 396,
+      "canvasResizes": 2,
+      "snapshots": 358,
+      "fullSnapshots": 15,
+      "resyncRequests": 14,
+      "duplicateSnapshots": 14,
+      "inputs": 893,
+      "payloadBytes": 2805229,
+      "corrections": 51,
+      "rtt": 0.6999999997206032,
+      "entities": 135,
+      "longTasks": 2,
+      "longTaskMs": 114,
+      "enabled": true,
+      "fps": 35.63262810726298,
+      "low1": 19.960079840319942
+    },
+    {
+      "remoteGameInstances": 1,
+      "remoteGameCreated": 2,
+      "rafLoops": 1,
+      "reactGameMounts": 2,
+      "accountRenders": 393,
+      "canvasResizes": 2,
+      "snapshots": 358,
+      "fullSnapshots": 17,
+      "resyncRequests": 16,
+      "duplicateSnapshots": 16,
+      "inputs": 893,
+      "payloadBytes": 3003268,
+      "corrections": 1,
+      "rtt": 0.8000000002793968,
+      "entities": 135,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "enabled": true,
+      "fps": 35.794904023028906,
+      "low1": 19.960079840319942
+    }
+  ],
+  "errors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

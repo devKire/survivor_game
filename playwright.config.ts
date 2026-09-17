@@ -20,7 +20,7 @@ export default defineConfig({
       timeout: 120000,
     },
     {
-      command: "npm run realtime",
+      command: process.env.QA_ENEMIES ? "node --conditions=react-server --import tsx scripts/stability-realtime.ts" : "npm run realtime",
       url: "http://localhost:3001/health",
       reuseExistingServer: false,
       timeout: 120000,

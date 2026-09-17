@@ -1,3 +1,4 @@
+import { diagnostics, recordFrame } from "./diagnostics";
 import { BrowserGame } from "./browser";
 import { freshSave } from "../core/save";
 import { Player, Weapon } from "../core/entities";
@@ -11,10 +12,14 @@ export class RemoteGame extends BrowserGame {
   previousSnapshot?: Snapshot;
   entities = new Map<string, NetEntity>();
   before = new Map<string, NetEntity>();
+  visuals = new Map<string, Vec>();
+  remotePlayers = new Map<string, Player>();
   receivedAt = 0;
   sequence = 0;
   pending: { sequence: number; move: Vec; dt: number }[] = [];
   prediction?: Vec;
+  awaitingResync = false;
+  visualOffset: Vec = { x: 0, y: 0 };
   corrections = 0;
   sendClock = 0;
   rtt = 0;
@@ -31,6 +36,16 @@ export class RemoteGame extends BrowserGame {
   ) {
     super(canvas, freshSave());
     this.persist = () => true;
+    diagnostics.remoteGameInstances++;
+    diagnostics.remoteGameCreated++;
+    diagnostics.rafLoops++;
+    if (diagnostics.enabled) Object.assign(window, { limiarRemoteGame: this });
+  }
+  override dispose() {
+    if (this.abort.signal.aborted) return;
+    diagnostics.remoteGameInstances--;
+    diagnostics.rafLoops--;
+    super.dispose();
   }
   override saveSnapshot() {
     return false;
@@ -68,19 +83,28 @@ export class RemoteGame extends BrowserGame {
     if (key === "F7") this.debug.hitboxes = !this.debug.hitboxes;
   }
   apply(snapshot: Snapshot) {
-    if (snapshot.tick < (this.snapshot?.tick || 0)) return;
+    if (snapshot.tick === this.snapshot?.tick) diagnostics.duplicateSnapshots++;
+    if (snapshot.full) diagnostics.fullSnapshots++;
+    if (this.snapshot && snapshot.tick <= this.snapshot.tick) return;
     if (!snapshot.full && snapshot.base !== (this.snapshot?.tick || 0)) {
-      this.sendMessage({ type: "RESYNC" });
+      if (!this.awaitingResync) {
+        this.awaitingResync = true;
+        diagnostics.resyncRequests++;
+        this.sendMessage({ type: "RESYNC" });
+      }
       return;
     }
     if (!this.active) {
       super.start("nara", snapshot.mode, snapshot.mapId, snapshot.seed);
       this.ui.hide();
     }
-    this.before = new Map(this.entities);
+    this.before = new Map([...this.entities].map(([id, e]) => {
+      const visual = this.visuals.get(id);
+      return [id, visual ? { ...e, x: visual.x, y: visual.y } : e];
+    }));
     if (snapshot.full) {
       this.entities.clear();
-      this.pending = [];
+      this.awaitingResync = false;
     }
     for (const id of snapshot.remove) this.entities.delete(id);
     for (const entity of snapshot.upsert) this.entities.set(entity.id, entity);
@@ -133,16 +157,18 @@ export class RemoteGame extends BrowserGame {
         input.dt,
         snapshot.structures,
       );
-    if (
-      Math.hypot(
-        this.player.x - this.prediction.x,
-        this.player.y - this.prediction.y,
-      ) > 8
-    )
-      this.corrections++;
-    this.player.x = this.prediction.x;
-    this.player.y = this.prediction.y;
+    const dx = this.player.x - this.prediction.x;
+    const dy = this.player.y - this.prediction.y;
+    const error = Math.hypot(dx, dy);
+    if (error > 8) this.corrections++;
+    // Keep authority exact; only the visual offset decays over ~100 ms.
+    this.visualOffset = this.snapshot && error < 96 && own.state === "alive"
+      ? { x: dx, y: dy } : { x: 0, y: 0 };
+    this.sequence = Math.max(this.sequence, own.ack);
     this.player.character = own.character;
+    this.player.dx = own.dx;
+    this.player.dy = own.dy;
+    this.player.inWater = own.inWater;
     if (own.hp < this.player.health) this.player.hurtFlash = 0.15;
     this.player.buff = own.buff || 0;
     this.player.invulnerable = own.invulnerable || 0;
@@ -156,7 +182,7 @@ export class RemoteGame extends BrowserGame {
     this.player.xp = snapshot.own.xp;
     this.player.xpToNextLevel = snapshot.own.xpToNextLevel;
     this.player.weapons = snapshot.own.weapons.map((data) =>
-      Object.assign(new Weapon(data.id), data),
+      Object.assign(this.player.weapons.find(w => w.id === data.id) || new Weapon(data.id), data),
     );
     this.player.passives = snapshot.own.passives;
     this.run.inventory = snapshot.own.inventory;
@@ -181,16 +207,141 @@ export class RemoteGame extends BrowserGame {
       if (e.kind === "enemy" && (e.type === "boss" || e.type === "final"))
         this.sound.play("boss");
     for (const e of snapshot.patch) if (e.phase) this.sound.play("boss");
-    this.previousSnapshot = this.snapshot;
+    this.previousSnapshot = this.snapshot && {
+      ...this.snapshot,
+      players: this.snapshot.players.map(p => {
+        const visual = this.remotePlayers.get(p.id);
+        return visual ? {...p, x: visual.x, y: visual.y} : p;
+      }),
+    };
     this.snapshot = snapshot;
     this.receivedAt = performance.now();
+    this.syncScene();
     this.ui.updateHUD();
+  }
+  syncScene() {
+    const now = performance.now();
+      this.visuals.clear();
+      this.enemies = [];
+      this.bullets.clear();
+      this.areas = [];
+      this.pickups = [];
+      this.gems = [];
+      for (const e of this.entities.values()) {
+        const old = this.before.get(e.id) || e;
+        const x = old.x, y = old.y;
+        if (e.kind === "enemy") {
+          const def = ENEMY_DEFINITIONS[e.type];
+          if (def) {
+            const enemy = {
+              ...def,
+              type: e.type,
+              id: Number(e.id.slice(1)),
+              x,
+              y,
+              hp: e.hp || 0,
+              maxHp: e.maxHp || 1,
+              name: e.name || def.name,
+              pattern: e.pattern || "ring",
+              bossEventIndex: null,
+              dead: false,
+              kx: 0,
+              ky: 0,
+              flash: 0,
+              attack: 1,
+              wind: e.wind || 0,
+              charge: e.charge || 0,
+              aimX: e.aimX || 0,
+              aimY: e.aimY || 0,
+              bossPhase: e.phase || 1,
+              phase: 0,
+              statuses: Object.fromEntries(
+                (e.statuses || []).map((id) => [
+                  id,
+                  {
+                    duration: 1,
+                    magnitude: 1,
+                    stacks: 1,
+                    tick: 0,
+                    source: null,
+                  },
+                ]),
+              ),
+              burrow: e.burrow || 0,
+              shield: e.shield || 0,
+              buffAura: 0,
+              specialClock: 0,
+            };
+            this.enemies.push(enemy);
+            this.visuals.set(e.id, enemy);
+          }
+        }
+        if (e.kind === "bullet") {
+          const b = this.bullets.take();
+          if (b) {
+            this.visuals.set(e.id, b);
+            Object.assign(b, {
+              x,
+              y,
+              r: e.r,
+              color: e.color || "#eee",
+              enemy: e.enemy,
+              kind: e.type,
+              vx: 0,
+              vy: 0,
+              age: now / 1000,
+            });
+          }
+        }
+        if (e.kind === "area") {
+          const value = {
+            x,
+            y,
+            r: e.r,
+            damage: 0,
+            w: null,
+            life: 1,
+            delay: e.delay || 0,
+            kind: e.type,
+            tick: 0,
+            armed: e.armed || false,
+            enemy: e.enemy || false,
+          };
+          this.areas.push(value);
+          this.visuals.set(e.id, value);
+        }
+        if (e.kind === "pickup") {
+          const value = {
+            x,
+            y,
+            type: e.type,
+            value: e.value || 1,
+            life: 1,
+            itemId: e.itemId,
+          };
+          this.pickups.push(value);
+          this.visuals.set(e.id, value);
+        }
+        if (e.kind === "gem") {
+          const value = {
+            x,
+            y,
+            value: e.value || 1,
+            key: e.id,
+            magnet: false,
+          };
+          this.gems.push(value);
+          this.visuals.set(e.id, value);
+        }
+      }
   }
   override frame(now: number) {
     if (this.abort.signal.aborted) return;
+    if (this.dpr !== Math.min(window.devicePixelRatio || 1, 2)) this.resize();
     const dt = this.lastFrame
       ? Math.min(0.1, (now - this.lastFrame) / 1000)
       : 0;
+    recordFrame(this.lastFrame ? now - this.lastFrame : 0);
     this.lastFrame = now;
     if (dt > 0) this.fps = this.fps * 0.96 + Math.min(240, 1 / dt) * 0.04;
     const s = this.snapshot;
@@ -238,110 +389,20 @@ export class RemoteGame extends BrowserGame {
           this.sendClock,
           s.structures,
         );
-        this.player.x = visual.x;
-        this.player.y = visual.y;
+        const decay = Math.exp(-dt * 22);
+        this.visualOffset.x *= decay;
+        this.visualOffset.y *= decay;
+        this.player.x = visual.x + this.visualOffset.x;
+        this.player.y = visual.y + this.visualOffset.y;
       }
       this.camera = { x: this.player.x, y: this.player.y };
       this.run.simTime += dt;
       const blend = Math.min(1, (now - this.receivedAt) / 100);
-      this.enemies = [];
-      this.bullets.clear();
-      this.areas = [];
-      this.pickups = [];
-      this.gems = [];
-      for (const e of this.entities.values()) {
-        const old = this.before.get(e.id) || e;
-        const x = lerp(old.x, e.x, blend),
-          y = lerp(old.y, e.y, blend);
-        if (e.kind === "enemy") {
-          const def = ENEMY_DEFINITIONS[e.type];
-          if (def)
-            this.enemies.push({
-              ...def,
-              type: e.type,
-              id: Number(e.id.slice(1)),
-              x,
-              y,
-              hp: e.hp || 0,
-              maxHp: e.maxHp || 1,
-              name: e.name || def.name,
-              pattern: e.pattern || "ring",
-              bossEventIndex: null,
-              dead: false,
-              kx: 0,
-              ky: 0,
-              flash: 0,
-              attack: 1,
-              wind: e.wind || 0,
-              charge: e.charge || 0,
-              aimX: e.aimX || 0,
-              aimY: e.aimY || 0,
-              bossPhase: e.phase || 1,
-              phase: 0,
-              statuses: Object.fromEntries(
-                (e.statuses || []).map((id) => [
-                  id,
-                  {
-                    duration: 1,
-                    magnitude: 1,
-                    stacks: 1,
-                    tick: 0,
-                    source: null,
-                  },
-                ]),
-              ),
-              burrow: e.burrow || 0,
-              shield: e.shield || 0,
-              buffAura: 0,
-              specialClock: 0,
-            });
-        }
-        if (e.kind === "bullet") {
-          const b = this.bullets.take();
-          if (b)
-            Object.assign(b, {
-              x,
-              y,
-              r: e.r,
-              color: e.color || "#eee",
-              enemy: e.enemy,
-              kind: e.type,
-              vx: 0,
-              vy: 0,
-              age: now / 1000,
-            });
-        }
-        if (e.kind === "area")
-          this.areas.push({
-            x,
-            y,
-            r: e.r,
-            damage: 0,
-            w: null,
-            life: 1,
-            delay: e.delay || 0,
-            kind: e.type,
-            tick: 0,
-            armed: e.armed || false,
-            enemy: e.enemy || false,
-          });
-        if (e.kind === "pickup")
-          this.pickups.push({
-            x,
-            y,
-            type: e.type,
-            value: e.value || 1,
-            life: 1,
-            itemId: e.itemId,
-          });
-        if (e.kind === "gem")
-          this.gems.push({
-            x,
-            y,
-            value: e.value || 1,
-            key: e.id,
-            magnet: false,
-          });
+      for (const [id, visual] of this.visuals) {
+        const e = this.entities.get(id)!;
+        const old = this.before.get(id) || e;
+        visual.x = lerp(old.x, e.x, blend);
+        visual.y = lerp(old.y, e.y, blend);
       }
       this.player.hurtFlash = Math.max(0, this.player.hurtFlash - dt);
       this.fx =
@@ -362,7 +423,8 @@ export class RemoteGame extends BrowserGame {
         const old =
           this.previousSnapshot?.players.find((p) => p.id === other.id) ||
           other;
-        const p = new Player(other.character);
+        let p = this.remotePlayers.get(other.id);
+        if (!p) { p = new Player(other.character); this.remotePlayers.set(other.id, p); }
         p.x = lerp(old.x, other.x, blend);
         p.y = lerp(old.y, other.y, blend);
         p.dx = other.dx;
@@ -411,6 +473,9 @@ export class RemoteGame extends BrowserGame {
         node.textContent = `FPS ${Math.round(this.fps)} · RTT ${Math.round(this.rtt)} ms\nInput ${this.packetRate.toFixed(1)}/s · Snapshot ${this.snapshotRate.toFixed(1)}/s\nCorreções ${this.corrections} · Entidades ${this.entities.size} · Players ${s?.players.length || 0}\nSala ${s?.room || ""} · Tick ${s?.tick || 0}`;
       }
     }
+    diagnostics.entities = this.entities.size;
+    diagnostics.corrections = this.corrections;
+    diagnostics.rtt = this.rtt;
     this.frameHandle = requestAnimationFrame((t) => this.frame(t));
   }
 }

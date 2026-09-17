@@ -1,3 +1,4 @@
+import { diagnostics } from "./diagnostics";
 import {
   ACHIEVEMENTS,
   BOSS_PHASES,
@@ -115,13 +116,16 @@ export class BrowserGame extends GameSimulation {
       signal: this.abort.signal,
     });
 
+    const observer = new ResizeObserver(() => this.resize());
+    observer.observe(this.canvas);
+    this.abort.signal.addEventListener("abort", () => observer.disconnect(), { once: true });
     this.ui.main();
     this.frameHandle = requestAnimationFrame((t) => this.frame(t));
   }
 
   resize() {
-    this.width = Math.max(280, window.innerWidth);
-    this.height = Math.max(280, window.innerHeight);
+    this.width = Math.max(280, this.canvas.clientWidth || window.innerWidth);
+    this.height = Math.max(280, this.canvas.clientHeight || window.innerHeight);
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     this.zoom = Math.max(
@@ -132,12 +136,17 @@ export class BrowserGame extends GameSimulation {
     this.viewW = this.width / this.zoom;
     this.viewH = this.height / this.zoom;
 
-    this.canvas.width = Math.round(this.width * this.dpr);
-    this.canvas.height = Math.round(this.height * this.dpr);
+    const width = Math.round(this.width * this.dpr), height = Math.round(this.height * this.dpr);
+    if (this.canvas.width !== width || this.canvas.height !== height) {
+      diagnostics.canvasResizes++;
+      if (this.canvas.width !== width) this.canvas.width = width;
+      if (this.canvas.height !== height) this.canvas.height = height;
+    }
   }
 
   frame(now: number) {
     if (this.abort.signal.aborted) return;
+    if (this.dpr !== Math.min(window.devicePixelRatio || 1, 2)) this.resize();
     const raw = this.lastFrame ? Math.max(0, (now - this.lastFrame) / 1000) : 0;
 
     this.lastFrame = now;

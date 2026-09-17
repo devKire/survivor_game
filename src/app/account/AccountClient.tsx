@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { diagnostics } from "../../game/client/diagnostics";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { accountAction, realtimeTicket } from "../../server/actions";
@@ -9,10 +10,10 @@ import {
   chatSchema,
   type ChatMessage,
   type Friend,
-  type Snapshot,
   type Team,
 } from "../../game/network/protocol";
 import { GameShell } from "../../game/client/OfflineGame";
+import { OnlineSession } from "../../game/client/OnlineSession";
 import { RemoteGame } from "../../game/client/RemoteGame";
 import {
   ACHIEVEMENTS,
@@ -40,7 +41,7 @@ export default function AccountClient({
     [progress, setProgress] = useState<SaveData>(freshSave),
     [local, setLocal] = useState<unknown>(null),
     [importPending, setImportPending] = useState(false),
-    [snapshot, setSnapshot] = useState<Snapshot | null>(null),
+    [session] = useState(() => new OnlineSession()),
     [started, setStarted] = useState(false),
     [result, setResult] = useState(""),
     [messages, setMessages] = useState<ChatMessage[]>([]),
@@ -53,15 +54,17 @@ export default function AccountClient({
     [matches, setMatches] = useState<
       { id: string; username: string | null; displayUsername: string | null }[]
     >([]),
-    [upgradeOpen, setUpgradeOpen] = useState(false),
-    [banish, setBanish] = useState(false),
     [busy, setBusy] = useState(false);
+  useEffect(() => { diagnostics.accountRenders++; });
   const [rtt, setRtt] = useState(0);
   useEffect(() => {
     const client = new RealtimeClient(
       realtimeTicket,
       (message) => {
-        if (message.type === "PONG") setRtt(client.rtt);
+        if (message.type === "PONG") {
+          setRtt(client.rtt);
+          if (session.game) session.game.rtt = client.rtt;
+        }
         if (message.type === "ACCOUNT") {
           try {
             setLocal(
@@ -75,10 +78,11 @@ export default function AccountClient({
         }
         if (message.type === "ERROR") setError(message.message);
         if (message.type === "STARTED") {
+          session.begin(message.room);
           setStarted(true);
           setResult("");
         }
-        if (message.type === "SNAPSHOT") setSnapshot(message);
+        if (message.type === "SNAPSHOT") session.receive(message);
         if (message.type === "CHAT")
           setMessages((old) =>
             [
@@ -96,7 +100,7 @@ export default function AccountClient({
           );
         if (message.type === "RESULT") {
           setStarted(false);
-          setSnapshot(null);
+
           setResult(
             `${message.completed ? "Travessia concluída" : "A equipe caiu"} · ${Math.floor(message.time / 60)} min · ${message.kills} baixas. Recompensas salvas na conta.`,
           );
@@ -107,10 +111,12 @@ export default function AccountClient({
     connection.current = client;
     void client.connect();
     return () => client.close();
-  }, []);
+  }, [session]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && chatOpen) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
         setChatOpen(false);
         chatInput.current?.blur();
       }
@@ -125,9 +131,9 @@ export default function AccountClient({
         setTimeout(() => chatInput.current?.focus(), 0);
       }
     };
-    window.addEventListener("keydown", key);
-    return () => window.removeEventListener("keydown", key);
-  }, [team]);
+    window.addEventListener("keydown", key, true);
+    return () => window.removeEventListener("keydown", key, true);
+  }, [team, chatOpen]);
   async function action(input: Parameters<typeof accountAction>[0]) {
     setBusy(true);
     setError("");
@@ -164,148 +170,10 @@ export default function AccountClient({
         ((m.senderId === chat.target && m.recipientId === user.id) ||
           (m.senderId === user.id && m.recipientId === chat.target)),
   );
-  function pick(
-    index: number,
-    action: "pick" | "reroll" | "banish" | "skip" = "pick",
-  ) {
-    if (snapshot)
-      connection.current?.send({
-        type: "UPGRADE",
-        choice: index,
-        decision: snapshot.own.decision,
-        action: banish && action === "pick" ? "banish" : action,
-      });
-    setBanish(false);
-    setUpgradeOpen(false);
-  }
-  function choiceText(choice: Upgrade) {
-    if (choice.kind === "path") {
-      const d = WEAPON_PATHS[choice.weaponId || ""]?.[choice.id];
-      return {
-        name: d?.name || choice.id,
-        text: d?.text || "",
-        with: WEAPON_DEFINITIONS[choice.weaponId || ""]?.name,
-      };
-    }
-    if (choice.kind === "weapon") {
-      const d = WEAPON_DEFINITIONS[choice.id];
-      return {
-        name: d.name,
-        text: snapshot?.own.weapons.some((w) => w.id === choice.id)
-          ? "+2 níveis: mais dano, área e frequência."
-          : d.description,
-        with: PASSIVE_DEFINITIONS[d.passive].name,
-      };
-    }
-    const d = PASSIVE_DEFINITIONS[choice.id];
-    return {
-      name: d?.name || choice.id,
-      text: d ? d.text + " Até +2 níveis." : "Bônus imediato.",
-      with: "Sua build",
-    };
-  }
   return (
     <>
       {started ? (
-        <>
-          <OnlineArena
-            userId={user.id}
-            snapshot={snapshot}
-            connection={connection}
-            rtt={rtt}
-            settings={progress.settings}
-          />
-          <aside className="party-hud">
-            {snapshot?.players.map((p) => (
-              <div key={p.id} style={{ color: p.color }}>
-                {p.name} ·{" "}
-                {p.state === "downed"
-                  ? "CAÍDO"
-                  : p.state === "disconnected"
-                    ? "DESCONECTADO"
-                    : `♥ ${Math.ceil((p.hp / p.maxHp) * 100)}%`}
-                {p.revive > 0 ? ` · Revivendo ${p.revive.toFixed(1)}/3 s` : ""}
-              </div>
-            ))}
-            <small>Segure E próximo de um aliado caído.</small>
-            <Link href="/">Sair da partida</Link>
-          </aside>
-          {(snapshot?.own.pending || 0) > 0 && (
-            <button
-              className="pending-upgrades"
-              onClick={() => setUpgradeOpen(!upgradeOpen)}
-            >
-              +{snapshot?.own.pending} MELHORIA
-              {(snapshot?.own.pending || 0) > 1 ? "S" : ""} PENDENTE
-              {(snapshot?.own.pending || 0) > 1 ? "S" : ""}
-            </button>
-          )}
-          {upgradeOpen && snapshot && (
-            <aside className="upgrade-panel">
-              <h2>
-                {banish ? "Selecione para banir" : "Escolha sua melhoria"}
-              </h2>
-              <p className="muted">
-                A expedição continua. WASD move enquanto você escolhe.
-              </p>
-              {snapshot.own.choices.map((c, i) => {
-                const d = choiceText(c);
-                return (
-                  <button
-                    className="card"
-                    key={c.kind + c.id + i}
-                    onClick={() => pick(i)}
-                  >
-                    <h3>{d.name}</h3>
-                    <p>{d.text}</p>
-                    <small>Combina com {d.with}</small>
-                  </button>
-                );
-              })}
-              <div className="actions">
-                <button onClick={() => pick(0, "reroll")}>
-                  ↻ {snapshot.own.rerolls}
-                </button>
-                <button onClick={() => setBanish(!banish)}>
-                  ⊘ {snapshot.own.banishments}
-                </button>
-                <button onClick={() => pick(0, "skip")}>
-                  → {snapshot.own.skips}
-                </button>
-              </div>
-              <button onClick={() => setUpgradeOpen(false)}>Fechar</button>
-            </aside>
-          )}
-          {snapshot?.votes.map((v) => (
-            <aside className="team-vote" key={v.id}>
-              <p>
-                Decisão de equipe · {v.count}/{v.needed}
-              </p>
-              <button
-                onClick={() =>
-                  connection.current?.send({
-                    type: "INTERACT",
-                    structure: v.id,
-                    accept: true,
-                  })
-                }
-              >
-                Aceitar
-              </button>
-              <button
-                onClick={() =>
-                  connection.current?.send({
-                    type: "INTERACT",
-                    structure: v.id,
-                    accept: false,
-                  })
-                }
-              >
-                Recusar
-              </button>
-            </aside>
-          ))}
-        </>
+        <OnlineCombat userId={user.id} session={session} connection={connection} settings={progress.settings} />
       ) : (
         <main className="account-screen">
           <section className="panel wide">
@@ -803,15 +671,13 @@ export default function AccountClient({
 }
 function OnlineArena({
   userId,
-  snapshot,
+  session,
   connection,
-  rtt,
   settings,
 }: {
-  rtt: number;
   settings: SaveData["settings"];
   userId: string;
-  snapshot: Snapshot | null;
+  session: OnlineSession;
   connection: React.RefObject<RealtimeClient | null>;
 }) {
   const router = useRouter();
@@ -819,6 +685,7 @@ function OnlineArena({
     game = useRef<RemoteGame | null>(null);
   useEffect(() => {
     if (!canvasRef.current) return;
+    diagnostics.reactGameMounts++;
     const g = new RemoteGame(
       canvasRef.current,
       userId,
@@ -826,19 +693,168 @@ function OnlineArena({
       () => router.push("/"),
     );
     game.current = g;
+    const unbind = session.bind(g);
     const clear = () => g.input.clear();
     window.addEventListener("limiar-chat-focus", clear);
     return () => {
       window.removeEventListener("limiar-chat-focus", clear);
+      unbind();
       g.dispose();
     };
-  }, [userId, connection, router]);
+  }, [userId, connection, router, session]);
   useEffect(() => {
     if (game.current) {
-      game.current.rtt = rtt;
       game.current.save.settings = settings;
     }
-    if (snapshot) game.current?.apply(snapshot);
-  }, [snapshot, rtt, settings]);
+  }, [settings]);
   return <GameShell canvasRef={canvasRef} />;
+}
+
+function OnlineCombat({userId, session, connection, settings}: {
+  userId: string; session: OnlineSession;
+  connection: React.RefObject<RealtimeClient | null>;
+  settings: SaveData['settings'];
+}) {
+  const snapshot = useSyncExternalStore(session.subscribe, session.getSnapshot, () => null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false), [banish, setBanish] = useState(false);
+  function pick(
+    index: number,
+    action: "pick" | "reroll" | "banish" | "skip" = "pick",
+  ) {
+    if (snapshot)
+      connection.current?.send({
+        type: "UPGRADE",
+        choice: index,
+        decision: snapshot.own.decision,
+        action: banish && action === "pick" ? "banish" : action,
+      });
+    setBanish(false);
+    setUpgradeOpen(false);
+  }
+  function choiceText(choice: Upgrade) {
+    if (choice.kind === "path") {
+      const d = WEAPON_PATHS[choice.weaponId || ""]?.[choice.id];
+      return {
+        name: d?.name || choice.id,
+        text: d?.text || "",
+        with: WEAPON_DEFINITIONS[choice.weaponId || ""]?.name,
+      };
+    }
+    if (choice.kind === "weapon") {
+      const d = WEAPON_DEFINITIONS[choice.id];
+      return {
+        name: d.name,
+        text: snapshot?.own.weapons.some((w) => w.id === choice.id)
+          ? "+2 níveis: mais dano, área e frequência."
+          : d.description,
+        with: PASSIVE_DEFINITIONS[d.passive].name,
+      };
+    }
+    const d = PASSIVE_DEFINITIONS[choice.id];
+    return {
+      name: d?.name || choice.id,
+      text: d ? d.text + " Até +2 níveis." : "Bônus imediato.",
+      with: "Sua build",
+    };
+  }
+  return (
+        <>
+          <OnlineArena
+            userId={userId}
+            session={session}
+            connection={connection}
+            settings={settings}
+          />
+          <aside className="party-hud">
+            {snapshot?.players.map((p) => (
+              <div key={p.id} style={{ color: p.color }}>
+                {p.name} ·{" "}
+                {p.state === "downed"
+                  ? "CAÍDO"
+                  : p.state === "disconnected"
+                    ? "DESCONECTADO"
+                    : `♥ ${Math.ceil((p.hp / p.maxHp) * 100)}%`}
+                {p.revive > 0 ? ` · Revivendo ${p.revive.toFixed(1)}/3 s` : ""}
+              </div>
+            ))}
+            <small>Segure E próximo de um aliado caído.</small>
+            <Link href="/">Sair da partida</Link>
+          </aside>
+          {(snapshot?.own.pending || 0) > 0 && (
+            <button
+              className="pending-upgrades"
+              onClick={() => setUpgradeOpen(!upgradeOpen)}
+            >
+              +{snapshot?.own.pending} MELHORIA
+              {(snapshot?.own.pending || 0) > 1 ? "S" : ""} PENDENTE
+              {(snapshot?.own.pending || 0) > 1 ? "S" : ""}
+            </button>
+          )}
+          {upgradeOpen && snapshot && (
+            <aside className="upgrade-panel">
+              <h2>
+                {banish ? "Selecione para banir" : "Escolha sua melhoria"}
+              </h2>
+              <p className="muted">
+                A expedição continua. WASD move enquanto você escolhe.
+              </p>
+              {snapshot.own.choices.map((c, i) => {
+                const d = choiceText(c);
+                return (
+                  <button
+                    className="card"
+                    key={c.kind + c.id + i}
+                    onClick={() => pick(i)}
+                  >
+                    <h3>{d.name}</h3>
+                    <p>{d.text}</p>
+                    <small>Combina com {d.with}</small>
+                  </button>
+                );
+              })}
+              <div className="actions">
+                <button onClick={() => pick(0, "reroll")}>
+                  ↻ {snapshot.own.rerolls}
+                </button>
+                <button onClick={() => setBanish(!banish)}>
+                  ⊘ {snapshot.own.banishments}
+                </button>
+                <button onClick={() => pick(0, "skip")}>
+                  → {snapshot.own.skips}
+                </button>
+              </div>
+              <button onClick={() => setUpgradeOpen(false)}>Fechar</button>
+            </aside>
+          )}
+          {snapshot?.votes.map((v) => (
+            <aside className="team-vote" key={v.id}>
+              <p>
+                Decisão de equipe · {v.count}/{v.needed}
+              </p>
+              <button
+                onClick={() =>
+                  connection.current?.send({
+                    type: "INTERACT",
+                    structure: v.id,
+                    accept: true,
+                  })
+                }
+              >
+                Aceitar
+              </button>
+              <button
+                onClick={() =>
+                  connection.current?.send({
+                    type: "INTERACT",
+                    structure: v.id,
+                    accept: false,
+                  })
+                }
+              >
+                Recusar
+              </button>
+            </aside>
+          ))}
+        </>
+  );
 }

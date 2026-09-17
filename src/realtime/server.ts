@@ -538,3 +538,6 @@ function close() {
 }
 process.on("SIGTERM", close);
 process.on("SIGINT", close);
+
+// Test harnesses can inspect the authority in-process; never exposed over HTTP/WS.
+export { rooms };
