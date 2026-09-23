@@ -24,13 +24,15 @@ describe("V1 baseline preservation", () => {
     const old = {
       ...freshSave(),
       version: 1,
+      economyVersion: 1,
       gold: 560,
       upgrades: { might: 3 },
       unlocked: ["nara", "orin"],
     };
     expect(migrateSave(old)).toMatchObject({
       version: 3,
-      gold: 560,
+      gold: 0,
+      gems: 560,
       upgrades: { might: 3 },
       unlocked: ["nara", "orin"],
     });

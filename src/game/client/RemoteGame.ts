@@ -155,6 +155,7 @@ export class RemoteGame extends BrowserGame {
       this.sound.play("hit");
     }
     const own = snapshot.players.find((p) => p.id === this.userId);
+    if(own) this.player.cosmetics = own.cosmetics || {};
     if (!own) return;
     this.pending = this.pending.filter((p) => p.sequence > own.ack);
     this.prediction = { x: own.x, y: own.y };
@@ -195,7 +196,7 @@ export class RemoteGame extends BrowserGame {
     );
     this.player.passives = snapshot.own.passives;
     this.run.inventory = snapshot.own.inventory;
-    this.run.gold = snapshot.own.gold;
+    this.run.gems = snapshot.own.gems;
     this.run.time = snapshot.time;
     this.run.simTime = snapshot.time;
     this.world.nearby = snapshot.structures;
@@ -447,6 +448,7 @@ export class RemoteGame extends BrowserGame {
             other.orbit.evolved,
             this.run.simTime,
           );
+        p.cosmetics = other.cosmetics || {};
         this.renderer.player(p, this.run.simTime);
         c.strokeStyle = other.color;
         this.renderer.circle(p.x, p.y, 23);

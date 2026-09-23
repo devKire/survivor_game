@@ -1,0 +1,13 @@
+BEGIN;
+CREATE TABLE "limiar"."Season" ("id" TEXT PRIMARY KEY,"name" TEXT NOT NULL,"startsAt" TIMESTAMP(3) NOT NULL,"endsAt" TIMESTAMP(3) NOT NULL);
+ALTER TABLE "limiar"."ArenaMatch" ADD COLUMN "seasonId" TEXT REFERENCES "limiar"."Season"("id");
+CREATE TABLE "limiar"."RankedRating" ("id" TEXT PRIMARY KEY,"userId" TEXT NOT NULL REFERENCES "limiar"."User"("id") ON DELETE CASCADE,"seasonId" TEXT NOT NULL REFERENCES "limiar"."Season"("id"),"mode" TEXT NOT NULL,"mmr" INTEGER NOT NULL DEFAULT 1000 CHECK("mmr">=0),"peak" INTEGER NOT NULL DEFAULT 1000,"games" INTEGER NOT NULL DEFAULT 0,"wins" INTEGER NOT NULL DEFAULT 0,"losses" INTEGER NOT NULL DEFAULT 0,"updatedAt" TIMESTAMP(3) NOT NULL);
+CREATE UNIQUE INDEX "RankedRating_userId_seasonId_mode_key" ON "limiar"."RankedRating"("userId","seasonId","mode");
+CREATE INDEX "RankedRating_seasonId_mode_mmr_idx" ON "limiar"."RankedRating"("seasonId","mode","mmr");
+CREATE TABLE "limiar"."SeasonReward" ("id" TEXT PRIMARY KEY,"userId" TEXT NOT NULL REFERENCES "limiar"."User"("id") ON DELETE CASCADE,"seasonId" TEXT NOT NULL REFERENCES "limiar"."Season"("id"),"mode" TEXT NOT NULL,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE UNIQUE INDEX "SeasonReward_userId_seasonId_mode_key" ON "limiar"."SeasonReward"("userId","seasonId","mode");
+CREATE TABLE "limiar"."ArenaReport" ("id" TEXT PRIMARY KEY,"userId" TEXT NOT NULL REFERENCES "limiar"."User"("id") ON DELETE CASCADE,"targetId" TEXT NOT NULL,"matchId" TEXT NOT NULL REFERENCES "limiar"."ArenaMatch"("id") ON DELETE CASCADE,"reason" TEXT NOT NULL CHECK("reason" IN('cheat','abuse','afk','grief')),"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE UNIQUE INDEX "ArenaReport_userId_targetId_matchId_key" ON "limiar"."ArenaReport"("userId","targetId","matchId");
+ALTER TABLE "limiar"."ChatMessage" ADD COLUMN "arenaMatchId" TEXT REFERENCES "limiar"."ArenaMatch"("id") ON DELETE CASCADE;
+CREATE INDEX "ChatMessage_arenaMatchId_createdAt_idx" ON "limiar"."ChatMessage"("arenaMatchId","createdAt");
+COMMIT;

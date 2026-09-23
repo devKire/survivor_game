@@ -1,4 +1,5 @@
 "use client";
+import { achievementAmount, achievementCurrency } from "../../game/core/economy";
 import { diagnostics } from "../../game/client/diagnostics";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
@@ -23,17 +24,9 @@ import {
   WEAPON_DEFINITIONS,
   PASSIVE_DEFINITIONS,
   WEAPON_PATHS,
-  META_DEFINITIONS,
 } from "../../game/content/catalog";
 import { freshSave, migrateSave } from "../../game/core/save";
 import type { SaveData, Upgrade } from "../../game/core/types";
-function metaValue(id: string, level: number) {
-  const m = META_DEFINITIONS[id];
-  const value = m.perLevel * level;
-  if (m.unit === "percent") return `+${value}%`;
-  if (m.unit === "perSecond") return `+${value.toFixed(2).replace(".", ",")} HP/s`;
-  return `+${value} armadura`;
-}
 export default function AccountClient({
   user,
 }: {
@@ -186,7 +179,7 @@ export default function AccountClient({
           <section className="panel wide">
             <div className="menu-top">
               <span className="eyebrow">LIMIAR · {user.name}</span>
-              <span>◈ {progress.gold}</span>
+              <span>◆ {progress.gems} Gemas · ◈ {progress.gold} Ouro</span>
             </div>
             <h1>Uma travessia em companhia.</h1>
             <p className="lede">
@@ -197,7 +190,7 @@ export default function AccountClient({
               <section className="card">
                 <h2>Encontramos progresso local.</h2>
                 <p>
-                  Preserve uma cópia na conta e importe suas configurações. Ouro
+                  Preserve uma cópia na conta e importe suas configurações. Gemas, Ouro
                   e conquistas locais permanecem no arquivo solo; recompensas de
                   equipe são conquistadas nas expedições online.
                 </p>
@@ -479,7 +472,7 @@ export default function AccountClient({
                     <p key={a.id}>
                       {progress.achievements.includes(a.id) ? "✓" : "◇"}{" "}
                       {a.name} — {a.text}
-                      <br />Recompensa: {a.character ? `desbloqueia ${CHARACTER_DEFINITIONS[a.character].name}` : `◈ ${a.reward ?? 0}`}
+                      <br />Recompensa: {a.character ? `desbloqueia ${CHARACTER_DEFINITIONS[a.character].name}` : `${achievementCurrency(a.id) === "GOLD" ? "◈" : "◆"} ${achievementAmount(a.id, a.reward)} ${achievementCurrency(a.id) === "GOLD" ? "Ouro" : "Gemas"}`}
                     </p>
                   ))}
                   <p>
@@ -489,22 +482,9 @@ export default function AccountClient({
                       .join(" · ")}
                   </p>
                 </details>
-                <h3>Melhorias permanentes online</h3>
-                <div className="cards meta">
-                  {Object.entries(META_DEFINITIONS).map(([id, m]) => (
-                    <button
-                      key={id}
-                      disabled={busy || (progress.upgrades[id] || 0) >= 5}
-                      onClick={() => void action({ type: "buy", id })}
-                    >
-                      {m.name} · {progress.upgrades[id] || 0}/5
-                      <br />Atual: {metaValue(id, progress.upgrades[id] || 0)}
-                      <br />Próximo: {(progress.upgrades[id] || 0) >= 5 ? "MÁXIMO" : metaValue(id, (progress.upgrades[id] || 0) + 1)}
-                      <br />◈{" "}
-                      {Math.ceil(m.base * 1.7 ** (progress.upgrades[id] || 0))}
-                    </button>
-                  ))}
-                </div>
+                {progress.legacyGoldConverted !== undefined && <p>Economia atualizada: {progress.legacyGoldConverted} Ouro antigo → {progress.legacyGoldConverted} Gemas. Suas melhorias foram preservadas.</p>}
+                <nav className="actions"><Link href="/obelisk">OBELISCO</Link><Link href="/arena">ARENA</Link><Link href="/collection">COLEÇÃO</Link><Link href="/shop">LOJA</Link></nav>
+
               </section>
               <aside className="card">
                 <h2>AMIGOS</h2>

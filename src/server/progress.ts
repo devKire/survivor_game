@@ -2,7 +2,9 @@ import { z } from "zod";
 import { db } from "./db";
 import { freshSave, migrateSave, saveSchema } from "../game/core/save";
 import { META_DEFINITIONS } from "../game/content/catalog";
+import { nodeCost, nodeBlocked } from "../game/content/obelisk";
 import { Prisma } from "../generated/prisma/client";
+import { economyTransaction, lockProgress, persistSave, spendCurrency } from "./economy";
 import { limit, UserError } from "./security";
 export const json = (value: unknown): Prisma.InputJsonValue =>
   JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
@@ -42,24 +44,26 @@ export async function useAccount(userId: string) {
     data: { importResolved: true },
   });
 }
-export async function buyMeta(userId: string, id: string) {
-  if (!Object.hasOwn(META_DEFINITIONS, id))
+export async function buyMeta(userId: string, id: string, expectedRank: number) {
+  if (!Object.hasOwn(META_DEFINITIONS, id) || !Number.isInteger(expectedRank) || expectedRank < 0 || expectedRank >= 5)
     throw new UserError("Melhoria inválida.");
-  const row = await progress(userId),
-    save = migrateSave(row.data),
-    level = save.upgrades[id] || 0,
-    cost = Math.ceil(META_DEFINITIONS[id].base * 1.7 ** level);
-  if (level >= 5 || save.gold < cost)
-    throw new UserError("Ouro insuficiente ou melhoria completa.");
-  save.gold -= cost;
-  save.upgrades[id] = level + 1;
-  const r = await db().userProgress.updateMany({
-    where: { userId, version: row.version },
-    data: { data: json(save), version: { increment: 1 } },
+  await progress(userId);
+  return economyTransaction(async (tx) => {
+    const { save } = await lockProgress(tx, userId);
+    const level = save.upgrades[id] || 0;
+    const referenceId = `meta:${id}:${expectedRank + 1}`;
+    if (await tx.currencyTransaction.findUnique({ where: {
+      userId_currency_referenceId: { userId, currency: "GEMS", referenceId },
+    } })) return save;
+    if (level !== expectedRank) throw new UserError("Nível alterado. Atualize a tela antes de comprar.");
+    const blocked = nodeBlocked(id, save.upgrades, save.unlocked);
+    if (blocked) throw new UserError(blocked);
+    await spendCurrency(tx, save, { userId, currency: "GEMS",
+      amount: nodeCost(id, level), source: "meta", referenceId });
+    save.upgrades[id] = level + 1;
+    await persistSave(tx, userId, save);
+    return save;
   });
-  if (!r.count)
-    throw new UserError("Progresso atualizado em outra aba. Tente novamente.");
-  return save;
 }
 
 const soloInput = z

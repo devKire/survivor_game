@@ -85,7 +85,7 @@ export interface ModeDefinition {
   bossAttackRate: number;
   formationSizeMultiplier: number;
   formationIntervalMultiplier: number;
-  goldDropMultiplier: number;
+  gemDropMultiplier: number;
   rewardMultiplier: number;
   completionBase: number;
   endlessStart: number;
@@ -330,8 +330,8 @@ export interface Upgrade {
   name?: string;
 }
 export type ChestReward =
-  | { kind: "evolution"; id: string; gold: number; upgrade?: never }
-  | { kind: "reward"; upgrade: Upgrade | null; gold: number; id?: never };
+  | { kind: "evolution"; id: string; gems: number; upgrade?: never }
+  | { kind: "reward"; upgrade: Upgrade | null; gems: number; id?: never };
 export interface Settings {
   volume: number;
   sounds: boolean;
@@ -343,7 +343,11 @@ export interface Settings {
 export interface SaveData {
   version: number;
   gameVersion: string;
+  economyVersion: number;
   gold: number;
+  gems: number;
+  legacyGoldConverted?: number;
+  cosmetics: Record<string,string>;
   upgrades: Record<string, number>;
   unlocked: string[];
   achievements: string[];
@@ -370,13 +374,13 @@ export interface RunState {
   time: number;
   simTime: number;
   kills: number;
-  gold: number;
+  gems: number;
   totalDamage: number;
   bossKills: number;
   evolutions: number;
   completed: boolean;
   settled: boolean;
-  completionGold: number | null;
+  completionGems: number | null;
   mapId: string;
   expeditionLength: number;
   worldSeed: string;

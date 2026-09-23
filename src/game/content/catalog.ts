@@ -1,3 +1,4 @@
+import { OBELISK_NODES } from "./obelisk";
 import type {
   AchievementContext,
   AchievementDefinition,
@@ -689,7 +690,7 @@ export const MODE_DEFINITIONS: Record<string, ModeDefinition> = {
     bossAttackRate: 1,
     formationSizeMultiplier: 1,
     formationIntervalMultiplier: 1,
-    goldDropMultiplier: 1,
+    gemDropMultiplier: 1,
     rewardMultiplier: 1,
     completionBase: 250,
   },
@@ -721,7 +722,7 @@ export const MODE_DEFINITIONS: Record<string, ModeDefinition> = {
     bossAttackRate: 1.12,
     formationSizeMultiplier: 1.15,
     formationIntervalMultiplier: 0.86,
-    goldDropMultiplier: 1,
+    gemDropMultiplier: 1,
     rewardMultiplier: 1.25,
     completionBase: 250,
   },
@@ -749,7 +750,7 @@ export const MODE_DEFINITIONS: Record<string, ModeDefinition> = {
     bossAttackRate: 1,
     formationSizeMultiplier: 1,
     formationIntervalMultiplier: 1,
-    goldDropMultiplier: 1,
+    gemDropMultiplier: 1,
     rewardMultiplier: 1,
     completionBase: 0,
     bossInterval: 120,
@@ -800,7 +801,7 @@ export const MODE_DEFINITIONS: Record<string, ModeDefinition> = {
     bossAttackRate: 1,
     formationSizeMultiplier: 1,
     formationIntervalMultiplier: 1,
-    goldDropMultiplier: 1,
+    gemDropMultiplier: 1,
     rewardMultiplier: 1,
     completionBase: 250,
   },
@@ -826,7 +827,7 @@ export function getModeScaling(id: string, time = 0) {
     bossAttack: mode.bossAttackRate,
     formation: mode.formationSizeMultiplier,
     formationInterval: mode.formationIntervalMultiplier,
-    goldDrop: mode.goldDropMultiplier,
+    gemDrop: mode.gemDropMultiplier,
     reward: mode.rewardMultiplier,
   };
   if (!mode.endless || time < mode.endlessStart) return scale;
@@ -855,16 +856,7 @@ export const MAX_ACTIVE_ENEMIES = 1100;
 export const MAX_PRIORITY_ENEMIES = 8;
 export const MAX_WORLD_PICKUPS = 260;
 
-export const META_DEFINITIONS: Record<string, MetaDefinition> = {
-  might: { name: "Potência", text: "+5% de dano", base: 45, perLevel: 5, unit: "percent" },
-  speed: { name: "Agilidade", text: "+4% de movimento", base: 40, perLevel: 4, unit: "percent" },
-  armor: { name: "Proteção", text: "+1 de armadura", base: 65, perLevel: 1, unit: "flat" },
-  vitality: { name: "Vitalidade", text: "+6% de vida", base: 40, perLevel: 6, unit: "percent" },
-  recovery: { name: "Recuperação", text: "+0,15 vida / s", base: 55, perLevel: 0.15, unit: "perSecond" },
-  growth: { name: "Aprendizado", text: "+3% de XP", base: 55, perLevel: 3, unit: "percent" },
-  pickup: { name: "Alcance", text: "+10% de coleta", base: 35, perLevel: 10, unit: "percent" },
-  luck: { name: "Fortuna", text: "+8% de sorte", base: 40, perLevel: 8, unit: "percent" },
-};
+export const META_DEFINITIONS: Record<string, MetaDefinition> = OBELISK_NODES;
 
 export const ACHIEVEMENTS: AchievementDefinition[] = [
   {

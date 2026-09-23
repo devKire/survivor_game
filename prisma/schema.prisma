@@ -20,6 +20,16 @@ model User {
   sessions Session[]
   accounts Account[]
   progress UserProgress?
+  currencyTransactions CurrencyTransaction[]
+  cosmetics UserCosmetic[]
+  echoes EchoState?
+  echoPurchases EchoPurchase[]
+  echoFragments EchoFragmentTransaction[]
+  arenaGames ArenaParticipant[]
+  arenaSeat ArenaSeat?
+  ratings RankedRating[]
+  seasonRewards SeasonReward[]
+  arenaReports ArenaReport[]
   sentRequests Friendship[] @relation("from")
   receivedRequests Friendship[] @relation("to")
   memberships TeamMember[]
@@ -126,11 +136,14 @@ model ChatMessage {
   senderId String
   recipientId String?
   teamId String?
+  arenaMatchId String?
   text String
   createdAt DateTime @default(now())
   sender User @relation("sender",fields:[senderId],references:[id],onDelete:Cascade)
   recipient User? @relation("recipient",fields:[recipientId],references:[id],onDelete:Cascade)
   team Team? @relation(fields:[teamId],references:[id],onDelete:Cascade)
+  arenaMatch ArenaMatch? @relation(fields:[arenaMatchId],references:[id],onDelete:Cascade)
+  @@index([arenaMatchId,createdAt])
   @@index([teamId,createdAt,id])
   @@index([senderId,recipientId,createdAt,id])
   @@schema("limiar")
@@ -169,5 +182,159 @@ model RateLimit {
   key String @unique
   count Int
   lastRequest BigInt
+  @@schema("limiar")
+}
+
+model CurrencyTransaction {
+  id String @id @default(cuid())
+  userId String
+  currency String
+  amount Int
+  type String
+  source String
+  referenceId String
+  balanceAfter Int
+  metadata Json?
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, currency, referenceId])
+  @@index([userId, createdAt])
+  @@index([source, createdAt])
+  @@schema("limiar")
+}
+
+model UserCosmetic {
+  id String @id @default(cuid())
+  userId String
+  cosmeticId String
+  source String
+  createdAt DateTime @default(now())
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@unique([userId,cosmeticId])
+  @@schema("limiar")
+}
+
+model EchoState {
+  userId String @id
+  rare Int @default(0)
+  epic Int @default(0)
+  legendary Int @default(0)
+  fragments Int @default(0)
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@schema("limiar")
+}
+model EchoPurchase {
+  id String @id @default(cuid())
+  userId String
+  requestId String
+  banner String
+  currency String
+  cost Int
+  count Int
+  results Json
+  createdAt DateTime @default(now())
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@unique([userId,requestId])
+  @@index([userId,createdAt])
+  @@schema("limiar")
+}
+model EchoFragmentTransaction {
+  id String @id @default(cuid())
+  userId String
+  amount Int
+  referenceId String
+  source String
+  createdAt DateTime @default(now())
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@unique([userId,referenceId])
+  @@schema("limiar")
+}
+
+model ArenaMatch {
+  id String @id @default(cuid())
+  mode String
+  seasonId String?
+  status String @default("RUNNING")
+  startedAt DateTime @default(now())
+  endedAt DateTime?
+  winner Int?
+  result Json?
+  events Json?
+  participants ArenaParticipant[]
+  seats ArenaSeat[]
+  season Season? @relation(fields:[seasonId],references:[id])
+  reports ArenaReport[]
+  chat ChatMessage[]
+  @@schema("limiar")
+}
+model ArenaParticipant {
+  id String @id @default(cuid())
+  matchId String
+  userId String
+  team Int
+  character String
+  result Json?
+  match ArenaMatch @relation(fields:[matchId],references:[id],onDelete:Cascade)
+  user User @relation(fields:[userId],references:[id])
+  @@unique([matchId,userId])
+  @@index([userId])
+  @@schema("limiar")
+}
+model ArenaSeat {
+  userId String @id
+  matchId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  match ArenaMatch @relation(fields:[matchId],references:[id],onDelete:Cascade)
+  @@schema("limiar")
+}
+
+model Season {
+  id String @id
+  name String
+  startsAt DateTime
+  endsAt DateTime
+  ratings RankedRating[]
+  matches ArenaMatch[]
+  rewards SeasonReward[]
+  @@schema("limiar")
+}
+model RankedRating {
+  id String @id @default(cuid())
+  userId String
+  seasonId String
+  mode String
+  mmr Int @default(1000)
+  peak Int @default(1000)
+  games Int @default(0)
+  wins Int @default(0)
+  losses Int @default(0)
+  updatedAt DateTime @updatedAt
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  season Season @relation(fields:[seasonId],references:[id])
+  @@unique([userId,seasonId,mode])
+  @@index([seasonId,mode,mmr])
+  @@schema("limiar")
+}
+model SeasonReward {
+  id String @id @default(cuid())
+  userId String
+  seasonId String
+  mode String
+  createdAt DateTime @default(now())
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  season Season @relation(fields:[seasonId],references:[id])
+  @@unique([userId,seasonId,mode])
+  @@schema("limiar")
+}
+model ArenaReport {
+  id String @id @default(cuid())
+  userId String
+  targetId String
+  matchId String
+  reason String
+  createdAt DateTime @default(now())
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  match ArenaMatch @relation(fields:[matchId],references:[id],onDelete:Cascade)
+  @@unique([userId,targetId,matchId])
   @@schema("limiar")
 }

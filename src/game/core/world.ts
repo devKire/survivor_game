@@ -255,7 +255,7 @@ export class World {
         Math.random() / Math.max(1, p.stats.luck * (p.luckBuff > 0 ? 1.45 : 1));
       if (r < 0.13) g.dropItemWeighted(s.x, s.y);
       else if (r < 0.28) g.drop("heal", s.x, s.y, 18);
-      else if (r < 0.63) g.drop("gold", s.x, s.y, Math.ceil(rand(2, 6)));
+      else if (r < 0.63) g.drop("gems", s.x, s.y, Math.ceil(rand(2, 6)));
       else g.dropXP(s.x, s.y, 4 + Math.floor(rand(0, 8)));
     }
     g.saveSnapshot(true);

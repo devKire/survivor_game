@@ -1,12 +1,15 @@
+import { nodeEffect } from "../content/obelisk";
 import { WEAPON_DEFINITIONS, WEAPON_PATHS } from "../content/catalog";
 import { ATTACKS } from "./attacks";
 import { clamp, xpNeed } from "./math";
 import type { GameSimulation } from "./simulation";
 import type * as T from "./types";
 export class Player {
+  cosmetics: Record<string,string> = {};
   constructor(
     character: string,
     readonly meta: Record<string, number> = {},
+    readonly ruleset: "PVE" | "PVP" = "PVE",
   ) {
     this.character = character;
     this.x = 0;
@@ -51,13 +54,13 @@ export class Player {
 
   recalculate() {
     const p = (k: string) => this.passives[k] || 0;
-    const m = (k: string) => this.meta[k] || 0;
+    const m = (k: string) => this.ruleset === "PVP" ? 0 : nodeEffect(k, this.meta[k] || 0);
     const c = this.character;
     const old = this.maxHealth;
 
     this.maxHealth = Math.round(
       110 *
-        (1 + 0.15 * p("vitality") + 0.06 * m("vitality")) *
+        (1 + 0.15 * p("vitality") + 0.01 * (m("vitality") + m("vitality2"))) *
         (c === "ivo" ? 0.85 : 1),
     );
 
@@ -65,31 +68,31 @@ export class Player {
 
     this.speed =
       195 *
-      (1 + 0.07 * p("speed") + 0.04 * m("speed")) *
+      (1 + 0.07 * p("speed") + 0.01 * (m("speed") + m("stride"))) *
       (c === "nara" ? 1.1 : 1);
 
     this.armor = p("armor") + m("armor");
 
     this.stats = {
       damage:
-        (1 + 0.1 * p("might") + 0.05 * m("might")) *
+        (1 + 0.1 * p("might") + 0.01 * m("might")) *
         (c === "sena" ? 1.08 : 1) *
         (c === "nara"
           ? 1 + 0.03 * Math.min(10, Math.floor(this.level / 10))
           : 1),
 
-      area: (1 + 0.1 * p("area")) * (c === "orin" ? 1.2 : 1),
-      cooldown: Math.max(0.4, 1 - 0.05 * p("haste")),
-      duration: 1 + 0.15 * p("duration"),
+      area: (1 + 0.1 * p("area") + .01 * m("area")) * (c === "orin" ? 1.2 : 1),
+      cooldown: Math.max(0.4, 1 - 0.05 * p("haste") - .01 * m("haste")),
+      duration: 1 + 0.15 * p("duration") + .01 * m("duration"),
       amount: p("amount") + (c === "ivo" ? 1 : 0),
-      pickupRange: 76 * (1 + 0.25 * p("pickup") + 0.1 * m("pickup")),
+      pickupRange: 76 * (1 + 0.25 * p("pickup") + .01 * m("pickup")),
       growth:
-        (1 + 0.05 * p("growth") + 0.03 * m("growth")) *
+        (1 + 0.05 * p("growth") + .01 * m("growth")) *
         (c === "sena" ? 1.25 : 1),
-      luck: 1 + 0.12 * p("luck") + 0.08 * m("luck"),
-      critChance: 0.07 + 0.01 * p("luck") + 0.005 * m("luck"),
+      luck: 1 + 0.12 * p("luck") + .01 * m("luck"),
+      critChance: 0.07 + 0.01 * p("luck") + .01 * m("precision"),
       recovery:
-        0.25 * p("recovery") + 0.15 * m("recovery") + (c === "orin" ? 0.3 : 0),
+        0.25 * p("recovery") + m("recovery") + (c === "orin" ? 0.3 : 0),
     };
   }
 
@@ -148,6 +151,7 @@ export class Weapon {
         this.definition.damage *
         (1 + 0.23 * (this.level - 1)) *
         p.stats.damage *
+        (1 + (p.ruleset === "PVE" && this.id === ({nara:"ember",orin:"well",ivo:"disc",sena:"chain"} as Record<string,string>)[p.character] ? nodeEffect(p.character+"_focus",p.meta[p.character+"_focus"] || 0)/100 : 0)) *
         (this.evolved ? 1.65 : 1) *
         (p.buff > 0 ? 1.4 : 1) *
         (mods.damage || 1),

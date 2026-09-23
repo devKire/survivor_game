@@ -1,3 +1,4 @@
+import { achievementAmount, achievementCurrency, balanceAfter, completionGold, pveGems } from "./economy";
 import { PROGRESSION, telemetry } from "./progression";
 import {
   ACHIEVEMENTS,
@@ -202,6 +203,7 @@ export class GameSimulation {
     this.clockRate = this.modeDef.clockRate;
 
     this.player = new Player(character, this.save.upgrades);
+    this.player.cosmetics = this.save.cosmetics;
     this.player.weapons.push(
       new Weapon(CHARACTER_DEFINITIONS[character].weapon),
     );
@@ -212,13 +214,13 @@ export class GameSimulation {
       time: 0,
       simTime: 0,
       kills: 0,
-      gold: 0,
+      gems: 0,
       totalDamage: 0,
       bossKills: 0,
       evolutions: 0,
       completed: false,
       settled: false,
-      completionGold: null,
+      completionGems: null,
       mapId,
       expeditionLength: this.expeditionProfile.duration,
       worldSeed: String(seed || makeWorldSeed()),
@@ -394,7 +396,7 @@ export class GameSimulation {
       time: this.run.time,
       simTime: this.run.simTime,
       completed: this.run.completed === true,
-      completionGold: this.run.completionGold,
+      completionGems: this.run.completionGems,
       character: p.character,
       x: p.x,
       y: p.y,
@@ -421,7 +423,7 @@ export class GameSimulation {
       banishments: this.run.banishments,
       skips: this.run.skips,
       banned: [...this.run.banned],
-      gold: this.run.gold,
+      gems: this.run.gems,
       kills: this.run.kills,
       totalDamage: this.run.totalDamage,
       bossKills: this.run.bossKills,
@@ -485,8 +487,10 @@ export class GameSimulation {
         ? s.mode
         : "normal";
     this.modeDef = getModeDefinition(this.mode);
+    this.expeditionProfile = getExpeditionProfile(s.expeditionLength);
     this.clockRate = this.modeDef.clockRate;
     this.player = new Player(s.character, this.save.upgrades);
+    this.player.cosmetics = this.save.cosmetics;
     const p = this.player;
     p.x = s.x;
     p.y = s.y;
@@ -512,14 +516,14 @@ export class GameSimulation {
       time: s.time,
       simTime: s.simTime || s.time,
       kills: s.kills || 0,
-      gold: s.gold || 0,
+      gems: s.gems || 0,
       totalDamage: s.totalDamage || 0,
       bossKills: s.bossKills || 0,
       evolutions: s.evolutions || 0,
       completed: s.completed === true,
       settled: false,
-      completionGold: Number.isFinite(s.completionGold)
-        ? s.completionGold
+      completionGems: Number.isFinite(s.completionGems)
+        ? s.completionGems
         : null,
       mapId: s.mapId,
       expeditionLength: s.expeditionLength ?? 1800,
@@ -658,7 +662,7 @@ export class GameSimulation {
         r.surgeTime = Math.max(r.surgeTime, 45);
         this.announce(
           "O céu se parte",
-          "Mais elites e mais ouro por 45 segundos.",
+          "Mais elites e mais Gemas por 45 segundos.",
         );
       } else {
         this.announce(
@@ -905,15 +909,15 @@ export class GameSimulation {
         );
       }
     } else if (s.type === "memory") {
-      if (r.gold < 35) {
-        this.announce("Altar da Memória", "São necessários 35 ecos de ouro.");
+      if (p.xp < 35) {
+        this.announce("Altar da Memória", "São necessários 35 cristais de XP da expedição.");
         this.resume();
         return;
       }
-      r.gold -= 35;
+      p.xp -= 35;
       p.xp += p.xpToNextLevel * 0.55;
       used();
-      this.announce("Memória comprada", "Ouro se converte em experiência.");
+      this.announce("Memória comprada", "Memória da expedição se converte em experiência.");
     } else if (s.type === "rift_altar") {
       used();
       r.riftPending = { id: s.id, count: 4, x: s.x, y: s.y };
@@ -942,13 +946,13 @@ export class GameSimulation {
       this.world.mark(s, { opened: true, used: true });
       r.structuresUsed++;
       if (r.telemetry) r.telemetry.structures++;
-      r.gold += 80;
+      r.gems += 80;
       r.rerolls++;
       this.dropItemWeighted(p.x + 22, p.y, this.weightedItem().id);
       this.dropItemWeighted(p.x - 22, p.y, this.weightedItem().id);
       this.announce(
         "Cofre aberto",
-        "80 ouro, um reroll e duas relíquias foram reveladas.",
+        "80 Gemas, um reroll e duas relíquias foram reveladas.",
       );
     } else if (s.type === "obelisk") {
       used();
@@ -1077,7 +1081,7 @@ export class GameSimulation {
       !r.completed
     ) {
       r.completed = true;
-      r.completionGold = r.gold;
+      r.completionGems = r.gems;
       this.spawn("final");
       this.checkAchievements();
       this.setState("goal");
@@ -1870,14 +1874,14 @@ export class GameSimulation {
           this.player.stats.luck *
           (this.player.luckBuff > 0 ? 1.45 : 1) *
           (this.run.surgeTime > 0 ? 1.15 : 1);
-        const goldChance = clamp(
-          0.055 * luck * this.modeScaling().goldDrop,
+        const gemChance = clamp(
+          0.055 * luck * this.modeScaling().gemDrop,
           0,
           0.12,
         );
-        if (Math.random() < goldChance)
+        if (Math.random() < gemChance)
           this.drop(
-            "gold",
+            "gems",
             e.x + 9,
             e.y,
             Math.ceil(rand(1, 3) * (this.run.surgeTime > 0 ? 1.5 : 1)),
@@ -2123,8 +2127,8 @@ export class GameSimulation {
     void point;
     return true;
   }
-  grantGold(value: number) {
-    this.run.gold += value;
+  grantGems(value: number) {
+    this.run.gems += value;
   }
   updateDrops(dt: number, lifetimeDt = dt) {
     const p = this.player;
@@ -2174,8 +2178,8 @@ export class GameSimulation {
       removeAt(this.pickups, i);
 
       switch (item.type) {
-        case "gold":
-          this.grantGold(item.value);
+        case "gems":
+          this.grantGems(item.value);
           break;
 
         case "heal":
@@ -2294,7 +2298,7 @@ export class GameSimulation {
         out.push(selected);
         pool.splice(pool.indexOf(selected), 1);
       }
-      for (const id of ["heal", "gold", "buff", "magnet"])
+      for (const id of ["heal", "gems", "buff", "magnet"])
         if (out.length < optionCount)
           out.push({ kind: "bonus", id, weight: 1 });
       key = out
@@ -2338,7 +2342,7 @@ export class GameSimulation {
     if (automatic) {
       r.lastDecisionAt = r.time;
       p.health = Math.min(p.maxHealth, p.health + p.maxHealth * 0.04);
-      r.gold += 3;
+      r.gems += 3;
       return;
     }
     r.telemetry ??= telemetry();
@@ -2393,7 +2397,7 @@ export class GameSimulation {
     else if (item.id === "buff") p.buff = 12;
     else if (item.id === "magnet")
       for (const gem of this.gems) gem.magnet = true;
-    else this.run.gold += 25;
+    else this.run.gems += 25;
     return null;
   }
 
@@ -2460,12 +2464,12 @@ export class GameSimulation {
     if (this.state !== "levelup" || this.pathSelection || this.run.skips <= 0)
       return;
     this.run.skips--;
-    this.run.gold += 8;
+    this.run.gems += 8;
     this.choices = [];
     this.resume();
     this.announce(
       "Eco recusado",
-      "+8 ouro pela escolha de seguir sem melhoria.",
+      "+8 Gemas pela escolha de seguir sem melhoria.",
     );
     this.ui.updateHUD();
     this.saveSnapshot(true);
@@ -2487,11 +2491,11 @@ export class GameSimulation {
     const options = this.candidates(true);
 
     this.chestReward = eligible
-      ? { kind: "evolution", id: eligible.id, gold: item.value }
+      ? { kind: "evolution", id: eligible.id, gems: item.value }
       : {
           kind: "reward",
           upgrade: options.length ? weighted(options) : null,
-          gold: item.value,
+          gems: item.value,
         };
 
     this.setState("chest");
@@ -2506,7 +2510,7 @@ export class GameSimulation {
 
     const reward = this.chestReward;
     this.chestReward = null;
-    this.run.gold += reward.gold;
+    this.run.gems += reward.gems;
 
     if (reward.kind === "evolution") {
       const w = this.player.weapons.find((w) => w.id === reward.id);
@@ -2554,14 +2558,16 @@ export class GameSimulation {
           this.save.unlocked.push(a.character);
         }
 
-        if (a.reward) this.save.gold += a.reward;
+        const currency = achievementCurrency(a.id), amount = achievementAmount(a.id, a.reward);
+        if (currency === "GEMS") this.save.gems = balanceAfter(this.save.gems, amount);
+        else this.save.gold = balanceAfter(this.save.gold, amount);
 
         this.announce(
           "Conquista • " + a.name,
           a.character
             ? CHARACTER_DEFINITIONS[a.character].name + " disponível"
             : a.reward
-              ? `+${a.reward} ouro permanente`
+              ? `+${amount} ${currency === "GEMS" ? "Gemas" : "Ouro"}`
               : a.text,
         );
 
@@ -2580,30 +2586,22 @@ export class GameSimulation {
 
     this.run.settled = true;
     this.run.abandoned = abandoned;
-    const baseBonus = this.run.completed ? this.modeDef.completionBase : 0;
-    const rewardGold =
-      this.run.completionGold !== null &&
-      Number.isFinite(this.run.completionGold)
-        ? this.run.completionGold
-        : this.run.gold;
-    const difficultyBonus =
-      this.run.completed && this.modeDef.rewardMultiplier > 1
-        ? Math.floor(rewardGold * (this.modeDef.rewardMultiplier - 1))
-        : 0;
-    this.run.bonus = baseBonus + difficultyBonus;
-    this.run.difficultyBonus = difficultyBonus;
+    const gemsReward = pveGems(this.run.gems, this.run.completed, this.modeDef.rewardMultiplier, this.expeditionProfile.completionBase);
+    this.run.bonus = gemsReward - this.run.gems;
+    this.run.difficultyBonus = this.run.completed ? Math.floor(this.run.gems * (this.modeDef.rewardMultiplier - 1)) : 0;
 
     this.run.score = Math.floor(
       this.run.kills * 10 +
         this.run.time +
         this.run.totalDamage / 100 +
-        this.run.gold * 5 +
+        this.run.gems * 5 +
         (this.run.completed ? 10000 : 0),
     );
 
     if (this.modeDef.savesProgress) {
       this.save.activeRun = null;
-      this.save.gold += this.run.gold + this.run.bonus;
+      this.save.gems = balanceAfter(this.save.gems, gemsReward);
+      this.save.gold = balanceAfter(this.save.gold, completionGold(this.run.completed, this.run.expeditionLength));
       this.save.runs++;
 
       if (this.run.completed) this.save.completed++;
@@ -2741,7 +2739,7 @@ export class GameSimulation {
 
   debugKey(key: string) {
     if (!DEBUG || !this.run || this.run.settled) return;
-    if (key === "F1") this.run.gold += 1000;
+    if (key === "F1") this.run.gems += 1000;
     if (key === "F2") {
       this.player.xp += this.player.xpToNextLevel * 3;
       this.maybeLevelUp();

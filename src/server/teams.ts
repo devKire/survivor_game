@@ -196,6 +196,7 @@ export async function startTeam(userId: string) {
       throw new UserError(
         "Somente o líder inicia; todos precisam estar prontos.",
       );
+    if(await tx.arenaSeat.count({where:{userId:{in:team.members.map(m=>m.userId)}}}))throw new UserError("Um membro está em partida competitiva.");
     await tx.team.update({
       where: { id: team.id },
       data: { status: "RUNNING" },

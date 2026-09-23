@@ -79,7 +79,7 @@ export interface Participant {
   downed: boolean;
   revive: number;
   inventory: (InventorySlot | null)[];
-  gold: number;
+  gems: number;
   synergies: string[];
   rerolls: number;
   banishments: number;
@@ -146,6 +146,7 @@ export class CoopSimulation extends GameSimulation {
     };
     players.forEach((data, i) => {
       const p = new Player(data.character, data.progress.upgrades);
+      p.cosmetics = data.progress.cosmetics;
       const w = new Weapon(CHARACTER_DEFINITIONS[data.character].weapon);
       w.ownerId = data.id;
       p.weapons.push(w);
@@ -169,7 +170,7 @@ export class CoopSimulation extends GameSimulation {
         downed: false,
         revive: 0,
         inventory: [null, null, null, null],
-        gold: 0,
+        gems: 0,
         synergies: [],
         rerolls: 2,
         banishments: 2,
@@ -224,7 +225,7 @@ export class CoopSimulation extends GameSimulation {
     this.player = m.player;
     this.save = m.progress;
     this.run.inventory = m.inventory;
-    this.run.gold = m.gold;
+    this.run.gems = m.gems;
     this.run.synergies = m.synergies;
     this.run.rerolls = m.rerolls;
     this.run.banishments = m.banishments;
@@ -241,7 +242,7 @@ export class CoopSimulation extends GameSimulation {
       usedExchange: this.run.usedExchange,
     };
     m.inventory = this.run.inventory;
-    m.gold = this.run.gold;
+    m.gems = this.run.gems;
     m.synergies = this.run.synergies;
     m.rerolls = this.run.rerolls;
     m.banishments = this.run.banishments;
@@ -297,9 +298,9 @@ export class CoopSimulation extends GameSimulation {
       ? this.activeMember?.id === point.ownerId
       : this.nearestPlayer(point) === this.player;
   }
-  override grantGold(value: number) {
-    for (const m of this.members.values()) m.gold += value;
-    this.run.gold = this.activeMember!.gold;
+  override grantGems(value: number) {
+    for (const m of this.members.values()) m.gems += value;
+    this.run.gems = this.activeMember!.gems;
   }
   override openChest(item: { value: number }) {
     const current = this.activeMember!;
@@ -314,7 +315,7 @@ export class CoopSimulation extends GameSimulation {
         const choices = this.candidates(true);
         if (choices.length) this.applyUpgrade(choices[0]);
       }
-      this.run.gold += item.value;
+      this.run.gems += item.value;
       this.capture(m);
     }
     this.run.telemetry!.chests++;
@@ -564,7 +565,7 @@ export class CoopSimulation extends GameSimulation {
           }
         } else {
           m.player.health = Math.min(m.player.maxHealth, m.player.health + 3);
-          this.run.gold += 3;
+          this.run.gems += 3;
         }
         this.capture(m);
       }

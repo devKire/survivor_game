@@ -1,4 +1,6 @@
+import { COSMETICS } from "../content/cosmetics";
 import { z } from "zod";
+import { ECONOMY_VERSION } from "./economy";
 import * as C from "../content/catalog";
 import type { RunSnapshot, SaveData } from "./types";
 const ids = (table: object) =>
@@ -46,7 +48,7 @@ const changes = z
       .strict(),
   )
   .refine((v) => Object.keys(v).length <= 12000);
-export const runSchema = z.object({
+export const runSchema = z.preprocess(migrateRunCurrency, z.object({
   telemetry: z
     .object({
       levelUps: z.array(bounded(1e6)).max(999),
@@ -87,11 +89,11 @@ export const runSchema = z.object({
           z.object({
             kind: z.literal("evolution"),
             id: ids(C.WEAPON_DEFINITIONS),
-            gold: count,
+            gems: count,
           }),
           z.object({
             kind: z.literal("reward"),
-            gold: count,
+            gems: count,
             upgrade: z
               .object({
                 kind: z.enum(["weapon", "passive", "path", "bonus"]),
@@ -129,13 +131,13 @@ export const runSchema = z.object({
     .record(ids(C.PASSIVE_DEFINITIONS), bounded(5).int())
     .refine((v) => Object.keys(v).length <= 6),
   inventory,
-  gold: count.default(0),
+  gems: count.default(0),
   kills: count.default(0),
   totalDamage: bounded(1e12).default(0),
   bossKills: count.default(0),
   evolutions: count.default(0),
   completed: z.boolean().default(false),
-  completionGold: count.nullable().default(null),
+  completionGems: count.nullable().default(null),
   worldChanges: changes.default({}),
   rerolls: bounded(999).int().default(2),
   banishments: bounded(999).int().default(2),
@@ -219,11 +221,14 @@ export const runSchema = z.object({
     )
     .max(80)
     .default([]),
-});
+}));
 export function freshSave(): SaveData {
   return {
     version: 3,
     gameVersion: "2.0.0",
+    economyVersion: ECONOMY_VERSION,
+    cosmetics: {},
+    gems: 0,
     gold: 0,
     upgrades: {},
     unlocked: ["nara"],
@@ -257,6 +262,10 @@ export function freshSave(): SaveData {
 }
 export const saveSchema = z.object({
   version: z.number().int().min(1).max(3).default(1),
+  economyVersion: z.number().int().min(1).max(ECONOMY_VERSION).default(1),
+  legacyGoldConverted: count.optional(),
+  cosmetics: z.record(z.string(), ids(COSMETICS)).default({}),
+  gems: count.default(0),
   gold: count.default(0),
   highScore: count.default(0),
   bestTime: count.default(0),
@@ -310,6 +319,10 @@ export function migrateSave(raw: unknown): SaveData {
     ...freshSave(),
     ...v,
     version: 3,
+    economyVersion: ECONOMY_VERSION,
+    gems: v.economyVersion < ECONOMY_VERSION ? v.gold : v.gems,
+    gold: v.economyVersion < ECONOMY_VERSION ? 0 : v.gold,
+    legacyGoldConverted: v.economyVersion < ECONOMY_VERSION ? v.gold : v.legacyGoldConverted,
     activeRun: v.activeRun ?? null,
     unlocked: [...new Set(["nara", ...v.unlocked])],
     selected: v.unlocked.includes(v.selected) ? v.selected : "nara",
@@ -331,4 +344,27 @@ export function validateImportEnvelope(
   s: unknown,
 ): s is z.infer<typeof importSchema> {
   return importSchema.safeParse(s).success;
+}
+
+/** Old snapshots named run currency gold, including pending chest rewards. */
+function migrateRunCurrency(input: unknown): unknown {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return input;
+  const raw = input as Record<string, unknown>;
+  const result: Record<string, unknown> = { ...raw, gems: raw.gems ?? raw.gold ?? 0, completionGems: raw.completionGems ?? raw.completionGold ?? null };
+  if (raw.pending && typeof raw.pending === "object") {
+    const pending = raw.pending as Record<string, unknown>;
+    const migrateChoice = (value: unknown) => {
+      if (!value || typeof value !== "object") return value;
+      const choice = value as Record<string, unknown>;
+      return choice.kind === "bonus" && choice.id === "gold" ? { ...choice, id: "gems" } : choice;
+    };
+    result.pending = { ...pending, choices: Array.isArray(pending.choices) ? pending.choices.map(migrateChoice) : pending.choices };
+    if (pending.chestReward && typeof pending.chestReward === "object") {
+      const reward = pending.chestReward as Record<string, unknown>;
+      result.pending = { ...(result.pending as Record<string, unknown>), chestReward: {
+        ...reward, gems: reward.gems ?? reward.gold ?? 0, upgrade: migrateChoice(reward.upgrade),
+      } };
+    }
+  }
+  return result;
 }

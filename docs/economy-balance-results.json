@@ -1,0 +1,32 @@
+{
+  "assumptions": "One seeded invulnerable Nara bot per duration; nearest XP/currency/chest collection; first available upgrade; achievements excluded. Not human difficulty or production distribution.",
+  "results": [
+    {
+      "duration": 600,
+      "kills": 4243,
+      "collectedGems": 826,
+      "gems": 936,
+      "gold": 2,
+      "gemsPerMinute": 93.6,
+      "secondsToSimulate": 3.984438307
+    },
+    {
+      "duration": 900,
+      "kills": 10484,
+      "collectedGems": 1430,
+      "gems": 1605,
+      "gold": 3,
+      "gemsPerMinute": 107,
+      "secondsToSimulate": 5.857025835
+    },
+    {
+      "duration": 1800,
+      "kills": 35956,
+      "collectedGems": 3679,
+      "gems": 3929,
+      "gold": 6,
+      "gemsPerMinute": 130.96666666666667,
+      "secondsToSimulate": 14.067672573999998
+    }
+  ]
+}

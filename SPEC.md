@@ -44,7 +44,28 @@ V19. Perfis 10/15/30 compartilhados: progressão, bosses, paths, evolução, con
 V20. Meta efeito/descrição/current/next/max compartilham definição/unidades; conquistas registradas nunca pagam retroativamente.
 V21. HUD online isolada do menu; drawer não pausa; chat recolhido; starter muda sem alterar bônus do personagem.
 
+V22. Carteira online em UserProgress; toda mutação financeira com lock, ledger e transação única.
+V23. Recompensa por referência e compra por rank esperado pagam/debitam uma única vez; saldo inteiro 0..1e9.
+V24. XP não é moeda; drops comuns concedem Gemas; Ouro só fontes raras; meta custa Gemas.
+V25. economyVersion migra ouro legado 1:1 para Gemas uma vez; níveis/save/archive preservados; cliente não concede mérito online.
+
+
 ## §T
+
+Orientação 23/09: priorizar implementação; evitar bateria ampla de testes; verificações essenciais por fase.
+Novo path econômico/competitivo autorizado em 23/09/2026, incremental; ver docs/ECONOMY-AUDIT.md.
+
+| id | status | tarefa | cites |
+|---|---|---|---|
+| T24 | x | F1 Gemas/Ouro, migração auditada, ledger, UI, concorrência e regressões | V1,V6,V13,V14,V22,V23,V24,V25 |
+| T25 | x | F2 Obelisco: cinco ramos, prerequisitos, preview e compra autoritativa | V20,V22,V23 |
+| T26 | x | F3 coleção cosmética e loja sem poder competitivo | V5,V22,V23 |
+| T27 | x | F4 Gacha cosmético, pity, fragmentos e crafting (estatística adiada pelo usuário) | V6,V22,V23 |
+| T28 | x | F5 Arena casual autoritativa normalizada, rounds e reconexão | V2,V5,V8,V14 |
+| T29 | x | F6 Ranked 1v1, MMR, temporadas e recompensas | V5,V6,V14,V22 |
+| T30 | x | F7 5v5: bases, três rotas, minions e instrumentação de carga | V2,V5,V8,V14 |
+| T31 | x | F8 Soldado/Construtor/Comandante e Energia temporária | V5,V14 |
+| T32 | x | F9 Ranked 5v5, temporadas e validação final | V5,V6,V14,V22 |
 
 | id | status | tarefa | cites |
 |---|---|---|---|
@@ -108,3 +129,13 @@ V21. HUD online isolada do menu; drawer não pausa; chat recolhido; starter muda
 | B18 | 2026-09-17 | Snapshot no React pode coalescer deltas e renderiza menus; objetos visuais recriados em todo frame | V17 |
 | B19 | 2026-09-17 | Cliente novo reinicia sequence abaixo do ACK após reconnect | V8,V16 |
 | B20 | 2026-09-17 | Esc fecha chat, desfoca input e propaga para pausa da engine | V21 |
+| B21 | 2026-09-23 | Script de auditoria importa env protegido por server-only | Executar node --conditions=react-server --import tsx; V14 existente basta |
+
+| B22 | 2026-09-23 | Objeto de migração inferido sem chave pending | Record<string, unknown>; V25 basta |
+| B23 | 2026-09-23 | Import validava envelope mas usava activeRun bruto; resume ignorava duração | Migrar snapshot junto e restaurar perfil; V19,V25 |
+| B24 | 2026-09-23 | DNS Neon e subprocesso Next bloqueados no sandbox | Reexecutar verificações com permissão; V14, sem nova invariant |
+
+| B25 | 2026-09-23 | Novo comando de fila exige classe no cliente; relatório lia snapshot ref durante render e cutoff usava Date.now em componente | Classe explícita, roster em estado e cutoff no servidor; V8,V14,V17 bastam; typecheck/lint, sem nova bateria conforme usuário |
+| B26 | 2026-09-23 | Forfeit 5v5 mantinha deadline infinito e reconexão herdada aceitava abandonante | Override rejeita IDs no conjunto left; V5,V8 bastam |
+
+| B27 | 2026-09-23 | Projétil consumido por minion poderia sobreviver até filtro do tick seguinte | Remover após colisão da Guerra e ignorar life<=0 no combate compartilhado; V5,V6 bastam |

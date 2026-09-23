@@ -1,3 +1,4 @@
+import { cosmeticVisual } from "../game/content/cosmetics";
 import type { CoopSimulation, Participant } from "../game/core/coop";
 import type {
   NetEntity,
@@ -64,7 +65,7 @@ export class SnapshotStream {
           y: round(b.y),
           r: b.r,
           type: b.kind,
-          color: b.color,
+          color: b.enemy ? b.color : cosmeticVisual(g.ownerOf(b.source).cosmetics).projectile?.color || b.color,
           enemy: b.enemy,
         });
     for (const a of g.areas)
@@ -152,6 +153,7 @@ export class SnapshotStream {
         name: t.name,
         color: t.color,
         character: t.player.character,
+        cosmetics: t.player.cosmetics,
         x: round(t.player.x),
         y: round(t.player.y),
         dx: t.player.dx,
@@ -195,7 +197,7 @@ export class SnapshotStream {
         choices: m.choices,
         decision: m.decision,
         pending: m.pending,
-        gold: m.gold,
+        gems: m.gems,
         rerolls: m.rerolls,
         banishments: m.banishments,
         skips: m.skips,

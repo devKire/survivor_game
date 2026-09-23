@@ -1,7 +1,9 @@
+import { arenaCommands,arenaMessages } from "./pvp";
 import { z } from "zod";
 import { saveSchema } from "../core/save";
 const id = z.string().min(1).max(100);
 export const clientMessage = z.discriminatedUnion("type", [
+  ...arenaCommands,
   z.object({ type: z.literal("HELLO"), ticket: z.string().max(1500) }).strict(),
   z.object({ type: z.literal("SYNC") }).strict(),
   z.object({ type: z.literal("READY"), ready: z.boolean() }).strict(),
@@ -94,6 +96,7 @@ export interface NetEntity {
   itemId?: string;
 }
 export interface NetPlayer {
+  cosmetics?: Record<string,string>;
   buff?: number;
   invulnerable?: number;
   orbit?: { area: number; amount: number; evolved: boolean };
@@ -139,7 +142,7 @@ export interface Snapshot {
     choices: import("../core/types").Upgrade[];
     decision: number;
     pending: number;
-    gold: number;
+    gems: number;
     rerolls: number;
     banishments: number;
     skips: number;
@@ -214,6 +217,7 @@ const entity = z.object({
   itemId: z.string().optional(),
 });
 const player: z.ZodType<NetPlayer> = z.object({
+  cosmetics: z.record(z.string(),z.string()).optional(),
   buff: z.number().optional(),
   invulnerable: z.number().optional(),
   orbit: z
@@ -289,7 +293,7 @@ export const snapshotSchema: z.ZodType<Snapshot> = z.object({
     choices: z.array(upgrade).max(4),
     decision: z.number(),
     pending: z.number(),
-    gold: z.number(),
+    gems: z.number(),
     rerolls: z.number(),
     banishments: z.number(),
     skips: z.number(),
@@ -347,6 +351,7 @@ export const friendSchema = z.object({
   presence: z.string(),
 });
 export const serverMessage = z.union([
+  ...arenaMessages,
   snapshotSchema,
   z.object({
     type: z.literal("ACCOUNT"),

@@ -1,3 +1,5 @@
+import { ArenaService } from "./arena";
+import { arenaCommand } from "../game/network/pvp";
 import "dotenv/config";
 import { WebSocketServer, WebSocket } from "ws";
 import { createServer } from "node:http";
@@ -84,6 +86,9 @@ function send(c: Connection, message: unknown) {
     c.ws.close(1013, "Conexão lenta; reconecte.");
 }
 const online = (id: string) => [...connections].filter((c) => c.userId === id);
+const arena = new ArenaService((id,message)=>{for(const c of online(id))send(c,message);});
+const arenaTimer=setInterval(()=>arena.update(),40);
+const arenaQueueTimer=setInterval(()=>void arena.pair().catch(()=>{}),1000);
 function presence(id: string) {
   const c = online(id)[0];
   return !c
@@ -167,6 +172,7 @@ async function hello(c: Connection, ticket: string) {
     data: { lastSeenAt: new Date() },
   });
   await sync(c);
+  arena.reconnect(c.userId);
 }
 wss.on("connection", (ws) => {
   const c: Connection = {
@@ -228,6 +234,9 @@ wss.on("connection", (ws) => {
       return;
     }
     const room = c.room ? rooms.get(c.room) : undefined;
+    if (v.type === "ARENA_INPUT") {
+      void arena.handle(c.userId,c.username,v); return;
+    }
     if (v.type === "INPUT") {
       room?.game.acceptInput(c.userId, v);
       return;
@@ -237,7 +246,7 @@ wss.on("connection", (ws) => {
       return;
     }
     if (
-      ["HELLO", "SYNC", "READY", "CONFIG", "START", "KICK", "CHAT"].includes(
+      v.type.startsWith("ARENA_") || ["HELLO", "SYNC", "READY", "CONFIG", "START", "KICK", "CHAT"].includes(
         v.type,
       )
     ) {
@@ -274,6 +283,7 @@ wss.on("connection", (ws) => {
         if (c.userId) throw new UserError("Conexão já autenticada.");
         await hello(c, v.ticket);
       }
+      if(v.type.startsWith("ARENA_")) await arena.handle(c.userId,c.username,arenaCommand.parse(v));
       if (v.type === "SYNC") {
         const old = c.teamId,
           related = new Set(c.related);
@@ -299,6 +309,8 @@ wss.on("connection", (ws) => {
         if (team) await refreshTeam(team.id);
       }
       if (v.type === "START") {
+        const existingTeam=await teams.currentTeam(c.userId);
+        if(existingTeam?.members.some(m=>arena.active.has(m.userId)||arena.queue.has(m.userId))) throw new UserError("Um membro está na Arena ou na fila competitiva.");
         if (rooms.size >= 32)
           throw new UserError("Servidor cheio. Tente mais tarde.");
         const session = await teams.startTeam(c.userId);
@@ -386,6 +398,7 @@ wss.on("connection", (ws) => {
     clearTimeout(authTimer);
     connections.delete(c);
     if (c.userId && !online(c.userId).length) {
+      arena.disconnect(c.userId);
       if (c.room) rooms.get(c.room)?.game.disconnect(c.userId);
       for (const peer of connections)
         if (peer.friends.has(c.userId))
@@ -526,10 +539,12 @@ await db().team.updateMany({
   where: { status: "RUNNING" },
   data: { status: "LOBBY" },
 });
+await arena.initialize();
 server.listen(port, "0.0.0.0", () =>
   console.log(`LIMIAR realtime · ${TICK_HZ} Hz · snapshots ${SNAPSHOT_HZ} Hz`),
 );
 function close() {
+  clearInterval(arenaTimer);clearInterval(arenaQueueTimer);
   clearInterval(interval);
   clearInterval(maintenance);
   for (const c of connections) c.ws.close(1012, "Servidor reiniciando.");

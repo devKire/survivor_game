@@ -1,13 +1,13 @@
 {
   "totalTickIncludingSnapshotsMs": {
-    "mean": 14.230960946666679,
-    "p95": 38.50382499999978,
-    "max": 52.90443800000003
+    "mean": 8.411160583333345,
+    "p95": 18.237942999999973,
+    "max": 31.10077799999999
   },
   "snapshotBatchMs": {
-    "mean": 21.01341678991597,
-    "p95": 32.045581000000084,
-    "max": 35.24543200000062
+    "mean": 9.856575915966381,
+    "p95": 14.03245800000002,
+    "max": 16.263508
   },
   "players": 5,
   "initialEnemies": 1100,
@@ -15,37 +15,37 @@
   "ticks": 300,
   "tickHz": 25,
   "tickMs": {
-    "mean": 5.893062586666665,
-    "p95": 11.351848000000018,
-    "max": 52.89966500000003
+    "mean": 4.4998462233333445,
+    "p95": 7.916762999999946,
+    "max": 31.097141999999963
   },
-  "heapDeltaMB": 22.358062744140625,
-  "heapMB": 37.656097412109375,
+  "heapDeltaMB": 5.509407043457031,
+  "heapMB": 20.954940795898438,
   "snapshots": [
     {
-      "meanBytes": 29454,
-      "maxBytes": 88970,
-      "approxBytesPerSecondAt10Hz": 294544
+      "meanBytes": 30129,
+      "maxBytes": 88994,
+      "approxBytesPerSecondAt10Hz": 301287
     },
     {
-      "meanBytes": 42087,
-      "maxBytes": 122360,
-      "approxBytesPerSecondAt10Hz": 420867
+      "meanBytes": 42642,
+      "maxBytes": 122384,
+      "approxBytesPerSecondAt10Hz": 426422
     },
     {
-      "meanBytes": 43828,
-      "maxBytes": 123436,
-      "approxBytesPerSecondAt10Hz": 438279
+      "meanBytes": 44935,
+      "maxBytes": 123460,
+      "approxBytesPerSecondAt10Hz": 449352
     },
     {
-      "meanBytes": 45166,
-      "maxBytes": 124480,
-      "approxBytesPerSecondAt10Hz": 451663
+      "meanBytes": 47078,
+      "maxBytes": 124504,
+      "approxBytesPerSecondAt10Hz": 470784
     },
     {
-      "meanBytes": 35379,
-      "maxBytes": 101700,
-      "approxBytesPerSecondAt10Hz": 353793
+      "meanBytes": 36530,
+      "maxBytes": 101724,
+      "approxBytesPerSecondAt10Hz": 365299
     }
   ]
 }

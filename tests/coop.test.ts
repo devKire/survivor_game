@@ -199,14 +199,14 @@ describe("Co-op regression boundaries", () => {
     g.damageEnemy(e, 1e6, w);
     expect(g.run.kills).toBe(1);
   });
-  it("shares world gold without dividing it and preserves pickup lifetime", () => {
+  it("shares world gems without dividing it and preserves pickup lifetime", () => {
     const g = create(5);
     g.pickups.push(
-      { type: "gold", x: 0, y: 0, value: 50, life: 20 },
+      { type: "gems", x: 0, y: 0, value: 50, life: 20 },
       { type: "heal", x: 900, y: 900, value: 10, life: 20 },
     );
     g.update(0.04);
-    expect([...g.members.values()].map((m) => m.gold)).toEqual([
+    expect([...g.members.values()].map((m) => m.gems)).toEqual([
       50, 50, 50, 50, 50,
     ]);
     expect(g.pickups[0].life).toBeCloseTo(19.96);
@@ -214,7 +214,7 @@ describe("Co-op regression boundaries", () => {
   it("delivers individual boss rewards and limits automatic level conversion", () => {
     const g = create(5);
     g.openChest({ value: 100 });
-    expect([...g.members.values()].every((m) => m.gold === 100)).toBe(true);
+    expect([...g.members.values()].every((m) => m.gems === 100)).toBe(true);
     g.manual = 26;
     g.teamXp = 1e6;
     g.run.time = 1750;

@@ -1,3 +1,6 @@
+import { cosmeticVisual } from "../content/cosmetics";
+import { OBELISK_BRANCHES, OBELISK_NODES, nodeBlocked, nodeCost, nodeValue } from "../content/obelisk";
+import { achievementAmount, achievementCurrency, completionGold } from "../core/economy";
 import { diagnostics } from "./diagnostics";
 import {
   ACHIEVEMENTS,
@@ -7,7 +10,6 @@ import {
   ENEMY_DEFINITIONS,
   ITEM_DEFINITIONS,
   MAP_DEFINITIONS,
-  META_DEFINITIONS,
   EXPEDITION_LENGTHS,
   MODE_DEFINITIONS,
   PASSIVE_DEFINITIONS,
@@ -603,7 +605,7 @@ class UI {
       `
       <div class="menu-top">
         <span class="eyebrow">ESTÚDIO DO LIMIAR · VOL. 01</span>
-        <span class="gold">◈ ${fmt(this.g.save.gold)}</span>
+        <span class="gold">◆ ${fmt(this.g.save.gems)} Gemas · ◈ ${fmt(this.g.save.gold)} Ouro</span>
       </div>
       <div class="hero">
         <div>
@@ -626,7 +628,7 @@ class UI {
           }
           <div class="menu-grid">
             ${this.button("characters", "Personagens e mapas")}
-            ${this.button("meta", "Melhorias permanentes")}
+            ${this.button("meta", "Obelisco")}
             ${this.button("achievements", "Conquistas")}
             ${this.button("settings", "Configurações")}
           </div>
@@ -638,6 +640,7 @@ class UI {
           <span style="color:${c.color}">${c.icon} ${WEAPON_DEFINITIONS[c.weapon].name}</span>
         </aside>
       </div>
+      ${this.g.save.legacyGoldConverted !== undefined ? `<p class="muted">Economia atualizada: ${fmt(this.g.save.legacyGoldConverted)} Ouro antigo → Gemas. Melhorias preservadas.</p>` : ""}
       <div class="records">
         <span>RECORDE <b>${fmt(this.g.save.highScore)}</b></span>
         <span>MAIOR TEMPO <b>${clock(this.g.save.bestTime)}</b></span>
@@ -673,7 +676,7 @@ class UI {
         reset: () =>
           this.confirm(
             "Resetar todo o progresso?",
-            "O ouro, as conquistas, melhorias e a expedição ativa serão apagados.",
+            "As moedas, as conquistas, melhorias e a expedição ativa serão apagados.",
             () => {
               this.g.save = freshSave();
               this.g.persist();
@@ -850,7 +853,7 @@ class UI {
         `${clock(r.time)} · nível ${p.level} · ${MAP_DEFINITIONS[r.mapId].name} · ${g.modeDef.name}`,
       ) +
         `
-      <div class="run-summary"><span>OURO<b>${fmt(r.gold)}</b></span><span>BAIXAS<b>${fmt(r.kills)}</b></span><span>SEED<b>${esc(r.worldSeed)}</b></span></div>
+      <div class="run-summary"><span>GEMAS<b>${fmt(r.gems)}</b></span><span>BAIXAS<b>${fmt(r.kills)}</b></span><span>SEED<b>${esc(r.worldSeed)}</b></span></div>
       <h3>Armas e caminhos</h3><div class="cards meta">${weapons}</div>
       <h3>Passivos</h3>${passives || '<p class="muted">Nenhum passivo adquirido.</p>'}
       <h3>Sinergias</h3>${r.synergies.map((id) => `<p>${SYNERGY_DEFINITIONS[id].name} · ${SYNERGY_DEFINITIONS[id].text}</p>`).join("") || '<p class="muted">Combine armas para descobrir sinergias.</p>'}
@@ -926,11 +929,7 @@ class UI {
       try {
         const data = JSON.parse(String(reader.result || ""));
         if (!validateImportEnvelope(data)) throw new Error("invalid");
-        const imported = migrateSave(data.progress);
-        imported.activeRun =
-          data.activeRun && validateRunSnapshot(data.activeRun, false)
-            ? data.activeRun
-            : null;
+        const imported = migrateSave({ ...data.progress, activeRun: data.activeRun ?? data.progress.activeRun ?? null });
         this.confirm(
           "Importar este progresso?",
           "Importar este progresso substituirá o save atual deste navegador.",
@@ -1020,55 +1019,22 @@ class UI {
     };
   }
 
-  meta() {
-    this.show(
-      this.head(
-        "O QUE PERMANECE",
-        "Melhorias permanentes",
-        `Seu ouro: <b class="gold">${fmt(this.g.save.gold)}</b>.
-         Até cinco níveis por melhoria.`,
-      ) +
-        `
-      <div class="cards meta">
-        ${Object.entries(META_DEFINITIONS)
-          .map(([id, d]) => {
-            const level = this.g.save.upgrades[id] || 0;
-            const cost = Math.ceil(d.base * 1.7 ** level);
-
-            return `
-            <div class="card">
-              <small>NÍVEL ${level} / 5</small>
-              <h2>${d.name}</h2>
-              <p>${d.text} por nível.</p>
-              <button data-action="buy" data-id="${id}"
-                ${level >= 5 || this.g.save.gold < cost ? "disabled" : ""}>
-                ${level >= 5 ? "COMPLETO" : `◈ ${cost} · Melhorar`}
-              </button>
-            </div>
-          `;
-          })
-          .join("")}
-      </div>
-      <div class="actions">${this.button("back", "Voltar")}</div>
-    `,
-      {
-        back: () => this.main(),
-        buy: (b) => {
-          const id = b.dataset.id!;
-          const d = META_DEFINITIONS[id];
-          const level = this.g.save.upgrades[id] || 0;
-          const cost = Math.ceil(d.base * 1.7 ** level);
-
-          if (level >= 5 || this.g.save.gold < cost) return;
-
-          this.g.save.gold -= cost;
-          this.g.save.upgrades[id] = level + 1;
-          this.g.persist();
-          this.meta();
+  meta(branch: string = "OFENSIVA") {
+    this.show(this.head("O QUE PERMANECE", "Obelisco", `◆ ${fmt(this.g.save.gems)} Gemas · bônus apenas PvE, com retornos decrescentes.`) +
+      `<nav class="actions">${OBELISK_BRANCHES.map(b=>`<button data-action="branch" data-id="${b}" aria-pressed="${b===branch}">${b}</button>`).join("")}</nav>
+      <div class="obelisk-tree">${Object.values(OBELISK_NODES).filter(n=>n.branch===branch).map(n=>{
+        const rank=this.g.save.upgrades[n.id]||0, cost=nodeCost(n.id,rank), blocked=nodeBlocked(n.id,this.g.save.upgrades,this.g.save.unlocked);
+        return `<article class="card obelisk-node" style="grid-row:${n.position.row+1};grid-column:${n.position.column+1}"><small>${n.prerequisites.length ? "↓ "+n.prerequisites.map(p=>`${OBELISK_NODES[p.id].name} ${p.rank}`).join(" + ") : "RAIZ"}</small>
+        <h2>${n.name}</h2><p>${n.text}</p><p>Nível ${rank}/${n.maxRank}<br>Atual: ${nodeValue(n.id,rank)}<br>Próximo: ${rank===n.maxRank?"MÁXIMO":nodeValue(n.id,rank+1)}</p>
+        ${n.excludes?`<p>Ou: ${OBELISK_NODES[n.excludes].name}</p>`:""}
+        <button data-action="buy" data-id="${n.id}" ${blocked||this.g.save.gems<cost?"disabled":""}>${blocked||`◆ ${cost} Gemas · Desenvolver`}</button></article>`;
+      }).join("")}</div><div class="actions">${this.button("back","Voltar")}</div>`, {
+        back:()=>this.main(), branch:b=>this.meta(b.dataset.id), buy:b=>{
+          const id=b.dataset.id!, rank=this.g.save.upgrades[id]||0, cost=nodeCost(id,rank);
+          if(nodeBlocked(id,this.g.save.upgrades,this.g.save.unlocked)||this.g.save.gems<cost)return;
+          this.g.save.gems-=cost;this.g.save.upgrades[id]=rank+1;this.g.persist();this.meta(branch);
         },
-      },
-      true,
-    );
+      },true);
   }
 
   achievements() {
@@ -1093,7 +1059,7 @@ class UI {
               ${
                 a.character
                   ? "Desbloqueia " + CHARACTER_DEFINITIONS[a.character].name
-                  : `+${a.reward} ouro`
+                  : `+${achievementAmount(a.id, a.reward)} ${achievementCurrency(a.id) === "GOLD" ? "Ouro" : "Gemas"}`
               }
             </strong>
           </div>
@@ -1228,7 +1194,7 @@ class UI {
     }
     const alternatives: Record<string, string[]> = {
       heal: ["Seiva fresca", "♥", "Recupere 35 de vida."],
-      gold: ["Bolsa de ecos", "◈", "Receba 25 de ouro."],
+      gems: ["Bolsa de ecos", "◆", "Receba 25 Gemas."],
       buff: ["Pulso de âmbar", "✷", "Fortaleça seus ataques por 12 segundos."],
       magnet: ["Ressonância", "⌖", "Atraia todos os cristais no mundo."],
     };
@@ -1332,8 +1298,8 @@ class UI {
       accept = "ACEITAR TROCA";
     }
     if (s.type === "memory") {
-      text = "Entregar 35 ouro para converter memória em experiência?";
-      accept = "OFERECER OURO";
+      text = "Entregar 35 XP desta expedição para converter memória em experiência?";
+      accept = "OFERECER XP";
     }
     if (s.type === "rift_altar") {
       text =
@@ -1347,7 +1313,7 @@ class UI {
     }
     if (s.type === "chest") {
       text =
-        "Abrir este cofre consome uma Chave Basáltica. Ele contém ouro, reroll e relíquias.";
+        "Abrir este cofre consome uma Chave Basáltica. Ele contém Gemas, reroll e relíquias.";
       accept = "ABRIR COFRE";
     }
     if (s.type === "obelisk") {
@@ -1390,7 +1356,7 @@ class UI {
                 : "Seu arsenal está completo."
           }
         </p>
-        <strong class="gold">+${r.gold} ouro</strong>
+        <strong class="gold">+${r.gems} Gemas</strong>
       </div>
 
       <div class="actions">
@@ -1416,7 +1382,7 @@ class UI {
       <div class="chest-reveal">
         <span class="sigil">✧</span>
         <p>
-          Encerre a expedição com vitória e <b>${this.g.modeDef.name === "Pesadelo" ? "250 de ouro + 25% do ouro coletado" : "250 de ouro extra"}</b>,
+          Encerre a expedição com vitória e <b>${this.g.expeditionProfile.completionBase} Gemas de conclusão e ${completionGold(true, this.g.run.expeditionLength)} Ouro</b>,
           ou continue contra uma presença que fica mais veloz
           a cada segundo.
         </p>
@@ -1470,14 +1436,14 @@ class UI {
         <span>INIMIGOS<b>${fmt(r.kills)}</b></span>
         <span>CHEFES<b>${fmt(r.bossKills)}</b></span>
         <span>EVOLUÇÕES<b>${fmt(r.evolutions)}</b></span>
-        <span>OURO<b>${fmt(r.gold + (r.bonus || 0))}</b></span>
+        <span>GEMAS<b>${fmt(r.gems + (r.bonus || 0))}</b></span><span>OURO<b>${completionGold(r.completed, r.expeditionLength)}</b></span>
         <span>DANO TOTAL<b>${fmt(r.totalDamage)}</b></span>
         <span>PONTUAÇÃO<b>${fmt(r.score || 0)}</b></span>
       </div>
 
       <p class="muted">
         Arma com mais dano: <b>${top.name}</b>
-        ${r.bonus ? ` · Bônus de conclusão: ${r.bonus} ouro${r.difficultyBonus ? ` (${r.difficultyBonus} do Pesadelo)` : ""}` : ""}.
+        ${r.bonus ? ` · Bônus de conclusão: ${r.bonus} Gemas${r.difficultyBonus ? ` (${r.difficultyBonus} do Pesadelo)` : ""}` : ""}.
       </p>
 
       <div class="table-scroll">
@@ -1564,7 +1530,7 @@ class UI {
       (p.buff > 0 ? " · ÂMBAR" : "") +
       (p.inWater ? " · ÁGUA RASA" : "") +
       event;
-    n.gold.textContent = fmt(r.gold);
+    n.gold.textContent = fmt(r.gems);
     n.kills.textContent = fmt(r.kills);
 
     const key =
@@ -1843,8 +1809,9 @@ class Renderer {
       for (const b of g.bullets.items) {
         if (!this.visible(b.x, b.y, b.r + 10)) continue;
 
-        c.strokeStyle = b.color;
-        c.fillStyle = b.color;
+        const projectileColor = !b.enemy && b.source ? cosmeticVisual(g.ownerOf(b.source).cosmetics).projectile?.color || b.color : b.color;
+        c.strokeStyle = projectileColor;
+        c.fillStyle = projectileColor;
         c.globalAlpha = 0.35;
         c.lineWidth = b.r * (b.kind === "needle" ? 1.2 : 0.8);
 
@@ -2262,7 +2229,8 @@ class Renderer {
     const c = this.c,
       g = this.g,
       def = CHARACTER_DEFINITIONS[p.character],
-      color = def.color;
+      visuals = cosmeticVisual(p.cosmetics),
+      color = visuals.skin?.color || def.color;
     const moving = Math.abs(p.dx) + Math.abs(p.dy) > 0.01;
     const bob = moving ? Math.sin(time * 10) * 1.8 : Math.sin(time * 3) * 0.8;
     c.fillStyle = "#020b10aa";
@@ -2280,6 +2248,15 @@ class Renderer {
     }
     c.save();
     c.translate(p.x, p.y + bob);
+    if(visuals.trail && moving){c.strokeStyle=visuals.trail.color;c.lineWidth=2;c.beginPath();c.moveTo(-p.dx*18,-p.dy*18);c.lineTo(-p.dx*38,-p.dy*38);c.stroke();}
+    if(visuals.weapon){c.strokeStyle=visuals.weapon.color;this.circle(0,0,21);c.stroke();}
+    if(visuals.spawn && time<3){c.strokeStyle=visuals.spawn.color;this.circle(0,0,28+time*5);c.stroke();}
+    if(visuals.evolution && p.weapons.some(w=>w.evolved)){c.strokeStyle=visuals.evolution.color;this.circle(0,0,25+Math.sin(time*2)*2);c.stroke();}
+    if(visuals.death && p.health<=0){c.fillStyle=visuals.death.color;c.fillText(visuals.death.glyph,-8,-28);}
+    if(visuals.emote && time%20<2){c.fillStyle=visuals.emote.color;c.fillText(visuals.emote.glyph,18,-28);}
+    if(visuals.icon){c.fillStyle=visuals.icon.color;c.fillText(visuals.icon.glyph,-6,-32);}
+    if(visuals.frame){c.strokeStyle=visuals.frame.color;c.strokeRect(-11,-44,22,20);}
+
     c.fillStyle = "#19353a";
     c.strokeStyle = color;
     c.lineWidth = 2;
@@ -2554,7 +2531,7 @@ class Renderer {
     const itemDef =
       item.type === "item" ? ITEM_DEFINITIONS[item.itemId || ""] : null;
     const symbols: Record<string, string> = {
-      gold: "◈",
+      gems: "◆",
       heal: "♥",
       magnet: "⌖",
       bomb: "✹",
@@ -2563,7 +2540,7 @@ class Renderer {
       item: itemDef?.icon || "◇",
     };
     const colors: Record<string, string> = {
-      gold: "#dfbd78",
+      gems: "#a8baff",
       heal: "#9ad9ac",
       magnet: "#a6c9ed",
       bomb: "#e9a4a0",

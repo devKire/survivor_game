@@ -1,10 +1,10 @@
-import { db } from "../server/db";
+import { economyTransaction, grantCurrency, lockProgress, persistSave } from "../server/economy";
+import { achievementAmount, achievementCurrency, completionGold, pveGems } from "../game/core/economy";
 import { json } from "../server/progress";
-import { migrateSave } from "../game/core/save";
 import { ACHIEVEMENTS } from "../game/content/catalog";
 import type { CoopSimulation } from "../game/core/coop";
 export async function settle(sessionId: string, g: CoopSimulation) {
-  return db().$transaction(
+  return economyTransaction(
     async (tx) => {
       const claimed = await tx.gameSession.updateMany({
         where: { id: sessionId, status: "RUNNING" },
@@ -23,14 +23,13 @@ export async function settle(sessionId: string, g: CoopSimulation) {
       });
       if (!claimed.count) return false;
       for (const m of g.members.values()) {
-        const row = await tx.userProgress.findUniqueOrThrow({
-            where: { userId: m.id },
-          }),
-          save = migrateSave(row.data);
-        let reward =
-          Math.floor(
-            m.gold * (g.run.completed ? g.modeDef.rewardMultiplier : 1),
-          ) + (g.run.completed ? g.modeDef.completionBase : 0);
+        const { save } = await lockProgress(tx, m.id);
+        const reward = pveGems(m.gems, g.run.completed, g.modeDef.rewardMultiplier, g.expeditionProfile.completionBase);
+        await grantCurrency(tx, save, { userId: m.id, currency: "GEMS", amount: reward,
+          source: "pve-run", referenceId: `match:${sessionId}` });
+        await grantCurrency(tx, save, { userId: m.id, currency: "GOLD",
+          amount: completionGold(g.run.completed, g.run.expeditionLength),
+          source: "pve-completion", referenceId: `match:${sessionId}` });
         for (const a of ACHIEVEMENTS) {
           if (a.modes && !a.modes.includes(g.mode)) continue;
           if (
@@ -41,7 +40,8 @@ export async function settle(sessionId: string, g: CoopSimulation) {
             })
           ) {
             save.achievements.push(a.id);
-            reward += a.reward || 0;
+            await grantCurrency(tx, save, { userId: m.id, currency: achievementCurrency(a.id),
+              amount: achievementAmount(a.id, a.reward), source: "achievement", referenceId: `achievement:${a.id}` });
             if (a.character && !save.unlocked.includes(a.character))
               save.unlocked.push(a.character);
           }
@@ -50,7 +50,6 @@ export async function settle(sessionId: string, g: CoopSimulation) {
           save.discovered[category] = [
             ...new Set([...(save.discovered[category] || []), ...ids]),
           ];
-        save.gold += reward;
         save.runs++;
         save.completed += Number(g.run.completed);
         save.bestTime = Math.max(save.bestTime, Math.floor(g.run.time));
@@ -61,16 +60,15 @@ export async function settle(sessionId: string, g: CoopSimulation) {
             g.run.kills * 10 + g.run.time + (g.run.completed ? 10000 : 0),
           ),
         );
-        await tx.userProgress.update({
-          where: { userId: m.id },
-          data: { data: json(save), version: { increment: 1 } },
-        });
+        await persistSave(tx, m.id, save);
         await tx.gameSessionMember.update({
           where: { sessionId_userId: { sessionId, userId: m.id } },
           data: {
             reward,
             survived: !m.downed,
             result: json({
+              rewardCurrency: "GEMS",
+              goldReward: completionGold(g.run.completed, g.run.expeditionLength),
               level: m.player.level,
               weapons: m.player.weapons.map((w) => ({
                 id: w.id,
@@ -96,6 +94,5 @@ export async function settle(sessionId: string, g: CoopSimulation) {
       });
       return true;
     },
-    { isolationLevel: "Serializable", timeout: 20000 },
   );
 }
