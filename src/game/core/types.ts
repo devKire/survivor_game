@@ -135,7 +135,18 @@ export interface StructureDefinition {
   rare?: boolean;
   color: string;
 }
+export interface PvpMapProfile {
+  width: number;
+  height: number;
+  spawnX: number;
+  lanes: number[];
+  corridor: number;
+  density: number;
+  structures: string[];
+  objective: boolean;
+}
 export interface MapDefinition {
+  profiles?: { pvp1v1: PvpMapProfile; pvp5v5: PvpMapProfile };
   name: string;
   icon: string;
   unlocked: boolean;
@@ -202,6 +213,7 @@ export interface Status {
   tick: number;
 }
 export interface Enemy extends EnemyDefinition, Vec {
+  controlImmunity?: Record<string, number>;
   lastHitWeapon?: string;
   lastHitOwner?: string;
   type: string;

@@ -34,7 +34,7 @@ test("V22/V23 two Chrome contexts purchasing the same rank debit once", async ({
     await a.getByLabel("Confirmar senha").fill("Browser-Economy-2026");
     await a.getByRole("button", { name: "CRIAR CONTA", exact: true }).click();
     await expect(a).toHaveURL(/\/$/);
-    await expect(a.getByText("Sua próxima travessia.")).toBeVisible();
+    await expect(a.getByRole("heading", { name: "Sua próxima travessia.", exact: true })).toBeVisible();
     userId = (await db().user.findUniqueOrThrow({ where: { username } })).id;
     const id = userId;
     await economyTransaction(async tx => {

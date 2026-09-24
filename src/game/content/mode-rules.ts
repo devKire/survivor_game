@@ -1,0 +1,26 @@
+/** Competitive tuning; PvE values and progression remain in the existing catalog. */
+export const PVP_RULES = {
+  healing: 0.5,
+  waterSpeed: 0.88,
+  hazardInterval: 0.45,
+  hazardDamage: 0.5,
+  spawnProtection: 3,
+  baseDefenseRadius: 300,
+  baseDefenseDamage: 12,
+  slowDuration: 1.2,
+  slowSpeedFloor: 0.7,
+  freezeDuration: 0.35,
+  controlImmunity: 2,
+  fountainCooldown: 45,
+  fountainHeal: 20,
+  weapons: {
+    ember: { damage: 0.65, cooldown: 1, range: 420 },
+    orbit: { damage: 0.7, cooldown: 1, range: 150 },
+    spear: { damage: 0.6, cooldown: 1, range: 420 },
+    frost: { damage: 0.8, cooldown: 2, range: 135 },
+    chain: { damage: 0.55, cooldown: 1, range: 330 },
+    well: { damage: 0.45, cooldown: 1.3, range: 330 },
+    disc: { damage: 0.6, cooldown: 1.2, range: 400 },
+    meteor: { damage: 0.45, cooldown: 1.4, range: 400 },
+  } as Record<string, { damage: number; cooldown: number; range: number }>,
+} as const;

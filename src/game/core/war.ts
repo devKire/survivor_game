@@ -8,9 +8,14 @@ import {
   type TroopType,
   type GroupOrder,
 } from "../content/war";
-import { PVP_LOADOUTS, type PvpCharacter } from "../content/pvp";
+import { PVP_RULES } from "../content/mode-rules";
+import { MATCHMAKING_CONFIG } from "../content/matchmaking";
+import { combatBody } from "./competitive-combat";
+import { updateWarBots } from "./war-bots";
 import { Pool } from "./collections";
-import { clamp, segmentDistance2 } from "./math";
+import { predictMove } from "../network/movement";
+import { STRUCTURE_DEFINITIONS } from "../content/catalog";
+import { clamp } from "./math";
 export class WarSimulation extends PvpSimulation {
   readonly units = new Pool<WarMinion>(
     () => ({
@@ -51,8 +56,8 @@ export class WarSimulation extends PvpSimulation {
   nextUnit = 1;
   waveAt = 3;
   left = new Set<string>();
-  constructor(seeds: FighterSeed[]) {
-    super(seeds);
+  constructor(seeds: FighterSeed[], mapId = "ruins", seed = "competitive") {
+    super(seeds, mapId, seed, "pvp5v5");
     if (
       seeds.length !== 10 ||
       [0, 1].some((t) => seeds.filter((s) => s.team === t).length !== 5)
@@ -96,14 +101,79 @@ export class WarSimulation extends PvpSimulation {
           cooldown: 0,
         });
     }
-    let i = 0;
-    for (const f of this.fighters.values()) {
-      f.player.x = f.team === 0 ? 210 : 2390;
-      f.player.y = 600 + (i++ % 5) * 45;
+    this.resetPositions();
+  }
+  botNextDecision = new Map<string, number>();
+  targetBodies = new Map<number, import("./types").Enemy>();
+  structureBodyIds = new Map<string, number>();
+  override environment(f: Fighter, dt: number) {
+    super.environment(f, dt);
+    const enemyCore = this.structures.find(
+      (s) => s.kind === "CORE" && s.team !== f.team && s.hp > 0,
+    );
+    if (
+      enemyCore &&
+      Math.hypot(f.player.x - enemyCore.x, f.player.y - enemyCore.y) <
+        PVP_RULES.baseDefenseRadius &&
+      Math.floor(this.time / 0.5) !== Math.floor((this.time - dt) / 0.5)
+    )
+      this.hurtFighter(f, PVP_RULES.baseDefenseDamage);
+  }
+  override disconnectedStep(f: Fighter) {
+    if (
+      !f.connected &&
+      !f.isBot &&
+      !f.botControlled &&
+      this.time - f.disconnectedAt >= MATCHMAKING_CONFIG.reconnectGraceSeconds
+    ) {
+      f.botControlled = true;
+      f.botEverControlled = true;
+      this.log("bot-takeover", f.id);
     }
   }
   override reconnect(id: string) {
-    return !this.left.has(id) && super.reconnect(id);
+    const f = this.fighters.get(id);
+    if (!f || f.isBot || this.ended || this.left.has(id)) return false;
+    f.botControlled = false;
+    f.connected = true;
+    f.input.ability = "none";
+    f.input.moveX = f.input.moveY = 0;
+    this.log("reconnect", id);
+    return true;
+  }
+  override combatTargets(owner: Fighter) {
+    const targets = super.combatTargets(owner);
+    const body = (
+      id: number,
+      p: { x: number; y: number },
+      r: number,
+      hp: () => number,
+    ) => {
+      let b = this.targetBodies.get(id);
+      if (!b) {
+        b = combatBody(id, p, r, hp);
+        this.targetBodies.set(id, b);
+      }
+      return b;
+    };
+    for (const u of this.units?.items || [])
+      if (u.team !== owner.team && u.hp > 0)
+        targets.push({
+          body: body(1000 + u.id, u, 10, () => u.hp),
+          hurt: (n) => this.hitMinion(u, n, owner),
+        });
+    for (const s of this.structures || [])
+      if (s.team !== owner.team && s.hp > 0) {
+        // Structures have stable public IDs; distinct namespace from minions and fighters.
+        if (!this.structureBodyIds.has(s.id))
+          this.structureBodyIds.set(s.id, 2000000 + this.structureBodyIds.size);
+        const id = this.structureBodyIds.get(s.id)!;
+        targets.push({
+          body: body(id, s, s.r, () => s.hp),
+          hurt: (n) => this.hurtStructure(s, n, owner),
+        });
+      }
+    return targets;
   }
   override forfeit(id: string) {
     const f = this.fighters.get(id);
@@ -111,12 +181,13 @@ export class WarSimulation extends PvpSimulation {
     this.left.add(id);
     this.forfeited.add(id);
     f.connected = false;
-    f.player.health = 0;
-    f.disconnectedAt = Infinity;
+    f.botControlled = true;
+    f.botEverControlled = true;
+    f.disconnectedAt = this.time;
     this.log("forfeit", id);
     if (
       [...this.fighters.values()]
-        .filter((p) => p.team === f.team)
+        .filter((p) => p.team === f.team && !p.isBot)
         .every((p) => this.left.has(p.id))
     ) {
       this.ended = true;
@@ -187,57 +258,6 @@ export class WarSimulation extends PvpSimulation {
     m.hp = Math.max(0, m.hp - amount);
     if (m.hp === 0) this.onMinionKilled(m, owner);
   }
-  override cast(f: Fighter) {
-    const ability = f.input.ability,
-      before = f.cooldowns[ability];
-    super.cast(f);
-    if (
-      f.cooldowns[ability] === before ||
-      !["basic", "pulse"].includes(ability)
-    )
-      return;
-    const d = PVP_LOADOUTS[f.player.character as PvpCharacter],
-      len = Math.max(0.001, Math.hypot(f.input.aimX, f.input.aimY)),
-      ax = f.input.aimX / len,
-      ay = f.input.aimY / len,
-      p = f.player;
-    const hit = (x: number, y: number, r: number) =>
-      ability === "pulse"
-        ? Math.hypot(x - p.x, y - p.y) <= d.pulseRadius + r
-        : segmentDistance2(
-            x,
-            y,
-            p.x,
-            p.y,
-            p.x + ax * d.basicRange,
-            p.y + ay * d.basicRange,
-          ) <
-          (r + 4) ** 2;
-    let remaining = ability === "pulse" ? 20 : 1;
-    for (const u of this.units.items)
-      if (remaining > 0 && u.team !== f.team && u.hp > 0 && hit(u.x, u.y, 10)) {
-        this.hitMinion(
-          u,
-          ability === "pulse" ? d.pulseDamage : d.basicDamage,
-          f,
-        );
-        remaining--;
-      }
-    for (const s of this.structures)
-      if (
-        remaining > 0 &&
-        s.team !== f.team &&
-        s.hp > 0 &&
-        hit(s.x, s.y, s.r)
-      ) {
-        this.hurtStructure(
-          s,
-          ability === "pulse" ? d.pulseDamage : d.basicDamage,
-          f,
-        );
-        remaining--;
-      }
-  }
   override checkObjective() {
     const cores = this.structures.filter((s) => s.kind === "CORE");
     if (cores.length < 2) return;
@@ -258,18 +278,35 @@ export class WarSimulation extends PvpSimulation {
     }
   }
   override step(dt = 0.04) {
+    for (const [id, b] of this.targetBodies) {
+      if (b.dead) {
+        this.targetBodies.delete(id);
+        continue;
+      }
+      for (const [status, effect] of Object.entries(b.statuses)) {
+        effect.duration -= dt;
+        if (effect.duration <= 0) delete b.statuses[status];
+      }
+      for (const status of Object.keys(b.controlImmunity || {}))
+        b.controlImmunity![status] = Math.max(
+          0,
+          b.controlImmunity![status] - dt,
+        );
+    }
+    for (const f of this.fighters.values()) this.disconnectedStep(f);
+    updateWarBots(this);
     super.step(dt);
     if (this.ended || this.time < this.intermissionUntil) return;
     if (this.time >= this.incomeAt) {
       this.incomeAt = this.time + 10;
       for (const f of this.fighters.values())
-        if (!this.left.has(f.id)) this.credit(f.id, 5);
+        if (!this.left.has(f.id) || f.botControlled) this.credit(f.id, 5);
     }
     const capturing = [0, 1].map((team) =>
       [...this.fighters.values()].some(
         (f) =>
           f.team === team &&
-          f.connected &&
+          (f.connected || f.botControlled) &&
           f.player.health > 0 &&
           Math.hypot(f.player.x - 1300, f.player.y - 700) < 110,
       ),
@@ -298,15 +335,18 @@ export class WarSimulation extends PvpSimulation {
         for (let lane = 0; lane < 3; lane++) this.spawnWave(team, lane);
     }
     for (const f of this.fighters.values()) {
-      if (f.player.health <= 0 && !this.left.has(f.id)) {
+      if (f.player.health <= 0) {
         if (!f.respawnAt)
           f.respawnAt =
             this.time + Math.min(20, 8 + Math.floor(this.time / 120));
         if (this.time >= f.respawnAt) {
           f.player.health = f.player.maxHealth;
-          f.player.x = f.team === 0 ? 210 : 2390;
+          f.player.x = f.team === 0 ? 230 : 2370;
           f.player.y = 700;
           f.respawnAt = 0;
+          f.protectedUntil = this.time + PVP_RULES.spawnProtection;
+          f.body.statuses = {};
+          f.body.controlImmunity = {};
           this.log("respawn", f.id);
         }
       }
@@ -326,32 +366,6 @@ export class WarSimulation extends PvpSimulation {
         f.player.y = clamp(f.player.y, 20, this.height - 20);
       }
     }
-    for (const b of this.bullets) {
-      const owner = this.fighters.get(b.owner),
-        x = b.x - b.vx * dt,
-        y = b.y - b.vy * dt;
-      for (const u of this.units.items)
-        if (
-          b.life > 0 &&
-          u.team !== b.team &&
-          u.hp > 0 &&
-          segmentDistance2(u.x, u.y, x, y, b.x, b.y) < (10 + b.r) ** 2
-        ) {
-          this.hitMinion(u, b.damage, owner);
-          b.life = 0;
-        }
-      for (const s of this.structures)
-        if (
-          b.life > 0 &&
-          s.team !== b.team &&
-          s.hp > 0 &&
-          segmentDistance2(s.x, s.y, x, y, b.x, b.y) < (s.r + b.r) ** 2
-        ) {
-          this.hurtStructure(s, b.damage, owner);
-          b.life = 0;
-        }
-    }
-    this.bullets = this.bullets.filter((b) => b.life > 0);
     for (const u of this.units.items) {
       if (u.hp <= 0) continue;
       const near = [...this.fighters.values()].some(
@@ -390,7 +404,7 @@ export class WarSimulation extends PvpSimulation {
     this.checkObjective();
   }
   hurtFighter(f: Fighter, amount: number) {
-    if (f.player.health <= 0) return;
+    if (f.player.health <= 0 || this.time < f.protectedUntil) return;
     f.player.health = Math.max(0, f.player.health - amount);
     if (f.player.health === 0) {
       f.deaths++;
@@ -399,6 +413,9 @@ export class WarSimulation extends PvpSimulation {
   }
   moveMinion(u: WarMinion, dt: number) {
     u.cooldown -= dt;
+    const body = this.targetBodies.get(1000 + u.id);
+    if ((body?.statuses.freeze?.duration || 0) > 0) return;
+    dt *= body?.statuses.slow?.magnitude || 1;
     const foe = this.units.items.find(
         (e) =>
           e.hp > 0 &&
@@ -441,8 +458,27 @@ export class WarSimulation extends PvpSimulation {
       dy = target.y - u.y,
       len = Math.max(1, Math.hypot(dx, dy)),
       step = Math.min(len, u.speed * dt);
-    u.x += (dx / len) * step;
-    u.y += (dy / len) * step;
+    let mx = dx / len,
+      my = dy / len;
+    const obstacle = this.world.nearby.find(
+      (s) =>
+        !s.destroyed &&
+        STRUCTURE_DEFINITIONS[s.type]?.collidable &&
+        Math.hypot(u.x + mx * 45 - s.x, u.y + my * 45 - s.y) < s.r + 25,
+    );
+    if (obstacle) {
+      mx *= 0.3;
+      my = u.y <= obstacle.y ? -1 : 1;
+    }
+    const move = predictMove(
+      u,
+      { x: mx, y: my },
+      step * (this.world.isWater(u.x, u.y) ? PVP_RULES.waterSpeed : 1),
+      1,
+      this.world.nearby,
+    );
+    u.x = move.x;
+    u.y = move.y;
   }
   minionDestination(u: WarMinion) {
     const order = this.orders[u.team][u.lane];
@@ -468,7 +504,7 @@ export class WarSimulation extends PvpSimulation {
   }
   credit(id: string, amount: number) {
     const f = this.fighters.get(id);
-    if (!f || this.left.has(id)) return;
+    if (!f || (this.left.has(id) && !f.botControlled)) return;
     const cores = this.structures.filter((s) => s.kind === "CORE"),
       defensive = cores[f.team]?.hp < cores[1 - f.team]?.hp ? 1.15 : 1;
     this.energy.set(
@@ -489,10 +525,10 @@ export class WarSimulation extends PvpSimulation {
   allowed(id: string, role: WarRole) {
     const f = this.fighters.get(id);
     return f &&
-      f.connected &&
+      (f.connected || f.botControlled) &&
       f.player.health > 0 &&
       !this.ended &&
-      !this.left.has(id) &&
+      (!this.left.has(id) || f.botControlled) &&
       this.roles.get(id) === role
       ? f
       : null;
@@ -543,6 +579,9 @@ export class WarSimulation extends PvpSimulation {
     )
       return false;
     if (
+      this.world.nearby.some(
+        (s) => !s.destroyed && Math.hypot(x - s.x, y - s.y) < r + s.r + 25,
+      ) ||
       this.structures.some(
         (s) => s.hp > 0 && Math.hypot(x - s.x, y - s.y) < r + s.r + 20,
       ) ||
@@ -635,7 +674,13 @@ export class WarSimulation extends PvpSimulation {
   }
   upgrade(id: string, kind: "damage" | "health" | "speed" | "troops") {
     const f = this.fighters.get(id);
-    if (!f || !f.connected || f.player.health <= 0 || this.ended) return false;
+    if (
+      !f ||
+      (!f.connected && !f.botControlled) ||
+      f.player.health <= 0 ||
+      this.ended
+    )
+      return false;
     if (kind === "troops") {
       if (
         !this.allowed(id, "COMANDANTE") ||
@@ -655,7 +700,10 @@ export class WarSimulation extends PvpSimulation {
       ranks[kind]++;
       if (kind === "health") {
         f.player.maxHealth = 100 + 10 * ranks.health;
-        f.player.health = Math.min(f.player.maxHealth, f.player.health + 10);
+        f.player.health = Math.min(
+          f.player.maxHealth,
+          f.player.health + 10 * PVP_RULES.healing,
+        );
       }
       if (kind === "speed") f.player.speed = 220 * (1 + 0.02 * ranks.speed);
     }
@@ -699,7 +747,7 @@ export class WarSimulation extends PvpSimulation {
     return {
       ...base,
       roundRemaining: Math.max(0, 1800 - this.time),
-      players: base.players.filter((p) => p.id === id || near(p.x, p.y)),
+      players: base.players,
       bullets: base.bullets.filter((b) => near(b.x, b.y)),
       war,
     };

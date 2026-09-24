@@ -1,12 +1,7 @@
 import { Player } from "./entities";
 import { clamp, segmentDistance2 } from "./math";
 import { predictMove } from "../network/movement";
-import {
-  PVP,
-  PVP_LOADOUTS,
-  type PvpCharacter,
-  type PvpAbility,
-} from "../content/pvp";
+import { PVP, type PvpCharacter, type PvpAbility } from "../content/pvp";
 export interface PvpInput {
   sequence: number;
   moveX: number;
@@ -25,6 +20,12 @@ export interface Fighter {
   lastInputAt: number;
   ack: number;
   cooldowns: Record<PvpAbility, number>;
+  isBot: boolean;
+  botControlled: boolean;
+  botEverControlled: boolean;
+  humanCasts: number;
+  body: import("./types").Enemy;
+  protectedUntil: number;
   connected: boolean;
   disconnectedAt: number;
   respawnAt: number;
@@ -59,11 +60,31 @@ export interface FighterSeed {
   character: PvpCharacter;
   cosmetics: Record<string, string>;
   team: number;
+  isBot?: boolean;
+  partyId?: string;
   role?: import("../content/war").WarRole;
 }
+import {
+  MAP_DEFINITIONS,
+  CHARACTER_DEFINITIONS,
+  STRUCTURE_DEFINITIONS,
+  WEAPON_DEFINITIONS,
+} from "../content/catalog";
+import { PVP_RULES } from "../content/mode-rules";
+import { World } from "./world";
+import { CompetitiveCombat, combatBody } from "./competitive-combat";
+import type { Enemy, Vec } from "./types";
+export const PVP_MAP_POOL = Object.keys(MAP_DEFINITIONS).filter(
+  (id) => MAP_DEFINITIONS[id].profiles && MAP_DEFINITIONS[id].unlocked,
+);
 export class PvpSimulation {
   readonly fighters = new Map<string, Fighter>();
   readonly forfeited = new Set<string>();
+  readonly combat = new Map<string, CompetitiveCombat>();
+  readonly world: World;
+  readonly partyComposition: { id: string; members: string[]; team: number }[];
+  fountainReady = new Map<string, number>();
+  pickups: { x: number; y: number; value: number }[] = [];
   tick = 0;
   time = 0;
   round = 1;
@@ -73,26 +94,40 @@ export class PvpSimulation {
   ended = false;
   winner: number | null = null;
   reason = "";
-  bullets: ArenaBullet[] = [];
   events: ArenaEvent[] = [];
-  nextBullet = 1;
-  readonly history: {
-    tick: number;
-    positions: Map<string, { x: number; y: number }>;
-  }[] = [];
-  width: number = PVP.arena.width;
-  height: number = PVP.arena.height;
-  constructor(seeds: FighterSeed[]) {
+  width: number;
+  height: number;
+  constructor(
+    seeds: FighterSeed[],
+    mapId = "ruins",
+    seed = "competitive",
+    readonly modeProfile: "pvp1v1" | "pvp5v5" = "pvp1v1",
+  ) {
+    mapId = PVP_MAP_POOL.includes(mapId) ? mapId : PVP_MAP_POOL[0];
+    const profile = MAP_DEFINITIONS[mapId].profiles![modeProfile];
+    this.width = profile.width;
+    this.height = profile.height;
+    let index = 0;
     for (const s of seeds) {
-      const p = new Player(s.character, {}, "PVP");
-      p.cosmetics = s.cosmetics;
-      p.maxHealth = p.health = PVP.hp;
-      p.speed = PVP.speed;
-      this.fighters.set(s.id, {
+      const player = new Player(s.character, {}, "PVP");
+      player.cosmetics = s.cosmetics;
+      player.health = player.maxHealth = PVP.hp;
+      player.speed = PVP.speed;
+      player.stats = {
+        ...player.stats,
+        damage: 1,
+        area: 1,
+        amount: 0,
+        cooldown: 1,
+        duration: 1,
+        recovery: 0,
+        critChance: 0,
+      };
+      const f: Fighter = {
         id: s.id,
         name: s.name,
         team: s.team,
-        player: p,
+        player,
         input: {
           sequence: 0,
           moveX: 0,
@@ -102,10 +137,16 @@ export class PvpSimulation {
           ability: "none",
           seenTick: 0,
         },
+        isBot: !!s.isBot,
+        botControlled: !!s.isBot,
+        botEverControlled: !!s.isBot,
+        humanCasts: 0,
+        body: combatBody(++index, player, PVP.radius, () => player.health),
+        protectedUntil: 0,
         lastInputAt: 0,
         ack: 0,
         cooldowns: { none: 0, basic: 0, skill: 0, pulse: 0, dash: 0 },
-        connected: true,
+        connected: !s.isBot,
         disconnectedAt: 0,
         respawnAt: 0,
         kills: 0,
@@ -113,28 +154,116 @@ export class PvpSimulation {
         damage: 0,
         casts: 0,
         hits: 0,
-      });
+      };
+      this.fighters.set(s.id, f);
     }
+    const run = {
+      worldVersion: 3,
+      worldChanges: {},
+      structuresBroken: 0,
+      urnsBroken: 0,
+    };
+    this.world = new World(
+      {
+        player: this.fighters.values().next().value!.player,
+        run,
+        playersForWorld: () => [...this.fighters.values()].map((f) => f.player),
+        spark() {},
+        sound: { play() {}, unlock() {} },
+        drop() {},
+        dropXP() {},
+        dropItemWeighted() {},
+        saveSnapshot: () => false,
+        hurtPlayer() {},
+      },
+      mapId,
+      seed,
+      {},
+      profile,
+    );
+    this.world.onCompetitiveBreak = (s) => {
+      if (s.type === "urn") this.pickups.push({ x: s.x, y: s.y, value: 12 });
+    };
     this.resetPositions();
+    // Bounded world is loaded once, shared by all fighters and combat adapters.
+    for (let y = 0; y < this.height; y += 640)
+      for (let x = 0; x < this.width; x += 640) this.world.ensureChunkAt(x, y);
+    this.world.nearby = [...this.world.chunks.values()].flatMap(
+      (c) => c.structures,
+    );
+    for (const f of this.fighters.values())
+      this.combat.set(f.id, new CompetitiveCombat(this, f));
+    this.partyComposition = [
+      ...new Set(
+        seeds.filter((s) => !s.isBot && s.partyId).map((s) => s.partyId!),
+      ),
+    ].map((id) => ({
+      id,
+      members: seeds.filter((s) => s.partyId === id).map((s) => s.id),
+      team: seeds.find((s) => s.partyId === id)!.team,
+    }));
+  }
+  get bullets() {
+    return [...this.combat.values()].flatMap((c) => c.bullets.items);
+  }
+  get humanCount() {
+    return [...this.fighters.values()].filter((f) => !f.isBot).length;
+  }
+  get botCount() {
+    return this.fighters.size - this.humanCount;
+  }
+  loadout(f: Fighter) {
+    return {
+      basic: CHARACTER_DEFINITIONS[f.player.character].weapon,
+      skill: "spear",
+      pulse: "frost",
+    };
   }
   log(type: string, actor?: string, target?: string, value?: number) {
     if (this.events.length >= 4000) this.events.splice(0, 100);
     this.events.push({ tick: this.tick, type, actor, target, value });
   }
   resetPositions() {
+    this.pickups = [];
+    this.fountainReady.clear();
+    for (const s of this.world.nearby) {
+      s.destroyed = false;
+      s.used = false;
+      s.opened = false;
+      s.hp = s.maxHp;
+    }
+    const slots = [0, 0];
     for (const f of this.fighters.values()) {
-      f.player.x = f.team === 0 ? 120 : this.width - 120;
-      f.player.y = this.height / 2;
-      f.player.health = PVP.hp;
+      f.player.x =
+        f.team === 0
+          ? this.world.profile!.spawnX
+          : this.width - this.world.profile!.spawnX;
+      f.player.y =
+        this.height / 2 +
+        (this.modeProfile === "pvp5v5" ? (slots[f.team]++ - 2) * 45 : 0);
+      f.player.health = f.player.maxHealth;
       f.cooldowns = { none: 0, basic: 0, skill: 0, pulse: 0, dash: 0 };
+      f.body.statuses = {};
+      f.body.controlImmunity = {};
+      f.protectedUntil = this.intermissionUntil;
       f.input.ability = "none";
     }
-    this.bullets = [];
-    this.history.length = 0;
+    for (const c of this.combat.values()) {
+      c.bullets.clear();
+      c.areas = [];
+      c.lines = [];
+    }
   }
   accept(id: string, input: PvpInput) {
     const f = this.fighters.get(id);
-    if (!f || !f.connected || this.ended || input.sequence <= f.ack) return;
+    if (
+      !f ||
+      !f.connected ||
+      f.botControlled ||
+      this.ended ||
+      input.sequence <= f.ack
+    )
+      return;
     f.ack = input.sequence;
     f.input = input;
     f.lastInputAt = this.time;
@@ -145,6 +274,7 @@ export class PvpSimulation {
       f.connected = false;
       f.disconnectedAt = this.time;
       f.input.ability = "none";
+      f.input.moveX = f.input.moveY = 0;
       this.log("disconnect", id);
     }
   }
@@ -152,11 +282,16 @@ export class PvpSimulation {
     const f = this.fighters.get(id);
     if (
       !f ||
+      f.isBot ||
       this.ended ||
+      this.forfeited.has(id) ||
       (!f.connected && this.time - f.disconnectedAt > PVP.reconnectSeconds)
     )
       return false;
+    f.botControlled = false;
     f.connected = true;
+    f.input.ability = "none";
+    f.input.moveX = f.input.moveY = 0;
     this.log("reconnect", id);
     return true;
   }
@@ -170,8 +305,36 @@ export class PvpSimulation {
       this.log("forfeit", id);
     }
   }
+  lineClear(from: Vec, to: Vec) {
+    return !this.world.nearby.some(
+      (s) =>
+        !s.destroyed &&
+        STRUCTURE_DEFINITIONS[s.type]?.collidable &&
+        segmentDistance2(s.x, s.y, from.x, from.y, to.x, to.y) < (s.r + 3) ** 2,
+    );
+  }
+  combatTargets(
+    owner: Fighter,
+  ): { body: Enemy; hurt: (amount: number) => void }[] {
+    return [...this.fighters.values()]
+      .filter(
+        (f) =>
+          f.team !== owner.team &&
+          f.player.health > 0 &&
+          this.time >= f.protectedUntil,
+      )
+      .map((f) => ({
+        body: f.body,
+        hurt: (amount: number) => this.damage(f, amount, owner),
+      }));
+  }
   damage(target: Fighter, amount: number, owner: Fighter) {
-    if (target.player.health <= 0 || target.team === owner.team) return;
+    if (
+      target.player.health <= 0 ||
+      target.team === owner.team ||
+      this.time < target.protectedUntil
+    )
+      return;
     const dealt = Math.min(target.player.health, amount);
     target.player.health -= dealt;
     owner.damage += dealt;
@@ -184,145 +347,154 @@ export class PvpSimulation {
     }
   }
   cast(f: Fighter) {
-    const a = f.input.ability,
-      p = f.player,
-      d = PVP_LOADOUTS[p.character as PvpCharacter];
-    if (a === "none" || this.time < f.cooldowns[a]) return;
-    const length = Math.hypot(f.input.aimX, f.input.aimY);
-    if (length < 0.01) return;
-    const ax = f.input.aimX / length,
-      ay = f.input.aimY / length;
-    f.cooldowns[a] =
-      this.time + { basic: d.basicCooldown, skill: 4, pulse: 6, dash: 8 }[a];
+    const a = f.input.ability;
+    if (
+      a === "none" ||
+      this.time < f.cooldowns[a] ||
+      f.player.health <= 0 ||
+      f.body.statuses.freeze?.duration > 0
+    )
+      return;
+    const len = Math.hypot(f.input.aimX, f.input.aimY);
+    if (len < 0.01) return;
     f.casts++;
+    if (!f.botControlled) f.humanCasts++;
+    f.protectedUntil = 0;
     this.log("ability:" + a, f.id);
     if (a === "dash") {
-      const next = predictMove(p, { x: ax, y: ay }, 120, 1, []);
-      p.x = clamp(next.x, 20, this.width - 20);
-      p.y = clamp(next.y, 20, this.height - 20);
-      return;
+      f.cooldowns[a] = this.time + 8;
+      for (let i = 0; i < 12; i++) {
+        const next = predictMove(
+          f.player,
+          { x: f.input.aimX / len, y: f.input.aimY / len },
+          10,
+          1,
+          this.world.nearby,
+        );
+        f.player.x = clamp(next.x, 20, this.width - 20);
+        f.player.y = clamp(next.y, 20, this.height - 20);
+      }
+    } else {
+      const weapon = this.loadout(f)[a];
+      f.cooldowns[a] =
+        this.time +
+        WEAPON_DEFINITIONS[weapon].cooldown *
+          PVP_RULES.weapons[weapon].cooldown;
+      this.combat.get(f.id)!.fire(a);
     }
-    if (a === "skill") {
-      if (this.bullets.length < 256)
-        this.bullets.push({
-          id: this.nextBullet++,
-          owner: f.id,
-          team: f.team,
-          x: p.x,
-          y: p.y,
-          vx: ax * d.boltSpeed,
-          vy: ay * d.boltSpeed,
-          life: 1.5,
-          damage: d.boltDamage,
-          r: 6,
-        });
-      return;
+  }
+  disconnectedStep(f: Fighter) {
+    if (
+      !f.connected &&
+      !f.isBot &&
+      this.time - f.disconnectedAt > PVP.reconnectSeconds
+    )
+      this.forfeit(f.id);
+  }
+  movementSpeed(f: Fighter) {
+    return f.body.statuses.freeze?.duration > 0
+      ? 0
+      : f.player.speed *
+          (this.world.isWater(f.player.x, f.player.y)
+            ? PVP_RULES.waterSpeed
+            : 1) *
+          (f.body.statuses.slow?.magnitude || 1);
+  }
+  environment(f: Fighter, dt: number) {
+    for (const [id, s] of Object.entries(f.body.statuses)) {
+      s.duration -= dt;
+      if (s.duration <= 0) delete f.body.statuses[id];
     }
-    const rewind = this.history.find(
-      (h) =>
-        h.tick >=
-        Math.max(
-          this.tick - PVP.maxRewindTicks,
-          Math.min(this.tick, f.input.seenTick),
-        ),
-    );
-    const origin = a === "basic" ? rewind?.positions.get(f.id) || p : p;
-    const range = a === "basic" ? d.basicRange : d.pulseRadius;
-    let nearest: Fighter | undefined,
-      dist = Infinity;
-    for (const target of this.fighters.values()) {
-      if (target.team === f.team || target.player.health <= 0) continue;
-      const position =
-        a === "basic"
-          ? rewind?.positions.get(target.id) || target.player
-          : target.player;
-      const distance = Math.hypot(position.x - origin.x, position.y - origin.y);
-      const hit =
-        a === "pulse"
-          ? distance < range + PVP.radius
-          : segmentDistance2(
-              position.x,
-              position.y,
-              origin.x,
-              origin.y,
-              origin.x + ax * range,
-              origin.y + ay * range,
-            ) <
-            (PVP.radius + 4) ** 2;
-      if (hit && a === "pulse") this.damage(target, d.pulseDamage, f);
-      else if (hit && distance < dist) {
-        nearest = target;
-        dist = distance;
+    for (const id of Object.keys(f.body.controlImmunity || {}))
+      f.body.controlImmunity![id] = Math.max(
+        0,
+        f.body.controlImmunity![id] - dt,
+      );
+    if (f.player.health <= 0) return;
+    if (
+      Math.floor(this.time / PVP_RULES.hazardInterval) !==
+      Math.floor((this.time - dt) / PVP_RULES.hazardInterval)
+    )
+      for (const s of this.world.nearby)
+        if (
+          STRUCTURE_DEFINITIONS[s.type]?.hazard &&
+          Math.hypot(f.player.x - s.x, f.player.y - s.y) <
+            PVP.radius + s.r * 0.75 &&
+          this.time >= f.protectedUntil
+        ) {
+          f.player.health = Math.max(
+            0,
+            f.player.health -
+              (s.type === "rift" ? 8 : 5) * PVP_RULES.hazardDamage,
+          );
+          if (f.player.health === 0) {
+            f.deaths++;
+            this.log("hazard-kill", undefined, f.id);
+            break;
+          }
+        }
+    for (let i = this.pickups.length - 1; i >= 0; i--) {
+      const p = this.pickups[i];
+      if (
+        f.player.health > 0 &&
+        f.player.health < f.player.maxHealth &&
+        Math.hypot(p.x - f.player.x, p.y - f.player.y) < 30
+      ) {
+        f.player.health = Math.min(
+          f.player.maxHealth,
+          f.player.health + p.value * PVP_RULES.healing,
+        );
+        this.pickups.splice(i, 1);
       }
     }
-    if (nearest) this.damage(nearest, d.basicDamage, f);
+    for (const s of this.world.nearby)
+      if (
+        s.type === "fountain" &&
+        f.player.health > 0 &&
+        f.player.health < f.player.maxHealth &&
+        Math.hypot(f.player.x - s.x, f.player.y - s.y) < 36 &&
+        (this.fountainReady.get(s.id) || 0) <= this.time
+      ) {
+        f.player.health = Math.min(
+          f.player.maxHealth,
+          f.player.health + PVP_RULES.fountainHeal * PVP_RULES.healing,
+        );
+        this.fountainReady.set(s.id, this.time + PVP_RULES.fountainCooldown);
+        s.used = true;
+      }
   }
   step(dt = 1 / PVP.tickHz) {
     if (this.ended) return;
     this.tick++;
     this.time += dt;
-    for (const f of this.fighters.values())
-      if (!f.connected && this.time - f.disconnectedAt > PVP.reconnectSeconds) {
-        this.forfeit(f.id);
-        if (this.ended) return;
-      }
-    if (this.time < this.intermissionUntil) return;
-    for (const f of this.fighters.values()) {
+    for (const f of this.fighters.values()) this.disconnectedStep(f);
+    if (this.ended || this.time < this.intermissionUntil) return;
+    for (const s of this.world.nearby)
       if (
-        !f.connected ||
+        s.type === "fountain" &&
+        (this.fountainReady.get(s.id) || 0) <= this.time
+      )
+        s.used = false;
+    for (const f of this.fighters.values()) {
+      this.environment(f, dt);
+      if (
+        (!f.connected && !f.botControlled) ||
         f.player.health <= 0 ||
-        this.time - f.lastInputAt > 0.3
+        this.time - f.lastInputAt > 0.4
       )
         continue;
-      const move = predictMove(
+      const next = predictMove(
         f.player,
         { x: f.input.moveX, y: f.input.moveY },
-        f.player.speed,
+        this.movementSpeed(f),
         dt,
-        [],
+        this.world.nearby,
       );
-      f.player.x = clamp(move.x, 20, this.width - 20);
-      f.player.y = clamp(move.y, 20, this.height - 20);
+      f.player.x = clamp(next.x, 20, this.width - 20);
+      f.player.y = clamp(next.y, 20, this.height - 20);
       this.cast(f);
     }
-    for (const b of this.bullets) {
-      if (b.life <= 0) continue;
-      const x = b.x,
-        y = b.y;
-      b.x += b.vx * dt;
-      b.y += b.vy * dt;
-      b.life -= dt;
-      for (const f of this.fighters.values()) {
-        if (f.team === b.team || f.player.health <= 0) continue;
-        if (
-          segmentDistance2(f.player.x, f.player.y, x, y, b.x, b.y) <
-          (b.r + PVP.radius) ** 2
-        ) {
-          const owner = this.fighters.get(b.owner);
-          if (owner) this.damage(f, b.damage, owner);
-          b.life = 0;
-          break;
-        }
-      }
-    }
-    this.bullets = this.bullets.filter(
-      (b) =>
-        b.life > 0 &&
-        b.x > 0 &&
-        b.x < this.width &&
-        b.y > 0 &&
-        b.y < this.height,
-    );
-    this.history.push({
-      tick: this.tick,
-      positions: new Map(
-        [...this.fighters].map(([id, f]) => [
-          id,
-          { x: f.player.x, y: f.player.y },
-        ]),
-      ),
-    });
-    if (this.history.length > 8) this.history.shift();
+    for (const c of this.combat.values()) c.advance(dt);
     this.checkObjective();
   }
   checkObjective() {
@@ -364,6 +536,13 @@ export class PvpSimulation {
       reason: this.reason,
       width: this.width,
       height: this.height,
+      mapId: this.world.mapId,
+      seed: this.world.seed,
+      profile: this.modeProfile,
+      structures: this.world.nearby.filter((s) => !s.destroyed),
+      humanCount: this.humanCount,
+      botCount: this.botCount,
+      pickups: this.pickups,
       roundRemaining: Math.max(
         0,
         PVP.roundSeconds - (this.time - this.roundStarted),
@@ -379,20 +558,41 @@ export class PvpSimulation {
         y: f.player.y,
         hp: f.player.health,
         maxHp: f.player.maxHealth,
-        speed: f.player.speed,
+        speed: this.movementSpeed(f),
         connected: f.connected,
         cosmetics: f.player.cosmetics,
+        isBot: f.isBot,
+        botControlled: f.botControlled,
+        protected: this.time < f.protectedUntil,
       })),
-      bullets: this.bullets.map((b) => ({
-        id: b.id,
-        owner: b.owner,
-        color:
-          this.fighters.get(b.owner)?.player.cosmetics.PROJECTILE_EFFECT || "",
-        x: b.x,
-        y: b.y,
-        team: b.team,
-        r: b.r,
-      })),
+      bullets: [...this.combat.values()].flatMap((c) =>
+        c.bullets.items.map((b) => ({
+          id: b.id || 0,
+          owner: c.fighter.id,
+          color: b.color,
+          x: b.x,
+          y: b.y,
+          team: c.fighter.team,
+          r: b.r,
+          vx: b.vx,
+          vy: b.vy,
+          kind: b.kind,
+          age: b.age,
+        })),
+      ),
+      areas: [...this.combat.values()].flatMap((c) =>
+        c.areas.map((a) => ({
+          x: a.x,
+          y: a.y,
+          r: a.r,
+          armed: a.armed,
+          delay: a.delay,
+          color: a.w?.definition.color || "#fff",
+        })),
+      ),
+      lines: [...this.combat.values()].flatMap((c) =>
+        c.lines.map((l) => ({ ...l })),
+      ),
     };
   }
 }

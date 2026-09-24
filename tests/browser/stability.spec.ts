@@ -1,11 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
-import { writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { diagnostics } from '../../src/game/client/diagnostics';
 import 'dotenv/config';
 import { db } from '../../src/server/db';
 const counts = process.env.QA_PLAYERS ? [Number(process.env.QA_PLAYERS)] : [2,5];
-for (const count of counts) test(`V16/V17 stability ${count} clients`, async ({ browser }) => {
+const reportDir = process.env.STABILITY_REPORT_DIR || 'docs';
+const realtimePort = Number(process.env.PLAYWRIGHT_REALTIME_PORT || '3001');
+for (const count of counts) test(`V16/V17/V18 stability ${count} clients`, async ({ browser }) => {
   const seconds = Number(process.env.QA_SECONDS || 60);
   test.setTimeout((seconds + 240) * 1000);
   const prefix = 'stability_' + randomUUID().slice(0,6);
@@ -57,19 +60,50 @@ for (const count of counts) test(`V16/V17 stability ${count} clients`, async ({ 
         await pages[0].getByRole('button',{name:'Enviar',exact:true}).click();
         await pages[0].keyboard.press('Escape');
       }
+      if (elapsed === 20) {
+        await pages[0].setViewportSize({ width: 1180, height: 760 });
+        await pages[0].setViewportSize({ width: 1280, height: 800 });
+      }
     }
     const metrics = await Promise.all(pages.map(p => p.evaluate(() => {
       const d = (window as unknown as {limiarDiagnostics: typeof diagnostics}).limiarDiagnostics;
-      const f = [...d.frames].sort((a,b)=>a-b);
-      return {...d, frames:undefined, fps:1000/(f.reduce((a,b)=>a+b,0)/f.length), low1:1000/f[Math.floor(f.length*.99)]};
+      const summarize = (values: number[]) => {
+        const sorted = [...values].sort((a, b) => a - b);
+        const at = (percentile: number) => sorted.length
+          ? sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * percentile))] : 0;
+        const mean = sorted.length ? sorted.reduce((total, value) => total + value, 0) / sorted.length : 0;
+        return { count: sorted.length, mean, p50: at(.5), p95: at(.95), p99: at(.99) };
+      };
+      const frame = summarize(d.frames);
+      return {
+        ...d,
+        frames: undefined,
+        snapshotIntervals: undefined,
+        snapshotApply: undefined,
+        snapshotDecode: undefined,
+        render: undefined,
+        rttSamples: undefined,
+        fps: frame.mean ? 1000 / frame.mean : 0,
+        low1: frame.p99 ? 1000 / frame.p99 : 0,
+        frame,
+        snapshotCadence: summarize(d.snapshotIntervals),
+        snapshotApplyDuration: summarize(d.snapshotApply),
+        snapshotDecodeDuration: summarize(d.snapshotDecode),
+        renderDuration: summarize(d.render),
+        rtt: summarize(d.rttSamples),
+      };
     })));
-    writeFileSync(`docs/stability-${process.env.STABILITY_BASELINE ? 'baseline' : 'after'}-${count}-${process.env.QA_ENEMIES || 'natural'}.json`, JSON.stringify({seconds:(Date.now()-started)/1000, metrics, errors},null,2));
+    const server: unknown = await fetch(`http://localhost:${realtimePort}/health`).then(
+      response => response.json() as Promise<unknown>,
+    );
+    mkdirSync(reportDir, { recursive: true });
+    writeFileSync(join(reportDir, `stability-${process.env.STABILITY_BASELINE ? 'baseline' : 'after'}-${count}-${process.env.QA_ENEMIES || 'natural'}.json`), JSON.stringify({seconds:(Date.now()-started)/1000, metrics, server, errors},null,2));
     if (!process.env.STABILITY_BASELINE) for(const d of metrics) {
       expect(d.remoteGameInstances).toBe(1); expect(d.rafLoops).toBe(1);
-      expect(d.resyncRequests).toBe(0); expect(d.canvasResizes).toBeLessThanOrEqual(2);
+      expect(d.resyncRequests).toBe(0); expect(d.canvasResizes).toBeLessThanOrEqual(4);
     }
     expect(errors).toEqual([]);
-    await pages[0].screenshot({path:`docs/stability-${count}.png`});
+    await pages[0].screenshot({path:join(reportDir, `stability-${count}.png`)});
   } finally {
     await Promise.all(contexts.map(c=>c.close()));
     const users = await db().user.findMany({where:{username:{startsWith:prefix}}});

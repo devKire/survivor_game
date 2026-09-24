@@ -6,6 +6,7 @@ import "dotenv/config";
 import { db } from "../../src/server/db";
 const legacy = JSON.parse(readFileSync("tests/legacy-save.json", "utf8"));
 const prefix = "browser_" + randomUUID().slice(0, 6);
+const realtimePort = Number(process.env.PLAYWRIGHT_REALTIME_PORT || "3001");
 for (const count of [2, 3])
   test(`V3/V4/V8: ${count} browsers register, lobby, synchronize gameplay and chat`, async ({
     browser,
@@ -26,21 +27,21 @@ for (const count of [2, 3])
         pages.push(page);
         page.on("websocket", (socket) =>
           socket.on("framereceived", (frame) => {
-            if (!socket.url().includes(":3001")) return;
+            if (!socket.url().includes(`:${realtimePort}`)) return;
             const v = JSON.parse(String(frame.payload));
             if (v.type === "SNAPSHOT") snapshots[i] = v as Snapshot;
           }),
         );
         page.on("pageerror", (e) => errors.push(e.message));
         if (i === 0 && count === 2) {
-          await page.goto("http://localhost:3000");
+          await page.goto("/");
           await page.evaluate(
             (save) =>
               localStorage.setItem("limiar.save.v1", JSON.stringify(save)),
             legacy,
           );
         }
-        await page.goto("http://localhost:3000/register");
+        await page.goto("/register");
         await page.getByLabel("Nome de usuário").fill(runPrefix + "_" + i);
         await page
           .getByLabel("E-mail")
@@ -60,7 +61,7 @@ for (const count of [2, 3])
         ).toBeVisible({
           timeout: 20000,
         });
-        await page.goto("http://localhost:3000/team");
+        await page.goto("/team");
         await expect(page.getByText("● Conta conectada", { exact: true })).toBeVisible({
           timeout: 20000,
         });

@@ -1,3 +1,4 @@
+import { PVP_RULES } from "../content/mode-rules";
 import { STATUS_DEFINITIONS } from "../content/catalog";
 import { clamp } from "./math";
 import type * as T from "./types";
@@ -11,6 +12,17 @@ export function applyStatus(
 ) {
   const def = STATUS_DEFINITIONS[id];
   if (!def || e.dead) return;
+  if (source?.ruleset === "PVP" && (id === "slow" || id === "freeze")) {
+    e.controlImmunity ??= {};
+    if ((e.controlImmunity[id] || 0) > 0) return;
+    duration = Math.min(
+      duration,
+      id === "freeze" ? PVP_RULES.freezeDuration : PVP_RULES.slowDuration,
+    );
+    if (id === "slow")
+      magnitude = Math.max(PVP_RULES.slowSpeedFloor, magnitude);
+    e.controlImmunity[id] = duration + PVP_RULES.controlImmunity;
+  }
   const old = e.statuses[id] || {
     duration: 0,
     magnitude: 0,

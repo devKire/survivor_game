@@ -55,6 +55,31 @@ const connections = new Set<Connection>(),
   rooms = new Map<string, Room>(),
   nonces = new Map<string, number>(),
   ips = new Map<string, { n: number; at: number }>();
+const realtimeDiagnostics = {
+  enabled: process.env.REALTIME_DIAGNOSTICS === "1",
+  tickDurations: [] as number[],
+  tickDrift: [] as number[],
+  snapshotDurations: [] as number[],
+};
+function recordRealtimeMetric(values: number[], value: number) {
+  if (!realtimeDiagnostics.enabled || !Number.isFinite(value) || value < 0)
+    return;
+  values.push(value);
+  if (values.length > 36000) values.splice(0, 6000);
+}
+function percentile(values: number[], percentileValue: number) {
+  if (!values.length) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  return sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * percentileValue))];
+}
+function realtimeMetrics() {
+  return {
+    tickP95: percentile(realtimeDiagnostics.tickDurations, 0.95),
+    tickP99: percentile(realtimeDiagnostics.tickDurations, 0.99),
+    driftP95: percentile(realtimeDiagnostics.tickDrift, 0.95),
+    snapshotP95: percentile(realtimeDiagnostics.snapshotDurations, 0.95),
+  };
+}
 const origin = getRealtimeOrigin();
 const port = getRealtimePort();
 getRealtimeSecret();
@@ -67,6 +92,7 @@ const server = createServer((req, res) => {
         rooms: rooms.size,
         connections: connections.size,
         tickRate: TICK_HZ,
+        ...(realtimeDiagnostics.enabled ? { metrics: realtimeMetrics() } : {}),
       }),
     );
   } else {
@@ -445,8 +471,13 @@ server.on("upgrade", (req, socket, head) => {
 });
 let previous = performance.now();
 const interval = setInterval(() => {
-  const now = performance.now(),
+  const tickStarted = performance.now();
+  const now = tickStarted,
     elapsed = Math.min(0.2, (now - previous) / 1000);
+  recordRealtimeMetric(
+    realtimeDiagnostics.tickDrift,
+    Math.abs((now - previous) - 1000 / TICK_HZ),
+  );
   previous = now;
   for (const room of rooms.values()) {
     room.accumulator += elapsed;
@@ -457,7 +488,10 @@ const interval = setInterval(() => {
     }
     room.snapshotClock += elapsed;
     if (room.snapshotClock >= 1 / SNAPSHOT_HZ) {
-      room.snapshotClock -= 1 / SNAPSHOT_HZ;
+      // A delayed event loop should skip a stale snapshot interval instead of
+      // emitting the next delta in a burst on the following server tick.
+      room.snapshotClock %= 1 / SNAPSHOT_HZ;
+      const snapshotStarted = performance.now();
       for (const c of connections)
         if (c.room === room.id) {
           const member = room.game.members.get(c.userId);
@@ -473,6 +507,10 @@ const interval = setInterval(() => {
             c.full = false;
           }
         }
+      recordRealtimeMetric(
+        realtimeDiagnostics.snapshotDurations,
+        performance.now() - snapshotStarted,
+      );
     }
     if (
       room.game.ended &&
@@ -504,6 +542,7 @@ const interval = setInterval(() => {
     if (room.endedAt && Date.now() - room.endedAt > 60000)
       rooms.delete(room.id);
   }
+  recordRealtimeMetric(realtimeDiagnostics.tickDurations, performance.now() - tickStarted);
 }, 1000 / TICK_HZ);
 let maintaining = false;
 const maintenance = setInterval(async () => {
@@ -556,4 +595,4 @@ process.on("SIGTERM", close);
 process.on("SIGINT", close);
 
 // Test harnesses can inspect the authority in-process; never exposed over HTTP/WS.
-export { rooms };
+export { rooms, realtimeDiagnostics };

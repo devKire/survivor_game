@@ -26,13 +26,20 @@ export class SnapshotStream {
   ): Snapshot {
     const p = m.player,
       entities: NetEntity[] = [];
-    const near = (x: number, y: number) =>
-      Math.abs(x - p.x) < 1000 && Math.abs(y - p.y) < 800;
+    // Keep an entity a little beyond the enter bounds once it is visible. This
+    // prevents add/remove churn while a moving player tracks an interest edge.
+    const near = (id: string, x: number, y: number) => {
+      const margin = this.previous.has(id) ? 120 : 0;
+      return (
+        Math.abs(x - p.x) < 1000 + margin &&
+        Math.abs(y - p.y) < 800 + margin
+      );
+    };
     const round = (n: number) => Math.round(n * 10) / 10;
     for (const e of g.enemies)
       if (
         !e.dead &&
-        (near(e.x, e.y) || e.type === "boss" || e.type === "final")
+        (near("e" + e.id, e.x, e.y) || e.type === "boss" || e.type === "final")
       )
         entities.push({
           id: "e" + e.id,
@@ -57,7 +64,7 @@ export class SnapshotStream {
           aimY: round(e.aimY),
         });
     for (const b of g.bullets.items)
-      if (near(b.x, b.y))
+      if (near("b" + b.id, b.x, b.y))
         entities.push({
           id: "b" + b.id,
           kind: "bullet",
@@ -69,9 +76,11 @@ export class SnapshotStream {
           enemy: b.enemy,
         });
     for (const a of g.areas)
-      if (near(a.x, a.y))
+      {
+        const id = this.identity(a, "a");
+        if (!near(id, a.x, a.y)) continue;
         entities.push({
-          id: this.identity(a, "a"),
+          id,
           kind: "area",
           x: round(a.x),
           y: round(a.y),
@@ -82,10 +91,13 @@ export class SnapshotStream {
           delay: round(a.delay),
           armed: a.armed,
         });
+      }
     for (const o of g.pickups)
-      if ((!o.ownerId || o.ownerId === m.id) && near(o.x, o.y))
+      {
+        const id = this.identity(o, "p");
+        if ((!o.ownerId || o.ownerId === m.id) && near(id, o.x, o.y))
         entities.push({
-          id: this.identity(o, "p"),
+          id,
           kind: "pickup",
           x: round(o.x),
           y: round(o.y),
@@ -94,10 +106,13 @@ export class SnapshotStream {
           value: o.value,
           itemId: o.itemId,
         });
+      }
     for (const o of g.gems)
-      if (near(o.x, o.y))
+      {
+        const id = this.identity(o, "g");
+        if (!near(id, o.x, o.y)) continue;
         entities.push({
-          id: this.identity(o, "g"),
+          id,
           kind: "gem",
           x: round(o.x),
           y: round(o.y),
@@ -105,6 +120,7 @@ export class SnapshotStream {
           type: "xp",
           value: o.value,
         });
+      }
     const now = new Map<string, NetEntity>(),
       upsert: NetEntity[] = [],
       patch: EntityPatch[] = [];
@@ -171,7 +187,7 @@ export class SnapshotStream {
       remove,
       fx: g.fxEvents.filter((e) => e.tick > base && e.tick <= tick).slice(-100),
       structures: g.world.nearby
-        .filter((s) => near(s.x, s.y))
+        .filter((s) => near("s" + s.id, s.x, s.y))
         .map((s) => ({ ...s, used: s.used || m.personalStructures.has(s.id) })),
       own: {
         stats: p.stats,

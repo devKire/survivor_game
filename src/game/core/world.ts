@@ -23,12 +23,30 @@ const LEGACY_POI_WEIGHTS: Record<string, number> = {
   chest: 2.2,
   obelisk: 0.65,
 };
+export type WorldHost = Pick<
+  GameSimulation,
+  | "player"
+  | "playersForWorld"
+  | "spark"
+  | "sound"
+  | "dropItemWeighted"
+  | "drop"
+  | "dropXP"
+  | "saveSnapshot"
+  | "hurtPlayer"
+> & {
+  run: Pick<
+    T.RunState,
+    "worldVersion" | "worldChanges" | "structuresBroken" | "urnsBroken"
+  >;
+};
 export class World {
   constructor(
-    g: GameSimulation,
+    g: WorldHost,
     mapId: string,
     seed: string,
     changes: Record<string, T.StructureChange> = {},
+    readonly profile?: T.PvpMapProfile,
   ) {
     this.g = g;
     this.mapId = Object.hasOwn(MAP_DEFINITIONS, mapId) ? mapId : "ruins";
@@ -50,6 +68,7 @@ export class World {
   }
 
   createChunk(cx: number, cy: number) {
+    if (this.profile) return this.competitiveChunk(cx, cy);
     const key = this.chunkKey(cx, cy);
     const rng = mulberry32(
       hashString(`${this.seed}|${this.mapId}|${cx}|${cy}`),
@@ -111,6 +130,73 @@ export class World {
       structures.push(s);
     }
     return { cx, cy, key, structures };
+  }
+
+  /** Same catalog geometry, deterministic mirrored sectors; clear lanes and bases. */
+  competitiveChunk(cx: number, cy: number): T.Chunk {
+    const profile = this.profile!;
+    const structures: T.Structure[] = [];
+    const add = (
+      type: string,
+      x: number,
+      y: number,
+      key: string,
+      angle = 0,
+    ) => {
+      if (
+        Math.floor(x / CHUNK_SIZE) !== cx ||
+        Math.floor(y / CHUNK_SIZE) !== cy
+      )
+        return;
+      const d = STRUCTURE_DEFINITIONS[type],
+        id = `pvp:${key}`;
+      structures.push({
+        id,
+        type,
+        x,
+        y,
+        r: d.r,
+        hp: d.hp || 0,
+        maxHp: d.hp || 0,
+        used: false,
+        destroyed: false,
+        opened: false,
+        angle,
+        variant: 0,
+        ...this.changes[id],
+      });
+    };
+    const rng = mulberry32(
+      hashString(`${this.seed}|${this.mapId}|competitive-v1`),
+    );
+    for (let x = 370; x < profile.width / 2 - 90; x += 150)
+      for (let y = 100; y < profile.height - 80; y += 150) {
+        const px = x + rng() * 35,
+          py = y + rng() * 35;
+        const type =
+          profile.structures[Math.floor(rng() * profile.structures.length)];
+        if (
+          rng() > profile.density ||
+          profile.lanes.some((l) => Math.abs(py - l) < profile.corridor + 45)
+        )
+          continue;
+        add(type, px, py, `${x}:${y}:a`);
+        add(type, profile.width - px, py, `${x}:${y}:b`);
+      }
+    for (const [i, x] of [
+      profile.width * 0.32,
+      profile.width * 0.68,
+    ].entries()) {
+      add("urn", x, profile.height / 2 - 95, `urn:${i}`);
+      add("fountain", x, profile.height / 2 + 110, `fountain:${i}`);
+    }
+    add(
+      "obelisk",
+      profile.width / 2,
+      profile.height / 2 - (profile.objective ? 0 : 130),
+      "obelisk",
+    );
+    return { cx, cy, key: this.chunkKey(cx, cy), structures };
   }
 
   ensureChunkAt(x: number, y: number) {
@@ -244,6 +330,10 @@ export class World {
   breakStructure(s: T.Structure) {
     if (s.destroyed) return;
     this.mark(s, { destroyed: true, hp: 0 });
+    if (this.profile) {
+      this.onCompetitiveBreak?.(s);
+      return;
+    }
     const g = this.g,
       p = g.player;
     g.spark(s.x, s.y, "#c7b58d", 10);
@@ -269,6 +359,16 @@ export class World {
         (s.x - x) ** 2 + (s.y - y) ** 2 < (s.r + 38) ** 2
       )
         return false;
+    if (this.profile) {
+      x = Math.min(x, this.profile.width - x);
+      if (
+        x < 320 ||
+        this.profile.lanes.some(
+          (lane) => Math.abs(y - lane) < this.profile!.corridor,
+        )
+      )
+        return false;
+    }
     const cell = 180,
       cx = Math.floor(x / cell),
       cy = Math.floor(y / cell);
@@ -310,7 +410,8 @@ export class World {
     );
   }
 
-  g!: GameSimulation;
+  onCompetitiveBreak?: (s: T.Structure) => void;
+  g!: WorldHost;
   mapId!: string;
   map!: T.MapDefinition;
   seed!: string;

@@ -14,12 +14,29 @@ import {
 import type { ArenaSnapshot, PvpInput } from "../../game/core/pvp";
 import { predictMove } from "../../game/network/movement";
 import { clamp } from "../../game/core/math";
-import { COSMETICS, cosmeticVisual } from "../../game/content/cosmetics";
-export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CASUAL" }: { userId: string; menuHeader: React.ReactNode; initialMode?: "DUEL_CASUAL" | "WAR_CASUAL" }) {
+import { COSMETICS } from "../../game/content/cosmetics";
+import { MAP_DEFINITIONS } from "../../game/content/catalog";
+import {
+  WorldRenderer,
+  type WorldRenderContext,
+} from "../../game/client/world-renderer";
+import { GameSimulation } from "../../game/core/simulation";
+import { freshSave } from "../../game/core/save";
+import { World } from "../../game/core/world";
+import { Player } from "../../game/core/entities";
+export default function ArenaClient({
+  userId,
+  menuHeader,
+  initialMode = "DUEL_CASUAL",
+}: {
+  userId: string;
+  menuHeader: React.ReactNode;
+  initialMode?: "DUEL_CASUAL" | "WAR_CASUAL";
+}) {
   const placement = useRef<"TORRE" | "BARRICADA" | null>(null),
     worldPointer = useRef({ x: 0, y: 0 });
   const [roster, setRoster] = useState<
-    { id: string; name: string; team: number }[]
+    { id: string; name: string; team: number; isBot?: boolean }[]
   >([]);
   const [role, setRole] = useState<WarRole>("SOLDADO"),
     [war, setWar] = useState<WarView | null>(null),
@@ -37,6 +54,12 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
     [status, setStatus] = useState("Conectando…"),
     [waiting, setWaiting] = useState(false),
     [seconds, setSeconds] = useState(0),
+    [queueInfo, setQueueInfo] = useState({
+      found: 0,
+      target: 10,
+      filling: false,
+    }),
+    [mapName, setMapName] = useState(""),
     [playing, setPlaying] = useState(false),
     [character, setCharacter] = useState<PvpCharacter>("nara"),
     [error, setError] = useState(""),
@@ -57,6 +80,9 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
       debug = false,
       mouseDown = false,
       aim = { x: 1, y: 0 };
+    let world: World | null = null;
+    let renderer: WorldRenderer | null = null;
+    const visualPlayers = new Map<string, Player>();
     const keys = new Set<string>();
     const renderPositions = new Map<string, { x: number; y: number }>();
     let lastFrame = performance.now();
@@ -69,9 +95,17 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
         if (m.type === "ARENA_QUEUE_STATUS") {
           setWaiting(m.waiting);
           setSeconds(m.seconds);
+          setQueueInfo({
+            found: m.found || 0,
+            target: m.target || 10,
+            filling: m.filling || false,
+          });
         }
         if (m.type === "ARENA_STARTED") {
           match.current = m.matchId;
+          world = null;
+          renderer = null;
+          visualPlayers.clear();
           setRoster(m.roster);
           setPlaying(true);
           setWaiting(false);
@@ -84,6 +118,37 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
         }
         if (m.type === "ARENA_SNAPSHOT") {
           snapshot.current = m.snapshot;
+          if (!world) {
+            const g = new GameSimulation(freshSave());
+            g.start("nara", "test", m.snapshot.mapId, m.snapshot.seed);
+            world = new World(
+              g,
+              m.snapshot.mapId,
+              m.snapshot.seed,
+              {},
+              MAP_DEFINITIONS[m.snapshot.mapId].profiles![m.snapshot.profile],
+            );
+            world.nearby = m.snapshot.structures;
+            const ctx = canvas.current?.getContext("2d");
+            if (ctx)
+              renderer = new WorldRenderer({
+                ctx,
+                camera: { x: 500, y: 300 },
+                viewW: 1000,
+                viewH: 600,
+                world,
+                run: { worldSeed: m.snapshot.seed, simTime: m.snapshot.time },
+                player: g.player,
+                debug: {
+                  chunks: false,
+                  structureIds: false,
+                  collisions: false,
+                  hitboxes: false,
+                },
+              } satisfies WorldRenderContext);
+            setMapName(MAP_DEFINITIONS[m.snapshot.mapId].name);
+          }
+          world.nearby = m.snapshot.structures;
           const own = m.snapshot.players.find((p) => p.id === userId);
           if (!own) return;
           sequence = Math.max(sequence, m.snapshot.own.ack);
@@ -95,7 +160,7 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
               { x: input.moveX, y: input.moveY },
               own.speed,
               0.04,
-              [],
+              m.snapshot.structures,
             );
           next.x = clamp(next.x, 20, m.snapshot.width - 20);
           next.y = clamp(next.y, 20, m.snapshot.height - 20);
@@ -233,7 +298,7 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
           { x: input.moveX, y: input.moveY },
           own.speed,
           0.04,
-          [],
+          s.structures,
         );
         prediction.x = clamp(prediction.x, 20, s.width - 20);
         prediction.y = clamp(prediction.y, 20, s.height - 20);
@@ -262,21 +327,6 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
       if (el && c) {
         c.fillStyle = "#091a21";
         c.fillRect(0, 0, 1000, 600);
-        c.strokeStyle = "#284439";
-        for (let x = 0; x <= 1000; x += 50) {
-          c.beginPath();
-          c.moveTo(x, 0);
-          c.lineTo(x, 600);
-          c.stroke();
-        }
-        for (let y = 0; y <= 600; y += 50) {
-          c.beginPath();
-          c.moveTo(0, y);
-          c.lineTo(1000, y);
-          c.stroke();
-        }
-        c.strokeStyle = "#a1ac88";
-        c.strokeRect(20, 20, 960, 560);
         if (s) {
           const own = s.players.find((p) => p.id === userId),
             cx = clamp(
@@ -291,20 +341,27 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
             );
           c.save();
           c.translate(-cx, -cy);
+          if (renderer) {
+            renderer.g.camera = { x: cx + 500, y: cy + 300 };
+            renderer.g.run.simTime = s.time;
+            renderer.terrain();
+            for (const st of s.structures) renderer.structure(st, s.time);
+            for (const area of s.areas) renderer.area(area);
+            for (const item of s.pickups) {
+              c.fillStyle = "#89edba";
+              c.fillRect(item.x - 7, item.y - 2, 14, 4);
+              c.fillRect(item.x - 2, item.y - 7, 4, 14);
+            }
+          }
+          c.strokeStyle = "#a1ac88";
+          c.lineWidth = 2;
+          c.strokeRect(20, 20, s.width - 40, s.height - 40);
           if (s.war) {
             c.strokeStyle = "#c9b877";
             c.lineWidth = 3;
             c.beginPath();
             c.arc(1300, 700, 110, 0, Math.PI * 2);
             c.stroke();
-            for (const y of [250, 700, 1150]) {
-              c.strokeStyle = "#41533c";
-              c.lineWidth = 50;
-              c.beginPath();
-              c.moveTo(130, y);
-              c.lineTo(2470, y);
-              c.stroke();
-            }
             for (const u of s.war.minions) {
               c.fillStyle = u.team === 0 ? "#7fb99b" : "#c1817e";
               c.fillRect(u.x - 6, u.y - 6, 12, 12);
@@ -313,7 +370,31 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
               c.globalAlpha = st.hp > 0 ? 1 : 0.2;
               c.strokeStyle = st.team === 0 ? "#83cca9" : "#d98e8c";
               c.lineWidth = 3;
-              c.strokeRect(st.x - st.r, st.y - st.r, st.r * 2, st.r * 2);
+              renderer?.structure(
+                {
+                  id: st.id,
+                  type:
+                    st.kind === "CORE"
+                      ? "obelisk"
+                      : st.kind === "TORRE"
+                        ? "column"
+                        : "wall",
+                  x: st.x,
+                  y: st.y,
+                  r: st.r,
+                  hp: st.hp,
+                  maxHp: st.maxHp,
+                  used: false,
+                  destroyed: st.hp <= 0,
+                  opened: false,
+                  angle: 0,
+                  variant: 0,
+                },
+                s.time,
+              );
+              c.beginPath();
+              c.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+              c.stroke();
               c.fillStyle = c.strokeStyle;
               c.fillRect(
                 st.x - st.r,
@@ -324,14 +405,15 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
             }
             c.globalAlpha = 1;
           }
-          for (const b of s.bullets) {
-            c.fillStyle =
-              COSMETICS[b.color]?.color ||
-              (b.team === 0 ? "#91d5b4" : "#df9b9b");
-            c.beginPath();
-            c.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-            c.fill();
-          }
+          for (const b of s.bullets)
+            renderer?.projectile(
+              b,
+              COSMETICS[
+                s.players.find((p) => p.id === b.owner)?.cosmetics
+                  .PROJECTILE_EFFECT || ""
+              ]?.color || b.color,
+            );
+          for (const line of s.lines) renderer?.line(line);
           for (const id of renderPositions.keys())
             if (!s.players.some((p) => p.id === id)) renderPositions.delete(id);
           for (const p of s.players) {
@@ -345,78 +427,46 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
             }
             renderPositions.set(p.id, remote);
             const own = p.id === userId,
-              pos = own && prediction ? prediction : remote,
-              visual = cosmeticVisual(p.cosmetics),
-              color =
-                visual.skin?.color ||
-                PVP_LOADOUTS[p.character as PvpCharacter]?.color ||
-                "#fff";
+              pos = own && prediction ? prediction : remote;
+            let visual = visualPlayers.get(p.id);
+            if (!visual) {
+              visual = new Player(p.character, {}, "PVP");
+              visualPlayers.set(p.id, visual);
+            }
+            Object.assign(visual, {
+              x: pos.x,
+              y: pos.y,
+              health: p.hp,
+              maxHealth: p.maxHp,
+              cosmetics: p.cosmetics,
+              invulnerable: p.protected ? 1 : 0,
+            });
+            c.save();
+            renderer?.player(visual, s.time);
+            c.restore();
             c.globalAlpha = p.hp > 0 ? 1 : 0.3;
-            c.fillStyle = color;
             c.strokeStyle = p.team === 0 ? "#83ccb7" : "#dd9c92";
-            c.lineWidth = 3;
+            c.lineWidth = 2;
             c.beginPath();
-            c.moveTo(pos.x, pos.y - 16);
-            c.lineTo(pos.x + 13, pos.y + 12);
-            c.lineTo(pos.x - 13, pos.y + 12);
-            c.closePath();
-            c.fill();
+            c.arc(pos.x, pos.y + 8, 20, 0, Math.PI * 2);
             c.stroke();
             c.fillStyle = "#273833";
             c.fillRect(pos.x - 22, pos.y - 28, 44, 4);
-            c.fillStyle = "#9cdc9a";
+            c.fillStyle = p.team === 0 ? "#83ccb7" : "#dd9c92";
             c.fillRect(pos.x - 22, pos.y - 28, (44 * p.hp) / p.maxHp, 4);
             c.fillStyle = "#dbe6d5";
             c.font = "11px Georgia";
             c.textAlign = "center";
             c.fillText(
-              p.name + (p.connected ? "" : " · reconectando"),
+              p.name +
+                (p.botControlled && !p.isBot
+                  ? " [BOT temporário]"
+                  : !p.connected && !p.isBot
+                    ? " · reconectando"
+                    : ""),
               pos.x,
               pos.y - 37,
             );
-            if (visual.weapon) {
-              c.strokeStyle = visual.weapon.color;
-              c.beginPath();
-              c.arc(pos.x, pos.y, 20, 0, Math.PI * 1.4);
-              c.stroke();
-            }
-            const aura =
-              p.hp <= 0
-                ? visual.death
-                : s.intermission > 0
-                  ? visual.spawn
-                  : null;
-            if (aura) {
-              c.strokeStyle = aura.color;
-              c.beginPath();
-              c.arc(
-                pos.x,
-                pos.y,
-                25 + Math.sin(s.time * 4) * 3,
-                0,
-                Math.PI * 2,
-              );
-              c.stroke();
-            }
-            if (visual.frame) {
-              c.strokeStyle = visual.frame.color;
-              c.strokeRect(pos.x - 28, pos.y - 50, 56, 19);
-            }
-            if (visual.icon) {
-              c.fillStyle = visual.icon.color;
-              c.fillText(visual.icon.glyph, pos.x - 34, pos.y - 36);
-            }
-            if (visual.emote && s.time % 15 < 2) {
-              c.fillStyle = visual.emote.color;
-              c.fillText(visual.emote.glyph, pos.x, pos.y - 58);
-            }
-            if (visual.trail) {
-              c.strokeStyle = visual.trail.color;
-              c.beginPath();
-              c.moveTo(pos.x - 20, pos.y + 18);
-              c.lineTo(pos.x + 20, pos.y + 18);
-              c.stroke();
-            }
             if (debug) {
               c.strokeStyle = "#fff";
               c.beginPath();
@@ -462,7 +512,9 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
     };
   }, [userId]);
   return (
-    <main className={`account-shell arena-page ${playing ? "arena-playing" : ""}`}>
+    <main
+      className={`account-shell arena-page ${playing ? "arena-playing" : ""}`}
+    >
       {!playing && menuHeader}
       {playing && <Link href="/">← Menu principal</Link>}
       <h1>ARENA DO LIMIAR</h1>
@@ -471,10 +523,49 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
         {status} · {hud.rtt} ms · Reconciliação {hud.correction}px
       </p>
       <p>
-        Condições normalizadas. Obelisco e consumíveis PvE não entram.
-        Reconexão: 30 s.
+        Condições normalizadas. Obelisco e consumíveis PvE não entram. No 5v5,
+        um bot assume após 30 s sem conexão; volte para reassumir seu slot.
       </p>
       <p role="status">{error || result}</p>
+      {waiting && (
+        <p role="status">
+          {queueInfo.filling
+            ? "Completando esquadrões…"
+            : "PROCURANDO BATALHA…"}{" "}
+          Jogadores encontrados: {queueInfo.found} / {queueInfo.target}
+        </p>
+      )}
+      {playing && (
+        <>
+          <p>{mapName}</p>
+          <div className="actions">
+            {[0, 1].map((team) => (
+              <div key={team}>
+                <strong>{team === 0 ? "TIME AZUL" : "TIME VERMELHO"}</strong>
+                <ul>
+                  {roster
+                    .filter((p) => p.team === team)
+                    .map((p) => (
+                      <li key={p.id}>{p.name}</li>
+                    ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      {!playing && mode === "WAR_CASUAL" && (
+        <p>
+          Casual: mínimo de 2 humanos. Após 45 s, bots identificados completam
+          os times. Amigos na mesma equipe devem buscar o mesmo modo; a party
+          permanece junta.
+        </p>
+      )}
+      {!playing && mode === "WAR_RANKED" && (
+        <p>
+          Ranked: 10 humanos, sem bots na formação. Busca por até 5 minutos.
+        </p>
+      )}
       {!playing && (
         <div className="actions">
           <label>
@@ -554,7 +645,7 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
         <details>
           <summary>Reportar jogador</summary>
           {roster
-            .filter((p) => p.id !== userId)
+            .filter((p) => p.id !== userId && !p.isBot)
             .map((p) => (
               <div key={p.id}>
                 {p.name}
@@ -650,9 +741,9 @@ export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CA
         aria-label="Arena competitiva"
       />
       <p>
-        WASD/setas: mover · mouse: mirar · clique: ataque básico · 1: projétil ·
-        2: pulso · 3/espaço: deslocamento · F7: hitboxes e posição
-        servidor/predição.
+        WASD/setas: mover · mouse: mirar · clique: arma do personagem · 1:
+        Agulha do Vazio · 2: Sopro de Sal · 3/espaço: deslocamento · F7:
+        hitboxes e posição servidor/predição.
       </p>
     </main>
   );

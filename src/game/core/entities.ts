@@ -120,6 +120,7 @@ export class Player {
 }
 
 export class Weapon {
+  ruleset: "PVE" | "PVP" = "PVE";
   ownerId: string | null = null;
   constructor(id: string) {
     this.id = id;

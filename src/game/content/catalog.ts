@@ -1233,8 +1233,16 @@ export const SYNERGY_DEFINITIONS: Record<
   },
 };
 
+function competitiveProfiles(structures: string[]) {
+  return {
+    pvp1v1: { width: 1000, height: 600, spawnX: 120, lanes: [300], corridor: 65, density: 0.75, structures, objective: false },
+    pvp5v5: { width: 2600, height: 1400, spawnX: 230, lanes: [250, 700, 1150], corridor: 85, density: 1, structures, objective: true },
+  };
+}
+
 export const MAP_DEFINITIONS: Record<string, MapDefinition> = {
   ruins: {
+    profiles: competitiveProfiles(["column", "wall", "stone", "ruin", "tree", "rift"]),
     name: "Ruínas do Obelisco",
     icon: "◇",
     unlocked: true,
@@ -1282,6 +1290,7 @@ export const MAP_DEFINITIONS: Record<string, MapDefinition> = {
     waveModifiers: { rate: 1, hp: 1, elite: 1 },
   },
   gardens: {
+    profiles: competitiveProfiles(["column", "stone", "ruin", "tree", "platform", "thorn"]),
     name: "Jardins Submersos",
     icon: "≋",
     unlocked: true,

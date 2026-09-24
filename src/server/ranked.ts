@@ -57,6 +57,8 @@ export async function settleRating(
     return r.reduce((sum, r) => sum + r.mmr, 0) / r.length;
   };
   const avg = [average(0), average(1)];
+  // Ranked starts human-only. Replacement AI never earns positive competitive progression.
+  const assisted = [...g.fighters.values()].some((f) => f.botEverControlled);
   for (const row of rows) {
     const team = g.fighters.get(row.userId)!.team,
       result = g.forfeited.has(row.userId)
@@ -66,7 +68,9 @@ export async function settleRating(
           : g.winner === team
             ? 1
             : 0,
-      delta = eloChange(avg[team], avg[1 - team], result),
+      delta = assisted
+        ? Math.min(0, eloChange(avg[team], avg[1 - team], result))
+        : eloChange(avg[team], avg[1 - team], result),
       mmr = Math.max(0, row.mmr + delta);
     await tx.rankedRating.update({
       where: { id: row.id },

@@ -1,10 +1,13 @@
 import { defineConfig } from "@playwright/test";
+const appPort = Number(process.env.PLAYWRIGHT_PORT || "3000");
+const realtimePort = Number(process.env.PLAYWRIGHT_REALTIME_PORT || "3001");
+const appUrl = `http://localhost:${appPort}`;
 export default defineConfig({
   testDir: "tests/browser",
   workers: 1,
   expect: { timeout: 30000 },
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: appUrl,
     channel: "chrome",
     headless: true,
     viewport: { width: 1280, height: 800 },
@@ -13,15 +16,25 @@ export default defineConfig({
   webServer: [
     {
       command: process.env.PLAYWRIGHT_PRODUCTION
-        ? "npm run start -- --port 3000"
-        : "npm run dev -- --port 3000",
-      url: "http://localhost:3000",
+        ? `npm run start -- --port ${appPort}`
+        : `npm run dev -- --port ${appPort}`,
+      url: appUrl,
+      env: {
+        ...process.env,
+        BETTER_AUTH_URL: appUrl,
+        NEXT_PUBLIC_REALTIME_URL: `ws://localhost:${realtimePort}`,
+      },
       reuseExistingServer: false,
       timeout: 120000,
     },
     {
       command: process.env.QA_ENEMIES ? "node --conditions=react-server --import tsx scripts/stability-realtime.ts" : "npm run realtime",
-      url: "http://localhost:3001/health",
+      url: `http://localhost:${realtimePort}/health`,
+      env: {
+        ...process.env,
+        REALTIME_PORT: String(realtimePort),
+        REALTIME_ORIGIN: appUrl,
+      },
       reuseExistingServer: false,
       timeout: 120000,
     },

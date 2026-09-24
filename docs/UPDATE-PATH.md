@@ -40,6 +40,26 @@ construção validada, Energia temporária e composição ranked 1/1/3. Sem pode
 Máximo 180 minions, 90/time, LOD distante e interest management por observador;
 estruturas/objetivos continuam globais. Não há alegação de milhares de entidades.
 
+Os mapas competitivos agora partem de `MAP_DEFINITIONS`: Ruínas do Obelisco e
+Jardins Submersos conservam arte, paleta e catálogo de estruturas, com perfis
+determinísticos `pvp1v1` e `pvp5v5`. Geometria e hazards usam setores espelhados,
+rotas secas seguras, objetivos e POIs pareados. Offline e co-op continuam usando
+a geração PvE original. PvP reutiliza `Player`, armas, ataques, projéteis, status,
+colisão e arte de mundo; normalização, dano, cura, água, hazards e controle têm
+parâmetros próprios em `PVP_RULES`. Obelisco e pickups competitivos não alteram a
+progressão persistente.
+
+Guerra Casual forma sempre 5×5: busca até dez humanos, aceita no mínimo dois após
+45s e preenche as vagas com bots do servidor. Os humanos são alocados antes dos
+bots, parties permanecem juntas e ratings Ranked existentes servem apenas para
+balancear Casual quando disponíveis. Janela inicial de MMR ±250 expande em ±100
+a cada 15s, até ±750; o maior número de humanos e a diferença entre times têm
+prioridade sobre a diferença de rating. Ranked continua sem bot-fill inicial e
+exige dez humanos; se um participante desconectar, um bot pode assumir após 30s,
+e a partida assistida não concede ganho positivo de MMR. Bots seguem velocidade,
+visão, recarga e regras normais, têm decisões/erro de mira configurados e atuam
+por classe, rota, defesa e objetivo. Reconnect devolve o mesmo slot.
+
 ## Compatibilidade e operação
 
 Single-player offline, co-op autoritativo, amigos, equipes, chat, personagens,
@@ -80,7 +100,12 @@ elimina necessidade futura de QA nem detecção de conluio/farming multi-conta.
 - Lint: aprovado, sem erros ou avisos.
 - Build de produção: aprovado, incluindo todas as novas rotas.
 - Git diff --check: aprovado.
-- Testes adicionais de gameplay: não executados após a orientação do usuário.
+- Testes focados desta implementação: 19 PvP/matchmaking passaram, cobrindo os
+  dois mapas em Solo/co-op/PvP, 10/8/7/6/4/3/2 humanos, expansão de MMR, party,
+  corrida/cancelamento, bots, disconnect/reconnect e settlement.
+- Smoke Chrome: Ruínas e Jardins iniciaram Offline; ambos renderizaram 1v1 e
+  Guerra 5v5 com roster bot-fill. Typecheck, lint focado, build e `git diff --check`
+  passaram. Carga grande e duração competitiva continuam sem medição nesta mudança.
 
 O primeiro migrate status falhou por acesso de rede no sandbox; repetido com
 permissão, passou. Nenhum reset ou alteração destrutiva do banco foi executado.
