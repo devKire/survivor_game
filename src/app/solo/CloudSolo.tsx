@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { BrowserGame } from "../../game/client/browser";
 import { GameShell } from "../../game/client/OfflineGame";
 import type { SaveData } from "../../game/core/types";
@@ -15,6 +15,7 @@ export default function CloudSolo({
   initial: SaveData;
   revision: number;
 }) {
+  const router = useRouter();
   const canvas = useRef<HTMLCanvasElement>(null),
     game = useRef<BrowserGame | null>(null),
     [status, setStatus] = useState("Solo na conta · salvamento automático"),
@@ -25,7 +26,8 @@ export default function CloudSolo({
       dirty = false,
       busy = false,
       blocked = false,
-      disposed = false;
+      disposed = false,
+      flushPending: Promise<void> | null = null;
     const key = "limiar.solo.cache." + userId;
     const g = new BrowserGame(canvas.current, initial);
     game.current = g;
@@ -45,23 +47,39 @@ export default function CloudSolo({
       return true;
     };
     async function flush() {
-      if (!dirty || busy || blocked) return;
+      if (busy) {
+        await flushPending;
+        return;
+      }
+      if (!dirty || blocked) return;
       dirty = false;
       busy = true;
-      const result = await saveSolo({ version, save: g.save }).catch(() => ({
-        ok: false as const,
-        error: "Sem conexão. Cache salvo neste navegador.",
-      }));
-      busy = false;
-      if (result.ok) {
-        version = result.version;
-        if (!dirty) localStorage.removeItem(key);
-        if (!disposed) setStatus("Solo salvo na conta");
-      } else {
-        blocked = true;
-        if (!disposed) setStatus(result.error);
-      }
+      flushPending = (async () => {
+        const result = await saveSolo({ version, save: g.save }).catch(() => ({
+          ok: false as const,
+          error: "Sem conexão. Cache salvo neste navegador.",
+        }));
+        busy = false;
+        if (result.ok) {
+          version = result.version;
+          if (!dirty) localStorage.removeItem(key);
+          if (!disposed) setStatus("Solo salvo na conta");
+        } else {
+          blocked = true;
+          if (!disposed) setStatus(result.error);
+        }
+      })();
+      await flushPending;
     }
+    g.onHub = () => {
+      g.saveSnapshot(true);
+      void (async () => {
+        do {
+          await flush();
+        } while (dirty && !blocked);
+        router.push("/");
+      })();
+    };
     const timer = setInterval(() => void flush(), 1500);
     return () => {
       g.dispose();
@@ -69,12 +87,11 @@ export default function CloudSolo({
       clearInterval(timer);
       void flush();
     };
-  }, [initial, revision, userId]);
+  }, [initial, revision, userId, router]);
   return (
     <>
       <GameShell canvasRef={canvas} />
       <aside className="solo-sync">
-        <Link href="/account">← Conta</Link>
         <span role="status">{status}</span>
         {cache && (
           <section>

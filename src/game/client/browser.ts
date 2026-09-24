@@ -48,6 +48,7 @@ export class BrowserGame extends GameSimulation {
   declare ui: UI;
   abort = new AbortController();
   frameHandle = 0;
+  onHub: () => void = () => {};
   dispose() {
     this.saveSnapshot(true);
     this.abort.abort();
@@ -648,12 +649,14 @@ class UI {
         <span>TRAVESSIAS <b>${this.g.save.completed}</b></span>
       </div>
       <div class="footer">
+        ${this.button("hub", "VOLTAR AO MENU PRINCIPAL")}
         ${this.button("codex", "Códice")}
         ${this.button("reset", "Resetar progresso")}
         <small>v${VERSION} · ${this.g.storageAvailable ? "SALVAMENTO LOCAL" : "PROGRESSO TEMPORÁRIO"}</small>
       </div>
     `,
       {
+        hub: () => this.g.onHub(),
         continue: () => this.g.continueRun(),
         play: () =>
           hasRun
@@ -860,8 +863,9 @@ class UI {
       <h3>Consumíveis</h3>${r.inventory.map((slot) => (slot ? `<p>${ITEM_DEFINITIONS[slot.id].icon} ${ITEM_DEFINITIONS[slot.id].name} ×${slot.qty}</p>` : "")).join("") || '<p class="muted">Nenhum consumível.</p>'}
       <h3>Atributos</h3><p>Dano ${Math.round(p.stats.damage * 100)}% · Movimento ${Math.round(p.speed)} · Armadura ${p.armor} · Área ${Math.round(p.stats.area * 100)}% · Growth ${Math.round(p.stats.growth * 100)}% · Sorte ${Math.round(p.stats.luck * 100)}%</p>
       <h3>Mapa explorado</h3><div class="map-overview">${[...g.world.chunks.values()].map((ch) => `<span>${ch.cx}, ${ch.cy}<br>${ch.structures.filter((s) => !s.destroyed).length} estruturas</span>`).join("")}</div>
-      <div class="actions">${this.button("resume", "Continuar", true)}${this.button("settings", "Configurações")}${this.button("codex", "Códice")}${this.button("quit", "Encerrar expedição")}</div>`,
+      <div class="actions">${this.button("resume", "Continuar", true)}${this.button("settings", "Configurações")}${this.button("codex", "Códice")}${this.button("quit", "Encerrar expedição")}${this.button("hub", "VOLTAR AO MENU PRINCIPAL")}</div>`,
       {
+        hub: () => { g.saveSnapshot(true); g.onHub(); },
         resume: () => g.resume(),
         settings: () => this.settings(() => this.pause()),
         codex: () => this.codex(() => this.pause()),

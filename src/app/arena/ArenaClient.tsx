@@ -15,7 +15,7 @@ import type { ArenaSnapshot, PvpInput } from "../../game/core/pvp";
 import { predictMove } from "../../game/network/movement";
 import { clamp } from "../../game/core/math";
 import { COSMETICS, cosmeticVisual } from "../../game/content/cosmetics";
-export default function ArenaClient({ userId }: { userId: string }) {
+export default function ArenaClient({ userId, menuHeader, initialMode = "DUEL_CASUAL" }: { userId: string; menuHeader: React.ReactNode; initialMode?: "DUEL_CASUAL" | "WAR_CASUAL" }) {
   const placement = useRef<"TORRE" | "BARRICADA" | null>(null),
     worldPointer = useRef({ x: 0, y: 0 });
   const [roster, setRoster] = useState<
@@ -33,7 +33,7 @@ export default function ArenaClient({ userId }: { userId: string }) {
     match = useRef("");
   const [mode, setMode] = useState<
       "DUEL_CASUAL" | "DUEL_RANKED" | "WAR_CASUAL" | "WAR_RANKED"
-    >("DUEL_CASUAL"),
+    >(initialMode),
     [status, setStatus] = useState("Conectando…"),
     [waiting, setWaiting] = useState(false),
     [seconds, setSeconds] = useState(0),
@@ -462,8 +462,9 @@ export default function ArenaClient({ userId }: { userId: string }) {
     };
   }, [userId]);
   return (
-    <main className="account-shell">
-      <Link href="/account">← Conta</Link>
+    <main className={`account-shell arena-page ${playing ? "arena-playing" : ""}`}>
+      {!playing && menuHeader}
+      {playing && <Link href="/">← Menu principal</Link>}
       <h1>ARENA DO LIMIAR</h1>
       <Link href="/ranked">Ranked · temporada e classificação</Link>
       <p>

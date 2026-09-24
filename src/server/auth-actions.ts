@@ -1,4 +1,6 @@
 "use server";
+import { safeCallback } from "../app/hub/navigation";
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -29,7 +31,7 @@ export async function authenticate(
         "E-mail ou senha inválidos, ou muitas tentativas. Tente novamente mais tarde.",
     };
   }
-  redirect("/account");
+  redirect(safeCallback(form.get("callbackUrl")));
 }
 export async function register(
   previous: { error: string },
@@ -65,9 +67,10 @@ export async function register(
         "Não foi possível criar a conta. Verifique se e-mail e nome de usuário estão disponíveis e tente mais tarde.",
     };
   }
-  redirect("/account");
+  redirect(safeCallback(form.get("callbackUrl")));
 }
 export async function logout() {
   await auth().api.signOut({ headers: await headers() });
+  revalidatePath("/", "layout");
   redirect("/");
 }

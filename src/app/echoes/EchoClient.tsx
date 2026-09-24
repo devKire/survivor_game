@@ -59,12 +59,8 @@ export default function EchoClient({
   }
   return (
     <main className="account-shell">
-      <Link href="/account">← Conta</Link>
       <header className="menu-top">
         <h1>{workshop ? "OFICINA DE ECOS" : "ECOS DO LIMIAR"}</h1>
-        <span>
-          ◆ {save.gems} Gemas · ◈ {save.gold} Ouro
-        </span>
       </header>
       <nav className="actions">
         <button onClick={() => setWorkshop(!workshop)}>

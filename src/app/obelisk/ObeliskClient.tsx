@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { SaveData } from "../../game/core/types";
 import {
@@ -19,15 +18,11 @@ export default function ObeliskClient({ save }: { save: SaveData }) {
     [error, setError] = useState("");
   return (
     <main className="account-shell">
-      <Link href="/account">← Conta</Link>
       <header className="menu-top">
         <div>
           <span className="eyebrow">O QUE PERMANECE</span>
           <h1>OBELISCO</h1>
         </div>
-        <span>
-          ◆ {save.gems} Gemas · ◈ {save.gold} Ouro
-        </span>
       </header>
       <p>
         Escolha seus caminhos. Bônus pequenos, com retornos decrescentes.

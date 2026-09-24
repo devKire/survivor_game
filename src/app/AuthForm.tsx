@@ -2,17 +2,19 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { authenticate, register } from "../server/auth-actions";
-export default function AuthForm({ signup = false }: { signup?: boolean }) {
+export default function AuthForm({ signup = false, callbackUrl = "/" }: { signup?: boolean; callbackUrl?: string }) {
   const [state, action, pending] = useActionState(
     signup ? register : authenticate,
     { error: "" },
   );
   return (
-    <main id="screen">
+    <main id="screen" className="auth-screen">
       <section className="panel">
         <span className="eyebrow">LIMIAR · ECOS DO OBELISCO</span>
         <h1>{signup ? "Criar conta" : "Entrar"}</h1>
+        <p className="muted">{signup ? "Dê um nome ao seu eco. Sua jornada começa aqui." : "O Obelisco guarda seus ecos. Entre para continuar."}</p>
         <form action={action} className="stack">
+          <input type="hidden" name="callbackUrl" value={callbackUrl}/>
           {signup && (
             <label>
               Nome de usuário
@@ -70,13 +72,13 @@ export default function AuthForm({ signup = false }: { signup?: boolean }) {
               />
             </label>
           )}
-          <p role="alert">{state.error}</p>
+          <p role="alert" className="auth-error">{state.error}</p>
           <button className="primary" disabled={pending}>
             {pending ? "Aguarde…" : signup ? "CRIAR CONTA" : "ENTRAR"}
           </button>
         </form>
         <div className="actions">
-          <Link href={signup ? "/login" : "/register"}>
+          <Link href={`${signup ? "/login" : "/register"}?callbackUrl=${encodeURIComponent(callbackUrl)}`}>
             {signup ? "Já tenho conta" : "Criar conta"}
           </Link>
           <Link href="/">Voltar</Link>

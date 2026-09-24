@@ -54,22 +54,27 @@ for (const count of [2, 3])
         await page
           .getByRole("button", { name: "CRIAR CONTA", exact: true })
           .click();
-        await expect(page).toHaveURL(/account/);
-        await expect(page.getByText("Online", { exact: true })).toBeVisible({
+        await expect(page).toHaveURL(/\/$/);
+        await expect(
+          page.getByRole("heading", { name: "Sua próxima travessia." }),
+        ).toBeVisible({
+          timeout: 20000,
+        });
+        await page.goto("http://localhost:3000/team");
+        await expect(page.getByText("● Conta conectada", { exact: true })).toBeVisible({
           timeout: 20000,
         });
       }
       if (count === 2) {
         const p = pages[0];
+        await p.goto("/account");
         await p
           .getByRole("button", { name: "IMPORTAR PARA MINHA CONTA" })
           .click();
         await expect(
           p.getByText("Encontramos progresso local."),
         ).not.toBeVisible();
-        await p
-          .getByRole("link", { name: "Jogar solo · salvo na conta" })
-          .click();
+        await p.goto("/solo");
         await p.getByRole("button", { name: "CONTINUAR EXPEDIÇÃO" }).click();
         await p.keyboard.press("Escape");
         await expect(
@@ -83,8 +88,10 @@ for (const count of [2, 3])
             JSON.parse(localStorage.getItem("limiar.save.v1") || "null"),
           ),
         ).toEqual(legacy);
-        await p.getByRole("link", { name: "← Conta" }).click();
-        await expect(p.getByText("Online", { exact: true })).toBeVisible();
+        await p.getByRole("button", { name: "VOLTAR AO MENU PRINCIPAL" }).click();
+        await expect(p).toHaveURL(/\/$/);
+        await p.goto("/team");
+        await expect(p.getByText("● Conta conectada", { exact: true })).toBeVisible();
       }
       await pages[0].getByLabel("Buscar por username").fill(runPrefix + "_1");
       await pages[0]
@@ -106,6 +113,9 @@ for (const count of [2, 3])
       await pages[0]
         .getByRole("button", { name: "Enviar", exact: true })
         .click();
+      await expect(pages[0].locator(".chat-history")).toContainText(
+        "DM entre amigos",
+      );
       await pages[1]
         .getByRole("button", { name: "Conversar", exact: true })
         .click();

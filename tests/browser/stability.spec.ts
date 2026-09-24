@@ -26,7 +26,9 @@ for (const count of counts) test(`V16/V17 stability ${count} clients`, async ({ 
       await p.getByLabel('Senha',{exact:true}).fill('Stability-secure-2026');
       await p.getByLabel('Confirmar senha').fill('Stability-secure-2026');
       await p.getByRole('button',{name:'CRIAR CONTA',exact:true}).click();
-      await expect(p.getByText('Online',{exact:true})).toBeVisible();
+      await expect(p).toHaveURL(/\/$/);
+      await p.goto('/team');
+      await expect(p.getByText('● Conta conectada',{exact:true})).toBeVisible();
     }
     await pages[0].getByRole('button',{name:'CRIAR EQUIPE',exact:true}).click();
     const codeNode = pages[0].locator('p').filter({has:pages[0].getByRole('button',{name:'Copiar código'})}).locator('strong');
@@ -35,7 +37,7 @@ for (const count of counts) test(`V16/V17 stability ${count} clients`, async ({ 
     for (const p of pages.slice(1)) {
       await p.getByLabel('CÓDIGO DA EQUIPE').fill(code);
       await p.getByRole('button',{name:'ENTRAR',exact:true}).click();
-      await expect(p.getByText('Online',{exact:true})).toBeVisible();
+      await expect(p.getByText('● Conta conectada',{exact:true})).toBeVisible();
       await expect(p.getByRole('button',{name:'PRONTO',exact:true})).toBeVisible();
     }
     await expect(pages[0].getByText(`${count} / 5`,{exact:true})).toBeVisible();

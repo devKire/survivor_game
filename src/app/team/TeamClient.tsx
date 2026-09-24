@@ -1,11 +1,9 @@
 "use client";
-import { achievementAmount, achievementCurrency } from "../../game/core/economy";
 import { diagnostics } from "../../game/client/diagnostics";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import OnlineCombat from "./OnlineCombat";
+import FriendsPanel from "./FriendsPanel";
 import { accountAction, realtimeTicket } from "../../server/actions";
-import { logout } from "../../server/auth-actions";
 import { RealtimeClient } from "../../game/network/client";
 import {
   chatSchema,
@@ -13,23 +11,18 @@ import {
   type Friend,
   type Team,
 } from "../../game/network/protocol";
-import { GameShell } from "../../game/client/OfflineGame";
 import { OnlineSession } from "../../game/client/OnlineSession";
-import { RemoteGame } from "../../game/client/RemoteGame";
 import {
-  ACHIEVEMENTS,
   CHARACTER_DEFINITIONS,
   MAP_DEFINITIONS,
   MODE_DEFINITIONS,
-  WEAPON_DEFINITIONS,
-  PASSIVE_DEFINITIONS,
-  WEAPON_PATHS,
 } from "../../game/content/catalog";
 import { freshSave, migrateSave } from "../../game/core/save";
-import type { SaveData, Upgrade } from "../../game/core/types";
-export default function AccountClient({
-  user,
+import type { SaveData } from "../../game/core/types";
+export default function TeamClient({
+  user, menuHeader,
 }: {
+  menuHeader: React.ReactNode;
   user: { id: string; name: string };
 }) {
   const connection = useRef<RealtimeClient | null>(null),
@@ -39,8 +32,6 @@ export default function AccountClient({
     [team, setTeam] = useState<Team | null>(null),
     [friends, setFriends] = useState<Friend[]>([]),
     [progress, setProgress] = useState<SaveData>(freshSave),
-    [local, setLocal] = useState<unknown>(null),
-    [importPending, setImportPending] = useState(false),
     [session] = useState(() => new OnlineSession()),
     [started, setStarted] = useState(false),
     [result, setResult] = useState(""),
@@ -50,10 +41,6 @@ export default function AccountClient({
     ),
     [chatOpen, setChatOpen] = useState(false),
     [code, setCode] = useState(""),
-    [query, setQuery] = useState(""),
-    [matches, setMatches] = useState<
-      { id: string; username: string | null; displayUsername: string | null }[]
-    >([]),
     [busy, setBusy] = useState(false);
   useEffect(() => { diagnostics.accountRenders++; });
   const [rtt, setRtt] = useState(0);
@@ -66,15 +53,9 @@ export default function AccountClient({
           if (session.game) session.game.rtt = client.rtt;
         }
         if (message.type === "ACCOUNT") {
-          try {
-            setLocal(
-              JSON.parse(localStorage.getItem("limiar.save.v1") || "null"),
-            );
-          } catch {}
           setTeam(message.team);
           setFriends(message.friends);
           setProgress(migrateSave(message.progress.data));
-          setImportPending(!message.progress.importResolved);
         }
         if (message.type === "ERROR") setError(message.message);
         if (message.type === "STARTED") {
@@ -175,37 +156,17 @@ export default function AccountClient({
       {started ? (
         <OnlineCombat userId={user.id} session={session} connection={connection} settings={progress.settings} />
       ) : (
-        <main className="account-screen">
+        <main className="account-screen team-screen">
           <section className="panel wide">
+            {menuHeader}
             <div className="menu-top">
-              <span className="eyebrow">LIMIAR · {user.name}</span>
-              <span>◆ {progress.gems} Gemas · ◈ {progress.gold} Ouro</span>
+              <span>{user.name} · EQUIPE ONLINE</span>
             </div>
             <h1>Uma travessia em companhia.</h1>
             <p className="lede">
               Escolha seu eco. Encontre sua equipe. Atravessem a névoa juntos.
             </p>
             {result && <p role="status">{result}</p>}
-            {importPending && local !== null && (
-              <section className="card">
-                <h2>Encontramos progresso local.</h2>
-                <p>
-                  Preserve uma cópia na conta e importe suas configurações. Gemas, Ouro
-                  e conquistas locais permanecem no arquivo solo; recompensas de
-                  equipe são conquistadas nas expedições online.
-                </p>
-                <div className="actions">
-                  <button
-                    onClick={() => void action({ type: "import", save: local })}
-                  >
-                    IMPORTAR PARA MINHA CONTA
-                  </button>
-                  <button onClick={() => void action({ type: "use-account" })}>
-                    USAR PROGRESSO DA CONTA
-                  </button>
-                </div>
-              </section>
-            )}
             <div className="account-grid">
               <section>
                 <h2>MODO EQUIPE</h2>
@@ -404,190 +365,9 @@ export default function AccountClient({
                     </div>
                   </>
                 )}
-                <div className="actions">
-                  <Link href="/solo">Jogar solo · salvo na conta</Link>
-                  <Link href="/offline">Jogar offline</Link>
-                  <form action={logout}>
-                    <button>SAIR DA CONTA</button>
-                  </form>
-                </div>
-                <details>
-                  <summary>Configurações da conta</summary>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={progress.settings.sounds}
-                      onChange={(e) =>
-                        void action({
-                          type: "settings",
-                          settings: {
-                            ...progress.settings,
-                            sounds: e.target.checked,
-                          },
-                        })
-                      }
-                    />{" "}
-                    Áudio
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={progress.settings.numbers}
-                      onChange={(e) =>
-                        void action({
-                          type: "settings",
-                          settings: {
-                            ...progress.settings,
-                            numbers: e.target.checked,
-                          },
-                        })
-                      }
-                    />{" "}
-                    Números de dano
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={progress.settings.shake}
-                      onChange={(e) =>
-                        void action({
-                          type: "settings",
-                          settings: {
-                            ...progress.settings,
-                            shake: e.target.checked,
-                          },
-                        })
-                      }
-                    />{" "}
-                    Tremor de tela
-                  </label>
-                </details>
-                <details>
-                  <summary>Conquistas e descobertas online</summary>
-                  <p>
-                    {progress.runs} expedições · {progress.completed} concluídas
-                    · Recorde {Math.floor(progress.bestTime / 60)} min
-                  </p>
-                  {ACHIEVEMENTS.map((a) => (
-                    <p key={a.id}>
-                      {progress.achievements.includes(a.id) ? "✓" : "◇"}{" "}
-                      {a.name} — {a.text}
-                      <br />Recompensa: {a.character ? `desbloqueia ${CHARACTER_DEFINITIONS[a.character].name}` : `${achievementCurrency(a.id) === "GOLD" ? "◈" : "◆"} ${achievementAmount(a.id, a.reward)} ${achievementCurrency(a.id) === "GOLD" ? "Ouro" : "Gemas"}`}
-                    </p>
-                  ))}
-                  <p>
-                    Descobertas:{" "}
-                    {Object.entries(progress.discovered)
-                      .map(([category, ids]) => `${category}: ${ids.length}`)
-                      .join(" · ")}
-                  </p>
-                </details>
-                {progress.legacyGoldConverted !== undefined && <p>Economia atualizada: {progress.legacyGoldConverted} Ouro antigo → {progress.legacyGoldConverted} Gemas. Suas melhorias foram preservadas.</p>}
-                <nav className="actions"><Link href="/obelisk">OBELISCO</Link><Link href="/arena">ARENA</Link><Link href="/collection">COLEÇÃO</Link><Link href="/shop">LOJA</Link></nav>
 
               </section>
-              <aside className="card">
-                <h2>AMIGOS</h2>
-                <form
-                  className="stack"
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    const r = await action({ type: "search", query });
-                    if (r?.ok && r.data) {
-                      const results = r.data.filter(
-                        (
-                          v,
-                        ): v is {
-                          id: string;
-                          username: string | null;
-                          displayUsername: string | null;
-                        } => "username" in v,
-                      );
-                      setMatches(results);
-                    }
-                  }}
-                >
-                  <label>
-                    Buscar por username
-                    <input
-                      minLength={3}
-                      maxLength={24}
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      required
-                    />
-                  </label>
-                  <button>Buscar</button>
-                </form>
-                {matches.map((m) => (
-                  <p key={m.id}>
-                    {m.displayUsername || m.username}{" "}
-                    <button
-                      onClick={() =>
-                        void action({ type: "friend", target: m.id })
-                      }
-                    >
-                      Adicionar
-                    </button>
-                  </p>
-                ))}
-                {friends.map((f) => {
-                  const other = f.fromId === user.id ? f.to : f.from;
-                  return (
-                    <div className="friend" key={f.id}>
-                      <b>{other.displayUsername || other.username}</b>
-                      <small>
-                        {f.status === "ACCEPTED"
-                          ? f.presence
-                          : "SOLICITAÇÃO PENDENTE"}
-                      </small>
-                      <div className="actions">
-                        {f.status === "PENDING" && f.toId === user.id ? (
-                          <>
-                            <button
-                              onClick={() =>
-                                void action({
-                                  type: "friend-update",
-                                  id: f.id,
-                                  action: "accept",
-                                })
-                              }
-                            >
-                              Aceitar
-                            </button>
-                            <button
-                              onClick={() =>
-                                void action({
-                                  type: "friend-update",
-                                  id: f.id,
-                                  action: "reject",
-                                })
-                              }
-                            >
-                              Recusar
-                            </button>
-                          </>
-                        ) : f.status === "ACCEPTED" ? (
-                          <button onClick={() => void openChat("dm", other.id)}>
-                            Conversar
-                          </button>
-                        ) : null}
-                        <button
-                          onClick={() =>
-                            void action({
-                              type: "friend-update",
-                              id: f.id,
-                              action: "remove",
-                            })
-                          }
-                        >
-                          Remover
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </aside>
+<FriendsPanel user={user} friends={friends} action={action} openChat={openChat} />
             </div>
           </section>
         </main>
@@ -669,194 +449,5 @@ export default function AccountClient({
         </aside>
       )}
     </>
-  );
-}
-function OnlineArena({
-  userId,
-  session,
-  connection,
-  settings,
-}: {
-  settings: SaveData["settings"];
-  userId: string;
-  session: OnlineSession;
-  connection: React.RefObject<RealtimeClient | null>;
-}) {
-  const router = useRouter();
-  const canvasRef = useRef<HTMLCanvasElement>(null),
-    game = useRef<RemoteGame | null>(null);
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    diagnostics.reactGameMounts++;
-    const g = new RemoteGame(
-      canvasRef.current,
-      userId,
-      (m) => connection.current?.send(m),
-      () => router.push("/"),
-    );
-    game.current = g;
-    const unbind = session.bind(g);
-    const clear = () => g.input.clear();
-    window.addEventListener("limiar-chat-focus", clear);
-    return () => {
-      window.removeEventListener("limiar-chat-focus", clear);
-      unbind();
-      g.dispose();
-    };
-  }, [userId, connection, router, session]);
-  useEffect(() => {
-    if (game.current) {
-      game.current.save.settings = settings;
-    }
-  }, [settings]);
-  return <GameShell canvasRef={canvasRef} />;
-}
-
-function OnlineCombat({userId, session, connection, settings}: {
-  userId: string; session: OnlineSession;
-  connection: React.RefObject<RealtimeClient | null>;
-  settings: SaveData['settings'];
-}) {
-  const snapshot = useSyncExternalStore(session.subscribe, session.getSnapshot, () => null);
-  const [upgradeOpen, setUpgradeOpen] = useState(false), [banish, setBanish] = useState(false);
-  function pick(
-    index: number,
-    action: "pick" | "reroll" | "banish" | "skip" = "pick",
-  ) {
-    if (snapshot)
-      connection.current?.send({
-        type: "UPGRADE",
-        choice: index,
-        decision: snapshot.own.decision,
-        action: banish && action === "pick" ? "banish" : action,
-      });
-    setBanish(false);
-    setUpgradeOpen(false);
-  }
-  function choiceText(choice: Upgrade) {
-    if (choice.kind === "path") {
-      const d = WEAPON_PATHS[choice.weaponId || ""]?.[choice.id];
-      return {
-        name: d?.name || choice.id,
-        text: d?.text || "",
-        with: WEAPON_DEFINITIONS[choice.weaponId || ""]?.name,
-      };
-    }
-    if (choice.kind === "weapon") {
-      const d = WEAPON_DEFINITIONS[choice.id];
-      return {
-        name: d.name,
-        text: snapshot?.own.weapons.some((w) => w.id === choice.id)
-          ? "+2 níveis: mais dano, área e frequência."
-          : d.description,
-        with: PASSIVE_DEFINITIONS[d.passive].name,
-      };
-    }
-    const d = PASSIVE_DEFINITIONS[choice.id];
-    return {
-      name: d?.name || choice.id,
-      text: d ? d.text + " Até +2 níveis." : "Bônus imediato.",
-      with: "Sua build",
-    };
-  }
-  return (
-        <>
-          <OnlineArena
-            userId={userId}
-            session={session}
-            connection={connection}
-            settings={settings}
-          />
-          <aside className="party-hud">
-            {snapshot?.players.map((p) => (
-              <div key={p.id} style={{ color: p.color }}>
-                {p.name} ·{" "}
-                {p.state === "downed"
-                  ? "CAÍDO"
-                  : p.state === "disconnected"
-                    ? "DESCONECTADO"
-                    : `♥ ${Math.ceil((p.hp / p.maxHp) * 100)}%`}
-                {p.revive > 0 ? ` · Revivendo ${p.revive.toFixed(1)}/3 s` : ""}
-              </div>
-            ))}
-            <small>Segure E próximo de um aliado caído.</small>
-            <Link href="/">Sair da partida</Link>
-          </aside>
-          {(snapshot?.own.pending || 0) > 0 && (
-            <button
-              className="pending-upgrades"
-              onClick={() => setUpgradeOpen(!upgradeOpen)}
-            >
-              +{snapshot?.own.pending} MELHORIA
-              {(snapshot?.own.pending || 0) > 1 ? "S" : ""} PENDENTE
-              {(snapshot?.own.pending || 0) > 1 ? "S" : ""}
-            </button>
-          )}
-          {upgradeOpen && snapshot && (
-            <aside className="upgrade-panel">
-              <h2>
-                {banish ? "Selecione para banir" : "Escolha sua melhoria"}
-              </h2>
-              <p className="muted">
-                A expedição continua. WASD move enquanto você escolhe.
-              </p>
-              {snapshot.own.choices.map((c, i) => {
-                const d = choiceText(c);
-                return (
-                  <button
-                    className="card"
-                    key={c.kind + c.id + i}
-                    onClick={() => pick(i)}
-                  >
-                    <h3>{d.name}</h3>
-                    <p>{d.text}</p>
-                    <small>Combina com {d.with}</small>
-                  </button>
-                );
-              })}
-              <div className="actions">
-                <button onClick={() => pick(0, "reroll")}>
-                  ↻ {snapshot.own.rerolls}
-                </button>
-                <button onClick={() => setBanish(!banish)}>
-                  ⊘ {snapshot.own.banishments}
-                </button>
-                <button onClick={() => pick(0, "skip")}>
-                  → {snapshot.own.skips}
-                </button>
-              </div>
-              <button onClick={() => setUpgradeOpen(false)}>Fechar</button>
-            </aside>
-          )}
-          {snapshot?.votes.map((v) => (
-            <aside className="team-vote" key={v.id}>
-              <p>
-                Decisão de equipe · {v.count}/{v.needed}
-              </p>
-              <button
-                onClick={() =>
-                  connection.current?.send({
-                    type: "INTERACT",
-                    structure: v.id,
-                    accept: true,
-                  })
-                }
-              >
-                Aceitar
-              </button>
-              <button
-                onClick={() =>
-                  connection.current?.send({
-                    type: "INTERACT",
-                    structure: v.id,
-                    accept: false,
-                  })
-                }
-              >
-                Recusar
-              </button>
-            </aside>
-          ))}
-        </>
   );
 }

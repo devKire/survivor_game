@@ -1,19 +1,9 @@
-import { redirect } from "next/navigation";
-import { session } from "../../server/auth";
-import AccountClient from "./AccountClient";
-import { configurationError } from "../../server/config";
+import { requirePageUser } from "../../server/hub";
+import { progress } from "../../server/progress";
+import { migrateSave } from "../../game/core/save";
+import ProfileSettings from "./ProfileSettings";
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-export default async function Page() {
-  if (configurationError()) redirect("/login");
-  const s = await session();
-  if (!s) redirect("/login");
-  return (
-    <AccountClient
-      user={{
-        id: s.user.id,
-        name: s.user.displayUsername || s.user.username || s.user.name,
-      }}
-    />
-  );
+export default async function Page(){
+ const user=await requirePageUser("/account"), row=await progress(user.id);
+ return <main className="account-shell profile-page"><span className="eyebrow">SEU ECO</span><h1>Perfil e conta</h1><p>{user.displayUsername||user.username||user.name}</p><p>{user.email}</p><ProfileSettings progress={migrateSave(row.data)} importPending={!row.importResolved}/></main>;
 }

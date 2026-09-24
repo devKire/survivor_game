@@ -46,12 +46,8 @@ export default function CollectionClient({
   );
   return (
     <main className="account-shell">
-      <Link href="/account">← Conta</Link>
       <header className="menu-top">
         <h1>{shop ? "LOJA" : "COLEÇÃO"}</h1>
-        <span>
-          ◆ {save.gems} Gemas · ◈ {save.gold} Ouro
-        </span>
       </header>
       <nav className="actions">
         <Link href="/collection">Coleção</Link>

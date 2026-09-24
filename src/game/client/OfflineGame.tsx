@@ -1,8 +1,10 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { freshSave, migrateSave } from "../core/save";
 import { BrowserGame } from "./browser";
 export default function OfflineGame() {
+  const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -14,8 +16,12 @@ export default function OfflineGame() {
       );
     } catch {}
     const game = new BrowserGame(canvas, save);
+    game.onHub = () => router.push("/");
+    const menu = new URLSearchParams(window.location.search).get("menu");
+    if (menu === "settings") game.ui.settings(() => game.ui.main());
+    if (menu === "codex") game.ui.codex(() => game.ui.main());
     return () => game.dispose();
-  }, []);
+  }, [router]);
   return <GameShell canvasRef={canvasRef} />;
 }
 export function GameShell({

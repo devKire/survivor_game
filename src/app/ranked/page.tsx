@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireUser } from "../../server/auth";
+import { requirePageUser } from "../../server/hub";
 import { getRating, closedSeasonCutoff } from "../../server/ranked";
 import { db } from "../../server/db";
 import { rankOf } from "../../game/content/ranked";
@@ -10,7 +10,7 @@ export default async function Page({
 }: {
   searchParams: Promise<{ mode?: string }>;
 }) {
-  const user = await requireUser(),
+  const user = await requirePageUser("/ranked"),
     query = await searchParams,
     mode = query.mode === "WAR_RANKED" ? "WAR_RANKED" : "DUEL_RANKED",
     { season, rating } = await getRating(user.id, mode);
@@ -41,7 +41,6 @@ export default async function Page({
   ]);
   return (
     <main className="account-shell">
-      <Link href="/account">← Conta</Link>
       <h1>RANKED · {season.name}</h1>
       <nav className="actions">
         <Link href="/arena">Jogar</Link>

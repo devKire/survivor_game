@@ -33,8 +33,8 @@ test("V22/V23 two Chrome contexts purchasing the same rank debit once", async ({
     await a.getByLabel("Senha", { exact: true }).fill("Browser-Economy-2026");
     await a.getByLabel("Confirmar senha").fill("Browser-Economy-2026");
     await a.getByRole("button", { name: "CRIAR CONTA", exact: true }).click();
-    await expect(a).toHaveURL(/account/);
-    await expect(a.getByText("Online", { exact: true })).toBeVisible();
+    await expect(a).toHaveURL(/\/$/);
+    await expect(a.getByText("Sua próxima travessia.")).toBeVisible();
     userId = (await db().user.findUniqueOrThrow({ where: { username } })).id;
     const id = userId;
     await economyTransaction(async tx => {
@@ -43,15 +43,15 @@ test("V22/V23 two Chrome contexts purchasing the same rank debit once", async ({
       await persistSave(tx, id, save);
     });
     await a.reload();
-    await expect(a.getByText("◆ 100 Gemas · ◈ 0 Ouro")).toBeVisible();
+    await expect(a.getByLabel("Saldo da conta")).toContainText("◆ 100 Gemas");
     contexts.push(await browser.newContext({ storageState: await contexts[0].storageState() }));
     const b = await contexts[1].newPage(); await b.goto("/account");
-    await expect(b.getByText("◆ 100 Gemas · ◈ 0 Ouro")).toBeVisible();
+    await expect(b.getByLabel("Saldo da conta")).toContainText("◆ 100 Gemas");
     await Promise.all([a, b].map(p => p.goto("/obelisk")));
     await Promise.all([a, b].map(p => p.locator("article").filter({has:p.getByRole("heading",{name:META_DEFINITIONS.might.name,exact:true})}).getByRole("button").click()));
     await expect.poll(async () => db().currencyTransaction.count({ where: { userId: id, type: "SPEND" } })).toBe(1);
     await b.reload();
-    await expect(b.getByText(`◆ ${100 - META_DEFINITIONS.might.base} Gemas · ◈ 0 Ouro`)).toBeVisible();
+    await expect(b.getByLabel("Saldo da conta")).toContainText(`◆ ${100 - META_DEFINITIONS.might.base} Gemas`);
     expect(migrateSave((await db().userProgress.findUniqueOrThrow({ where: { userId: id } })).data).upgrades.might).toBe(1);
   } finally {
     await Promise.all(contexts.map(c => c.close()));

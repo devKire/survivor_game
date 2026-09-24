@@ -1,4 +1,4 @@
-import { requireUser } from "../../server/auth";
+import { requirePageUser } from "../../server/hub";
 import { echoProfile } from "../../server/echoes";
 import { collection } from "../../server/collection";
 import { migrateSave } from "../../game/core/save";
@@ -6,7 +6,7 @@ import { echoResults } from "../../game/content/gacha";
 import EchoClient from "./EchoClient";
 export const dynamic = "force-dynamic";
 export default async function Page() {
-  const user = await requireUser(),
+  const user = await requirePageUser("/echoes"),
     [profile, data] = await Promise.all([
       echoProfile(user.id),
       collection(user.id),
