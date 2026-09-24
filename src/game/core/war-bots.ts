@@ -84,7 +84,11 @@ export function updateWarBots(g: WarSimulation) {
       dx = (f.team === 0 ? 1 : -1) * 0.3;
       dy = side;
     }
-    const range = PVP_RULES.weapons[g.loadout(f).basic].range;
+    const range = Math.max(
+      ...g
+        .loadout(f)
+        .weapons.map((weapon) => PVP_RULES.weapons[weapon.id].range),
+    );
     if (enemy && !retreat && d < range * 0.65) {
       dx = 0;
       dy = 0;
@@ -101,12 +105,8 @@ export function updateWarBots(g: WarSimulation) {
       aimY: Math.sin(angle),
       seenTick: g.tick,
       ability:
-        enemy && !retreat
-          ? d < 95 && g.time >= f.cooldowns.pulse
-            ? "pulse"
-            : d < range
-              ? "basic"
-              : "skill"
+        enemy && !retreat && d < 95 && g.time >= f.cooldowns.dash
+          ? "dash"
           : "none",
     };
     f.lastInputAt = g.time;

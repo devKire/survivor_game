@@ -1,7 +1,12 @@
 import { Player } from "./entities";
 import { clamp, segmentDistance2 } from "./math";
 import { predictMove } from "../network/movement";
-import { PVP, type PvpCharacter, type PvpAbility } from "../content/pvp";
+import {
+  PVP,
+  PVP_CHARACTER_BUILDS,
+  type PvpCharacter,
+  type PvpAbility,
+} from "../content/pvp";
 export interface PvpInput {
   sequence: number;
   moveX: number;
@@ -66,9 +71,7 @@ export interface FighterSeed {
 }
 import {
   MAP_DEFINITIONS,
-  CHARACTER_DEFINITIONS,
   STRUCTURE_DEFINITIONS,
-  WEAPON_DEFINITIONS,
 } from "../content/catalog";
 import { PVP_RULES } from "../content/mode-rules";
 import { World } from "./world";
@@ -110,19 +113,15 @@ export class PvpSimulation {
     let index = 0;
     for (const s of seeds) {
       const player = new Player(s.character, {}, "PVP");
+      const build = PVP_CHARACTER_BUILDS[s.character];
+      player.passives = { ...build.passives };
+      player.recalculate();
+      const nativeHealth = player.maxHealth;
+      const nativeSpeed = player.speed;
       player.cosmetics = s.cosmetics;
-      player.health = player.maxHealth = PVP.hp;
-      player.speed = PVP.speed;
-      player.stats = {
-        ...player.stats,
-        damage: 1,
-        area: 1,
-        amount: 0,
-        cooldown: 1,
-        duration: 1,
-        recovery: 0,
-        critChance: 0,
-      };
+      player.maxHealth = Math.round(PVP.hp * (nativeHealth / 110));
+      player.health = player.maxHealth;
+      player.speed = PVP.speed * (nativeSpeed / 195);
       const f: Fighter = {
         id: s.id,
         name: s.name,
@@ -145,7 +144,7 @@ export class PvpSimulation {
         protectedUntil: 0,
         lastInputAt: 0,
         ack: 0,
-        cooldowns: { none: 0, basic: 0, skill: 0, pulse: 0, dash: 0 },
+        cooldowns: { none: 0, dash: 0 },
         connected: !s.isBot,
         disconnectedAt: 0,
         respawnAt: 0,
@@ -213,11 +212,7 @@ export class PvpSimulation {
     return this.fighters.size - this.humanCount;
   }
   loadout(f: Fighter) {
-    return {
-      basic: CHARACTER_DEFINITIONS[f.player.character].weapon,
-      skill: "spear",
-      pulse: "frost",
-    };
+    return PVP_CHARACTER_BUILDS[f.player.character as PvpCharacter];
   }
   log(type: string, actor?: string, target?: string, value?: number) {
     if (this.events.length >= 4000) this.events.splice(0, 100);
@@ -242,11 +237,13 @@ export class PvpSimulation {
         this.height / 2 +
         (this.modeProfile === "pvp5v5" ? (slots[f.team]++ - 2) * 45 : 0);
       f.player.health = f.player.maxHealth;
-      f.cooldowns = { none: 0, basic: 0, skill: 0, pulse: 0, dash: 0 };
+      f.cooldowns = { none: 0, dash: 0 };
       f.body.statuses = {};
       f.body.controlImmunity = {};
       f.protectedUntil = this.intermissionUntil;
       f.input.ability = "none";
+      for (const weapon of this.combat.get(f.id)?.player.weapons || [])
+        weapon.timer = 0.25;
     }
     for (const c of this.combat.values()) {
       c.bullets.clear();
@@ -349,7 +346,7 @@ export class PvpSimulation {
   cast(f: Fighter) {
     const a = f.input.ability;
     if (
-      a === "none" ||
+      a !== "dash" ||
       this.time < f.cooldowns[a] ||
       f.player.health <= 0 ||
       f.body.statuses.freeze?.duration > 0
@@ -359,28 +356,18 @@ export class PvpSimulation {
     if (len < 0.01) return;
     f.casts++;
     if (!f.botControlled) f.humanCasts++;
-    f.protectedUntil = 0;
     this.log("ability:" + a, f.id);
-    if (a === "dash") {
-      f.cooldowns[a] = this.time + 8;
-      for (let i = 0; i < 12; i++) {
-        const next = predictMove(
-          f.player,
-          { x: f.input.aimX / len, y: f.input.aimY / len },
-          10,
-          1,
-          this.world.nearby,
-        );
-        f.player.x = clamp(next.x, 20, this.width - 20);
-        f.player.y = clamp(next.y, 20, this.height - 20);
-      }
-    } else {
-      const weapon = this.loadout(f)[a];
-      f.cooldowns[a] =
-        this.time +
-        WEAPON_DEFINITIONS[weapon].cooldown *
-          PVP_RULES.weapons[weapon].cooldown;
-      this.combat.get(f.id)!.fire(a);
+    f.cooldowns[a] = this.time + 8;
+    for (let i = 0; i < 12; i++) {
+      const next = predictMove(
+        f.player,
+        { x: f.input.aimX / len, y: f.input.aimY / len },
+        10,
+        1,
+        this.world.nearby,
+      );
+      f.player.x = clamp(next.x, 20, this.width - 20);
+      f.player.y = clamp(next.y, 20, this.height - 20);
     }
   }
   disconnectedStep(f: Fighter) {
@@ -492,6 +479,11 @@ export class PvpSimulation {
       );
       f.player.x = clamp(next.x, 20, this.width - 20);
       f.player.y = clamp(next.y, 20, this.height - 20);
+      const moveLength = Math.hypot(f.input.moveX, f.input.moveY);
+      if (moveLength > 0.01) {
+        f.player.dx = f.input.moveX / moveLength;
+        f.player.dy = f.input.moveY / moveLength;
+      }
       this.cast(f);
     }
     for (const c of this.combat.values()) c.advance(dt);
@@ -556,6 +548,8 @@ export class PvpSimulation {
         character: f.player.character,
         x: f.player.x,
         y: f.player.y,
+        dx: f.player.dx,
+        dy: f.player.dy,
         hp: f.player.health,
         maxHp: f.player.maxHealth,
         speed: this.movementSpeed(f),
@@ -588,6 +582,8 @@ export class PvpSimulation {
           armed: a.armed,
           delay: a.delay,
           color: a.w?.definition.color || "#fff",
+          weapon: a.w?.id || "well",
+          team: c.fighter.team,
         })),
       ),
       lines: [...this.combat.values()].flatMap((c) =>

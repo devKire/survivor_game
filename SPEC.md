@@ -139,3 +139,5 @@ Novo path econômico/competitivo autorizado em 23/09/2026, incremental; ver docs
 | B26 | 2026-09-23 | Forfeit 5v5 mantinha deadline infinito e reconexão herdada aceitava abandonante | Override rejeita IDs no conjunto left; V5,V8 bastam |
 
 | B27 | 2026-09-23 | Projétil consumido por minion poderia sobreviver até filtro do tick seguinte | Remover após colisão da Guerra e ignorar life<=0 no combate compartilhado; V5,V6 bastam |
+
+| B28 | 2026-09-24 | Teste de auto-ataque presumiu dano fixo apesar de críticos aleatórios | Separar assertivas de disparo/cooldown do tuning e neutralizar crítico quando o fixture exige dano exato; sem novo invariant de produto |

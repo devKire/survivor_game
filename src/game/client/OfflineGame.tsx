@@ -26,19 +26,23 @@ export default function OfflineGame() {
 }
 export function GameShell({
   canvasRef,
+  variant = "expedition",
 }: {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
+  variant?: "expedition" | "competitive";
 }) {
+  const competitive = variant === "competitive";
   return (
     <>
       <canvas
         ref={canvasRef}
         id="game"
-        aria-label="Arena do jogo Limiar"
+        className={competitive ? "competitive-game-canvas" : undefined}
+        aria-label={competitive ? "Partida competitiva do Limiar" : "Expedição do Limiar"}
       ></canvas>
 
-      <div id="hud" hidden={true}>
-        <div className="xp-track">
+      <div id="hud" data-variant={variant} hidden={true}>
+        <div className="xp-track" hidden={competitive}>
           <i id="xp-fill"></i>
         </div>
 
@@ -51,7 +55,7 @@ export function GameShell({
             <div className="hp-track">
               <i id="hp-fill"></i>
             </div>
-            <strong id="level">NV. 1</strong>
+            <strong id="level" hidden={competitive}>NV. 1</strong>
           </div>
 
           <div className="time">
@@ -66,7 +70,7 @@ export function GameShell({
             <span hidden>
               <b id="kills">0</b>
             </span>
-            <button id="pause-button" aria-label="Pausar jogo" title="Esc / P">
+            <button id="pause-button" hidden={competitive} aria-label="Pausar jogo" title="Esc / P">
               Ⅱ
             </button>
           </div>
@@ -91,7 +95,7 @@ export function GameShell({
           </div>
         </div>
 
-        <div className="run-inventory" aria-label="Itens da expedição">
+        <div className="run-inventory" hidden={competitive} aria-label="Itens da expedição">
           <small>ITENS</small>
           <div id="run-items" className="item-slots"></div>
         </div>
@@ -112,8 +116,9 @@ export function GameShell({
 
         <pre id="debug" hidden={true}></pre>
         <div className="controls-note">
-          WASD / SETAS · MOVER &nbsp; E · INTERAGIR &nbsp; 1–4 · ITENS &nbsp;
-          ESC / P · PAUSA
+          {competitive
+            ? "WASD / SETAS · MOVER &nbsp; ARMAS · ATAQUE AUTOMÁTICO &nbsp; ESPAÇO · DESLOCAMENTO"
+            : "WASD / SETAS · MOVER &nbsp; E · INTERAGIR &nbsp; 1–4 · ITENS &nbsp; ESC / P · PAUSA"}
         </div>
       </div>
 

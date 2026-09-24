@@ -10,10 +10,11 @@ import {
   MAP_DEFINITIONS,
   STRUCTURE_DEFINITIONS,
 } from "../src/game/content/catalog";
-import { arenaSnapshotSchema } from "../src/game/network/pvp";
+import { arenaCommand, arenaSnapshotSchema } from "../src/game/network/pvp";
 import { applyStatus } from "../src/game/core/status";
-import { Weapon } from "../src/game/core/entities";
+import { Player, Weapon } from "../src/game/core/entities";
 import { PVP_RULES } from "../src/game/content/mode-rules";
+import { PVP_CHARACTER_BUILDS } from "../src/game/content/pvp";
 export const entries = (count: number): QueueEntry[] =>
   Array.from({ length: count }, (_, i) => ({
     id: `human:${i}`,
@@ -88,25 +89,39 @@ describe("V26 maps and shared competitive mechanics", () => {
       }
     },
   );
-  it("shared projectile deals tuned damage, friendly fire stays off and CC cannot chain", () => {
-    const g = new PvpSimulation(duel);
+  it("configured weapons fire automatically on server ticks, respect cooldown and exclude allies", () => {
+    const seeds = [
+      { ...duel[0], id: "nara", team: 0 },
+      { ...duel[1], id: "enemy", team: 1 },
+      { ...duel[0], id: "ally", team: 0 },
+    ];
+    const g = new PvpSimulation(seeds);
     g.time = 4;
-    const [a, b] = [...g.fighters.values()];
+    const [a, b, ally] = [...g.fighters.values()];
     a.player.x = 250;
     a.player.y = 300;
     b.player.x = 350;
     b.player.y = 300;
-    a.input.aimX = 1;
-    a.input.aimY = 0;
-    a.input.ability = "basic";
-    g.cast(a);
-    for (let i = 0; i < 10; i++) g.combat.get(a.id)!.advance(0.04);
-    expect(b.player.health).toBeCloseTo(
-      100 - 21 * PVP_RULES.weapons.ember.damage,
-    );
-    g.damage(a, 50, a);
-    expect(a.player.health).toBe(100);
-    const frost = g.combat.get(a.id)!.player.weapons[2];
+    ally.player.x = 300;
+    ally.player.y = 300;
+    b.player.weapons = [];
+    ally.player.weapons = [];
+    a.player.stats.critChance = 0;
+    for (const fighter of [a, b, ally]) fighter.lastInputAt = 100;
+    const weapon = g.combat.get(a.id)!.player.weapons[0];
+    for (let i = 0; i < 6; i++) g.step(0.04);
+    expect(weapon.shots).toBe(0);
+    g.step(0.04);
+    expect(weapon.shots).toBe(1);
+    for (let i = 0; i < 10; i++) g.step(0.04);
+    expect(b.player.health).toBeLessThan(100);
+    expect(ally.player.health).toBe(100);
+    const shotsAtCooldown = weapon.shots;
+    for (let i = 0; i < 5; i++) g.step(0.04);
+    expect(weapon.shots).toBe(shotsAtCooldown);
+
+    const frost = new Weapon("frost");
+    frost.ruleset = "PVP";
     applyStatus(b.body, "freeze", 9, 1, frost);
     expect(b.body.statuses.freeze.duration).toBe(PVP_RULES.freezeDuration);
     delete b.body.statuses.freeze;
@@ -115,6 +130,80 @@ describe("V26 maps and shared competitive mechanics", () => {
     const pve = new Weapon("frost");
     applyStatus(b.body, "slow", 6, 0.48, pve);
     expect(b.body.statuses.slow.duration).toBe(6);
+  });
+  it("uses the configured signature build and keeps native character traits without account meta", () => {
+    const expected = {
+      nara: "ember",
+      orin: "orbit",
+      ivo: "spear",
+      sena: "meteor",
+    } as const;
+    for (const [character, weapon] of Object.entries(expected)) {
+      const seed = { ...duel[0], character: character as FighterSeed["character"] };
+      const g = new PvpSimulation([seed, duel[1]]);
+      const fighter = g.fighters.get(seed.id)!;
+      expect(g.loadout(fighter).weapons[0].id).toBe(weapon);
+      expect(g.combat.get(seed.id)!.player.weapons).toHaveLength(3);
+      expect(PVP_CHARACTER_BUILDS[character as keyof typeof PVP_CHARACTER_BUILDS].weapons[0].id).toBe(weapon);
+    }
+    const nara = new Player("nara", {}, "PVP");
+    const naraWithMeta = new Player("nara", { might: 5, speed: 5 }, "PVP");
+    expect(naraWithMeta.stats).toEqual(nara.stats);
+    const trait = (character: FighterSeed["character"]) =>
+      new PvpSimulation([{ ...duel[0], character }, duel[1]]).fighters.get(duel[0].id)!;
+    expect(trait("nara").player.speed).toBeGreaterThan(220);
+    expect(trait("orin").player.stats.area).toBeGreaterThan(1);
+    expect(trait("orin").player.stats.recovery).toBeGreaterThan(0);
+    expect(trait("ivo").player.maxHealth).toBe(85);
+    expect(trait("ivo").player.stats.amount).toBe(2);
+    expect(trait("sena").player.stats.damage).toBeGreaterThan(1);
+    expect(trait("sena").player.stats.growth).toBeGreaterThan(1);
+    const war = new WarSimulation(selectMatch(entries(10), CONFIG.botFillAfterMs)!.seeds);
+    expect([...war.fighters.values()].every((fighter) => war.combat.get(fighter.id)!.player.weapons.length === 3)).toBe(true);
+  });
+  it.each([
+    ["nara", "ember"],
+    ["orin", "orbit"],
+    ["ivo", "spear"],
+    ["sena", "meteor"],
+  ] as const)("%s advances its real %s weapon without an attack input", (character, weaponId) => {
+    const seeds: FighterSeed[] = [
+      { ...duel[0], character },
+      { ...duel[1], character: "nara" },
+    ];
+    const g = new PvpSimulation(seeds);
+    g.time = 4;
+    const [attacker, target] = [...g.fighters.values()];
+    attacker.player.x = 250;
+    attacker.player.y = 300;
+    attacker.player.dx = 1;
+    target.player.x = 350;
+    target.player.y = 300;
+    target.player.weapons = [];
+    attacker.lastInputAt = target.lastInputAt = 100;
+    attacker.input.ability = "none";
+    for (let i = 0; i < 8; i++) g.step(0.04);
+    expect(g.combat.get(attacker.id)!.player.weapons[0].id).toBe(weaponId);
+    expect(g.combat.get(attacker.id)!.player.weapons[0].shots).toBeGreaterThan(0);
+  });
+  it("rejects client-provided damage and preserves PvE weapon tuning", () => {
+    expect(arenaCommand.safeParse({
+      type: "ARENA_INPUT",
+      sequence: 1,
+      moveX: 0,
+      moveY: 0,
+      aimX: 1,
+      aimY: 0,
+      ability: "none",
+      seenTick: 0,
+      damage: 999,
+    }).success).toBe(false);
+    const pve = new Player("nara");
+    const weapon = new Weapon("ember");
+    weapon.ruleset = "PVE";
+    expect(weapon.values(pve).damage).toBe(21);
+    weapon.ruleset = "PVP";
+    expect(weapon.values(pve).damage).toBe(21 * PVP_RULES.weapons.ember.damage);
   });
   it("hazards, urns and fountains use temporary tuned effects only", () => {
     const g = new PvpSimulation(duel, "ruins");

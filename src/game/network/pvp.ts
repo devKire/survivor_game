@@ -73,7 +73,7 @@ export const arenaCommands = [
       moveY: z.number().min(-1).max(1),
       aimX: z.number().min(-1).max(1),
       aimY: z.number().min(-1).max(1),
-      ability: z.enum(["none", "basic", "skill", "pulse", "dash"]),
+      ability: z.enum(["none", "dash"]),
       seenTick: z.number().int().min(0).max(2147483647),
     })
     .strict(),
@@ -123,9 +123,6 @@ const war = z.object({
 });
 const cooldown = z.object({
   none: z.number(),
-  basic: z.number(),
-  skill: z.number(),
-  pulse: z.number(),
   dash: z.number(),
 });
 export const arenaSnapshotSchema = z.object({
@@ -161,6 +158,8 @@ export const arenaSnapshotSchema = z.object({
       armed: z.boolean(),
       delay: z.number(),
       color: z.string(),
+      weapon: z.string(),
+      team: z.number(),
     }),
   ),
   lines: z.array(
@@ -197,6 +196,8 @@ export const arenaSnapshotSchema = z.object({
       character: z.string(),
       x: z.number(),
       y: z.number(),
+      dx: z.number(),
+      dy: z.number(),
       hp: z.number(),
       maxHp: z.number(),
       speed: z.number(),

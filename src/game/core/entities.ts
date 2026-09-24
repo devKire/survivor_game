@@ -1,5 +1,6 @@
 import { nodeEffect } from "../content/obelisk";
 import { WEAPON_DEFINITIONS, WEAPON_PATHS } from "../content/catalog";
+import { PVP_RULES } from "../content/mode-rules";
 import { ATTACKS } from "./attacks";
 import { clamp, xpNeed } from "./math";
 import type { GameSimulation } from "./simulation";
@@ -147,6 +148,7 @@ export class Weapon {
     const mods = this.path
       ? WEAPON_PATHS[this.id]?.[this.path]?.mods || {}
       : {};
+    const pvp = this.ruleset === "PVP" ? PVP_RULES.weapons[this.id] : undefined;
     return {
       damage:
         this.definition.damage *
@@ -155,14 +157,16 @@ export class Weapon {
         (1 + (p.ruleset === "PVE" && this.id === ({nara:"ember",orin:"well",ivo:"disc",sena:"chain"} as Record<string,string>)[p.character] ? nodeEffect(p.character+"_focus",p.meta[p.character+"_focus"] || 0)/100 : 0)) *
         (this.evolved ? 1.65 : 1) *
         (p.buff > 0 ? 1.4 : 1) *
-        (mods.damage || 1),
+        (mods.damage || 1) *
+        (pvp?.damage ?? 1),
 
       cooldown:
         this.definition.cooldown *
         (1 - 0.035 * (this.level - 1)) *
         p.stats.cooldown *
         (p.buff > 0 ? 0.75 : 1) *
-        (mods.cooldown || 1),
+        (mods.cooldown || 1) *
+        (pvp?.cooldown ?? 1),
 
       area: p.stats.area * (1 + 0.045 * (this.level - 1)) * (mods.area || 1),
       amount: Math.max(

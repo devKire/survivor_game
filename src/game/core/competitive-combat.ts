@@ -1,7 +1,6 @@
 import { GameSimulation } from "./simulation";
 import { freshSave } from "./save";
 import { Weapon } from "./entities";
-import { ATTACKS } from "./attacks";
 import { ENEMY_DEFINITIONS } from "../content/catalog";
 import { PVP_RULES } from "../content/mode-rules";
 import type { Enemy, Vec } from "./types";
@@ -77,19 +76,29 @@ export class CompetitiveCombat extends GameSimulation {
     this.world = arena.world;
     this.fx = 0;
     this.bullets.limit = 32;
-    this.player.weapons = ["basic", "skill", "pulse"].map((ability) => {
-      const w = new Weapon(
-        arena.loadout(fighter)[ability as "basic" | "skill" | "pulse"],
-      );
+    this.player.weapons = arena.loadout(fighter).weapons.map((data) => {
+      const w = new Weapon(data.id);
       w.ownerId = fighter.id;
       w.ruleset = "PVP";
+      w.level = data.level;
+      w.evolved = data.evolved || false;
+      w.path = data.path || null;
+      w.pathLevel = data.pathLevel || 0;
       return w;
     });
   }
-  refresh() {
+  refresh(weapon?: Weapon) {
     this.targets.clear();
+    const range = weapon
+      ? PVP_RULES.weapons[weapon.id]?.range ?? Infinity
+      : Infinity;
     this.enemies = this.arena
       .combatTargets(this.fighter)
+      .filter(
+        ({ body }) =>
+          Math.hypot(body.x - this.player.x, body.y - this.player.y) <= range &&
+          this.arena.lineClear(this.player, body),
+      )
       .map(({ body, hurt }) => {
         this.targets.set(body.id, hurt);
         return body;
@@ -97,40 +106,11 @@ export class CompetitiveCombat extends GameSimulation {
     this.grid.rebuild(this.enemies);
     this.run.simTime = this.arena.time;
   }
-  fire(ability: "basic" | "skill" | "pulse") {
-    this.refresh();
-    const w = this.player.weapons[["basic", "skill", "pulse"].indexOf(ability)];
-    const tuning = PVP_RULES.weapons[w.id];
-    const values = w.values(this.player);
-    // Aim controls auto-targeted weapons too; unseen targets never enter their grid.
-    const f = this.fighter,
-      length = Math.max(0.001, Math.hypot(f.input.aimX, f.input.aimY));
-    this.player.dx = f.input.aimX / length;
-    this.player.dy = f.input.aimY / length;
-    this.grid.rebuild(
-      this.enemies.filter((e) => {
-        const dx = e.x - this.player.x,
-          dy = e.y - this.player.y,
-          d = Math.hypot(dx, dy);
-        return (
-          d <= tuning.range &&
-          (ability === "pulse" ||
-            (dx * this.player.dx + dy * this.player.dy) / Math.max(1, d) >
-              0.88) &&
-          this.arena.lineClear(this.player, e)
-        );
-      }),
-    );
-    ATTACKS[w.definition.type](this, w, {
-      ...values,
-      damage: w.definition.damage * tuning.damage,
-      amount: 1,
-      area: 1,
-      duration: 1,
-    });
-    this.grid.rebuild(this.enemies);
-  }
   advance(dt: number) {
+    for (const weapon of this.player.weapons) {
+      this.refresh(weapon);
+      weapon.update(this, dt);
+    }
     this.refresh();
     for (let i = this.bullets.items.length - 1; i >= 0; i--) {
       const b = this.bullets.items[i];
