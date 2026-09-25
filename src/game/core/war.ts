@@ -1,21 +1,51 @@
 import { PvpSimulation, type FighterSeed, type Fighter } from "./pvp";
 import {
   WAR,
+  WAR_ITEM_DEFINITIONS,
+  warXpNeed,
+  type WarFighterProgress,
   type WarMinion,
   type WarStructure,
+  type WarUpgradeChoice,
   type WarView,
   type WarRole,
   type TroopType,
   type GroupOrder,
 } from "../content/war";
 import { PVP_RULES } from "../content/mode-rules";
+import { PVP_CHARACTER_PROFILES, type PvpCharacter } from "../content/pvp";
 import { MATCHMAKING_CONFIG } from "../content/matchmaking";
 import { combatBody } from "./competitive-combat";
 import { updateWarBots } from "./war-bots";
 import { Pool } from "./collections";
 import { predictMove } from "../network/movement";
-import { STRUCTURE_DEFINITIONS } from "../content/catalog";
-import { clamp } from "./math";
+import { PASSIVE_DEFINITIONS, STRUCTURE_DEFINITIONS, WEAPON_DEFINITIONS, WEAPON_PATHS } from "../content/catalog";
+import { clamp, hashString } from "./math";
+import { Weapon } from "./entities";
+import { recalculateCompetitivePlayer } from "./pvp";
+export type WarBotState =
+  | "DEAD"
+  | "RETURN_BASE"
+  | "RETREAT"
+  | "FARM"
+  | "PUSH"
+  | "DEFEND_LANE"
+  | "DEFEND_CORE"
+  | "CONTEST_OBJECTIVE"
+  | "ENGAGE"
+  | "DISENGAGE"
+  | "ROLE_TASK";
+export interface WarBotBrain {
+  state: WarBotState;
+  lane: number;
+  targetId: number | null;
+  lastX: number;
+  lastY: number;
+  stuckSeconds: number;
+  detourSide: number;
+  lastDecisionAt: number;
+  nextLaneAt: number;
+}
 export class WarSimulation extends PvpSimulation {
   readonly units = new Pool<WarMinion>(
     () => ({
@@ -35,10 +65,8 @@ export class WarSimulation extends PvpSimulation {
   );
   energy = new Map<string, number>();
   roles = new Map<string, WarRole>();
-  upgradeRanks = new Map<
-    string,
-    { damage: number; health: number; speed: number }
-  >();
+  progress = new Map<string, WarFighterProgress>();
+  damageContributors = new Map<string, Map<string, number>>();
   actionsAt = new Map<string, number>();
   orders: GroupOrder[][] = [
     ["ATACAR", "ATACAR", "ATACAR"],
@@ -74,7 +102,22 @@ export class WarSimulation extends PvpSimulation {
     for (const s of seeds) {
       this.roles.set(s.id, s.role || "SOLDADO");
       this.energy.set(s.id, s.role === "COMANDANTE" ? 120 : 100);
-      this.upgradeRanks.set(s.id, { damage: 0, health: 0, speed: 0 });
+      this.progress.set(s.id, {
+        level: 1,
+        xp: 0,
+        xpToNextLevel: warXpNeed(1),
+        pendingUpgrades: 0,
+        decision: 0,
+        choices: [],
+        items: [],
+        warGold: 0,
+        buildRevision: 0,
+        assists: 0,
+      });
+      const player = this.fighters.get(s.id)!.player;
+      player.level = 1;
+      player.xp = 0;
+      player.xpToNextLevel = warXpNeed(1);
     }
     for (const team of [0, 1]) {
       this.structures.push({
@@ -104,6 +147,7 @@ export class WarSimulation extends PvpSimulation {
     this.resetPositions();
   }
   botNextDecision = new Map<string, number>();
+  botBrains = new Map<string, WarBotBrain>();
   targetBodies = new Map<number, import("./types").Enemy>();
   structureBodyIds = new Map<string, number>();
   override environment(f: Fighter, dt: number) {
@@ -235,8 +279,6 @@ export class WarSimulation extends PvpSimulation {
   }
   hurtStructure(s: WarStructure, damage: number, owner?: Fighter) {
     if (s.hp <= 0) return;
-    if (owner)
-      damage *= 1 + 0.04 * (this.upgradeRanks.get(owner.id)?.damage || 0);
     const before = s.hp;
     s.hp = Math.max(0, s.hp - damage);
     if (before > 0 && s.hp === 0) {
@@ -247,14 +289,26 @@ export class WarSimulation extends PvpSimulation {
   onStructureDestroyed(s: WarStructure, owner?: Fighter) {
     for (const f of this.fighters.values())
       if (f.team !== s.team) this.credit(f.id, owner?.id === f.id ? 45 : 20);
+    if (owner) {
+      const reward = s.kind === "TORRE" ? WAR.xp.tower : WAR.xp.structure;
+      this.grantWarXp(owner.id, reward);
+      this.grantWarGold(owner.id, s.kind === "TORRE" ? WAR.economy.tower : WAR.economy.structure);
+    }
   }
   onMinionKilled(m: WarMinion, owner?: Fighter) {
+    if (owner) this.grantWarGold(owner.id, WAR.economy.minionLastHit);
+    for (const ally of this.fighters.values())
+      if (
+        ally.team === owner?.team &&
+        ally.player.health > 0 &&
+        (ally.connected || ally.botControlled) &&
+        Math.hypot(ally.player.x - m.x, ally.player.y - m.y) <= WAR.xpShareRadius
+      )
+        this.grantWarXp(ally.id, WAR.xp.minion);
     if (owner) this.credit(owner.id, m.kind === "TANQUE" ? 10 : 5);
   }
   hitMinion(m: WarMinion, amount: number, owner?: Fighter) {
     if (m.hp <= 0) return;
-    if (owner)
-      amount *= 1 + 0.04 * (this.upgradeRanks.get(owner.id)?.damage || 0);
     m.hp = Math.max(0, m.hp - amount);
     if (m.hp === 0) this.onMinionKilled(m, owner);
   }
@@ -298,9 +352,15 @@ export class WarSimulation extends PvpSimulation {
     super.step(dt);
     if (this.ended || this.time < this.intermissionUntil) return;
     if (this.time >= this.incomeAt) {
-      this.incomeAt = this.time + 10;
+      this.incomeAt = this.time + WAR.economy.passiveInterval;
       for (const f of this.fighters.values())
-        if (!this.left.has(f.id) || f.botControlled) this.credit(f.id, 5);
+        if (
+          (!this.left.has(f.id) || f.botControlled) &&
+          (f.botControlled || this.time - f.lastInputAt < 2)
+        ) {
+          this.credit(f.id, 5);
+          this.grantWarGold(f.id, WAR.economy.passiveGold);
+        }
     }
     const capturing = [0, 1].map((team) =>
       [...this.fighters.values()].some(
@@ -324,7 +384,13 @@ export class WarSimulation extends PvpSimulation {
         if (this.time >= this.objective.nextReward) {
           this.objective.nextReward = this.time + 60;
           for (const f of this.fighters.values())
-            if (f.team === captureTeam) this.credit(f.id, 30);
+            if (f.team === captureTeam) {
+              this.credit(f.id, 30);
+              if (f.player.health > 0 && Math.hypot(f.player.x - 1300, f.player.y - 700) <= WAR.xpShareRadius) {
+                this.grantWarXp(f.id, WAR.xp.objective);
+                this.grantWarGold(f.id, WAR.economy.objective);
+              }
+            }
           this.log("objective", undefined, undefined, captureTeam);
         }
       }
@@ -338,7 +404,7 @@ export class WarSimulation extends PvpSimulation {
       if (f.player.health <= 0) {
         if (!f.respawnAt)
           f.respawnAt =
-            this.time + Math.min(20, 8 + Math.floor(this.time / 120));
+            this.time + Math.min(20, WAR.respawnBaseSeconds + Math.floor(this.time / WAR.respawnScaleSeconds) * WAR.respawnStepSeconds);
         if (this.time >= f.respawnAt) {
           f.player.health = f.player.maxHealth;
           f.player.x = f.team === 0 ? 230 : 2370;
@@ -347,10 +413,21 @@ export class WarSimulation extends PvpSimulation {
           f.protectedUntil = this.time + PVP_RULES.spawnProtection;
           f.body.statuses = {};
           f.body.controlImmunity = {};
+          this.botNextDecision.delete(f.id);
+          const brain = this.botBrains.get(f.id);
+          if (brain) {
+            brain.state = "RETURN_BASE";
+            brain.targetId = null;
+            brain.lastX = f.player.x;
+            brain.lastY = f.player.y;
+            brain.stuckSeconds = 0;
+            brain.lastDecisionAt = this.time;
+          }
           this.log("respawn", f.id);
         }
       }
       if (f.player.health > 0) {
+        f.player.health = Math.min(f.player.maxHealth, f.player.health + f.player.stats.recovery * dt);
         for (const s of this.structures) {
           if (s.hp <= 0) continue;
           const dx = f.player.x - s.x,
@@ -409,6 +486,7 @@ export class WarSimulation extends PvpSimulation {
     if (f.player.health === 0) {
       f.deaths++;
       this.log("minion-kill", undefined, f.id);
+      this.awardWarElimination(f);
     }
   }
   moveMinion(u: WarMinion, dt: number) {
@@ -522,6 +600,195 @@ export class WarSimulation extends PvpSimulation {
     this.energy.set(id, balance - amount);
     return true;
   }
+  grantWarGold(id: string, amount: number) {
+    const progress = this.progress.get(id);
+    if (!progress || !Number.isFinite(amount) || amount <= 0) return;
+    progress.warGold = Math.min(WAR.economy.maxGold, progress.warGold + Math.floor(amount));
+  }
+  grantWarXp(id: string, rawAmount: number) {
+    const fighter = this.fighters.get(id),
+      progress = this.progress.get(id);
+    if (!fighter || !progress || rawAmount <= 0 || progress.level >= WAR.maxLevel) return;
+    const startingLevel = progress.level;
+    progress.xp += Math.floor(rawAmount * Math.min(PVP_RULES.warGrowthCap, fighter.player.stats.growth));
+    while (progress.level < WAR.maxLevel && progress.xp >= warXpNeed(progress.level)) {
+      progress.xp -= warXpNeed(progress.level);
+      progress.level++;
+      progress.pendingUpgrades++;
+      progress.decision++;
+      fighter.player.level = progress.level;
+      progress.choices = this.createChoices(fighter);
+      this.log("war-level", id, undefined, progress.level);
+    }
+    if (progress.level !== startingLevel) this.recalculateWarFighter(fighter);
+    progress.xpToNextLevel = progress.level >= WAR.maxLevel ? 0 : warXpNeed(progress.level);
+    fighter.player.xp = progress.xp;
+    fighter.player.xpToNextLevel = progress.xpToNextLevel;
+  }
+  private createChoices(fighter: Fighter): WarUpgradeChoice[] {
+    const progress = this.progress.get(fighter.id)!;
+    const profile = PVP_CHARACTER_PROFILES[fighter.player.character as PvpCharacter].war;
+    const weapons = this.combat.get(fighter.id)!.player.weapons;
+    const choices: WarUpgradeChoice[] = [];
+    const owned = new Set(weapons.map((weapon) => weapon.id));
+    if (weapons.length < WAR.maxWeapons)
+      for (const id of profile.weapons)
+        if (!owned.has(id))
+          choices.push({
+            id: `weapon:${id}`,
+            kind: "weapon",
+            name: WEAPON_DEFINITIONS[id].name,
+            description: WEAPON_DEFINITIONS[id].description,
+            weaponId: id,
+            currentLevel: 0,
+            nextLevel: 1,
+          });
+    for (const weapon of weapons) {
+      if (weapon.level < WAR.maxWeaponLevel)
+        choices.push({
+          id: `weapon-level:${weapon.id}`,
+          kind: "weapon",
+          name: `${WEAPON_DEFINITIONS[weapon.id].name} · nível ${weapon.level + 1}`,
+          description: "Aprimora dano, frequência e escala da arma.",
+          weaponId: weapon.id,
+          currentLevel: weapon.level,
+          nextLevel: weapon.level + 1,
+        });
+      if (weapon.level >= WAR.pathUnlockWeaponLevel && !weapon.path)
+        for (const id of profile.paths[weapon.id] || []) {
+          const path = WEAPON_PATHS[weapon.id]?.[id];
+          if (path)
+            choices.push({
+              id: `path:${weapon.id}:${id}`,
+              kind: "path",
+              name: `${WEAPON_DEFINITIONS[weapon.id].name} · ${path.name}`,
+              description: path.text,
+              weaponId: weapon.id,
+              currentLevel: 0,
+              nextLevel: 1,
+            });
+        }
+    }
+    const passiveKeys = Object.keys(fighter.player.passives).filter(
+      (id) => fighter.player.passives[id] > 0,
+    );
+    for (const id of profile.passives) {
+      const current = fighter.player.passives[id] || 0;
+      if (current >= WAR.maxPassiveLevel || (!current && passiveKeys.length >= WAR.maxPassives)) continue;
+      const definition = PASSIVE_DEFINITIONS[id];
+      if (!definition) continue;
+      choices.push({
+        id: `passive:${id}`,
+        kind: "passive",
+        name: `${definition.name} · nível ${current + 1}`,
+        description: definition.text,
+        currentLevel: current,
+        nextLevel: current + 1,
+      });
+    }
+    const newWeapon = choices.find((choice) => choice.id.startsWith("weapon:") && !choice.id.startsWith("weapon-level:"));
+    const rest = choices.filter((choice) => choice !== newWeapon);
+    rest.sort((a, b) => hashString(`${fighter.id}:${progress.decision}:${a.id}`) - hashString(`${fighter.id}:${progress.decision}:${b.id}`));
+    return [newWeapon, ...rest].filter((choice): choice is WarUpgradeChoice => !!choice).slice(0, 3);
+  }
+  chooseUpgrade(id: string, decision: number, choiceId: string) {
+    const fighter = this.fighters.get(id),
+      progress = this.progress.get(id);
+    if (
+      !fighter || !progress || this.ended || (!fighter.connected && !fighter.botControlled) ||
+      this.left.has(id) && !fighter.botControlled || progress.pendingUpgrades <= 0 ||
+      progress.decision !== decision
+    ) return false;
+    const choice = progress.choices.find((option) => option.id === choiceId);
+    if (!choice) return false;
+    const weapons = this.combat.get(id)!.player.weapons;
+    if (choice.kind === "weapon") {
+      if (choice.id.startsWith("weapon-level:")) {
+        const weapon = weapons.find((entry) => entry.id === choice.weaponId);
+        if (!weapon || weapon.level !== choice.currentLevel || weapon.level >= WAR.maxWeaponLevel) return false;
+        weapon.level = choice.nextLevel!;
+      } else {
+        const allowed = PVP_CHARACTER_PROFILES[fighter.player.character as PvpCharacter].war.weapons;
+        if (!choice.weaponId || !allowed.includes(choice.weaponId) || weapons.length >= WAR.maxWeapons || weapons.some((weapon) => weapon.id === choice.weaponId)) return false;
+        const weapon = new Weapon(choice.weaponId);
+        weapon.ownerId = fighter.id;
+        weapon.ruleset = "PVP";
+        weapons.push(weapon);
+      }
+    } else if (choice.kind === "passive") {
+      const current = fighter.player.passives[choice.id.slice("passive:".length)] || 0;
+      if (current !== choice.currentLevel || current >= WAR.maxPassiveLevel) return false;
+      fighter.player.passives[choice.id.slice("passive:".length)] = current + 1;
+    } else {
+      const [, weaponId, pathId] = choice.id.split(":");
+      const weapon = weapons.find((entry) => entry.id === weaponId);
+      const allowed = PVP_CHARACTER_PROFILES[fighter.player.character as PvpCharacter].war.paths[weaponId] || [];
+      if (!weapon || weapon.level < WAR.pathUnlockWeaponLevel || weapon.path || !allowed.includes(pathId)) return false;
+      weapon.path = pathId;
+      weapon.pathLevel = 1;
+    }
+    progress.pendingUpgrades--;
+    progress.buildRevision++;
+    fighter.buildRevision = progress.buildRevision;
+    this.recalculateWarFighter(fighter);
+    if (progress.pendingUpgrades > 0) {
+      progress.decision++;
+      progress.choices = this.createChoices(fighter);
+    } else progress.choices = [];
+    this.log("war-build", id, choice.id, progress.buildRevision);
+    return true;
+  }
+  private recalculateWarFighter(fighter: Fighter, preserveHealthRatio = true) {
+    const progress = this.progress.get(fighter.id)!;
+    const ratio = fighter.player.health / Math.max(1, fighter.player.maxHealth);
+    recalculateCompetitivePlayer(fighter.player, preserveHealthRatio, PVP_RULES.warGrowthCap);
+    let damage = 0, cooldown = 0, maxHealth = 0, speed = 0, area = 0, duration = 0, recovery = 0;
+    for (const slot of progress.items) {
+      const stats = WAR_ITEM_DEFINITIONS[slot.id]?.stats;
+      if (!stats) continue;
+      damage += stats.damage || 0;
+      cooldown += stats.cooldown || 0;
+      maxHealth += stats.maxHealth || 0;
+      speed += stats.speed || 0;
+      area += stats.area || 0;
+      duration += stats.duration || 0;
+      recovery += stats.recovery || 0;
+    }
+    fighter.player.maxHealth = Math.round(fighter.player.maxHealth * (1 + Math.min(0.5, maxHealth)));
+    fighter.player.speed *= 1 + Math.min(0.2, speed);
+    fighter.player.stats.damage *= 1 + Math.min(0.35, damage);
+    fighter.player.stats.cooldown *= Math.max(0.7, 1 + cooldown);
+    fighter.player.stats.area *= 1 + Math.min(0.4, area);
+    fighter.player.stats.duration *= 1 + Math.min(0.5, duration);
+    fighter.player.stats.recovery += recovery;
+    fighter.player.health = clamp(ratio * fighter.player.maxHealth, 0, fighter.player.maxHealth);
+  }
+  shopAvailable(fighter: Fighter) {
+    return fighter.player.health <= 0 || Math.hypot(
+      fighter.player.x - (fighter.team === 0 ? 230 : 2370),
+      fighter.player.y - 700,
+    ) <= WAR.shopRadius;
+  }
+  buyItem(id: string, itemId: string) {
+    const fighter = this.fighters.get(id), progress = this.progress.get(id), item = WAR_ITEM_DEFINITIONS[itemId];
+    if (!fighter || !progress || !item || this.ended || (!fighter.connected && !fighter.botControlled) || !this.shopAvailable(fighter) || progress.warGold < item.cost || progress.items.length >= WAR.itemSlots || progress.items.some((slot) => slot.id === itemId)) return false;
+    progress.warGold -= item.cost;
+    progress.items.push({ id: itemId });
+    fighter.warItems = progress.items.map((slot) => slot.id);
+    this.recalculateWarFighter(fighter);
+    this.log("war-item-buy", id, itemId);
+    return true;
+  }
+  sellItem(id: string, slot: number) {
+    const fighter = this.fighters.get(id), progress = this.progress.get(id);
+    if (!fighter || !progress || this.ended || (!fighter.connected && !fighter.botControlled) || !this.shopAvailable(fighter) || !Number.isInteger(slot) || slot < 0 || slot >= progress.items.length) return false;
+    const [item] = progress.items.splice(slot, 1);
+    fighter.warItems = progress.items.map((entry) => entry.id);
+    this.grantWarGold(id, Math.floor((WAR_ITEM_DEFINITIONS[item.id]?.cost || 0) * WAR.economy.sellRefund));
+    this.recalculateWarFighter(fighter);
+    this.log("war-item-sell", id, item.id);
+    return true;
+  }
   allowed(id: string, role: WarRole) {
     const f = this.fighters.get(id);
     return f &&
@@ -535,24 +802,36 @@ export class WarSimulation extends PvpSimulation {
   }
   override damage(target: Fighter, amount: number, owner: Fighter) {
     const before = target.player.health;
-    super.damage(
-      target,
-      amount * (1 + 0.04 * (this.upgradeRanks.get(owner.id)?.damage || 0)),
-      owner,
-    );
-    if (before > 0 && target.player.health === 0) {
-      this.credit(owner.id, 20 + Math.min(40, target.kills * 5));
-      for (const f of this.fighters.values())
-        if (
-          f.id !== owner.id &&
-          f.team === owner.team &&
-          Math.hypot(
-            f.player.x - target.player.x,
-            f.player.y - target.player.y,
-          ) < 350
-        )
-          this.credit(f.id, 5);
+    if (before <= 0 || target.team === owner.team) return;
+    let contributors = this.damageContributors.get(target.id);
+    if (!contributors) this.damageContributors.set(target.id, (contributors = new Map()));
+    contributors.set(owner.id, this.time);
+    super.damage(target, amount, owner);
+    if (target.player.health === 0) this.awardWarElimination(target, owner.id);
+  }
+  private awardWarElimination(target: Fighter, proposedKiller?: string) {
+    const times = this.damageContributors.get(target.id) || new Map<string, number>();
+    const recent = [...times]
+      .filter(([, at]) => this.time - at <= WAR.assistWindow)
+      .map(([id]) => this.fighters.get(id))
+      .filter((fighter): fighter is Fighter => !!fighter && fighter.team !== target.team);
+    const killer = recent.find((fighter) => fighter.id === proposedKiller) ||
+      recent.sort((a, b) => (times.get(b.id) || 0) - (times.get(a.id) || 0))[0];
+    if (killer) {
+      this.grantWarXp(killer.id, WAR.xp.kill);
+      this.grantWarGold(killer.id, WAR.economy.kill);
+      this.credit(killer.id, 20 + Math.min(40, killer.kills * 5));
+      for (const assister of recent)
+        if (assister.id !== killer.id) {
+          const progress = this.progress.get(assister.id);
+          if (progress) progress.assists++;
+          assister.assists++;
+          this.grantWarXp(assister.id, WAR.xp.assist);
+          this.grantWarGold(assister.id, WAR.economy.assist);
+          this.credit(assister.id, 5);
+        }
     }
+    this.damageContributors.delete(target.id);
   }
   build(id: string, kind: "TORRE" | "BARRICADA", x: number, y: number) {
     const f = this.allowed(id, "CONSTRUTOR"),
@@ -613,6 +892,7 @@ export class WarSimulation extends PvpSimulation {
       cooldown: this.time + 2,
     });
     this.actionsAt.set(id, this.time + 4);
+    this.grantWarXp(id, 10);
     this.log("build:" + kind, id);
     return true;
   }
@@ -632,6 +912,7 @@ export class WarSimulation extends PvpSimulation {
       return false;
     s.hp = Math.min(s.maxHp, s.hp + 50);
     this.actionsAt.set(id, this.time + 2);
+    this.grantWarXp(id, 8);
     this.log("repair", id, s.id);
     return true;
   }
@@ -669,10 +950,11 @@ export class WarSimulation extends PvpSimulation {
     this.troops[f.team][lane] = kind;
     this.spawnWave(f.team, lane, count, kind, formation);
     this.actionsAt.set(id, this.time + 6);
+    this.grantWarXp(id, 10);
     this.log("recruit:" + kind, id, undefined, count);
     return true;
   }
-  upgrade(id: string, kind: "damage" | "health" | "speed" | "troops") {
+  upgrade(id: string, kind: "troops") {
     const f = this.fighters.get(id);
     if (
       !f ||
@@ -681,32 +963,12 @@ export class WarSimulation extends PvpSimulation {
       this.ended
     )
       return false;
-    if (kind === "troops") {
-      if (
-        !this.allowed(id, "COMANDANTE") ||
-        this.troopRanks[f.team] >= 3 ||
-        !this.spend(id, 100 * (this.troopRanks[f.team] + 1))
-      )
-        return false;
-      this.troopRanks[f.team]++;
-    } else {
-      const ranks = this.upgradeRanks.get(id)!;
-      if (
-        !this.allowed(id, "SOLDADO") ||
-        ranks[kind] >= 3 ||
-        !this.spend(id, 50 * (ranks[kind] + 1))
-      )
-        return false;
-      ranks[kind]++;
-      if (kind === "health") {
-        f.player.maxHealth = 100 + 10 * ranks.health;
-        f.player.health = Math.min(
-          f.player.maxHealth,
-          f.player.health + 10 * PVP_RULES.healing,
-        );
-      }
-      if (kind === "speed") f.player.speed = 220 * (1 + 0.02 * ranks.speed);
-    }
+    if (
+      !this.allowed(id, "COMANDANTE") ||
+      this.troopRanks[f.team] >= 3 ||
+      !this.spend(id, 100 * (this.troopRanks[f.team] + 1))
+    ) return false;
+    this.troopRanks[f.team]++;
     this.log("upgrade:" + kind, id);
     return true;
   }
@@ -719,7 +981,28 @@ export class WarSimulation extends PvpSimulation {
     const war: WarView = {
       cores: this.structures.filter((s) => s.kind === "CORE").map((s) => s.hp),
       energy: this.energy.get(id) || 0,
+      warGold: this.progress.get(id)!.warGold,
       role: this.roles.get(id) || "SOLDADO",
+      level: this.progress.get(id)!.level,
+      xp: this.progress.get(id)!.xp,
+      xpToNextLevel: this.progress.get(id)!.xpToNextLevel,
+      pendingUpgrades: this.progress.get(id)!.pendingUpgrades,
+      decision: this.progress.get(id)!.decision,
+      choices: this.progress.get(id)!.choices,
+      weapons: (this.combat.get(id)?.player.weapons || []).map((weapon) => ({
+        id: weapon.id,
+        level: weapon.level,
+        evolved: weapon.evolved,
+        path: weapon.path,
+        pathLevel: weapon.pathLevel,
+      })),
+      passives: { ...f.player.passives },
+      items: this.progress.get(id)!.items.map((item) => ({ ...item })),
+      shopAvailable: this.shopAvailable(f),
+      respawnIn: Math.max(0, f.respawnAt - this.time),
+      kills: f.kills,
+      deaths: f.deaths,
+      assists: this.progress.get(id)!.assists,
       minions: this.units.items
         .filter((u) => near(u.x, u.y))
         .map((u) => ({
@@ -734,13 +1017,7 @@ export class WarSimulation extends PvpSimulation {
       structures: this.structures,
       orders: this.orders[f.team],
       troops: this.troops[f.team],
-      upgrades:
-        this.roles.get(id) === "COMANDANTE"
-          ? this.troopRanks[f.team]
-          : Object.values(this.upgradeRanks.get(id)!).reduce(
-              (a, b) => a + b,
-              0,
-            ),
+      upgrades: this.troopRanks[f.team],
       entityCount: this.units.items.length,
       objective: this.objective,
     };

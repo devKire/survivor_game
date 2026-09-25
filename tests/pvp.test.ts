@@ -14,7 +14,10 @@ import { arenaCommand, arenaSnapshotSchema } from "../src/game/network/pvp";
 import { applyStatus } from "../src/game/core/status";
 import { Player, Weapon } from "../src/game/core/entities";
 import { PVP_RULES } from "../src/game/content/mode-rules";
-import { PVP_CHARACTER_BUILDS } from "../src/game/content/pvp";
+import { PVP_CHARACTER_BUILDS, resolvePvpCosmetics } from "../src/game/content/pvp";
+import { COSMETICS } from "../src/game/content/cosmetics";
+import { WAR, WAR_ITEM_DEFINITIONS, warXpNeed } from "../src/game/content/war";
+import { VirtualJoystick } from "../src/game/client/virtual-joystick";
 export const entries = (count: number): QueueEntry[] =>
   Array.from({ length: count }, (_, i) => ({
     id: `human:${i}`,
@@ -29,6 +32,22 @@ export const entries = (count: number): QueueEntry[] =>
   }));
 const duel: FighterSeed[] = entries(2).map((e, team) => ({ ...e, team }));
 describe("V26 maps and shared competitive mechanics", () => {
+  it("virtual joystick applies deadzone, clamps, owns one pointer and clears on cancellation", () => {
+    const joystick = new VirtualJoystick();
+    expect(joystick.begin(1, 51, 50, 50, 50, 100)).toEqual({ x: 0, y: 0 });
+    expect(joystick.move(1, 200, 50, 50, 50, 100)).toEqual({ x: 1, y: 0 });
+    expect(joystick.begin(2, 50, 150, 50, 50, 100)).toBeNull();
+    expect(joystick.pointerId).toBe(1);
+    expect(joystick.release(2)).toBe(false);
+    expect(joystick.release(1)).toBe(true);
+    expect(joystick.axis).toEqual({ x: 0, y: 0 });
+
+    joystick.begin(3, 150, 50, 50, 50, 100);
+    joystick.clear(); // Same reset path used by pointercancel/death.
+    expect(joystick.pointerId).toBeNull();
+    expect(joystick.axis).toEqual({ x: 0, y: 0 });
+  });
+
   it.each(["ruins", "gardens"])(
     "%s runs solo, co-op, duel and war from the same map definition",
     (map) => {
@@ -89,6 +108,56 @@ describe("V26 maps and shared competitive mechanics", () => {
       }
     },
   );
+  it("dead War fighters stop creating attacks while launched projectiles expire and respawn restores fire", () => {
+    const seeds = entries(10).map((entry, index) =>
+      index === 0 ? { ...entry, character: "orin" as const } : entry,
+    );
+    const g = new WarSimulation(selectMatch(seeds, 0)!.seeds);
+    g.time = 4;
+    const f = g.fighters.get("human:0")!;
+    const combat = g.combat.get(f.id)!;
+    const weapon = combat.player.weapons[0];
+    expect(weapon.id).toBe("orbit");
+    weapon.timer = 0;
+    const shotsBeforeDeath = weapon.shots;
+    const launched = combat.projectile(weapon, 100, 100, 10, 0, { life: 0.5 })!;
+    f.player.health = 0;
+
+    g.step(0.04);
+    expect(weapon.shots).toBe(shotsBeforeDeath + 1); // only the projectile created above
+    expect(launched.life).toBeCloseTo(0.46);
+    for (let i = 0; i < 5; i++) g.step(0.04);
+    expect(weapon.shots).toBe(shotsBeforeDeath + 1);
+    expect(launched.life).toBeCloseTo(0.26);
+
+    g.time = f.respawnAt;
+    g.step(0.04);
+    expect(f.player.health).toBe(f.player.maxHealth);
+    const shotsAtRespawn = weapon.shots;
+    for (let i = 0; i < 8; i++) g.step(0.04);
+    expect(weapon.shots).toBeGreaterThan(shotsAtRespawn);
+  });
+  it("server bot enters DEAD without attacks and resumes its same weapon after respawn", () => {
+    const g = new WarSimulation(selectMatch(entries(2), 45000)!.seeds);
+    g.time = 4;
+    const bot = [...g.fighters.values()].find((fighter) => fighter.isBot)!;
+    const combat = g.combat.get(bot.id)!;
+    const orbit = new Weapon("orbit");
+    orbit.ruleset = "PVP";
+    orbit.ownerId = bot.id;
+    orbit.timer = 0;
+    combat.player.weapons = [orbit];
+    bot.player.health = 0;
+    g.step(0.04);
+    expect(orbit.shots).toBe(0);
+    expect(g.botBrains.get(bot.id)?.state).toBe("DEAD");
+    g.time = bot.respawnAt;
+    g.step(0.04);
+    expect(bot.player.health).toBe(bot.player.maxHealth);
+    expect(g.botBrains.get(bot.id)?.state).not.toBe("DEAD");
+    for (let i = 0; i < 8; i++) g.step(0.04);
+    expect(orbit.shots).toBeGreaterThan(0);
+  });
   it("configured weapons fire automatically on server ticks, respect cooldown and exclude allies", () => {
     const seeds = [
       { ...duel[0], id: "nara", team: 0 },
@@ -159,7 +228,71 @@ describe("V26 maps and shared competitive mechanics", () => {
     expect(trait("sena").player.stats.damage).toBeGreaterThan(1);
     expect(trait("sena").player.stats.growth).toBeGreaterThan(1);
     const war = new WarSimulation(selectMatch(entries(10), CONFIG.botFillAfterMs)!.seeds);
-    expect([...war.fighters.values()].every((fighter) => war.combat.get(fighter.id)!.player.weapons.length === 3)).toBe(true);
+    expect([...war.fighters.values()].every((fighter) => war.combat.get(fighter.id)!.player.weapons.length === 1)).toBe(true);
+    expect(new PvpSimulation(duel).combat.get(duel[0].id)!.player.weapons).toHaveLength(3);
+  });
+  it("War minion XP is shared only with nearby living allies and creates a server-owned level decision", () => {
+    const g = new WarSimulation(selectMatch(entries(10), 0)!.seeds);
+    const fighters = [...g.fighters.values()];
+    const killer = fighters[0];
+    const nearby = fighters.find((f) => f.team === killer.team && f.id !== killer.id)!;
+    const far = fighters.find((f) => f.team === killer.team && f.id !== killer.id && f !== nearby)!;
+    nearby.player.x = killer.player.x + 50;
+    nearby.player.y = killer.player.y;
+    far.player.x = killer.player.x + 1500;
+    far.player.y = killer.player.y;
+    const minion = { id: 99999, team: 1 - killer.team, lane: 1, kind: "SOLDADO" as const, x: killer.player.x, y: killer.player.y, hp: 1, maxHp: 1, speed: 0, damage: 0, cooldown: 0 };
+    g.hitMinion(minion, 10, killer);
+    expect(g.progress.get(killer.id)!.xp).toBe(WAR.xp.minion);
+    expect(g.progress.get(nearby.id)!.xp).toBe(WAR.xp.minion);
+    expect(g.progress.get(far.id)!.xp).toBe(0);
+
+    g.grantWarXp(killer.id, warXpNeed(1));
+    const decision = g.progress.get(killer.id)!;
+    expect(decision.level).toBe(2);
+    expect(decision.pendingUpgrades).toBe(1);
+    expect(decision.choices).toHaveLength(3);
+  });
+  it("War build choices are server validated, add PVP weapons and preserve duel presets", () => {
+    const g = new WarSimulation(selectMatch(entries(10), 0)!.seeds);
+    const f = g.fighters.get("human:0")!;
+    const progress = g.progress.get(f.id)!;
+    g.grantWarXp(f.id, warXpNeed(1));
+    const choice = progress.choices.find((candidate) => candidate.kind === "weapon")!;
+    expect(g.chooseUpgrade(f.id, progress.decision, "weapon:frost")).toBe(false);
+    expect(g.chooseUpgrade(f.id, progress.decision, choice.id)).toBe(true);
+    const weapons = g.combat.get(f.id)!.player.weapons;
+    expect(weapons).toHaveLength(2);
+    expect(weapons[1].ruleset).toBe("PVP");
+    expect(progress.buildRevision).toBe(1);
+    const snapshot = arenaSnapshotSchema.parse(g.snapshot(f.id));
+    expect(snapshot.players.find((player) => player.id === f.id)?.weapons).toHaveLength(2);
+    expect(snapshot.war?.weapons).toHaveLength(2);
+    expect(snapshot.war?.pendingUpgrades).toBe(0);
+    while (weapons.length < WAR.maxWeapons) {
+      g.grantWarXp(f.id, progress.xpToNextLevel - progress.xp);
+      const nextWeapon = progress.choices.find((candidate) => candidate.kind === "weapon" && candidate.currentLevel === 0)!;
+      expect(g.chooseUpgrade(f.id, progress.decision, nextWeapon.id)).toBe(true);
+    }
+    g.grantWarXp(f.id, progress.xpToNextLevel - progress.xp);
+    expect(progress.choices.some((candidate) => candidate.kind === "weapon" && candidate.currentLevel === 0)).toBe(false);
+    expect(weapons).toHaveLength(WAR.maxWeapons);
+  });
+  it("War items spend only temporary WarGold, apply stats and require a base or death", () => {
+    const g = new WarSimulation(selectMatch(entries(10), 0)!.seeds);
+    const f = g.fighters.get("human:0")!;
+    const progress = g.progress.get(f.id)!;
+    const item = Object.values(WAR_ITEM_DEFINITIONS)[0];
+    const oldDamage = f.player.stats.damage;
+    expect(g.buyItem(f.id, item.id)).toBe(false);
+    progress.warGold = item.cost;
+    f.player.x = 1300;
+    expect(g.buyItem(f.id, item.id)).toBe(false);
+    f.player.x = f.team === 0 ? 230 : 2370;
+    expect(g.buyItem(f.id, item.id)).toBe(true);
+    expect(progress.warGold).toBe(0);
+    expect(progress.items.map((slot) => slot.id)).toContain(item.id);
+    expect(f.player.stats.damage).not.toBe(oldDamage);
   });
   it.each([
     ["nara", "ember"],
@@ -204,6 +337,16 @@ describe("V26 maps and shared competitive mechanics", () => {
     expect(weapon.values(pve).damage).toBe(21);
     weapon.ruleset = "PVP";
     expect(weapon.values(pve).damage).toBe(21 * PVP_RULES.weapons.ember.damage);
+  });
+  it("resolves only the selected character's owned PvP cosmetics and rejects queue cosmetics", () => {
+    const save = freshSave();
+    const skin = Object.values(COSMETICS).find((item) => item.type === "CHARACTER_SKIN")!;
+    save.pvpCosmetics.nara.CHARACTER_SKIN = skin.id;
+    save.pvpCosmetics.orin.CHARACTER_SKIN = "character_skin_1";
+    expect(resolvePvpCosmetics(save, "nara", new Set([skin.id, "character_skin_1"]))).toEqual({ CHARACTER_SKIN: skin.id });
+    expect(resolvePvpCosmetics(save, "orin", new Set([skin.id, "character_skin_1"]))).toEqual({ CHARACTER_SKIN: "character_skin_1" });
+    expect(resolvePvpCosmetics(save, "nara", new Set())).toEqual({});
+    expect(arenaCommand.safeParse({ type: "ARENA_QUEUE", character: "nara", mode: "WAR_CASUAL", role: "SOLDADO", cosmetics: { CHARACTER_SKIN: skin.id }, weapons: ["ember"] }).success).toBe(false);
   });
   it("hazards, urns and fountains use temporary tuned effects only", () => {
     const g = new PvpSimulation(duel, "ruins");
@@ -379,7 +522,11 @@ describe("V27 low population matchmaking", () => {
     ).toBeLessThanOrEqual(bot.player.speed * 0.04 + 0.001);
     for (let i = 0; i < 200; i++) g.step();
     expect(g.events.some((e) => e.type.startsWith("recruit:"))).toBe(true);
-    expect(g.events.some((e) => e.type.startsWith("upgrade:"))).toBe(true);
+    g.grantWarXp(bot.id, warXpNeed(1));
+    bot.player.health = bot.player.maxHealth;
+    g.botNextDecision.set(bot.id, g.time);
+    g.step();
+    expect(g.events.some((e) => e.type === "war-build" && e.actor === bot.id)).toBe(true);
     expect(
       Math.hypot(bot.player.x - start.x, bot.player.y - start.y),
     ).toBeGreaterThan(100);

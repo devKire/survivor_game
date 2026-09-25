@@ -1,4 +1,6 @@
-import { CHARACTER_DEFINITIONS } from "./catalog";
+import { CHARACTER_DEFINITIONS, WEAPON_PATHS } from "./catalog";
+import { COSMETICS } from "./cosmetics";
+import type { SaveData } from "../core/types";
 export const PVP = {
   tickHz: 25,
   snapshotHz: 10,
@@ -31,7 +33,7 @@ export type PvpCharacterBuild = {
   passives: Record<string, number>;
 };
 
-export const PVP_CHARACTER_BUILDS: Record<PvpCharacter, PvpCharacterBuild> = {
+const DUEL_BUILDS: Record<PvpCharacter, PvpCharacterBuild> = {
   nara: {
     weapons: [
       { id: "ember", level: 1, path: "combustion" },
@@ -65,3 +67,62 @@ export const PVP_CHARACTER_BUILDS: Record<PvpCharacter, PvpCharacterBuild> = {
     passives: { might: 1, growth: 1 },
   },
 } as const;
+
+const warProfile = (
+  starterWeapon: string,
+  weapons: string[],
+  passives: string[],
+) => ({
+  starterWeapon,
+  weapons,
+  passives,
+  paths: Object.fromEntries(
+    weapons.map((id) => [id, Object.keys(WEAPON_PATHS[id] || {})]),
+  ),
+});
+
+/** Server-owned competitive profiles. Duel is fixed; War grows from one signature weapon. */
+export const PVP_CHARACTER_PROFILES = {
+  nara: {
+    duel: DUEL_BUILDS.nara,
+    war: warProfile("ember", ["ember", "orbit", "chain", "spear"], ["might", "speed", "vitality", "haste", "area", "duration", "amount", "growth", "recovery"]),
+  },
+  orin: {
+    duel: DUEL_BUILDS.orin,
+    war: warProfile("orbit", ["orbit", "well", "frost", "disc"], ["area", "recovery", "vitality", "haste", "might", "speed", "duration", "amount", "growth"]),
+  },
+  ivo: {
+    duel: DUEL_BUILDS.ivo,
+    war: warProfile("spear", ["spear", "disc", "ember", "chain"], ["amount", "might", "vitality", "haste", "speed", "area", "duration", "growth", "recovery"]),
+  },
+  sena: {
+    duel: DUEL_BUILDS.sena,
+    war: warProfile("meteor", ["meteor", "chain", "frost", "well"], ["might", "growth", "vitality", "haste", "area", "duration", "amount", "speed", "recovery"]),
+  },
+} satisfies Record<PvpCharacter, { duel: PvpCharacterBuild; war: ReturnType<typeof warProfile> }>;
+
+export const PVP_BOT_BUILD_PREFERENCES: Record<PvpCharacter, string[]> = {
+  nara: ["passive:might", "weapon-level:ember", "passive:haste", "weapon:orbit"],
+  orin: ["passive:area", "weapon-level:orbit", "passive:recovery", "weapon:well"],
+  ivo: ["passive:amount", "weapon-level:spear", "passive:might", "weapon:disc"],
+  sena: ["passive:growth", "weapon-level:meteor", "passive:might", "weapon:chain"],
+};
+
+/** Compatibility export for existing duel presentation/rendering; War never consumes it. */
+export const PVP_CHARACTER_BUILDS = Object.fromEntries(
+  Object.entries(PVP_CHARACTER_PROFILES).map(([character, profile]) => [character, profile.duel]),
+) as Record<PvpCharacter, PvpCharacterBuild>;
+
+/** Resolves only this character's owned, slot-compatible appearance; queue payloads never provide it. */
+export function resolvePvpCosmetics(
+  save: Pick<SaveData, "pvpCosmetics">,
+  character: PvpCharacter,
+  owned: ReadonlySet<string>,
+) {
+  return Object.fromEntries(
+    Object.entries(save.pvpCosmetics[character]).filter(([slot, id]) => {
+      const cosmetic = COSMETICS[id];
+      return owned.has(id) && cosmetic?.type === slot && (!cosmetic.character || cosmetic.character === character);
+    }),
+  );
+}

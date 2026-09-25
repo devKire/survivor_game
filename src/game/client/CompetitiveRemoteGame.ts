@@ -24,7 +24,9 @@ export class CompetitiveRemoteGame extends BrowserGame {
   private renderPositions = new Map<string, Vec>();
   private visualPlayers = new Map<string, Player>();
   private playerHealth = new Map<string, number>();
+  private buildRevisions = new Map<string, number>();
   private face = { x: 1, y: 0 };
+  private virtualDash = false;
   constructor(
     canvas: HTMLCanvasElement,
     readonly userId: string,
@@ -60,6 +62,23 @@ export class CompetitiveRemoteGame extends BrowserGame {
     if (event.code === "Escape" && this.placement()) this.cancelPlacement();
   };
 
+  setVirtualMove(x: number, y: number) {
+    const own = this.snapshot?.players.find((player) => player.id === this.userId);
+    if (!own || own.hp <= 0) {
+      this.input.clearVirtualMove();
+      return;
+    }
+    this.input.setVirtualMove(x, y);
+  }
+
+  clearVirtualMove() {
+    this.input.clearVirtualMove();
+  }
+
+  setVirtualDash(pressed: boolean) {
+    this.virtualDash = pressed;
+  }
+
   private onPointerDown = (event: PointerEvent) => {
     const kind = this.placement();
     const snapshot = this.snapshot;
@@ -85,6 +104,16 @@ export class CompetitiveRemoteGame extends BrowserGame {
     const oldHealth = this.playerHealth;
     this.playerHealth = new Map(snapshot.players.map((player) => [player.id, player.hp]));
     for (const player of snapshot.players) {
+      const visual = player.id === this.userId
+        ? this.player
+        : this.visualPlayer(player.id, player.character);
+      this.syncCompetitiveBuild(
+        visual,
+        player.id,
+        player.weapons,
+        player.buildRevision,
+        player.id === this.userId ? snapshot.war?.passives : undefined,
+      );
       const previous = oldHealth.get(player.id);
       if (previous !== undefined && player.hp < previous) {
         const visual = this.visualPlayer(player.id, player.character);
@@ -266,6 +295,31 @@ export class CompetitiveRemoteGame extends BrowserGame {
     return player;
   }
 
+  private syncCompetitiveBuild(
+    player: Player,
+    id: string,
+    build: ArenaSnapshot["players"][number]["weapons"],
+    revision: number,
+    passives?: Record<string, number>,
+  ) {
+    if (this.buildRevisions.get(id) === revision) return;
+    if (passives) {
+      player.passives = { ...passives };
+      player.recalculate();
+    }
+    player.weapons = build.map((config) => {
+      const weapon = new Weapon(config.id);
+      weapon.level = config.level;
+      weapon.evolved = config.evolved;
+      weapon.path = config.path;
+      weapon.pathLevel = config.pathLevel;
+      weapon.ownerId = id;
+      weapon.ruleset = "PVP";
+      return weapon;
+    });
+    this.buildRevisions.set(id, revision);
+  }
+
   private visualPlayer(id: string, character: string) {
     let player = this.visualPlayers.get(id);
     if (!player) {
@@ -317,7 +371,7 @@ export class CompetitiveRemoteGame extends BrowserGame {
             moveY: move.y,
             aimX: this.face.x,
             aimY: this.face.y,
-            ability: !focused && this.input.keys.has("Space") ? "dash" : "none",
+            ability: !focused && own.hp > 0 && (this.input.keys.has("Space") || this.virtualDash) ? "dash" : "none",
             seenTick: snapshot.tick,
           };
           this.pending.push(input);

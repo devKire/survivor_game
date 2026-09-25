@@ -1,5 +1,6 @@
 /** Competitive tuning; PvE values and progression remain in the existing catalog. */
 export const PVP_RULES = {
+  warGrowthCap: 1.4,
   healing: 0.5,
   waterSpeed: 0.88,
   hazardInterval: 0.45,

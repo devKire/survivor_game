@@ -60,6 +60,7 @@ export function combatBody(
 /** Adapter to existing attacks/projectiles/areas; never runs PvE update, waves or drops. */
 export class CompetitiveCombat extends GameSimulation {
   targets = new Map<number, (amount: number) => void>();
+  private firingEnabled = true;
   constructor(
     readonly arena: PvpSimulation,
     readonly fighter: Fighter,
@@ -106,11 +107,20 @@ export class CompetitiveCombat extends GameSimulation {
     this.grid.rebuild(this.enemies);
     this.run.simTime = this.arena.time;
   }
-  advance(dt: number) {
-    for (const weapon of this.player.weapons) {
-      this.refresh(weapon);
-      weapon.update(this, dt);
+  advance(dt: number, canFire = true) {
+    if (canFire !== this.firingEnabled) {
+      // Do not let a cooldown that expired while dead/disconnected burst on return.
+      for (const weapon of this.player.weapons)
+        weapon.timer = Math.max(weapon.timer, 0.25);
+      this.firingEnabled = canFire;
     }
+    if (canFire) {
+      for (const weapon of this.player.weapons) {
+        this.refresh(weapon);
+        weapon.update(this, dt);
+      }
+    }
+    // In-flight projectiles, areas and effects remain authoritative after death.
     this.refresh();
     for (let i = this.bullets.items.length - 1; i >= 0; i--) {
       const b = this.bullets.items[i];

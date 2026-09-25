@@ -5,16 +5,22 @@ import WarControls from "./WarControls";
 import type { WarView, WarRole } from "../../game/content/war";
 import { RealtimeClient } from "../../game/network/client";
 import type { ClientMessage } from "../../game/network/protocol";
-import { competitiveAction, realtimeTicket } from "../../server/actions";
+import { accountAction, competitiveAction, pvpCustomizationAction, realtimeTicket } from "../../server/actions";
 import { PVP_LOADOUTS, type PvpCharacter } from "../../game/content/pvp";
+import { COSMETIC_TYPES, type Cosmetic } from "../../game/content/cosmetics";
 import type { ArenaSnapshot } from "../../game/core/pvp";
 import { CompetitiveRemoteGame } from "../../game/client/CompetitiveRemoteGame";
+import { VirtualJoystick } from "../../game/client/virtual-joystick";
 import { GameShell } from "../../game/client/OfflineGame";
 import { MAP_DEFINITIONS } from "../../game/content/catalog";
 import type { Vec } from "../../game/core/types";
 
 type ArenaMode = "DUEL_CASUAL" | "DUEL_RANKED" | "WAR_CASUAL" | "WAR_RANKED";
 type RosterMember = { id: string; name: string; team: number; isBot?: boolean };
+type PvpCosmeticData = {
+  profiles: Record<PvpCharacter, Record<string, string>>;
+  owned: Cosmetic[];
+};
 
 export default function ArenaClient({
   userId,
@@ -33,6 +39,7 @@ export default function ArenaClient({
   const [seconds, setSeconds] = useState(0);
   const [queueInfo, setQueueInfo] = useState({ found: 0, target: 10, filling: false });
   const [playing, setPlaying] = useState(false);
+  const [latestSnapshot, setLatestSnapshot] = useState<ArenaSnapshot | null>(null);
   const [mapName, setMapName] = useState("");
   const [roster, setRoster] = useState<RosterMember[]>([]);
   const [war, setWar] = useState<WarView | null>(null);
@@ -40,6 +47,10 @@ export default function ArenaClient({
   const [chatText, setChatText] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState("");
+  const [customizeOpen, setCustomizeOpen] = useState(false);
+  const [customizeCharacter, setCustomizeCharacter] = useState<PvpCharacter>("nara");
+  const [cosmeticData, setCosmeticData] = useState<PvpCosmeticData | null>(null);
+  const [customizeStatus, setCustomizeStatus] = useState("");
   const [hud, setHud] = useState({ time: 0, round: 1, score: "0 : 0", rtt: 0, correction: 0 });
   const client = useRef<RealtimeClient | null>(null);
   const game = useRef<CompetitiveRemoteGame | null>(null);
@@ -91,6 +102,7 @@ export default function ArenaClient({
         if (message.type === "ARENA_STARTED") {
           match.current = message.matchId;
           snapshot.current = null;
+          setLatestSnapshot(null);
           placement.current = null;
           setRoster(message.roster);
           setPlaying(true);
@@ -102,6 +114,7 @@ export default function ArenaClient({
         if (message.type === "ARENA_SNAPSHOT") {
           if (match.current && message.matchId !== match.current) return;
           snapshot.current = message.snapshot;
+          setLatestSnapshot(message.snapshot);
           game.current?.apply(message.snapshot);
           setMapName(MAP_DEFINITIONS[message.snapshot.mapId]?.name || message.snapshot.mapId);
           setWar(message.snapshot.ended ? null : message.snapshot.war || null);
@@ -124,6 +137,7 @@ export default function ArenaClient({
           setPlaying(false);
           setWar(null);
           snapshot.current = null;
+          setLatestSnapshot(null);
           placement.current = null;
           setError("");
         }
@@ -141,6 +155,25 @@ export default function ArenaClient({
   const startQueue = () => {
     setError("");
     send({ type: "ARENA_QUEUE", character, mode, role });
+  };
+  const loadPvpCosmetics = async () => {
+    const response = await pvpCustomizationAction();
+    if (response.ok && "data" in response) setCosmeticData(response.data as PvpCosmeticData);
+    else if (!response.ok) setCustomizeStatus(response.error);
+  };
+  const equipPvpCosmetic = async (slot: (typeof COSMETIC_TYPES)[number], id: string) => {
+    const response = await accountAction({
+      type: "pvp-cosmetic",
+      character: customizeCharacter,
+      slot,
+      id: id || null,
+    });
+    if (!response.ok) {
+      setCustomizeStatus(response.error);
+      return;
+    }
+    setCustomizeStatus("Aparência PvP atualizada.");
+    await loadPvpCosmetics();
   };
   const repair = () => {
     const current = snapshot.current;
@@ -177,6 +210,42 @@ export default function ArenaClient({
           {mode === "WAR_RANKED" && (
             <p>Ranked 5v5 prioriza dez humanos e não usa bot-fill.</p>
           )}
+          <button disabled={waiting} onClick={() => {
+            const open = !customizeOpen;
+            setCustomizeOpen(open);
+            setCustomizeStatus("");
+            if (open && !cosmeticData) void loadPvpCosmetics();
+          }}>PERSONALIZAR PvP</button>
+          {customizeOpen && (
+            <section className="pvp-customize" aria-label="Personalização PvP">
+              <h2>PERSONALIZAÇÃO PvP · aparência sem vantagem de combate</h2>
+              <div className="actions">
+                {(Object.keys(PVP_LOADOUTS) as PvpCharacter[]).map((id) => (
+                  <button key={id} aria-pressed={customizeCharacter === id} onClick={() => setCustomizeCharacter(id)}>
+                    {PVP_LOADOUTS[id].name}
+                  </button>
+                ))}
+              </div>
+              <div className="pvp-cosmetic-preview" style={{ color: PVP_LOADOUTS[customizeCharacter].color, borderColor: PVP_LOADOUTS[customizeCharacter].color }}>
+                <strong>{PVP_LOADOUTS[customizeCharacter].icon} {PVP_LOADOUTS[customizeCharacter].name}</strong>
+                <span>{cosmeticData?.owned.find((item) => item.id === cosmeticData.profiles[customizeCharacter]?.CHARACTER_SKIN)?.glyph || "◇"}</span>
+                <small>Loadout competitivo fixo · cosméticos somente visuais</small>
+              </div>
+              {!cosmeticData ? <p>Carregando itens adquiridos…</p> : COSMETIC_TYPES.map((slot) => {
+                const options = cosmeticData.owned.filter((item) => item.type === slot && (!item.character || item.character === customizeCharacter));
+                return (
+                  <label className="pvp-cosmetic-slot" key={slot}>
+                    {slot.replaceAll("_", " ")}
+                    <select value={cosmeticData.profiles[customizeCharacter]?.[slot] || ""} onChange={(event) => void equipPvpCosmetic(slot, event.target.value)}>
+                      <option value="">Padrão</option>
+                      {options.map((item) => <option key={item.id} value={item.id}>{item.name} · {item.rarity}</option>)}
+                    </select>
+                  </label>
+                );
+              })}
+              <p role="status">{customizeStatus}</p>
+            </section>
+          )}
           <div className="actions">
             <label>
               Modo{" "}
@@ -212,6 +281,7 @@ export default function ArenaClient({
       ) : (
         <ArenaGameplay
           userId={userId}
+          snapshot={latestSnapshot}
           snapshotRef={snapshot}
           gameRef={game}
           placement={currentPlacement}
@@ -255,6 +325,7 @@ export default function ArenaClient({
 
 function ArenaGameplay({
   userId,
+  snapshot,
   snapshotRef,
   gameRef,
   placement,
@@ -273,6 +344,7 @@ function ArenaGameplay({
   setChatText,
 }: {
   userId: string;
+  snapshot: ArenaSnapshot | null;
   snapshotRef: React.RefObject<ArenaSnapshot | null>;
   gameRef: React.RefObject<CompetitiveRemoteGame | null>;
   placement: () => "TORRE" | "BARRICADA" | null;
@@ -291,6 +363,10 @@ function ArenaGameplay({
   setChatText: (value: string) => void;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
+  const [scoreboardOpen, setScoreboardOpen] = useState(false);
+  const currentSnapshot = snapshot;
+  const own = snapshot?.players.find((player) => player.id === userId);
+  const dead = (own?.hp || 0) <= 0;
   useEffect(() => {
     if (!canvas.current) return;
     const instance = new CompetitiveRemoteGame(
@@ -308,7 +384,6 @@ function ArenaGameplay({
       instance.dispose();
     };
   }, [userId, send, placement, placeAt, cancelPlacement, gameRef, snapshotRef]);
-
   return (
     <>
       <GameShell canvasRef={canvas} variant="competitive" />
@@ -321,6 +396,27 @@ function ArenaGameplay({
           RODADA {hud.round} · {hud.score} · {hud.time}s
           <small>{hud.rtt} ms · reconciliação {hud.correction}px</small>
         </div>
+        {war && (
+          <div className="arena-scoreboard">
+            <button aria-expanded={scoreboardOpen} onClick={() => setScoreboardOpen((open) => !open)}>PLACAR · TAB</button>
+            {scoreboardOpen && currentSnapshot && (
+              <div className="arena-scoreboard-panel" role="region" aria-label="Placar da Guerra">
+                {[0, 1].map((team) => (
+                  <section key={team}>
+                    <strong>{team === 0 ? "TIME AZUL" : "TIME VERMELHO"}</strong>
+                    {currentSnapshot.players.filter((player) => player.team === team).map((player) => (
+                      <div key={player.id} className="arena-scoreboard-row">
+                        <span>{player.name}{player.isBot ? " [BOT]" : ""}</span>
+                        <span>Nv.{player.level} · {player.kills}/{player.deaths}/{player.assists}</span>
+                        <small>{player.warItems.join(" · ") || "sem itens"}</small>
+                      </div>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         <div className="arena-roster">
           {[0, 1].map((team) => (
             <div key={team}>
@@ -339,6 +435,7 @@ function ArenaGameplay({
             repair={repair}
           />
         )}
+        <ArenaTouchControls key={dead ? "dead" : "alive"} dead={dead} gameRef={gameRef} />
         <div className="arena-match-actions">
           <button onClick={onForfeit}>Desistir da partida</button>
           <details>
@@ -360,5 +457,74 @@ function ArenaGameplay({
         </div>
       </div>
     </>
+  );
+}
+
+function ArenaTouchControls({
+  dead,
+  gameRef,
+}: {
+  dead: boolean;
+  gameRef: React.RefObject<CompetitiveRemoteGame | null>;
+}) {
+  const joystickInput = useRef(new VirtualJoystick());
+  const [joystick, setJoystick] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (!dead) return;
+    joystickInput.current.clear();
+    gameRef.current?.clearVirtualMove();
+    gameRef.current?.setVirtualDash(false);
+  }, [dead, gameRef]);
+
+  const updateJoystick = (event: React.PointerEvent<HTMLDivElement>, begin = false) => {
+    if (dead || (!begin && joystickInput.current.pointerId !== event.pointerId)) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const axis = begin
+      ? joystickInput.current.begin(event.pointerId, event.clientX, event.clientY, rect.left + rect.width / 2, rect.top + rect.height / 2, rect.width * 0.36)
+      : joystickInput.current.move(event.pointerId, event.clientX, event.clientY, rect.left + rect.width / 2, rect.top + rect.height / 2, rect.width * 0.36);
+    if (!axis) return;
+    setJoystick(axis);
+    gameRef.current?.setVirtualMove(axis.x, axis.y);
+  };
+  const releaseJoystick = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!joystickInput.current.release(event.pointerId)) return;
+    setJoystick({ x: 0, y: 0 });
+    gameRef.current?.clearVirtualMove();
+  };
+
+  return (
+    <div className="arena-virtual-controls" aria-label="Controles de toque">
+      <div
+        className={`arena-joystick ${dead ? "is-disabled" : ""}`}
+        role="application"
+        aria-label={dead ? "Analógico desativado durante o renascimento" : "Analógico de movimento"}
+        onPointerDown={(event) => {
+          if (dead || joystickInput.current.pointerId !== null) return;
+          event.preventDefault();
+          updateJoystick(event, true);
+          if (joystickInput.current.pointerId === event.pointerId) event.currentTarget.setPointerCapture(event.pointerId);
+        }}
+        onPointerMove={updateJoystick}
+        onPointerUp={releaseJoystick}
+        onPointerCancel={releaseJoystick}
+        onLostPointerCapture={releaseJoystick}
+      >
+        <span className="arena-joystick-knob" style={{ transform: `translate(${joystick.x * 34}px, ${joystick.y * 34}px)` }} />
+      </div>
+      <button
+        className="arena-dash-control"
+        aria-label="Deslocamento"
+        disabled={dead}
+        onPointerDown={(event) => {
+          event.preventDefault();
+          event.currentTarget.setPointerCapture(event.pointerId);
+          gameRef.current?.setVirtualDash(true);
+        }}
+        onPointerUp={() => gameRef.current?.setVirtualDash(false)}
+        onPointerCancel={() => gameRef.current?.setVirtualDash(false)}
+        onLostPointerCapture={() => gameRef.current?.setVirtualDash(false)}
+      >DESLOCAR</button>
+    </div>
   );
 }

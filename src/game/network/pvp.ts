@@ -47,9 +47,22 @@ export const arenaCommands = [
   z
     .object({
       type: z.literal("ARENA_UPGRADE"),
-      kind: z.enum(["damage", "health", "speed", "troops"]),
+      kind: z.literal("troops"),
     })
     .strict(),
+  z.object({
+    type: z.literal("ARENA_WAR_CHOOSE_UPGRADE"),
+    decision: z.number().int().min(1).max(10000),
+    choice: z.string().min(1).max(100),
+  }).strict(),
+  z.object({
+    type: z.literal("ARENA_WAR_BUY_ITEM"),
+    itemId: z.string().min(1).max(80),
+  }).strict(),
+  z.object({
+    type: z.literal("ARENA_WAR_SELL_ITEM"),
+    slot: z.number().int().min(0).max(5),
+  }).strict(),
   z
     .object({
       type: z.literal("ARENA_CHAT_SEND"),
@@ -88,7 +101,33 @@ const war = z.object({
   }),
   cores: z.array(z.number()),
   energy: z.number(),
+  warGold: z.number(),
   role: z.enum(["SOLDADO", "CONSTRUTOR", "COMANDANTE"]),
+  level: z.number(),
+  xp: z.number(),
+  xpToNextLevel: z.number(),
+  pendingUpgrades: z.number(),
+  decision: z.number(),
+  choices: z.array(z.object({
+    id: z.string(),
+    kind: z.enum(["weapon", "passive", "path"]),
+    name: z.string(),
+    description: z.string(),
+    weaponId: z.string().optional(),
+    currentLevel: z.number().optional(),
+    nextLevel: z.number().optional(),
+  })),
+  weapons: z.array(z.object({
+    id: z.string(), level: z.number(), evolved: z.boolean(),
+    path: z.string().nullable(), pathLevel: z.number(),
+  })),
+  passives: z.record(z.string(), z.number()),
+  items: z.array(z.object({ id: z.string() })),
+  shopAvailable: z.boolean(),
+  respawnIn: z.number(),
+  kills: z.number(),
+  deaths: z.number(),
+  assists: z.number(),
   minions: z.array(
     z.object({
       id: z.number(),
@@ -194,6 +233,19 @@ export const arenaSnapshotSchema = z.object({
       name: z.string(),
       team: z.number(),
       character: z.string(),
+      buildRevision: z.number(),
+      level: z.number(),
+      kills: z.number(),
+      deaths: z.number(),
+      assists: z.number(),
+      warItems: z.array(z.string()),
+      weapons: z.array(z.object({
+        id: z.string(),
+        level: z.number(),
+        evolved: z.boolean(),
+        path: z.string().nullable(),
+        pathLevel: z.number(),
+      })),
       x: z.number(),
       y: z.number(),
       dx: z.number(),

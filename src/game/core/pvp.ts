@@ -4,6 +4,7 @@ import { predictMove } from "../network/movement";
 import {
   PVP,
   PVP_CHARACTER_BUILDS,
+  PVP_CHARACTER_PROFILES,
   type PvpCharacter,
   type PvpAbility,
 } from "../content/pvp";
@@ -18,6 +19,7 @@ export interface PvpInput {
 }
 export interface Fighter {
   id: string;
+  buildRevision: number;
   name: string;
   team: number;
   player: Player;
@@ -36,6 +38,8 @@ export interface Fighter {
   respawnAt: number;
   kills: number;
   deaths: number;
+  assists: number;
+  warItems: string[];
   damage: number;
   casts: number;
   hits: number;
@@ -80,6 +84,23 @@ import type { Enemy, Vec } from "./types";
 export const PVP_MAP_POOL = Object.keys(MAP_DEFINITIONS).filter(
   (id) => MAP_DEFINITIONS[id].profiles && MAP_DEFINITIONS[id].unlocked,
 );
+
+/** Reapplies native character/build identity, then restores competitive normalization. */
+export function recalculateCompetitivePlayer(
+  player: Player,
+  preserveHealthRatio = true,
+  growthCap = Number.POSITIVE_INFINITY,
+) {
+  const healthRatio = preserveHealthRatio
+    ? player.health / Math.max(1, player.maxHealth)
+    : 1;
+  player.recalculate();
+  player.maxHealth = Math.round(PVP.hp * (player.maxHealth / 110));
+  player.speed = PVP.speed * (player.speed / 195);
+  player.stats.growth = Math.min(growthCap, player.stats.growth);
+  player.health = clamp(healthRatio * player.maxHealth, 0, player.maxHealth);
+}
+
 export class PvpSimulation {
   readonly fighters = new Map<string, Fighter>();
   readonly forfeited = new Set<string>();
@@ -113,17 +134,15 @@ export class PvpSimulation {
     let index = 0;
     for (const s of seeds) {
       const player = new Player(s.character, {}, "PVP");
-      const build = PVP_CHARACTER_BUILDS[s.character];
+      const build = modeProfile === "pvp5v5"
+        ? { weapons: [{ id: PVP_CHARACTER_PROFILES[s.character].war.starterWeapon, level: 1 }], passives: {} }
+        : PVP_CHARACTER_PROFILES[s.character].duel;
       player.passives = { ...build.passives };
-      player.recalculate();
-      const nativeHealth = player.maxHealth;
-      const nativeSpeed = player.speed;
+      recalculateCompetitivePlayer(player, false, modeProfile === "pvp5v5" ? PVP_RULES.warGrowthCap : undefined);
       player.cosmetics = s.cosmetics;
-      player.maxHealth = Math.round(PVP.hp * (nativeHealth / 110));
-      player.health = player.maxHealth;
-      player.speed = PVP.speed * (nativeSpeed / 195);
       const f: Fighter = {
         id: s.id,
+        buildRevision: 0,
         name: s.name,
         team: s.team,
         player,
@@ -150,6 +169,8 @@ export class PvpSimulation {
         respawnAt: 0,
         kills: 0,
         deaths: 0,
+        assists: 0,
+        warItems: [],
         damage: 0,
         casts: 0,
         hits: 0,
@@ -212,6 +233,11 @@ export class PvpSimulation {
     return this.fighters.size - this.humanCount;
   }
   loadout(f: Fighter) {
+    if (this.modeProfile === "pvp5v5")
+      return {
+        weapons: [{ id: PVP_CHARACTER_PROFILES[f.player.character as PvpCharacter].war.starterWeapon, level: 1 }],
+        passives: {},
+      };
     return PVP_CHARACTER_BUILDS[f.player.character as PvpCharacter];
   }
   log(type: string, actor?: string, target?: string, value?: number) {
@@ -486,7 +512,15 @@ export class PvpSimulation {
       }
       this.cast(f);
     }
-    for (const c of this.combat.values()) c.advance(dt);
+    for (const [id, c] of this.combat) {
+      const fighter = this.fighters.get(id);
+      c.advance(
+        dt,
+        !!fighter &&
+          fighter.player.health > 0 &&
+          (fighter.connected || fighter.botControlled),
+      );
+    }
     this.checkObjective();
   }
   checkObjective() {
@@ -546,6 +580,19 @@ export class PvpSimulation {
         name: f.name,
         team: f.team,
         character: f.player.character,
+        buildRevision: f.buildRevision,
+        level: f.player.level,
+        kills: f.kills,
+        deaths: f.deaths,
+        assists: f.assists,
+        warItems: f.warItems,
+        weapons: (this.combat.get(f.id)?.player.weapons || []).map((weapon) => ({
+          id: weapon.id,
+          level: weapon.level,
+          evolved: weapon.evolved,
+          path: weapon.path,
+          pathLevel: weapon.pathLevel,
+        })),
         x: f.player.x,
         y: f.player.y,
         dx: f.player.dx,

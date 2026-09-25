@@ -2,6 +2,7 @@ import { WarSimulation } from "../game/core/war";
 import { currentSeason, getRating, settleRating } from "../server/ranked";
 import { selectMatch, type QueueEntry } from "../game/core/matchmaking";
 import { MATCHMAKING_CONFIG } from "../game/content/matchmaking";
+import { resolvePvpCosmetics } from "../game/content/pvp";
 import { randomUUID, randomInt } from "node:crypto";
 import { performance } from "node:perf_hooks";
 import { PvpSimulation, PVP_MAP_POOL } from "../game/core/pvp";
@@ -103,6 +104,21 @@ export class ArenaService {
         game.forfeited.has(userId)
       )
         throw new UserError("Você não controla este slot.");
+      if (v.type === "ARENA_WAR_CHOOSE_UPGRADE") {
+        if (!game.chooseUpgrade(userId, v.decision, v.choice))
+          throw new UserError("Escolha inválida ou decisão expirada.");
+        return;
+      }
+      if (v.type === "ARENA_WAR_BUY_ITEM") {
+        if (!game.buyItem(userId, v.itemId))
+          throw new UserError("Compra indisponível: confira WarGold, espaço e acesso à base.");
+        return;
+      }
+      if (v.type === "ARENA_WAR_SELL_ITEM") {
+        if (!game.sellItem(userId, v.slot))
+          throw new UserError("Venda indisponível fora da base ou slot inválido.");
+        return;
+      }
       const ok =
         v.type === "ARENA_BUILD"
           ? game.build(userId, v.kind, v.x, v.y)
@@ -112,7 +128,9 @@ export class ArenaService {
               ? game.order(userId, v.lane, v.order)
               : v.type === "ARENA_RECRUIT"
                 ? game.recruit(userId, v.lane, v.kind, v.count, v.formation)
-                : game.upgrade(userId, v.kind);
+                : v.type === "ARENA_UPGRADE"
+                  ? game.upgrade(userId, v.kind)
+                  : false;
       if (!ok)
         throw new UserError(
           "Ação indisponível: confira Energia, classe, alcance, limites e recarga.",
@@ -130,6 +148,10 @@ export class ArenaService {
     if (membership?.team.status === "RUNNING")
       throw new UserError("Conclua a expedição antes de entrar na Arena.");
     const save = migrateSave((await progress(userId)).data);
+    const ownedCosmetics = new Set(
+      (await db().userCosmetic.findMany({ where: { userId }, select: { cosmeticId: true } })).map((row) => row.cosmeticId),
+    );
+    const pvpCosmetics = resolvePvpCosmetics(save, v.character, ownedCosmetics);
     const ranked = v.mode.endsWith("RANKED");
     const rating = ranked ? await getRating(userId, v.mode) : null;
     const casualSeason = ranked ? null : await currentSeason();
@@ -159,7 +181,7 @@ export class ArenaService {
       name,
       character: v.character,
       role: v.role,
-      cosmetics: save.cosmetics,
+      cosmetics: pvpCosmetics,
       joined: this.queue.get(userId)?.joined || Date.now(),
       partyId: v.mode.startsWith("WAR") ? membership?.teamId : undefined,
       partyMembers: v.mode.startsWith("WAR")

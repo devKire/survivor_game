@@ -284,6 +284,7 @@ class Sound {
 
 class Input {
   keys = new Set<string>();
+  private virtualMove = { x: 0, y: 0 };
   touch: T.InputPort["touch"] = {
     active: false,
     id: null,
@@ -423,13 +424,29 @@ class Input {
   clear() {
     this.keys.clear();
     this.touch.active = false;
+    this.clearVirtualMove();
+  }
+
+  setVirtualMove(x: number, y: number) {
+    const magnitude = Math.hypot(x, y);
+    if (magnitude <= 0.12) {
+      this.virtualMove.x = this.virtualMove.y = 0;
+      return;
+    }
+    const scale = Math.min(1, magnitude);
+    this.virtualMove.x = (x / magnitude) * scale;
+    this.virtualMove.y = (y / magnitude) * scale;
+  }
+
+  clearVirtualMove() {
+    this.virtualMove.x = 0;
+    this.virtualMove.y = 0;
   }
 
   vector() {
-    if (this.touch.active) {
+    const virtualActive = this.virtualMove.x !== 0 || this.virtualMove.y !== 0;
+    if (this.touch.active && !virtualActive)
       return { x: this.touch.dx, y: this.touch.dy };
-    }
-
     const k = this.keys;
 
     let x =
@@ -439,6 +456,13 @@ class Input {
     let y =
       Number(k.has("KeyS") || k.has("ArrowDown")) -
       Number(k.has("KeyW") || k.has("ArrowUp"));
+
+    if (this.touch.active && virtualActive) {
+      x += this.touch.dx;
+      y += this.touch.dy;
+    }
+    x += this.virtualMove.x;
+    y += this.virtualMove.y;
 
     const d = Math.hypot(x, y);
 

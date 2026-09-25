@@ -1,5 +1,5 @@
 import "server-only";
-import { COSMETICS } from "../game/content/cosmetics";
+import { COSMETICS, type CosmeticType } from "../game/content/cosmetics";
 import { db } from "./db";
 import { progress } from "./progress";
 import {
@@ -10,6 +10,7 @@ import {
 } from "./economy";
 import type { Currency } from "../game/core/economy";
 import { UserError } from "./security";
+import { migrateSave } from "../game/core/save";
 export async function collection(userId: string) {
   const [row, owned] = await Promise.all([
     progress(userId),
@@ -68,4 +69,32 @@ export async function equipCosmetic(
       delete save.cosmetics[cosmetic.type];
     await persistSave(tx, userId, save);
   });
+}
+
+export async function equipPvpCosmetic(
+  userId: string,
+  character: "nara" | "orin" | "ivo" | "sena",
+  slot: CosmeticType,
+  id: string | null,
+) {
+  const cosmetic = id ? COSMETICS[id] : null;
+  if (id && (!cosmetic || cosmetic.type !== slot || (cosmetic.character && cosmetic.character !== character)))
+    throw new UserError("Cosmético incompatível com este personagem ou espaço.");
+  return economyTransaction(async (tx) => {
+    const { save } = await lockProgress(tx, userId);
+    if (cosmetic && !(await tx.userCosmetic.findUnique({
+      where: { userId_cosmeticId: { userId, cosmeticId: cosmetic.id } },
+    }))) throw new UserError("Cosmético não pertence à conta.");
+    if (cosmetic) save.pvpCosmetics[character][slot] = cosmetic.id;
+    else delete save.pvpCosmetics[character][slot];
+    await persistSave(tx, userId, save);
+  });
+}
+
+export async function pvpCosmeticData(userId: string) {
+  const result = await collection(userId);
+  return {
+    profiles: migrateSave(result.progress.data).pvpCosmetics,
+    owned: result.owned.map((id) => COSMETICS[id]).filter(Boolean),
+  };
 }

@@ -360,6 +360,7 @@ export interface SaveData {
   gems: number;
   legacyGoldConverted?: number;
   cosmetics: Record<string,string>;
+  pvpCosmetics: Record<"nara" | "orin" | "ivo" | "sena", Record<string, string>>;
   upgrades: Record<string, number>;
   unlocked: string[];
   achievements: string[];

@@ -48,6 +48,7 @@ V22. Carteira online em UserProgress; toda mutação financeira com lock, ledger
 V23. Recompensa por referência e compra por rank esperado pagam/debitam uma única vez; saldo inteiro 0..1e9.
 V24. XP não é moeda; drops comuns concedem Gemas; Ouro só fontes raras; meta custa Gemas.
 V25. economyVersion migra ouro legado 1:1 para Gemas uma vez; níveis/save/archive preservados; cliente não concede mérito online.
+V26. Fighter morto/desconectado não cria novos ataques nem consome cooldown ofensivo; projéteis/áreas/efeitos existentes continuam atualizando e expiram normalmente; respawn não produz burst.
 
 
 ## §T
@@ -141,3 +142,4 @@ Novo path econômico/competitivo autorizado em 23/09/2026, incremental; ver docs
 | B27 | 2026-09-23 | Projétil consumido por minion poderia sobreviver até filtro do tick seguinte | Remover após colisão da Guerra e ignorar life<=0 no combate compartilhado; V5,V6 bastam |
 
 | B28 | 2026-09-24 | Teste de auto-ataque presumiu dano fixo apesar de críticos aleatórios | Separar assertivas de disparo/cooldown do tuning e neutralizar crítico quando o fixture exige dano exato; sem novo invariant de produto |
+| B29 | 2026-09-24 | `PvpSimulation.step` ignorava input do morto, mas `CompetitiveCombat.advance` ainda chamava `Weapon.update` em todos os jogadores | Separar permissão de disparo da atualização de ataques já lançados; congelar cooldown no estado morto e iniciar respawn sem burst; V26 |
