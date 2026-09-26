@@ -1,5 +1,10 @@
+import { WAR } from "../content/war";
 import { z } from "zod";
 export const arenaCommands = [
+  z.object({type:z.literal("ARENA_SELECT_CHARACTER"),character:z.enum(["nara","orin","ivo","sena"])}).strict(),
+  z.object({type:z.literal("ARENA_SELECT_ROLE"),role:z.enum(["SOLDADO","CONSTRUTOR","COMANDANTE"])}).strict(),
+  z.object({type:z.literal("ARENA_SELECT_COSMETIC"),slot:z.string().max(40),id:z.string().max(80).nullable()}).strict(),
+  z.object({type:z.literal("ARENA_LOCK_SELECTION")}).strict(),
   z
     .object({
       type: z.literal("ARENA_QUEUE"),
@@ -12,8 +17,8 @@ export const arenaCommands = [
     .object({
       type: z.literal("ARENA_BUILD"),
       kind: z.enum(["TORRE", "BARRICADA"]),
-      x: z.number().min(0).max(2600),
-      y: z.number().min(0).max(1400),
+      x: z.number().min(0).max(WAR.width),
+      y: z.number().min(0).max(WAR.height),
     })
     .strict(),
   z
@@ -94,6 +99,7 @@ export const arenaCommands = [
 export const arenaCommand = z.discriminatedUnion("type", arenaCommands);
 export type ArenaCommand = z.infer<typeof arenaCommand>;
 const war = z.object({
+  neutrals: z.array(z.object({id:z.number(),campId:z.string(),type:z.string(),name:z.string(),x:z.number(),y:z.number(),hp:z.number(),maxHp:z.number(),wind:z.number(),charge:z.number(),aimX:z.number(),aimY:z.number(),bossPhase:z.number()})),
   objective: z.object({
     owner: z.number().nullable(),
     capture: z.number(),
@@ -233,6 +239,8 @@ export const arenaSnapshotSchema = z.object({
       name: z.string(),
       team: z.number(),
       character: z.string(),
+      role: z.enum(["SOLDADO","CONSTRUTOR","COMANDANTE"]).nullable(),
+      respawnIn: z.number(),
       buildRevision: z.number(),
       level: z.number(),
       kills: z.number(),
@@ -277,6 +285,10 @@ export const arenaSnapshotSchema = z.object({
   ),
 });
 export const arenaMessages = [
+  z.object({type:z.literal("ARENA_LOBBY_STATE"), lobby:z.object({
+    matchId:z.string(),mode:z.string(),remaining:z.number(),countdown:z.boolean(),
+    seats:z.array(z.object({id:z.string(),name:z.string(),team:z.number(),character:z.enum(["nara","orin","ivo","sena"]),cosmetics:z.record(z.string(),z.string()),role:z.enum(["SOLDADO","CONSTRUTOR","COMANDANTE"]).optional(),isBot:z.boolean().optional(),locked:z.boolean()})),
+  })}),
   z.object({
     type: z.literal("ARENA_CHAT"),
     id: z.string(),

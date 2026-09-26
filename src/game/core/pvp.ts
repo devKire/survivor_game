@@ -580,6 +580,8 @@ export class PvpSimulation {
         name: f.name,
         team: f.team,
         character: f.player.character,
+        role: this.modeProfile === "pvp5v5" ? "SOLDADO" as import("../content/war").WarRole : null,
+        respawnIn: Math.max(0,f.respawnAt-this.time),
         buildRevision: f.buildRevision,
         level: f.player.level,
         kills: f.kills,

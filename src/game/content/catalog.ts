@@ -1,3 +1,4 @@
+import { WAR } from "./war";
 import { OBELISK_NODES } from "./obelisk";
 import type {
   AchievementContext,
@@ -1236,7 +1237,7 @@ export const SYNERGY_DEFINITIONS: Record<
 function competitiveProfiles(structures: string[]) {
   return {
     pvp1v1: { width: 1000, height: 600, spawnX: 120, lanes: [300], corridor: 65, density: 0.75, structures, objective: false },
-    pvp5v5: { width: 2600, height: 1400, spawnX: 230, lanes: [250, 700, 1150], corridor: 85, density: 1, structures, objective: true },
+    pvp5v5: { width: WAR.width, height: WAR.height, spawnX: WAR.spawnX, lanes: [...WAR.lanes], corridor: 85, density: 1, structures, objective: true },
   };
 }
 

@@ -9,7 +9,20 @@ const mocks = vi.hoisted(() => ({
   updateParticipant: vi.fn(),
   rate: vi.fn(),
 }));
-vi.mock("../src/server/db", () => ({ db: () => ({}) }));
+vi.mock("../src/server/db", () => ({
+  db: () => ({
+    userCosmetic: {
+      findMany: async () => [{ cosmeticId: "character_skin_0" }],
+    },
+  }),
+}));
+vi.mock("../src/server/progress", () => ({
+  progress: async () => ({ data: {} }),
+}));
+vi.mock("../src/server/security", () => ({
+  UserError: class extends Error {},
+  limit: async () => {},
+}));
 vi.mock("../src/server/ranked", () => ({
   currentSeason: vi.fn(),
   getRating: vi.fn(),
@@ -66,10 +79,65 @@ beforeEach(() => {
   mocks.lock.mockImplementation(async () => ({ save: freshSave() }));
 });
 describe("V27 atomic queue and bot settlement", () => {
+  it("validates ownership in lobby, broadcasts selection and rejects edits after lock", async () => {
+    const s = service();
+    await s.pair();
+    await s.handle("u0", "Human", {
+      type: "ARENA_SELECT_CHARACTER",
+      character: "orin",
+    });
+    await expect(
+      s.handle("u0", "Human", {
+        type: "ARENA_SELECT_COSMETIC",
+        slot: "CHARACTER_SKIN",
+        id: "character_skin_4",
+      }),
+    ).rejects.toThrow();
+    await s.handle("u0", "Human", {
+      type: "ARENA_SELECT_COSMETIC",
+      slot: "CHARACTER_SKIN",
+      id: "character_skin_0",
+    });
+    const seat = s.lobbies
+      .get("match")!
+      .lobby.seats.find((p) => p.id === "u0")!;
+    expect(seat.character).toBe("orin");
+    expect(seat.cosmetics.CHARACTER_SKIN).toBe("character_skin_0");
+    expect(s.send).toHaveBeenCalledWith(
+      "u1",
+      expect.objectContaining({ type: "ARENA_LOBBY_STATE" }),
+    );
+    await s.handle("u0", "Human", { type: "ARENA_LOCK_SELECTION" });
+    await expect(
+      s.handle("u0", "Human", {
+        type: "ARENA_SELECT_CHARACTER",
+        character: "ivo",
+      }),
+    ).rejects.toThrow();
+    s.disconnect("u0");
+    s.reconnect("u0");
+    expect(s.send).toHaveBeenLastCalledWith(
+      "u0",
+      expect.objectContaining({ type: "ARENA_LOBBY_STATE" }),
+    );
+  });
   it("concurrent ticks create one match with two human seats and ten playable entities", async () => {
     const s = service();
     await Promise.all([s.pair(), s.pair(), s.pair()]);
     expect(mocks.create).toHaveBeenCalledTimes(1);
+    expect(s.matches.size).toBe(0);
+    expect(s.lobbies.size).toBe(1);
+    const lobby = s.lobbies.get("match")!.lobby;
+    expect(lobby.seats).toHaveLength(10);
+    expect(
+      lobby.seats.filter((seat) => seat.isBot).every((seat) => seat.locked),
+    ).toBe(true);
+    lobby.lock("u0");
+    lobby.lock("u1");
+    s.update();
+    expect(s.matches.size).toBe(0);
+    lobby.countdownAt = Date.now() - 1;
+    s.update();
     expect(s.matches.size).toBe(1);
     expect(s.active.size).toBe(2);
     expect(s.queue.size).toBe(0);
@@ -118,6 +186,7 @@ describe("V27 atomic queue and bot settlement", () => {
     await pending;
     expect(s.active.size).toBe(0);
     expect(s.matches.size).toBe(0);
+    expect(s.lobbies.size).toBe(0);
     expect(s.reserved.size).toBe(0);
     expect(mocks.update).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -125,5 +194,25 @@ describe("V27 atomic queue and bot settlement", () => {
       }),
     );
     expect(mocks.removeSeats).toHaveBeenCalledTimes(1);
+  });
+  it("cancels a formed lobby for every human before the match starts", async () => {
+    const s = service();
+    await s.pair();
+    await s.handle("u0", "Human", { type: "ARENA_CANCEL" });
+    expect(s.lobbies.size).toBe(0);
+    expect(s.active.size).toBe(0);
+    expect(mocks.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ status: "INTERRUPTED" }),
+      }),
+    );
+    expect(mocks.removeSeats).toHaveBeenCalledTimes(1);
+    expect(s.send).toHaveBeenCalledWith(
+      "u1",
+      expect.objectContaining({
+        type: "ARENA_RESULT",
+        reason: "lobby-cancelled",
+      }),
+    );
   });
 });

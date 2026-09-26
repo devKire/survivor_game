@@ -70,11 +70,13 @@ export const COSMETICS: Record<string, Cosmetic> = Object.fromEntries(
 ) as Record<string, Cosmetic>;
 export const SHOP_CATEGORIES = [
   "DESTAQUES",
+  "PARA VOCÊ",
   "SKINS",
   "SKINS DE ARMAS",
   "EFEITOS",
   "CONSUMÍVEIS PVE",
   "PACOTES",
+  "MOEDAS",
   "GACHA",
 ] as const;
 export function cosmeticVisual(loadout: Record<string, string>) {

@@ -20,9 +20,11 @@ import { updateWarBots } from "./war-bots";
 import { Pool } from "./collections";
 import { predictMove } from "../network/movement";
 import { PASSIVE_DEFINITIONS, STRUCTURE_DEFINITIONS, WEAPON_DEFINITIONS, WEAPON_PATHS } from "../content/catalog";
-import { clamp, hashString } from "./math";
+import { clamp, hashString, segmentDistance2 } from "./math";
+import type { Vec } from "./types";
 import { Weapon } from "./entities";
 import { recalculateCompetitivePlayer } from "./pvp";
+import { WarNeutrals } from "./war-neutrals";
 export type WarBotState =
   | "DEAD"
   | "RETURN_BASE"
@@ -47,6 +49,7 @@ export interface WarBotBrain {
   nextLaneAt: number;
 }
 export class WarSimulation extends PvpSimulation {
+  neutrals!: WarNeutrals;
   readonly units = new Pool<WarMinion>(
     () => ({
       id: 0,
@@ -83,6 +86,7 @@ export class WarSimulation extends PvpSimulation {
   structures: WarStructure[] = [];
   nextUnit = 1;
   waveAt = 3;
+  waveNumber = 0;
   left = new Set<string>();
   constructor(seeds: FighterSeed[], mapId = "ruins", seed = "competitive") {
     super(seeds, mapId, seed, "pvp5v5");
@@ -124,8 +128,8 @@ export class WarSimulation extends PvpSimulation {
         id: `core:${team}`,
         team,
         kind: "CORE",
-        x: team === 0 ? 130 : 2470,
-        y: 700,
+        x: WAR.basePositions[team].x,
+        y: WAR.center.y,
         r: 65,
         hp: WAR.coreHp,
         maxHp: WAR.coreHp,
@@ -136,7 +140,7 @@ export class WarSimulation extends PvpSimulation {
           id: `tower:${team}:${lane}`,
           team,
           kind: "TORRE",
-          x: team === 0 ? 600 : 2000,
+          x: WAR.towerPositions[team],
           y: WAR.lanes[lane],
           r: 30,
           hp: WAR.towerHp,
@@ -145,6 +149,7 @@ export class WarSimulation extends PvpSimulation {
         });
     }
     this.resetPositions();
+    this.neutrals = new WarNeutrals(this);
   }
   botNextDecision = new Map<string, number>();
   botBrains = new Map<string, WarBotBrain>();
@@ -185,6 +190,10 @@ export class WarSimulation extends PvpSimulation {
     this.log("reconnect", id);
     return true;
   }
+  override lineClear(from: Vec, to: Vec) {
+    const minX=Math.min(from.x,to.x),maxX=Math.max(from.x,to.x),minY=Math.min(from.y,to.y),maxY=Math.max(from.y,to.y);
+    return !this.world.nearby.some((s)=>!s.destroyed && STRUCTURE_DEFINITIONS[s.type]?.collidable && s.x+s.r+3>=minX && s.x-s.r-3<=maxX && s.y+s.r+3>=minY && s.y-s.r-3<=maxY && segmentDistance2(s.x,s.y,from.x,from.y,to.x,to.y)<(s.r+3)**2);
+  }
   override combatTargets(owner: Fighter) {
     const targets = super.combatTargets(owner);
     const body = (
@@ -217,6 +226,8 @@ export class WarSimulation extends PvpSimulation {
           hurt: (n) => this.hurtStructure(s, n, owner),
         });
       }
+    for (const camp of this.neutrals?.camps || []) for (const enemy of camp.enemies)
+      if (!enemy.dead && !this.neutrals.returning.has(enemy.id)) targets.push({body:enemy,hurt:(amount)=>this.neutrals.hit(enemy,amount,owner)});
     return targets;
   }
   override forfeit(id: string) {
@@ -259,7 +270,7 @@ export class WarSimulation extends PvpSimulation {
         team,
         lane,
         kind,
-        x: (team === 0 ? 180 : 2420) + (formation === "COLUNA" ? i * 18 : 0),
+        x: (team === 0 ? WAR.spawnX : WAR.width - WAR.spawnX) + (formation === "COLUNA" ? i * 18 : 0),
         y:
           WAR.lanes[lane] +
           ((i % 3) - 1) * (formation === "DISPERSAR" ? 42 : 22),
@@ -351,6 +362,7 @@ export class WarSimulation extends PvpSimulation {
     updateWarBots(this);
     super.step(dt);
     if (this.ended || this.time < this.intermissionUntil) return;
+    this.neutrals.advance(dt);
     if (this.time >= this.incomeAt) {
       this.incomeAt = this.time + WAR.economy.passiveInterval;
       for (const f of this.fighters.values())
@@ -368,7 +380,7 @@ export class WarSimulation extends PvpSimulation {
           f.team === team &&
           (f.connected || f.botControlled) &&
           f.player.health > 0 &&
-          Math.hypot(f.player.x - 1300, f.player.y - 700) < 110,
+          Math.hypot(f.player.x - WAR.center.x, f.player.y - WAR.center.y) < 110,
       ),
     );
     const captureTeam =
@@ -386,7 +398,7 @@ export class WarSimulation extends PvpSimulation {
           for (const f of this.fighters.values())
             if (f.team === captureTeam) {
               this.credit(f.id, 30);
-              if (f.player.health > 0 && Math.hypot(f.player.x - 1300, f.player.y - 700) <= WAR.xpShareRadius) {
+              if (f.player.health > 0 && Math.hypot(f.player.x - WAR.center.x, f.player.y - WAR.center.y) <= WAR.xpShareRadius) {
                 this.grantWarXp(f.id, WAR.xp.objective);
                 this.grantWarGold(f.id, WAR.economy.objective);
               }
@@ -397,8 +409,9 @@ export class WarSimulation extends PvpSimulation {
     }
     if (this.time >= this.waveAt) {
       this.waveAt = this.time + WAR.waveSeconds;
-      for (const team of [0, 1])
-        for (let lane = 0; lane < 3; lane++) this.spawnWave(team, lane);
+      const composition = WAR.waveComposition[this.waveNumber++ % WAR.waveComposition.length];
+      for (const team of [0, 1]) for (let lane = 0; lane < WAR.lanes.length; lane++)
+        for (const kind of ["SOLDADO", "SUPORTE", "TANQUE"] as const) this.spawnWave(team, lane, composition[kind], kind);
     }
     for (const f of this.fighters.values()) {
       if (f.player.health <= 0) {
@@ -407,8 +420,8 @@ export class WarSimulation extends PvpSimulation {
             this.time + Math.min(20, WAR.respawnBaseSeconds + Math.floor(this.time / WAR.respawnScaleSeconds) * WAR.respawnStepSeconds);
         if (this.time >= f.respawnAt) {
           f.player.health = f.player.maxHealth;
-          f.player.x = f.team === 0 ? 230 : 2370;
-          f.player.y = 700;
+          f.player.x = f.team === 0 ? WAR.spawnX : WAR.width - WAR.spawnX;
+          f.player.y = WAR.center.y;
           f.respawnAt = 0;
           f.protectedUntil = this.time + PVP_RULES.spawnProtection;
           f.body.statuses = {};
@@ -538,7 +551,8 @@ export class WarSimulation extends PvpSimulation {
       step = Math.min(len, u.speed * dt);
     let mx = dx / len,
       my = dy / len;
-    const obstacle = this.world.nearby.find(
+    const nearby = this.world.nearby.filter((s)=>Math.abs(s.x-u.x)<s.r+100 && Math.abs(s.y-u.y)<s.r+100);
+    const obstacle = nearby.find(
       (s) =>
         !s.destroyed &&
         STRUCTURE_DEFINITIONS[s.type]?.collidable &&
@@ -553,7 +567,7 @@ export class WarSimulation extends PvpSimulation {
       { x: mx, y: my },
       step * (this.world.isWater(u.x, u.y) ? PVP_RULES.waterSpeed : 1),
       1,
-      this.world.nearby,
+      nearby,
     );
     u.x = move.x;
     u.y = move.y;
@@ -561,9 +575,9 @@ export class WarSimulation extends PvpSimulation {
   minionDestination(u: WarMinion) {
     const order = this.orders[u.team][u.lane];
     if (order === "RECUAR")
-      return { x: u.team === 0 ? 230 : 2370, y: WAR.lanes[u.lane] };
+      return { x: u.team === 0 ? WAR.spawnX : WAR.width - WAR.spawnX, y: WAR.lanes[u.lane] };
     if (order === "DEFENDER")
-      return { x: u.team === 0 ? 560 : 2040, y: WAR.lanes[u.lane] };
+      return { x: WAR.towerPositions[u.team] + (u.team === 0 ? -40 : 40), y: WAR.lanes[u.lane] };
     if (order === "FOCAR_TORRE") {
       const tower = this.structures.find(
         (s) =>
@@ -574,10 +588,10 @@ export class WarSimulation extends PvpSimulation {
       );
       if (tower) return tower;
     }
-    if (order === "FOCAR_BASE") return { x: u.team === 0 ? 2470 : 130, y: 700 };
+    if (order === "FOCAR_BASE") return { x: WAR.basePositions[1 - u.team].x, y: WAR.center.y };
     return {
-      x: u.team === 0 ? 2470 : 130,
-      y: (u.team === 0 ? u.x > 2200 : u.x < 400) ? 700 : WAR.lanes[u.lane],
+      x: WAR.basePositions[1 - u.team].x,
+      y: (u.team === 0 ? u.x > WAR.width - WAR.spawnX - 200 : u.x < WAR.spawnX + 200) ? WAR.center.y : WAR.lanes[u.lane],
     };
   }
   credit(id: string, amount: number) {
@@ -765,8 +779,8 @@ export class WarSimulation extends PvpSimulation {
   }
   shopAvailable(fighter: Fighter) {
     return fighter.player.health <= 0 || Math.hypot(
-      fighter.player.x - (fighter.team === 0 ? 230 : 2370),
-      fighter.player.y - 700,
+      fighter.player.x - (fighter.team === 0 ? WAR.spawnX : WAR.width - WAR.spawnX),
+      fighter.player.y - WAR.center.y,
     ) <= WAR.shopRadius;
   }
   buyItem(id: string, itemId: string) {
@@ -843,14 +857,14 @@ export class WarSimulation extends PvpSimulation {
       !Number.isFinite(x) ||
       !Number.isFinite(y) ||
       x < 100 ||
-      x > 2500 ||
+      x > WAR.width - 100 ||
       y < 100 ||
-      y > 1300 ||
+      y > WAR.height - 100 ||
       Math.hypot(x - f.player.x, y - f.player.y) > 160
     )
       return false;
     if (
-      !(f.team === 0 ? x <= 1350 : x >= 1250) &&
+      !(f.team === 0 ? x <= WAR.center.x + 50 : x >= WAR.center.x - 50) &&
       !this.structures.some(
         (s) =>
           s.team === f.team && s.hp > 0 && Math.hypot(x - s.x, y - s.y) < 200,
@@ -979,6 +993,7 @@ export class WarSimulation extends PvpSimulation {
       Math.abs(x - f.player.x) <= WAR.interestX &&
       Math.abs(y - f.player.y) <= WAR.interestY;
     const war: WarView = {
+      neutrals: this.neutrals.snapshot(f.player.x,f.player.y),
       cores: this.structures.filter((s) => s.kind === "CORE").map((s) => s.hp),
       energy: this.energy.get(id) || 0,
       warGold: this.progress.get(id)!.warGold,
@@ -1024,7 +1039,7 @@ export class WarSimulation extends PvpSimulation {
     return {
       ...base,
       roundRemaining: Math.max(0, 1800 - this.time),
-      players: base.players,
+      players: base.players.map((player)=>({...player,role:this.roles.get(player.id) || "SOLDADO" as const})),
       bullets: base.bullets.filter((b) => near(b.x, b.y)),
       war,
     };

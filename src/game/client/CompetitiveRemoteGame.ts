@@ -42,6 +42,7 @@ export class CompetitiveRemoteGame extends BrowserGame {
     this.persist = () => true;
     this.saveSnapshot = () => false;
     this.checkAchievements = () => {};
+    this.announce = () => {};
     this.useItem = () => {};
     this.interact = () => {};
     this.pause = () => {};
@@ -134,6 +135,10 @@ export class CompetitiveRemoteGame extends BrowserGame {
     this.snapshot = snapshot;
     this.pending = this.pending.filter((input) => input.sequence > snapshot.own.ack);
     this.sequence = Math.max(this.sequence, snapshot.own.ack);
+    const predictionStructures = [
+      ...snapshot.structures,
+      ...(snapshot.war?.structures.map((structure) => this.warStructure(structure)) || []),
+    ];
     let next = { x: own.x, y: own.y };
     for (const input of this.pending)
       next = predictMove(
@@ -141,7 +146,7 @@ export class CompetitiveRemoteGame extends BrowserGame {
         { x: input.moveX, y: input.moveY },
         own.speed,
         1 / TICK_HZ,
-        snapshot.structures,
+        predictionStructures,
       );
     next.x = Math.max(20, Math.min(snapshot.width - 20, next.x));
     next.y = Math.max(20, Math.min(snapshot.height - 20, next.y));
@@ -150,10 +155,7 @@ export class CompetitiveRemoteGame extends BrowserGame {
       : 0;
     this.prediction = next;
 
-    this.world.nearby = [
-      ...snapshot.structures,
-      ...(snapshot.war?.structures.map((structure) => this.warStructure(structure)) || []),
-    ];
+    this.world.nearby = predictionStructures;
     this.enemies = (snapshot.war?.minions || []).map((minion) => {
       const definition = ENEMY_DEFINITIONS.husk;
       return {
@@ -189,6 +191,9 @@ export class CompetitiveRemoteGame extends BrowserGame {
         controlImmunity: {},
       } satisfies Enemy;
     });
+    for (const neutral of snapshot.war?.neutrals || []) {
+      this.enemies.push({...ENEMY_DEFINITIONS[neutral.type],...neutral,dead:false,pattern:neutral.type === "boss" ? "charge" : "",bossEventIndex:null,kx:0,ky:0,flash:0,attack:0,phase:0,statuses:{},burrow:0,shield:0,buffAura:0,specialClock:0,controlImmunity:{}});
+    }
     this.pickups = snapshot.pickups.map(
       (pickup) =>
         ({ ...pickup, type: "heal", life: 1, value: pickup.value } satisfies Pickup),
@@ -481,12 +486,21 @@ export class CompetitiveRemoteGame extends BrowserGame {
       context.fillRect(minion.x - 9, minion.y - 11, 18 * Math.max(0, minion.hp / minion.maxHp), 3);
     }
     if (snapshot.war) {
+      context.save();
+      context.fillStyle = "#02070bd9";
+      context.fillRect(-3000, -3000, snapshot.width + 6000, 3000);
+      context.fillRect(-3000, snapshot.height, snapshot.width + 6000, 3000);
+      context.fillRect(-3000, 0, 3000, snapshot.height);
+      context.fillRect(snapshot.width, 0, 3000, snapshot.height);
+      context.strokeStyle = "#c9b877"; context.lineWidth = 5;
+      context.shadowBlur = 16; context.shadowColor = "#83ccb7";
+      context.strokeRect(0,0,snapshot.width,snapshot.height); context.restore();
       context.strokeStyle = snapshot.war.objective.owner === null
         ? "#c9b877"
         : TEAM_COLORS[snapshot.war.objective.owner as 0 | 1];
       context.lineWidth = 3;
       context.beginPath();
-      context.arc(1300, 700, 110, 0, Math.PI * 2);
+      context.arc(snapshot.width / 2, snapshot.height / 2, 110, 0, Math.PI * 2);
       context.stroke();
     }
     context.globalAlpha = 1;

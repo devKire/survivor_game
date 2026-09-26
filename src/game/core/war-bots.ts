@@ -89,10 +89,10 @@ export function updateWarBots(g: WarSimulation) {
     const enemy = target?.body;
     brain.targetId = enemy?.id ?? null;
 
-    const homeX = f.team === 0 ? 230 : 2370;
+    const homeX = f.team === 0 ? WAR.spawnX : WAR.width - WAR.spawnX;
     const ownCoreThreat = [...g.fighters.values()].find((other) =>
       other.team !== f.team && other.player.health > 0 &&
-      Math.hypot(other.player.x - homeX, other.player.y - 700) < 430,
+      Math.hypot(other.player.x - homeX, other.player.y - WAR.center.y) < 430,
     );
     const nearbyAllies = [...g.fighters.values()].filter((other) => other.team === f.team && other.player.health > 0 && Math.hypot(other.player.x - p.x, other.player.y - p.y) < 420).length;
     const nearbyEnemies = [...g.fighters.values()].filter((other) => other.team !== f.team && other.player.health > 0 && Math.hypot(other.player.x - p.x, other.player.y - p.y) < 420).length;
@@ -114,7 +114,7 @@ export function updateWarBots(g: WarSimulation) {
     if (retreat) brain.state = p.health < p.maxHealth * 0.22 ? "RETURN_BASE" : "RETREAT";
     else if (ownCoreThreat) brain.state = "DEFEND_CORE";
     else if (laneThreat) brain.state = "DEFEND_LANE";
-    else if (needsObjective && objectiveSafe && Math.hypot(p.x - 1300, p.y - 700) < 700) brain.state = "CONTEST_OBJECTIVE";
+    else if (needsObjective && objectiveSafe && Math.hypot(p.x - WAR.center.x, p.y - WAR.center.y) < 700) brain.state = "CONTEST_OBJECTIVE";
     else if (nearEnemyTower && !alliedWave && nearbyAllies < nearbyEnemies + 2) brain.state = "DISENGAGE";
     else if (fighters.length && nearbyEnemies > nearbyAllies + 1) brain.state = "DISENGAGE";
     else if (fighters.length) brain.state = "ENGAGE";
@@ -127,14 +127,14 @@ export function updateWarBots(g: WarSimulation) {
       const fountain = closest(g.world.nearby.filter((s) => s.type === "fountain" && (g.fountainReady.get(s.id) || 0) <= g.time), p.x, p.y);
       destination = fountain || { x: homeX, y: WAR.lanes[brain.lane] };
     } else if (brain.state === "DEFEND_CORE") destination = ownCoreThreat!.player;
-    else if (brain.state === "CONTEST_OBJECTIVE") destination = { x: 1300, y: 700 };
-    else if (brain.state === "DISENGAGE") destination = { x: f.team === 0 ? 445 : 2155, y: WAR.lanes[brain.lane] };
-    else if (brain.state === "DEFEND_LANE") destination = { x: ownTower?.x || (f.team === 0 ? 600 : 2000), y: WAR.lanes[brain.lane] };
-    else if (brain.state === "ROLE_TASK" && g.roles.get(f.id) === "COMANDANTE" && needsObjective) destination = { x: 1300, y: 700 };
+    else if (brain.state === "CONTEST_OBJECTIVE") destination = WAR.center;
+    else if (brain.state === "DISENGAGE") destination = { x: f.team === 0 ? WAR.towerPositions[0] - 155 : WAR.towerPositions[1] + 155, y: WAR.lanes[brain.lane] };
+    else if (brain.state === "DEFEND_LANE") destination = { x: ownTower?.x || (WAR.towerPositions[f.team]), y: WAR.lanes[brain.lane] };
+    else if (brain.state === "ROLE_TASK" && g.roles.get(f.id) === "COMANDANTE" && needsObjective) destination = WAR.center;
     else if ((brain.state === "ENGAGE" || brain.state === "FARM") && enemy) destination = enemy;
     else {
       const tower = g.structures.find((s) => s.team !== f.team && s.kind === "TORRE" && s.hp > 0 && Math.abs(s.y - WAR.lanes[brain.lane]) < 80);
-      destination = tower || { x: f.team === 0 ? 2470 : 130, y: 700 };
+      destination = tower || WAR.basePositions[1 - f.team];
     }
 
     let dx = destination.x - p.x, dy = destination.y - p.y;

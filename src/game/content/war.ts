@@ -1,9 +1,19 @@
 export const WAR = {
-  width: 2600,
-  height: 1400,
-  lanes: [250, 700, 1150],
-  minionCap: 180,
-  waveSeconds: 12,
+  width: 5400,
+  height: 3000,
+  center: { x: 2700, y: 1500 },
+  basePositions: [{x:200,y:1500},{x:5200,y:1500}],
+  spawnX: 300,
+  towerPositions: [1100,4300],
+  lanes: [550, 1500, 2450],
+  minionCap: 330,
+  waveSeconds: 9,
+  waveComposition: [
+    { SOLDADO: 4, SUPORTE: 0, TANQUE: 0 },
+    { SOLDADO: 4, SUPORTE: 1, TANQUE: 0 },
+    { SOLDADO: 4, SUPORTE: 0, TANQUE: 1 },
+    { SOLDADO: 5, SUPORTE: 1, TANQUE: 1 },
+  ],
   coreHp: 2400,
   towerHp: 500,
   interestX: 650,
@@ -135,6 +145,7 @@ export interface WarFighterProgress {
 }
 
 export interface WarView {
+  neutrals: import("./war-neutrals").WarNeutralView[];
   cores: number[];
   energy: number;
   warGold: number;

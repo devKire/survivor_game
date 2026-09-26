@@ -11,8 +11,10 @@ describe("competitive lobby mounting", () => {
         menuHeader: createElement("nav", null, "Lobby"),
       }),
     );
-    expect(markup).not.toContain("<canvas");
+    // Character cards render lightweight preview canvases; the playable canvas must stay absent.
+    expect(markup).not.toContain('id="game"');
     expect(markup).not.toContain("arena-game-overlay");
     expect(markup).toContain("Buscar partida");
+    expect(markup).toContain("Preparação para a Arena");
   });
 });

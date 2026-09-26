@@ -120,7 +120,7 @@ describe("V26 maps and shared competitive mechanics", () => {
     expect(weapon.id).toBe("orbit");
     weapon.timer = 0;
     const shotsBeforeDeath = weapon.shots;
-    const launched = combat.projectile(weapon, 100, 100, 10, 0, { life: 0.5 })!;
+    const launched = combat.projectile(weapon, f.player.x, f.player.y, 10, 0, { life: 0.5 })!;
     f.player.health = 0;
 
     g.step(0.04);

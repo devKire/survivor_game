@@ -13,6 +13,7 @@ import {
   rand,
 } from "./math";
 import type { GameSimulation } from "./simulation";
+import { WAR_NEUTRAL_CAMPS } from "../content/war-neutrals";
 import type * as T from "./types";
 const LEGACY_POI_WEIGHTS: Record<string, number> = {
   fountain: 4,
@@ -177,6 +178,7 @@ export class World {
           profile.structures[Math.floor(rng() * profile.structures.length)];
         if (
           rng() > profile.density ||
+          (profile.objective && WAR_NEUTRAL_CAMPS.some((camp) => Math.hypot(px-camp.x,py-camp.y) < camp.leashRadius + 60)) ||
           profile.lanes.some((l) => Math.abs(py - l) < profile.corridor + 45)
         )
           continue;

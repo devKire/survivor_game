@@ -1,4 +1,7 @@
+import { ArenaLobby } from "../game/core/arena-lobby";
+import { COSMETICS } from "../game/content/cosmetics";
 import { WarSimulation } from "../game/core/war";
+import { WAR } from "../game/content/war";
 import { currentSeason, getRating, settleRating } from "../server/ranked";
 import { selectMatch, type QueueEntry } from "../game/core/matchmaking";
 import { MATCHMAKING_CONFIG } from "../game/content/matchmaking";
@@ -36,6 +39,17 @@ export class ArenaService {
   reserved = new Set<string>();
   queue = new Map<string, Entry>();
   matches = new Map<string, Match>();
+  lobbies = new Map<
+    string,
+    {
+      lobby: ArenaLobby;
+      mapId: string;
+      worldSeed: string;
+      seasonId: string | null;
+      reason: string;
+    }
+  >();
+  lobbyBroadcastAt = 0;
   active = new Map<string, string>();
   matching = false;
   queueVersion = new Map<string, number>();
@@ -56,6 +70,68 @@ export class ArenaService {
   }
   async handle(userId: string, name: string, v: ArenaCommand) {
     const match = this.matches.get(this.active.get(userId) || "");
+    const pending = this.lobbies.get(this.active.get(userId) || "");
+    if (
+      v.type === "ARENA_SELECT_CHARACTER" ||
+      v.type === "ARENA_SELECT_ROLE" ||
+      v.type === "ARENA_SELECT_COSMETIC" ||
+      v.type === "ARENA_LOCK_SELECTION"
+    ) {
+      if (!pending || !this.connected.has(userId))
+        throw new UserError("Lobby indisponível.");
+      await limit("arena-selection:" + userId, 30, 10);
+      const lobby = pending.lobby;
+      const seat = lobby.seats.find((s) => s.id === userId)!;
+      let ok = false;
+      if (v.type === "ARENA_LOCK_SELECTION") ok = lobby.lock(userId);
+      else if (v.type === "ARENA_SELECT_ROLE")
+        ok = lobby.select(userId, { role: v.role });
+      else {
+        const character =
+          v.type === "ARENA_SELECT_CHARACTER" ? v.character : seat.character;
+        const owned = new Set(
+          (
+            await db().userCosmetic.findMany({
+              where: { userId },
+              select: { cosmeticId: true },
+            })
+          ).map((row) => row.cosmeticId),
+        );
+        if (v.type === "ARENA_SELECT_CHARACTER") {
+          const save = migrateSave((await progress(userId)).data);
+          ok = lobby.select(userId, {
+            character,
+            cosmetics: resolvePvpCosmetics(save, character, owned),
+          });
+        } else {
+          const item = v.id ? COSMETICS[v.id] : null;
+          if (
+            v.id &&
+            (!item ||
+              !owned.has(v.id) ||
+              item.type !== v.slot ||
+              (item.character && item.character !== character))
+          )
+            throw new UserError("Aparência não possuída ou incompatível.");
+          if (seat.character !== character)
+            throw new UserError(
+              "Personagem mudou. Selecione a aparência novamente.",
+            );
+          const cosmetics = { ...seat.cosmetics };
+          if (v.id) cosmetics[v.slot] = v.id;
+          else delete cosmetics[v.slot];
+          ok = lobby.select(userId, { cosmetics });
+        }
+      }
+      if (!ok)
+        throw new UserError(
+          "Seleção bloqueada, expirada ou classe já ocupada.",
+        );
+      this.broadcastLobby(lobby);
+      return;
+    }
+    if (pending && v.type === "ARENA_QUEUE")
+      throw new UserError("Você já está no lobby.");
     if (v.type === "ARENA_INPUT") {
       match?.game.accept(userId, v);
       return;
@@ -65,6 +141,13 @@ export class ArenaService {
       return;
     }
     if (v.type === "ARENA_CANCEL") {
+      if (pending) {
+        await this.abortLobby(
+          this.active.get(userId) || "",
+          "Lobby cancelado antes do início.",
+        );
+        return;
+      }
       this.queueVersion.set(userId, (this.queueVersion.get(userId) || 0) + 1);
       this.queue.delete(userId);
       this.send(userId, {
@@ -111,12 +194,16 @@ export class ArenaService {
       }
       if (v.type === "ARENA_WAR_BUY_ITEM") {
         if (!game.buyItem(userId, v.itemId))
-          throw new UserError("Compra indisponível: confira WarGold, espaço e acesso à base.");
+          throw new UserError(
+            "Compra indisponível: confira WarGold, espaço e acesso à base.",
+          );
         return;
       }
       if (v.type === "ARENA_WAR_SELL_ITEM") {
         if (!game.sellItem(userId, v.slot))
-          throw new UserError("Venda indisponível fora da base ou slot inválido.");
+          throw new UserError(
+            "Venda indisponível fora da base ou slot inválido.",
+          );
         return;
       }
       const ok =
@@ -149,7 +236,12 @@ export class ArenaService {
       throw new UserError("Conclua a expedição antes de entrar na Arena.");
     const save = migrateSave((await progress(userId)).data);
     const ownedCosmetics = new Set(
-      (await db().userCosmetic.findMany({ where: { userId }, select: { cosmeticId: true } })).map((row) => row.cosmeticId),
+      (
+        await db().userCosmetic.findMany({
+          where: { userId },
+          select: { cosmeticId: true },
+        })
+      ).map((row) => row.cosmeticId),
     );
     const pvpCosmetics = resolvePvpCosmetics(save, v.character, ownedCosmetics);
     const ranked = v.mode.endsWith("RANKED");
@@ -200,6 +292,12 @@ export class ArenaService {
   reconnect(userId: string) {
     this.connected.add(userId);
     const match = this.matches.get(this.active.get(userId) || "");
+    const pending = this.lobbies.get(this.active.get(userId) || "");
+    if (pending)
+      this.send(userId, {
+        type: "ARENA_LOBBY_STATE",
+        lobby: pending.lobby.state(),
+      });
     if (match?.game.reconnect(userId))
       this.send(userId, {
         type: "ARENA_STARTED",
@@ -220,7 +318,7 @@ export class ArenaService {
     this.matches.get(this.active.get(userId) || "")?.game.disconnect(userId);
   }
   async pair() {
-    if (this.matching || this.matches.size >= 32) return;
+    if (this.matching || this.matches.size + this.lobbies.size >= 32) return;
     this.matching = true;
     try {
       const now = Date.now();
@@ -354,39 +452,16 @@ export class ArenaService {
           });
           throw new UserError("Busca cancelada durante a criação.");
         }
-        const game = pair[0].mode.startsWith("WAR")
-          ? new WarSimulation(seeds, mapId, worldSeed)
-          : new PvpSimulation(seeds, mapId, worldSeed);
-        for (const p of pair)
-          game.log("queue-ms", p.id, undefined, Date.now() - p.joined);
-        for (const p of seeds)
-          if (!p.isBot && !this.connected.has(p.id)) game.disconnect(p.id);
-        this.matches.set(match.id, {
-          id: match.id,
-          mode: match.mode,
+        const lobby = new ArenaLobby(match.id, match.mode, seeds);
+        this.lobbies.set(match.id, {
+          lobby,
+          mapId,
+          worldSeed,
           seasonId: match.seasonId,
-          game,
-          settling: false,
-          retryAfter: 0,
-          tickMs: [],
-          bytes: 0,
-          peakEntities: seeds.length,
-          matchmakingReason: plan.reason,
+          reason: plan.reason,
         });
-        for (const p of seeds.filter((p) => !p.isBot)) {
-          this.active.set(p.id, match.id);
-          this.send(p.id, {
-            type: "ARENA_STARTED",
-            roster: [...game.fighters.values()].map((f) => ({
-              id: f.id,
-              name: f.name,
-              team: f.team,
-              isBot: f.isBot,
-            })),
-            matchId: match.id,
-            mode: match.mode,
-          });
-        }
+        for (const p of pair) this.active.set(p.id, match.id);
+        this.broadcastLobby(lobby);
       } catch {
         for (const p of pair) {
           this.send(p.id, {
@@ -406,7 +481,90 @@ export class ArenaService {
       this.matching = false;
     }
   }
+  broadcastLobby(lobby: ArenaLobby) {
+    const message = { type: "ARENA_LOBBY_STATE", lobby: lobby.state() };
+    for (const seat of lobby.seats)
+      if (!seat.isBot && this.connected.has(seat.id))
+        this.send(seat.id, message);
+  }
+  async abortLobby(id: string, reason: string) {
+    const pending = this.lobbies.get(id);
+    if (!pending) return;
+    this.lobbies.delete(id);
+    for (const seat of pending.lobby.seats)
+      if (!seat.isBot) {
+        this.active.delete(seat.id);
+        this.send(seat.id, { type: "ERROR", message: reason });
+        this.send(seat.id, {
+          type: "ARENA_RESULT",
+          matchId: id,
+          winner: null,
+          reason: "lobby-cancelled",
+        });
+      }
+    await economyTransaction(async (tx) => {
+      await tx.arenaMatch.update({
+        where: { id },
+        data: { status: "INTERRUPTED", endedAt: new Date() },
+      });
+      await tx.arenaSeat.deleteMany({ where: { matchId: id } });
+    });
+  }
   update() {
+    const lobbyNow = Date.now();
+    for (const [id, pending] of this.lobbies) {
+      const lobby = pending.lobby;
+      // Ranked never starts with an absent human; reconnected clients retain their seat until timeout.
+      if (
+        lobby.mode.endsWith("RANKED") &&
+        (lobbyNow >= lobby.deadline ||
+          (lobby.countdownAt !== null && lobbyNow >= lobby.countdownAt)) &&
+        lobby.seats.some((s) => !s.isBot && !this.connected.has(s.id))
+      ) {
+        void this.abortLobby(
+          id,
+          "Lobby cancelado: jogador desconectado.",
+        ).catch(() => undefined);
+        continue;
+      }
+      if (lobby.advance(lobbyNow)) {
+        const game = lobby.mode.startsWith("WAR")
+          ? new WarSimulation(lobby.seats, pending.mapId, pending.worldSeed)
+          : new PvpSimulation(lobby.seats, pending.mapId, pending.worldSeed);
+        for (const seat of lobby.seats)
+          if (!seat.isBot && !this.connected.has(seat.id))
+            game.disconnect(seat.id);
+        this.matches.set(id, {
+          id,
+          mode: lobby.mode,
+          seasonId: pending.seasonId,
+          game,
+          settling: false,
+          retryAfter: 0,
+          tickMs: [],
+          bytes: 0,
+          peakEntities: lobby.seats.length,
+          matchmakingReason: pending.reason,
+        });
+        this.lobbies.delete(id);
+        for (const seat of lobby.seats)
+          if (!seat.isBot)
+            this.send(seat.id, {
+              type: "ARENA_STARTED",
+              matchId: id,
+              mode: lobby.mode,
+              roster: lobby.seats.map((s) => ({
+                id: s.id,
+                name: s.name,
+                team: s.team,
+                isBot: s.isBot,
+              })),
+            });
+      } else if (lobbyNow >= this.lobbyBroadcastAt) this.broadcastLobby(lobby);
+    }
+    if (lobbyNow >= this.lobbyBroadcastAt)
+      this.lobbyBroadcastAt = lobbyNow + 250;
+
     const now = performance.now(),
       elapsed = (now - this.last) / 1000;
     this.accumulator = Math.min(0.2, this.accumulator + elapsed);
@@ -422,7 +580,11 @@ export class ArenaService {
           m.game.fighters.size +
             m.game.bullets.length +
             (m.game instanceof WarSimulation
-              ? m.game.units.items.length + m.game.structures.length
+              ? m.game.units.items.length +
+                m.game.structures.length +
+                m.game.neutrals.camps
+                  .flatMap((camp) => camp.enemies)
+                  .filter((enemy) => !enemy.dead).length
               : 0),
         );
         m.tickMs.push(performance.now() - t);
@@ -503,7 +665,7 @@ export class ArenaService {
               [...m.tickMs].sort((a, b) => a - b)[
                 Math.floor(m.tickMs.length * 0.95)
               ] || 0,
-            minionCap: g instanceof WarSimulation ? 180 : 0,
+            minionCap: g instanceof WarSimulation ? WAR.minionCap : 0,
           }),
           events: economyJson(g.events),
         },
@@ -550,6 +712,7 @@ export class ArenaService {
         await tx.arenaParticipant.update({
           where: { matchId_userId: { matchId: m.id, userId: f.id } },
           data: {
+            character: f.player.character,
             result: economyJson({
               role: g instanceof WarSimulation ? g.roles.get(f.id) : null,
               forfeited: g.forfeited.has(f.id),
