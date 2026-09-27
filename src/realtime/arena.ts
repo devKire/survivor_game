@@ -50,6 +50,14 @@ export class ArenaService {
     }
   >();
   lobbyBroadcastAt = 0;
+  private abortedLobbies = new Map<
+    string,
+    {
+      users: string[];
+      running: boolean;
+      retryAfter: number;
+    }
+  >();
   active = new Map<string, string>();
   matching = false;
   queueVersion = new Map<string, number>();
@@ -81,6 +89,15 @@ export class ArenaService {
         throw new UserError("Lobby indisponível.");
       await limit("arena-selection:" + userId, 30, 10);
       const lobby = pending.lobby;
+      const assertCurrentLobby = () => {
+        if (
+          this.lobbies.get(lobby.id) !== pending ||
+          this.active.get(userId) !== lobby.id ||
+          !this.connected.has(userId)
+        )
+          throw new UserError("Lobby indisponível.");
+      };
+      assertCurrentLobby();
       const seat = lobby.seats.find((s) => s.id === userId)!;
       let ok = false;
       if (v.type === "ARENA_LOCK_SELECTION") ok = lobby.lock(userId);
@@ -97,8 +114,10 @@ export class ArenaService {
             })
           ).map((row) => row.cosmeticId),
         );
+        assertCurrentLobby();
         if (v.type === "ARENA_SELECT_CHARACTER") {
           const save = migrateSave((await progress(userId)).data);
+          assertCurrentLobby();
           ok = lobby.select(userId, {
             character,
             cosmetics: resolvePvpCosmetics(save, character, owned),
@@ -224,7 +243,8 @@ export class ArenaService {
         );
       return;
     }
-    if (this.reserved.has(userId)) throw new UserError("Partida sendo criada.");
+    if (this.reserved.has(userId))
+      throw new UserError("Aguarde a preparação ou encerramento da partida.");
     if (match) throw new UserError("Você já está em uma partida.");
     const version = (this.queueVersion.get(userId) || 0) + 1;
     this.queueVersion.set(userId, version);
@@ -491,9 +511,15 @@ export class ArenaService {
     const pending = this.lobbies.get(id);
     if (!pending) return;
     this.lobbies.delete(id);
+    const users = pending.lobby.seats
+      .filter((seat) => !seat.isBot)
+      .map((seat) => seat.id);
+    this.abortedLobbies.set(id, { users, running: false, retryAfter: 0 });
     for (const seat of pending.lobby.seats)
       if (!seat.isBot) {
         this.active.delete(seat.id);
+        // Keep these users out of matchmaking until their persisted seats are released.
+        this.reserved.add(seat.id);
         this.send(seat.id, { type: "ERROR", message: reason });
         this.send(seat.id, {
           type: "ARENA_RESULT",
@@ -502,16 +528,34 @@ export class ArenaService {
           reason: "lobby-cancelled",
         });
       }
-    await economyTransaction(async (tx) => {
-      await tx.arenaMatch.update({
-        where: { id },
-        data: { status: "INTERRUPTED", endedAt: new Date() },
+    await this.cleanAbortedLobby(id);
+  }
+  private async cleanAbortedLobby(id: string) {
+    const cleanup = this.abortedLobbies.get(id);
+    if (!cleanup || cleanup.running) return;
+    cleanup.running = true;
+    try {
+      await economyTransaction(async (tx) => {
+        await tx.arenaMatch.update({
+          where: { id },
+          data: { status: "INTERRUPTED", endedAt: new Date() },
+        });
+        await tx.arenaSeat.deleteMany({ where: { matchId: id } });
       });
-      await tx.arenaSeat.deleteMany({ where: { matchId: id } });
-    });
+      for (const userId of cleanup.users) this.reserved.delete(userId);
+      this.abortedLobbies.delete(id);
+    } catch (error) {
+      cleanup.retryAfter = Date.now() + 5000;
+      console.error("Arena lobby cleanup failed; retry scheduled", id, error);
+    } finally {
+      cleanup.running = false;
+    }
   }
   update() {
     const lobbyNow = Date.now();
+    for (const [id, cleanup] of this.abortedLobbies)
+      if (!cleanup.running && lobbyNow >= cleanup.retryAfter)
+        void this.cleanAbortedLobby(id);
     for (const [id, pending] of this.lobbies) {
       const lobby = pending.lobby;
       // Ranked never starts with an absent human; reconnected clients retain their seat until timeout.
@@ -521,10 +565,7 @@ export class ArenaService {
           (lobby.countdownAt !== null && lobbyNow >= lobby.countdownAt)) &&
         lobby.seats.some((s) => !s.isBot && !this.connected.has(s.id))
       ) {
-        void this.abortLobby(
-          id,
-          "Lobby cancelado: jogador desconectado.",
-        ).catch(() => undefined);
+        void this.abortLobby(id, "Lobby cancelado: jogador desconectado.");
         continue;
       }
       if (lobby.advance(lobbyNow)) {

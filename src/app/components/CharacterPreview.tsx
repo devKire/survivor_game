@@ -1,5 +1,10 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import {
+  portraitUrl,
+  resolveCharacterArt,
+} from "../../game/client/character-art";
 import { Player, Weapon } from "../../game/core/entities";
 import { cosmeticVisual } from "../../game/content/cosmetics";
 import { WorldRenderer } from "../../game/client/world-renderer";
@@ -11,14 +16,21 @@ export default function CharacterPreview({
   size = 180,
   animation = true,
   direction = 1,
+  presentation = "sprite",
 }: {
   character: string;
   cosmetics?: Record<string, string>;
   size?: number;
   animation?: boolean;
   direction?: number;
+  presentation?: "sprite" | "portrait";
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
+  const [failedPortrait, setFailedPortrait] = useState<string | null>(null);
+  const portrait = resolveCharacterArt(character)?.portrait;
+  const source = portrait ? portraitUrl(portrait) : null;
+  const showPortrait =
+    presentation === "portrait" && portrait && failedPortrait !== source;
   const key = JSON.stringify(cosmetics);
   useEffect(() => {
     const element = canvas.current,
@@ -90,7 +102,26 @@ export default function CharacterPreview({
       cancelAnimationFrame(frame);
       observer.disconnect();
     };
-  }, [character, key, size, animation, direction]);
+  }, [character, key, size, animation, direction, showPortrait]);
+  if (showPortrait)
+    return (
+      <Image
+        src={portrait}
+        alt={`Retrato de ${CHARACTER_DEFINITIONS[character]?.name || character}`}
+        width={size}
+        height={size}
+        unoptimized
+        className="character-preview character-portrait"
+        style={{
+          width: size,
+          height: size,
+          maxWidth: "100%",
+          objectFit: "contain",
+          imageRendering: "pixelated",
+        }}
+        onError={() => setFailedPortrait(source)}
+      />
+    );
   return (
     <canvas
       ref={canvas}

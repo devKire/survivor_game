@@ -6,6 +6,7 @@ import type { SaveData } from "../../game/core/types";
 import {
   COSMETICS,
   COSMETIC_TYPES,
+  COSMETIC_LABELS,
   SHOP_CATEGORIES,
 } from "../../game/content/cosmetics";
 import CharacterPreview from "../components/CharacterPreview";
@@ -36,6 +37,8 @@ export default function CollectionClient({
       const r = await accountAction(input);
       if (!r.ok) setError(r.error);
       else router.refresh();
+    } catch {
+      setError("Não foi possível salvar. Tente novamente.");
     } finally {
       setBusy(false);
     }
@@ -148,47 +151,59 @@ export default function CollectionClient({
       <div
         className={shop ? "actions store-character-picker" : "character-cards"}
       >
-        {(Object.keys(PVP_LOADOUTS) as PvpCharacter[]).map((id) => (
-          <button
-            key={id}
-            className="character-card"
-            aria-pressed={id === character}
-            onClick={() => {
-              setCharacter(id);
-              setPreview(null);
-            }}
-          >
-            {!shop && (
-              <CharacterPreview
-                character={id}
-                cosmetics={
-                  equipment === "PVP" ? save.pvpCosmetics[id] : save.cosmetics
-                }
-                size={150}
-              />
-            )}
-            <strong>
-              {shop ? "Ver em " : ""}
-              {PVP_LOADOUTS[id].name}
-            </strong>
-            {!shop && (
-              <>
-                <small>{PVP_LOADOUTS[id].title}</small>
-                <small>
-                  {
-                    Object.values(COSMETICS).filter(
-                      (c) =>
-                        c.type === "CHARACTER_SKIN" &&
-                        owned.includes(c.id) &&
-                        (!c.character || c.character === id),
-                    ).length
-                  }{" "}
-                  skins possuídas
-                </small>
-              </>
-            )}
-          </button>
-        ))}
+        {(Object.keys(PVP_LOADOUTS) as PvpCharacter[]).map((id) => {
+          const equipped =
+            equipment === "PVP" ? save.pvpCosmetics[id] : save.cosmetics;
+          const skin = COSMETICS[equipped.CHARACTER_SKIN];
+          const accessories = Object.values(equipped)
+            .map((cosmeticId) => COSMETICS[cosmeticId])
+            .filter(
+              (cosmetic) => cosmetic && cosmetic.type !== "CHARACTER_SKIN",
+            );
+          return (
+            <button
+              key={id}
+              className="character-card"
+              aria-pressed={id === character}
+              onClick={() => {
+                setCharacter(id);
+                setPreview(null);
+              }}
+            >
+              {!shop && (
+                <CharacterPreview
+                  character={id}
+                  cosmetics={equipped}
+                  size={150}
+                />
+              )}
+              <strong>
+                {shop ? "Ver em " : ""}
+                {PVP_LOADOUTS[id].name}
+              </strong>
+              {!shop && (
+                <>
+                  <small>{PVP_LOADOUTS[id].title}</small>
+                  <small>Skin · {skin?.name || "Padrão"}</small>
+                  {accessories.length > 0 && (
+                    <small>{accessories.map((c) => c.name).join(" · ")}</small>
+                  )}
+                  <small>
+                    {
+                      Object.values(COSMETICS).filter(
+                        (c) =>
+                          c.type === "CHARACTER_SKIN" &&
+                          owned.includes(c.id) &&
+                          (!c.character || c.character === id),
+                      ).length
+                    }{" "}
+                    skins possuídas
+                  </small>
+                </>
+              )}
+            </button>
+          );
+        })}
       </div>
       {(!shop || preview) && (
         <section className="collection-hero game-panel">
@@ -217,7 +232,9 @@ export default function CollectionClient({
         <select value={filter} onChange={(e) => setFilter(e.target.value)}>
           <option>TODOS</option>
           {COSMETIC_TYPES.map((t) => (
-            <option key={t}>{t}</option>
+            <option key={t} value={t}>
+              {COSMETIC_LABELS[t]}
+            </option>
           ))}
         </select>
       </label>
@@ -239,14 +256,14 @@ export default function CollectionClient({
                   <CharacterPreview
                     character={character}
                     cosmetics={{
-                      ...save.pvpCosmetics[character],
+                      ...equippedCosmetics,
                       [c.type]: c.id,
                     }}
                     size={180}
                   />
                 </button>
                 <small>
-                  {c.rarity} · {c.type}
+                  {c.rarity} · {COSMETIC_LABELS[c.type]}
                 </small>
                 <h2>{c.name}</h2>
                 <p>{equipped ? "Equipado" : has ? "Adquirido" : "Bloqueado"}</p>

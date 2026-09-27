@@ -435,6 +435,7 @@ export default function ArenaClient({
                       character={id}
                       size={78}
                       animation={false}
+                      presentation="portrait"
                     />
                     <strong>{definition.name}</strong>
                     <small>{definition.title}</small>

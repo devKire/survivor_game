@@ -7,6 +7,8 @@
   "node": ">=22 <23"
 },
   "scripts": {
+    "assets:characters:canonicalize": "node scripts/canonicalize-character-sheets.mjs",
+    "assets:characters:validate": "node scripts/canonicalize-character-sheets.mjs --validate",
     "dev": "next dev --hostname 0.0.0.0",
     "build": "next build",
     "postinstall": "prisma generate",

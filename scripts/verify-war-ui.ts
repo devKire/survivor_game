@@ -76,10 +76,11 @@ const bundle = await build({
     loader: "tsx",
   },
   bundle: true,
+  loader: { ".png": "dataurl" },
   write: false,
   format: "esm",
   jsx: "automatic",
-  define: { "process.env.NODE_ENV": '"production"' },
+  define: { "process.env.NODE_ENV": '"production"', "process.env": "{}" },
   plugins: [
     {
       name: "isolated-services",
@@ -92,7 +93,7 @@ const bundle = await build({
           path: "client",
           namespace: "fixture",
         }));
-        b.onResolve({ filter: /^next\/(link|navigation)$/ }, (args) => ({
+        b.onResolve({ filter: /^next\/(link|navigation|image)$/ }, (args) => ({
           path: args.path,
           namespace: "fixture",
         }));
@@ -104,7 +105,9 @@ const bundle = await build({
                 ? mockClient
                 : args.path === "next/link"
                   ? `import React from 'react';export default function Link(p){return React.createElement('a',p)}`
-                  : `export function useRouter(){return {refresh(){window.dispatchEvent(new Event('fixture-refresh'))},push(url){location.href=url}}}`,
+                  : args.path === "next/image"
+                    ? `import React from 'react';export default function Image({src,unoptimized,...props}){return React.createElement('img',{...props,src:typeof src==='string'?src:src.src})}`
+                    : `export function useRouter(){return {refresh(){window.dispatchEvent(new Event('fixture-refresh'))},push(url){location.href=url}}}`,
           loader: "js",
           resolveDir: process.cwd(),
         }));
@@ -146,11 +149,36 @@ try {
   await expect(
     page.getByRole("button", { name: "Buscar partida" }),
   ).toBeVisible();
+  await expect(page.locator("img.character-portrait")).toHaveCount(4);
+  await expect
+    .poll(() =>
+      page
+        .locator("img.character-portrait")
+        .evaluateAll((images) =>
+          images.every(
+            (image) =>
+              (image as HTMLImageElement).complete &&
+              (image as HTMLImageElement).naturalWidth > 0,
+          ),
+        ),
+    )
+    .toBe(true);
   await page.screenshot({ path: `${directory}/01-arena.png` });
+  await page.locator("img.character-portrait").first().dispatchEvent("error");
+  await expect(page.locator(".arena-character-grid canvas")).toHaveCount(1);
   await page.getByRole("button", { name: "Buscar partida" }).click();
   await expect(
     page.getByRole("heading", { name: "Escolha seu personagem" }),
   ).toBeVisible();
+  await page.evaluate(() => {
+    window.scrollTo(0, 0);
+    document.querySelector(".arena-page")?.scrollTo(0, 0);
+  });
+  await page.locator(".lobby-selection .character-cards button").nth(1).click();
+  await expect(page.locator(".lobby-selection > h2")).toHaveText("Orin");
+  await expect(
+    page.locator(".lobby-selection .character-cards button").nth(1),
+  ).toHaveAttribute("aria-pressed", "true");
   await page.screenshot({
     path: `${directory}/02-character-select.png`,
     fullPage: true,
@@ -191,6 +219,11 @@ try {
   await expect(
     page.getByRole("heading", { name: "PERSONAGENS", exact: true }),
   ).toBeVisible();
+  await expect(page.locator(".character-cards canvas")).toHaveCount(4);
+  await expect(page.locator(".character-card").first()).toContainText(
+    "Skin · Memória · Vestes",
+  );
+  await page.screenshot({ path: `${directory}/07-collection.png` });
   await page
     .getByRole("button", { name: "Visualizar Aurora · Vestes", exact: true })
     .click();
@@ -199,7 +232,38 @@ try {
       () => (window as unknown as { actions: unknown[] }).actions.length,
     ),
   ).toBe(0);
-  await page.screenshot({ path: `${directory}/07-collection.png` });
+  await expect(page.locator(".collection-hero")).toContainText(
+    "Aurora · Vestes",
+  );
+  await expect(page.locator(".character-card").first()).toContainText(
+    "Skin · Memória · Vestes",
+  );
+  await page.locator(".collection-hero").scrollIntoViewIfNeeded();
+  await page.screenshot({ path: `${directory}/collection-preview.png` });
+  await page
+    .locator("article.card")
+    .filter({
+      has: page.getByRole("heading", { name: "Aurora · Vestes", exact: true }),
+    })
+    .getByRole("button", { name: "Equipar", exact: true })
+    .click();
+  await expect(page.locator(".character-card").first()).toContainText(
+    "Skin · Aurora · Vestes",
+  );
+  expect(
+    await page.evaluate(
+      () => (window as unknown as { actions: unknown[] }).actions,
+    ),
+  ).toEqual([
+    {
+      type: "pvp-cosmetic",
+      character: "nara",
+      slot: "CHARACTER_SKIN",
+      id: "character_skin_3",
+    },
+  ]);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: `${directory}/collection-equipped.png` });
   await page.goto("http://127.0.0.1:4179/shop");
   await expect(
     page.getByRole("heading", { name: "LOJA DO LIMIAR" }),
@@ -214,6 +278,19 @@ try {
   touch.on("pageerror", (e) => errors.push(e.message));
   await touch.goto("http://127.0.0.1:4179/arena");
   await touch.getByRole("button", { name: "Buscar partida" }).tap();
+  await touch.evaluate(() => window.scrollTo(0, 0));
+  await touch.evaluate(() =>
+    document.querySelector(".arena-page")?.scrollTo(0, 0),
+  );
+  expect(
+    await touch.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await touch.screenshot({
+    path: `${directory}/mobile-lobby.png`,
+    fullPage: true,
+  });
   await touch
     .getByRole("button", { name: "CONFIRMAR SELEÇÃO", exact: true })
     .tap();
@@ -248,6 +325,16 @@ try {
   await touch.getByRole("button", { name: "Fechar painel" }).tap();
   await touch.setViewportSize({ width: 430, height: 932 });
   await touch.screenshot({ path: `${directory}/mobile-430.png` });
+  for (const route of ["collection", "shop"]) {
+    await touch.goto(`http://127.0.0.1:4179/${route}`);
+    await expect(touch.locator("h1")).toBeVisible();
+    expect(
+      await touch.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await touch.screenshot({ path: `${directory}/mobile-${route}.png` });
+  }
   expect(errors).toEqual([]);
   await writeFile(
     `${directory}/validation.json`,
@@ -266,8 +353,14 @@ try {
           "shop open/close",
           "upgrade opt-in",
           "preview does not equip",
+          "equipping updates the character card through the account action",
+          "collection cards use the gameplay renderer and equipped skins",
+          "lobby character selection",
+          "mobile lobby, collection and shop fit viewport",
           "native touch joystick",
           "mobile drawer",
+          "four portraits loaded",
+          "portrait image failure falls back to canvas",
         ],
       },
       null,
@@ -275,6 +368,9 @@ try {
     ),
   );
   console.log(`Visual validation passed: ${directory}`);
+} catch (error) {
+  if (errors.length) console.error("Browser errors:", errors);
+  throw error;
 } finally {
   await browser.close();
   server.close();

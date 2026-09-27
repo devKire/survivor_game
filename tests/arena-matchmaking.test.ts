@@ -8,11 +8,12 @@ const mocks = vi.hoisted(() => ({
   save: vi.fn(),
   updateParticipant: vi.fn(),
   rate: vi.fn(),
+  owned: vi.fn(),
 }));
 vi.mock("../src/server/db", () => ({
   db: () => ({
     userCosmetic: {
-      findMany: async () => [{ cosmeticId: "character_skin_0" }],
+      findMany: mocks.owned,
     },
   }),
 }));
@@ -71,6 +72,7 @@ function service(count = 2) {
 }
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.owned.mockResolvedValue([{ cosmeticId: "character_skin_0" }]);
   mocks.create.mockResolvedValue({
     id: "match",
     mode: "WAR_CASUAL",
@@ -79,6 +81,57 @@ beforeEach(() => {
   mocks.lock.mockImplementation(async () => ({ save: freshSave() }));
 });
 describe("V27 atomic queue and bot settlement", () => {
+  it("does not revive a cancelled lobby when ownership validation finishes late", async () => {
+    const s = service();
+    await s.pair();
+    let resolve!: (rows: { cosmeticId: string }[]) => void;
+    mocks.owned.mockImplementationOnce(
+      () =>
+        new Promise((done) => {
+          resolve = done;
+        }),
+    );
+    const selection = s.handle("u0", "Human", {
+      type: "ARENA_SELECT_CHARACTER",
+      character: "orin",
+    });
+    const rejected = expect(selection).rejects.toThrow("Lobby indisponível");
+    await vi.waitFor(() => expect(mocks.owned).toHaveBeenCalledTimes(1));
+    await s.handle("u1", "Human", { type: "ARENA_CANCEL" });
+    vi.mocked(s.send).mockClear();
+    resolve([{ cosmeticId: "character_skin_0" }]);
+    await rejected;
+    expect(s.lobbies.size).toBe(0);
+    expect(s.send).not.toHaveBeenCalled();
+  });
+  it("retries failed cancellation cleanup without starting a match or releasing users early", async () => {
+    const s = service();
+    await s.pair();
+    const logged = vi.spyOn(console, "error").mockImplementation(() => {});
+    const now = vi.spyOn(Date, "now").mockReturnValue(10000);
+    try {
+      mocks.update.mockRejectedValueOnce(
+        new Error("database temporarily unavailable"),
+      );
+      await s.handle("u0", "Human", { type: "ARENA_CANCEL" });
+      expect(s.lobbies.size).toBe(0);
+      expect(s.reserved.size).toBe(2);
+      expect(mocks.removeSeats).not.toHaveBeenCalled();
+      s.update();
+      expect(mocks.update).toHaveBeenCalledTimes(1);
+      now.mockReturnValue(15001);
+      s.update();
+      s.update();
+      await vi.waitFor(() => expect(s.reserved.size).toBe(0));
+      expect(mocks.update).toHaveBeenCalledTimes(2);
+      expect(mocks.removeSeats).toHaveBeenCalledTimes(1);
+      expect(s.matches.size).toBe(0);
+      expect(logged).toHaveBeenCalledTimes(1);
+    } finally {
+      now.mockRestore();
+      logged.mockRestore();
+    }
+  });
   it("validates ownership in lobby, broadcasts selection and rejects edits after lock", async () => {
     const s = service();
     await s.pair();

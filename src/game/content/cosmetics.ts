@@ -18,6 +18,18 @@ export const RARITIES = [
   "MÍTICO",
 ] as const;
 export type CosmeticType = (typeof COSMETIC_TYPES)[number];
+export const COSMETIC_LABELS: Record<CosmeticType, string> = {
+  CHARACTER_SKIN: "Skin",
+  WEAPON_SKIN: "Arma",
+  PROJECTILE_EFFECT: "Projétil",
+  DEATH_EFFECT: "Morte",
+  MOVEMENT_TRAIL: "Rastro",
+  PROFILE_FRAME: "Moldura",
+  EMOTE: "Emote",
+  PROFILE_ICON: "Ícone",
+  SPAWN_EFFECT: "Entrada",
+  EVOLUTION_EFFECT: "Evolução",
+};
 export type Rarity = (typeof RARITIES)[number];
 export interface Cosmetic {
   id: string;

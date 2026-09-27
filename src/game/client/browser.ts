@@ -1,4 +1,5 @@
 import { WorldRenderer } from "./world-renderer";
+import { portraitUrl, resolveCharacterArt } from "./character-art";
 import { cosmeticVisual } from "../content/cosmetics";
 import { OBELISK_BRANCHES, OBELISK_NODES, nodeBlocked, nodeCost, nodeValue } from "../content/obelisk";
 import { achievementAmount, achievementCurrency, completionGold } from "../core/economy";
@@ -728,8 +729,9 @@ class UI {
         ${Object.entries(CHARACTER_DEFINITIONS)
           .map(([id, c]) => {
             const unlocked = this.g.save.unlocked.includes(id);
+            const portrait = resolveCharacterArt(id)?.portrait;
             return `<button data-action="select" data-id="${id}" class="card ${this.g.save.selected === id ? "selected" : ""} ${unlocked ? "" : "locked"}" ${unlocked ? "" : "disabled"}>
-            <span class="sigil" style="color:${c.color}">${c.icon}</span>
+            ${portrait ? `<img src="${esc(portraitUrl(portrait))}" alt="Retrato de ${esc(c.name)}" width="96" height="96" style="object-fit:contain;image-rendering:pixelated" />` : `<span class="sigil" style="color:${c.color}">${c.icon}</span>`}
             <small>${unlocked ? (this.g.save.selected === id ? "SELECIONADO" : "DISPONÍVEL") : "BLOQUEADO"}</small>
             <h2>${c.name}</h2><p>${c.title}</p><strong>${WEAPON_DEFINITIONS[c.weapon].name}</strong><p>${c.bonus}</p><small>${c.condition}</small>
           </button>`;

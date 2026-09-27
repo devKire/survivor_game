@@ -12,6 +12,13 @@ import type { ClientMessage } from "../../game/network/protocol";
 import { pvpCustomizationAction } from "../../server/actions";
 import CharacterPreview from "../components/CharacterPreview";
 
+const CHARACTER_STYLES: Record<PvpCharacter, string> = {
+  nara: "Ataque móvel",
+  orin: "Controle de área",
+  ivo: "Projéteis perfurantes",
+  sena: "Bombardeio arcano",
+};
+
 export default function ArenaLobby({
   lobby,
   userId,
@@ -23,11 +30,29 @@ export default function ArenaLobby({
 }) {
   const own = lobby.seats.find((s) => s.id === userId)!;
   const [owned, setOwned] = useState<string[]>([]);
+  const [appearanceError, setAppearanceError] = useState("");
   useEffect(() => {
-    void pvpCustomizationAction().then((result) => {
-      if (result.ok) setOwned(result.data.owned.map((c) => c.id));
-    });
+    let active = true;
+    void pvpCustomizationAction()
+      .then((result) => {
+        if (!active) return;
+        if (result.ok) setOwned(result.data.owned.map((c) => c.id));
+        else setAppearanceError("Não foi possível carregar suas aparências.");
+      })
+      .catch(() => {
+        if (active)
+          setAppearanceError("Não foi possível carregar suas aparências.");
+      });
+    return () => {
+      active = false;
+    };
   }, []);
+  const weapons = (id: PvpCharacter) =>
+    lobby.mode.startsWith("WAR")
+      ? WEAPON_DEFINITIONS[PVP_CHARACTER_PROFILES[id].war.starterWeapon].name
+      : PVP_CHARACTER_PROFILES[id].duel.weapons
+          .map((w) => WEAPON_DEFINITIONS[w.id].name)
+          .join(" · ");
   const team = (index: number) => (
     <section className="lobby-team">
       <h2>{index === 0 ? "TIME AZUL" : "TIME VERMELHO"}</h2>
@@ -86,8 +111,16 @@ export default function ArenaLobby({
                   send({ type: "ARENA_SELECT_CHARACTER", character: id })
                 }
               >
-                <CharacterPreview character={id} size={70} animation={false} />
+                <CharacterPreview
+                  character={id}
+                  size={70}
+                  animation={false}
+                  presentation="portrait"
+                />
                 <strong>{PVP_LOADOUTS[id].name}</strong>
+                <small>{PVP_LOADOUTS[id].title}</small>
+                <small>{CHARACTER_STYLES[id]}</small>
+                <small>{weapons(id)}</small>
               </button>
             ))}
           </div>
@@ -108,9 +141,11 @@ export default function ArenaLobby({
             </div>
           )}
           <h3>Aparência</h3>
+          {appearanceError && <small role="status">{appearanceError}</small>}
           <div className="actions">
             <button
               disabled={own.locked}
+              aria-pressed={!own.cosmetics.CHARACTER_SKIN}
               onClick={() =>
                 send({
                   type: "ARENA_SELECT_COSMETIC",
@@ -146,12 +181,8 @@ export default function ArenaLobby({
               ))}
           </div>
           <small>
-            Arma inicial ·{" "}
-            {
-              WEAPON_DEFINITIONS[
-                PVP_CHARACTER_PROFILES[own.character].war.starterWeapon
-              ].name
-            }
+            {lobby.mode.startsWith("WAR") ? "Arma inicial" : "Arsenal fixo"} ·{" "}
+            {weapons(own.character)}
           </small>
           <button
             className="lobby-lock"
