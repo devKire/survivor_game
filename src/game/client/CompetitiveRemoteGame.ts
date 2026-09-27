@@ -432,6 +432,7 @@ export class CompetitiveRemoteGame extends BrowserGame {
           own.hp > 0 && snapshot.intermission <= 0 && !focused
             ? this.input.vector()
             : { x: 0, y: 0 };
+        this.renderer.setPlayerMotion(this.player, move);
         const magnitude = Math.hypot(move.x, move.y);
         if (magnitude > 0.01)
           this.face = { x: move.x / magnitude, y: move.y / magnitude };
@@ -471,7 +472,8 @@ export class CompetitiveRemoteGame extends BrowserGame {
         this.player.dy = own.dy;
         this.camera.x = this.player.x;
         this.camera.y = this.player.y;
-      }
+      } else if (this.player)
+        this.renderer.setPlayerMotion(this.player, { x: 0, y: 0 });
       this.run.simTime = Math.max(this.run.simTime, snapshot.time) + dt;
       for (const bullet of this.bullets.items) {
         bullet.x += bullet.vx * dt;
@@ -504,7 +506,10 @@ export class CompetitiveRemoteGame extends BrowserGame {
       this.updateEffects(dt);
       this.renderer.draw(now / 1000);
       this.drawCompetitiveOverlay(snapshot);
-    } else this.renderer.draw(now / 1000);
+    } else {
+      if (this.player) this.renderer.setPlayerMotion(this.player, { x: 0, y: 0 });
+      this.renderer.draw(now / 1000);
+    }
     this.frameHandle = requestAnimationFrame((time) => this.frame(time));
   }
 

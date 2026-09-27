@@ -201,6 +201,11 @@ export class BrowserGame extends GameSimulation {
       this.accumulator = 0;
     }
 
+    if (this.player)
+      this.renderer.setPlayerMotion(
+        this.player,
+        this.state === "playing" ? this.input.vector() : { x: 0, y: 0 },
+      );
     this.renderer.draw(now / 1000);
     this.frameHandle = requestAnimationFrame((t) => this.frame(t));
   }

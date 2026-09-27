@@ -557,6 +557,7 @@ export class RemoteGame extends BrowserGame {
           own.state === "alive" && this.state === "playing" && !focused
             ? this.input.vector()
             : { x: 0, y: 0 };
+        this.renderer.setPlayerMotion(this.player, move);
         const input = { sequence: ++this.sequence, move, dt: 1 / TICK_HZ };
         this.pending.push(input);
         if (this.pending.length > 250) this.pending.shift();
@@ -670,7 +671,10 @@ export class RemoteGame extends BrowserGame {
         }
       }
       recordMetric(diagnostics.render, performance.now() - renderStarted);
-    } else this.renderer?.draw(now / 1000);
+    } else {
+      if (this.player) this.renderer?.setPlayerMotion(this.player, { x: 0, y: 0 });
+      this.renderer?.draw(now / 1000);
+    }
     if (now - this.metricsAt >= 1000) {
       const seconds = (now - this.metricsAt) / 1000;
       this.packetRate = this.packetCount / seconds;

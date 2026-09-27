@@ -469,6 +469,10 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
     this.characterSprites.setAttackSequence(player, sequence);
   }
 
+  setPlayerMotion(player: Player, motion: T.Vec) {
+    this.characterSprites.setMotion(player, motion);
+  }
+
   private drawLegacyPlayerBody(
     p: Player,
     time: number,

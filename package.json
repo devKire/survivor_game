@@ -9,6 +9,7 @@
   "scripts": {
     "assets:characters:canonicalize": "node scripts/canonicalize-character-sheets.mjs",
     "assets:characters:validate": "node scripts/canonicalize-character-sheets.mjs --validate",
+    "assets:characters:qa": "node scripts/qa-character-sheets.mjs",
     "dev": "next dev --hostname 0.0.0.0",
     "build": "next build",
     "postinstall": "prisma generate",
