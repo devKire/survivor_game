@@ -175,6 +175,7 @@ export default function CollectionClient({
                   character={id}
                   cosmetics={equipped}
                   size={150}
+                  animation={false}
                 />
               )}
               <strong>
@@ -260,6 +261,7 @@ export default function CollectionClient({
                       [c.type]: c.id,
                     }}
                     size={180}
+                    animation={false}
                   />
                 </button>
                 <small>

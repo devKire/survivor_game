@@ -1,10 +1,26 @@
 import { WAR } from "../content/war";
 import { z } from "zod";
 export const arenaCommands = [
-  z.object({type:z.literal("ARENA_SELECT_CHARACTER"),character:z.enum(["nara","orin","ivo","sena"])}).strict(),
-  z.object({type:z.literal("ARENA_SELECT_ROLE"),role:z.enum(["SOLDADO","CONSTRUTOR","COMANDANTE"])}).strict(),
-  z.object({type:z.literal("ARENA_SELECT_COSMETIC"),slot:z.string().max(40),id:z.string().max(80).nullable()}).strict(),
-  z.object({type:z.literal("ARENA_LOCK_SELECTION")}).strict(),
+  z
+    .object({
+      type: z.literal("ARENA_SELECT_CHARACTER"),
+      character: z.enum(["nara", "orin", "ivo", "sena"]),
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal("ARENA_SELECT_ROLE"),
+      role: z.enum(["SOLDADO", "CONSTRUTOR", "COMANDANTE"]),
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal("ARENA_SELECT_COSMETIC"),
+      slot: z.string().max(40),
+      id: z.string().max(80).nullable(),
+    })
+    .strict(),
+  z.object({ type: z.literal("ARENA_LOCK_SELECTION") }).strict(),
   z
     .object({
       type: z.literal("ARENA_QUEUE"),
@@ -55,19 +71,25 @@ export const arenaCommands = [
       kind: z.literal("troops"),
     })
     .strict(),
-  z.object({
-    type: z.literal("ARENA_WAR_CHOOSE_UPGRADE"),
-    decision: z.number().int().min(1).max(10000),
-    choice: z.string().min(1).max(100),
-  }).strict(),
-  z.object({
-    type: z.literal("ARENA_WAR_BUY_ITEM"),
-    itemId: z.string().min(1).max(80),
-  }).strict(),
-  z.object({
-    type: z.literal("ARENA_WAR_SELL_ITEM"),
-    slot: z.number().int().min(0).max(5),
-  }).strict(),
+  z
+    .object({
+      type: z.literal("ARENA_WAR_CHOOSE_UPGRADE"),
+      decision: z.number().int().min(1).max(10000),
+      choice: z.string().min(1).max(100),
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal("ARENA_WAR_BUY_ITEM"),
+      itemId: z.string().min(1).max(80),
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal("ARENA_WAR_SELL_ITEM"),
+      slot: z.number().int().min(0).max(5),
+    })
+    .strict(),
   z
     .object({
       type: z.literal("ARENA_CHAT_SEND"),
@@ -99,7 +121,23 @@ export const arenaCommands = [
 export const arenaCommand = z.discriminatedUnion("type", arenaCommands);
 export type ArenaCommand = z.infer<typeof arenaCommand>;
 const war = z.object({
-  neutrals: z.array(z.object({id:z.number(),campId:z.string(),type:z.string(),name:z.string(),x:z.number(),y:z.number(),hp:z.number(),maxHp:z.number(),wind:z.number(),charge:z.number(),aimX:z.number(),aimY:z.number(),bossPhase:z.number()})),
+  neutrals: z.array(
+    z.object({
+      id: z.number(),
+      campId: z.string(),
+      type: z.string(),
+      name: z.string(),
+      x: z.number(),
+      y: z.number(),
+      hp: z.number(),
+      maxHp: z.number(),
+      wind: z.number(),
+      charge: z.number(),
+      aimX: z.number(),
+      aimY: z.number(),
+      bossPhase: z.number(),
+    }),
+  ),
   objective: z.object({
     owner: z.number().nullable(),
     capture: z.number(),
@@ -114,19 +152,26 @@ const war = z.object({
   xpToNextLevel: z.number(),
   pendingUpgrades: z.number(),
   decision: z.number(),
-  choices: z.array(z.object({
-    id: z.string(),
-    kind: z.enum(["weapon", "passive", "path"]),
-    name: z.string(),
-    description: z.string(),
-    weaponId: z.string().optional(),
-    currentLevel: z.number().optional(),
-    nextLevel: z.number().optional(),
-  })),
-  weapons: z.array(z.object({
-    id: z.string(), level: z.number(), evolved: z.boolean(),
-    path: z.string().nullable(), pathLevel: z.number(),
-  })),
+  choices: z.array(
+    z.object({
+      id: z.string(),
+      kind: z.enum(["weapon", "passive", "path"]),
+      name: z.string(),
+      description: z.string(),
+      weaponId: z.string().optional(),
+      currentLevel: z.number().optional(),
+      nextLevel: z.number().optional(),
+    }),
+  ),
+  weapons: z.array(
+    z.object({
+      id: z.string(),
+      level: z.number(),
+      evolved: z.boolean(),
+      path: z.string().nullable(),
+      pathLevel: z.number(),
+    }),
+  ),
   passives: z.record(z.string(), z.number()),
   items: z.array(z.object({ id: z.string() })),
   shopAvailable: z.boolean(),
@@ -239,7 +284,7 @@ export const arenaSnapshotSchema = z.object({
       name: z.string(),
       team: z.number(),
       character: z.string(),
-      role: z.enum(["SOLDADO","CONSTRUTOR","COMANDANTE"]).nullable(),
+      role: z.enum(["SOLDADO", "CONSTRUTOR", "COMANDANTE"]).nullable(),
       respawnIn: z.number(),
       buildRevision: z.number(),
       level: z.number(),
@@ -247,13 +292,16 @@ export const arenaSnapshotSchema = z.object({
       deaths: z.number(),
       assists: z.number(),
       warItems: z.array(z.string()),
-      weapons: z.array(z.object({
-        id: z.string(),
-        level: z.number(),
-        evolved: z.boolean(),
-        path: z.string().nullable(),
-        pathLevel: z.number(),
-      })),
+      weapons: z.array(
+        z.object({
+          id: z.string(),
+          level: z.number(),
+          evolved: z.boolean(),
+          path: z.string().nullable(),
+          pathLevel: z.number(),
+        }),
+      ),
+      attackSeq: z.number().int().nonnegative(),
       x: z.number(),
       y: z.number(),
       dx: z.number(),
@@ -285,10 +333,27 @@ export const arenaSnapshotSchema = z.object({
   ),
 });
 export const arenaMessages = [
-  z.object({type:z.literal("ARENA_LOBBY_STATE"), lobby:z.object({
-    matchId:z.string(),mode:z.string(),remaining:z.number(),countdown:z.boolean(),
-    seats:z.array(z.object({id:z.string(),name:z.string(),team:z.number(),character:z.enum(["nara","orin","ivo","sena"]),cosmetics:z.record(z.string(),z.string()),role:z.enum(["SOLDADO","CONSTRUTOR","COMANDANTE"]).optional(),isBot:z.boolean().optional(),locked:z.boolean()})),
-  })}),
+  z.object({
+    type: z.literal("ARENA_LOBBY_STATE"),
+    lobby: z.object({
+      matchId: z.string(),
+      mode: z.string(),
+      remaining: z.number(),
+      countdown: z.boolean(),
+      seats: z.array(
+        z.object({
+          id: z.string(),
+          name: z.string(),
+          team: z.number(),
+          character: z.enum(["nara", "orin", "ivo", "sena"]),
+          cosmetics: z.record(z.string(), z.string()),
+          role: z.enum(["SOLDADO", "CONSTRUTOR", "COMANDANTE"]).optional(),
+          isBot: z.boolean().optional(),
+          locked: z.boolean(),
+        }),
+      ),
+    }),
+  }),
   z.object({
     type: z.literal("ARENA_CHAT"),
     id: z.string(),

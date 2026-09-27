@@ -9,6 +9,7 @@ import { TAU, clamp, hashString } from "../core/math";
 import type { Player } from "../core/entities";
 import type { World } from "../core/world";
 import type * as T from "../core/types";
+import { CharacterSpriteRenderer } from "./character-sprite-renderer";
 export interface WorldRenderContext {
   ctx: CanvasRenderingContext2D;
   camera: T.Vec;
@@ -30,6 +31,7 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
   floor: CanvasPattern | null = null;
   waterMask: HTMLCanvasElement | null = null;
   waterKey = "";
+  private characterSprites = new CharacterSpriteRenderer();
   constructor(public g: G) {
     this.c = g.ctx;
   }
@@ -381,29 +383,29 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
     }
   }
 
-  player(p: Player, time: number) {
+  player(p: Player, time: number, attackSequence?: number) {
     const c = this.c,
-      g = this.g,
       def = CHARACTER_DEFINITIONS[p.character],
       visuals = cosmeticVisual(p.cosmetics),
-      color = visuals.skin?.color || def.color;
-    const moving = Math.abs(p.dx) + Math.abs(p.dy) > 0.01;
-    const bob = moving ? Math.sin(time * 10) * 1.8 : Math.sin(time * 3) * 0.8;
+      color = visuals.skin?.color || def.color,
+      moving = this.characterSprites.isMoving(p);
+    c.save();
     c.fillStyle = "#020b10aa";
     c.beginPath();
     c.ellipse(p.x, p.y + 16, 18, 8, 0, 0, TAU);
     c.fill();
     if (p.invulnerable > 0 && Math.floor(time * 16) % 2 === 0)
-      c.globalAlpha = 0.45;
-    if (p.hurtFlash > 0) c.globalAlpha = 0.58;
+      c.globalAlpha *= 0.45;
+    if (p.hurtFlash > 0) c.globalAlpha *= 0.58;
     if (p.buff > 0) {
       c.strokeStyle = "#f6d093";
       c.lineWidth = 2;
       this.circle(p.x, p.y, 25 + Math.sin(time * 6) * 3);
       c.stroke();
     }
+
     c.save();
-    c.translate(p.x, p.y + bob);
+    c.translate(p.x, p.y);
     if (visuals.trail && moving) {
       c.strokeStyle = visuals.trail.color;
       c.lineWidth = 2;
@@ -427,6 +429,13 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
       this.circle(0, 0, 25 + Math.sin(time * 2) * 2);
       c.stroke();
     }
+    c.restore();
+
+    if (!this.characterSprites.draw(c, p, time, attackSequence))
+      this.drawLegacyPlayerBody(p, time, color, moving);
+
+    c.save();
+    c.translate(p.x, p.y);
     if (visuals.death && p.health <= 0) {
       c.fillStyle = visuals.death.color;
       c.fillText(visuals.death.glyph, -8, -28);
@@ -443,7 +452,33 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
       c.strokeStyle = visuals.frame.color;
       c.strokeRect(-11, -44, 22, 20);
     }
+    c.restore();
+    c.restore();
 
+    if (this.g.debug.hitboxes) {
+      c.strokeStyle = "#fff";
+      this.circle(p.x, p.y, p.r);
+      c.stroke();
+      c.strokeStyle = "#7ecab4";
+      this.circle(p.x, p.y, p.stats.pickupRange);
+      c.stroke();
+    }
+  }
+
+  setPlayerAttackSequence(player: Player, sequence: number) {
+    this.characterSprites.setAttackSequence(player, sequence);
+  }
+
+  private drawLegacyPlayerBody(
+    p: Player,
+    time: number,
+    color: string,
+    moving: boolean,
+  ) {
+    const c = this.c;
+    const bob = moving ? Math.sin(time * 10) * 1.8 : Math.sin(time * 3) * 0.8;
+    c.save();
+    c.translate(p.x, p.y + bob);
     c.fillStyle = "#19353a";
     c.strokeStyle = color;
     c.lineWidth = 2;
@@ -522,15 +557,6 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
     c.fillRect(-4 + p.dx * 2, -9, 3, 2);
     c.fillRect(2 + p.dx * 2, -9, 3, 2);
     c.restore();
-    c.globalAlpha = 1;
-    if (g.debug.hitboxes) {
-      c.strokeStyle = "#fff";
-      this.circle(p.x, p.y, p.r);
-      c.stroke();
-      c.strokeStyle = "#7ecab4";
-      this.circle(p.x, p.y, p.stats.pickupRange);
-      c.stroke();
-    }
   }
 
   projectile(

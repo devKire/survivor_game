@@ -80,7 +80,7 @@ export default function CharacterPreview({
         const scale = size / 85;
         ctx.scale(scale, scale);
         const clock = animation && !reduced ? time / 1000 : 0;
-        renderer.player(player, clock % 2);
+        renderer.player(player, clock);
         if (visuals.projectile)
           renderer.projectile(
             {

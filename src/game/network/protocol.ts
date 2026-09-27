@@ -1,4 +1,4 @@
-import { arenaCommands,arenaMessages } from "./pvp";
+import { arenaCommands, arenaMessages } from "./pvp";
 import { z } from "zod";
 import { saveSchema } from "../core/save";
 const id = z.string().min(1).max(100);
@@ -13,7 +13,9 @@ export const clientMessage = z.discriminatedUnion("type", [
       character: z.enum(["nara", "orin", "ivo", "sena"]).optional(),
       mapId: z.enum(["ruins", "gardens"]).optional(),
       mode: z.enum(["normal", "nightmare", "endless"]).optional(),
-      duration: z.union([z.literal(600), z.literal(900), z.literal(1800)]).optional(),
+      duration: z
+        .union([z.literal(600), z.literal(900), z.literal(1800)])
+        .optional(),
     })
     .strict(),
   z.object({ type: z.literal("START") }).strict(),
@@ -96,7 +98,8 @@ export interface NetEntity {
   itemId?: string;
 }
 export interface NetPlayer {
-  cosmetics?: Record<string,string>;
+  attackSeq?: number;
+  cosmetics?: Record<string, string>;
   buff?: number;
   invulnerable?: number;
   orbit?: { area: number; amount: number; evolved: boolean };
@@ -217,7 +220,8 @@ const entity = z.object({
   itemId: z.string().optional(),
 });
 const player: z.ZodType<NetPlayer> = z.object({
-  cosmetics: z.record(z.string(),z.string()).optional(),
+  attackSeq: z.number().int().nonnegative().optional(),
+  cosmetics: z.record(z.string(), z.string()).optional(),
   buff: z.number().optional(),
   invulnerable: z.number().optional(),
   orbit: z
@@ -250,7 +254,20 @@ export const snapshotSchema: z.ZodType<Snapshot> = z.object({
   upsert: z.array(entity).max(5000),
   patch: z.array(entity.partial().required({ id: true })).max(5000),
   remove: z.array(z.string()).max(5000),
-  fx: z.array(z.object({ id: z.string(), tick: z.number(), ownerId: z.string().nullable(), weapon: z.string(), x: z.number(), y: z.number(), radius: z.number(), variant: z.enum(["normal", "evolved"]) })).max(100),
+  fx: z
+    .array(
+      z.object({
+        id: z.string(),
+        tick: z.number(),
+        ownerId: z.string().nullable(),
+        weapon: z.string(),
+        x: z.number(),
+        y: z.number(),
+        radius: z.number(),
+        variant: z.enum(["normal", "evolved"]),
+      }),
+    )
+    .max(100),
   structures: z
     .array(
       z.object({

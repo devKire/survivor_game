@@ -5,7 +5,15 @@ import { Player, Weapon } from "../core/entities";
 import { ENEMY_DEFINITIONS, WEAPON_DEFINITIONS } from "../content/catalog";
 import type { NetEntity, Snapshot, ClientMessage } from "../network/protocol";
 import { predictMove } from "../network/movement";
-import type { Area, Bullet, Enemy, Gem, Pickup, Status, Vec } from "../core/types";
+import type {
+  Area,
+  Bullet,
+  Enemy,
+  Gem,
+  Pickup,
+  Status,
+  Vec,
+} from "../core/types";
 import { TICK_HZ } from "../network/protocol";
 import {
   beginMotion,
@@ -125,7 +133,8 @@ export class RemoteGame extends BrowserGame {
     for (const fx of snapshot.fx) {
       if (this.fxSeen.has(fx.id)) continue;
       this.fxSeen.add(fx.id);
-      if (this.fxSeen.size > 512) this.fxSeen.delete(this.fxSeen.values().next().value as string);
+      if (this.fxSeen.size > 512)
+        this.fxSeen.delete(this.fxSeen.values().next().value as string);
       const color = WEAPON_DEFINITIONS[fx.weapon]?.color || "#dbe5df";
       this.ring(fx.x, fx.y, fx.radius, color);
       this.spark(fx.x, fx.y, color, fx.variant === "evolved" ? 20 : 10);
@@ -188,7 +197,7 @@ export class RemoteGame extends BrowserGame {
       this.sound.play("hit");
     }
     const own = snapshot.players.find((p) => p.id === this.userId);
-    if(own) this.player.cosmetics = own.cosmetics || {};
+    if (own) this.player.cosmetics = own.cosmetics || {};
     if (!own) return;
     this.pending = this.pending.filter((p) => p.sequence > own.ack);
     this.prediction = { x: own.x, y: own.y };
@@ -205,8 +214,10 @@ export class RemoteGame extends BrowserGame {
     const error = Math.hypot(dx, dy);
     if (error > 8) this.corrections++;
     // Keep authority exact; only the visual offset decays over ~100 ms.
-    this.visualOffset = this.snapshot && error < 96 && own.state === "alive"
-      ? { x: dx, y: dy } : { x: 0, y: 0 };
+    this.visualOffset =
+      this.snapshot && error < 96 && own.state === "alive"
+        ? { x: dx, y: dy }
+        : { x: 0, y: 0 };
     this.sequence = Math.max(this.sequence, own.ack);
     this.player.character = own.character;
     this.player.dx = own.dx;
@@ -225,7 +236,11 @@ export class RemoteGame extends BrowserGame {
     this.player.xp = snapshot.own.xp;
     this.player.xpToNextLevel = snapshot.own.xpToNextLevel;
     this.player.weapons = snapshot.own.weapons.map((data) =>
-      Object.assign(this.player.weapons.find(w => w.id === data.id) || new Weapon(data.id), data),
+      Object.assign(
+        this.player.weapons.find((w) => w.id === data.id) ||
+          new Weapon(data.id),
+        data,
+      ),
     );
     this.player.passives = snapshot.own.passives;
     this.run.inventory = snapshot.own.inventory;
@@ -331,7 +346,14 @@ export class RemoteGame extends BrowserGame {
         this.sceneKinds.set(e.id, e.kind);
         this.motions.set(
           e.id,
-          beginMotion(visual, e, undefined, elapsedMs, receivedAt, this.snapshotTiming!.delay),
+          beginMotion(
+            visual,
+            e,
+            undefined,
+            elapsedMs,
+            receivedAt,
+            this.snapshotTiming!.delay,
+          ),
         );
       } else {
         const motion = this.motions.get(e.id);
@@ -340,9 +362,17 @@ export class RemoteGame extends BrowserGame {
         // delta. Reset velocity when authority stops instead of extrapolating
         // the last movement forever beyond its target.
         if (motion)
-          authoritativeBefore.set(e.id, { x: motion.targetX, y: motion.targetY });
-        if (!motion || motion.targetX !== e.x || motion.targetY !== e.y ||
-            motion.velocityX !== 0 || motion.velocityY !== 0)
+          authoritativeBefore.set(e.id, {
+            x: motion.targetX,
+            y: motion.targetY,
+          });
+        if (
+          !motion ||
+          motion.targetX !== e.x ||
+          motion.targetY !== e.y ||
+          motion.velocityX !== 0 ||
+          motion.velocityY !== 0
+        )
           this.motions.set(
             e.id,
             beginMotion(
@@ -423,12 +453,27 @@ export class RemoteGame extends BrowserGame {
     }
     if (entity.kind === "area")
       return {
-        x: entity.x, y: entity.y, r: entity.r, damage: 0, w: null, life: 1,
-        delay: 0, kind: entity.type, tick: 0, armed: false, enemy: false,
+        x: entity.x,
+        y: entity.y,
+        r: entity.r,
+        damage: 0,
+        w: null,
+        life: 1,
+        delay: 0,
+        kind: entity.type,
+        tick: 0,
+        armed: false,
+        enemy: false,
       };
     if (entity.kind === "pickup")
       return { x: entity.x, y: entity.y, type: entity.type, value: 1, life: 1 };
-    return { x: entity.x, y: entity.y, value: 1, key: entity.id, magnet: false };
+    return {
+      x: entity.x,
+      y: entity.y,
+      value: 1,
+      key: entity.id,
+      magnet: false,
+    };
   }
   private updateVisual(entity: NetEntity, visual: SceneVisual) {
     if (entity.kind === "enemy") {
@@ -449,10 +494,15 @@ export class RemoteGame extends BrowserGame {
       const key = (entity.statuses || []).join("|");
       if (this.statusKeys.get(entity.id) !== key) {
         this.statusKeys.set(entity.id, key);
-        for (const status of Object.keys(enemy.statuses)) delete enemy.statuses[status];
+        for (const status of Object.keys(enemy.statuses))
+          delete enemy.statuses[status];
         for (const status of entity.statuses || [])
           enemy.statuses[status] = {
-            duration: 1, magnitude: 1, stacks: 1, tick: 0, source: null,
+            duration: 1,
+            magnitude: 1,
+            stacks: 1,
+            tick: 0,
+            source: null,
           } satisfies Status;
       }
       return;
@@ -600,7 +650,7 @@ export class RemoteGame extends BrowserGame {
             this.run.simTime,
           );
         p.cosmetics = other.cosmetics || {};
-        this.renderer.player(p, this.run.simTime);
+        this.renderer.player(p, this.run.simTime, other.attackSeq);
         c.strokeStyle = other.color;
         this.renderer.circle(p.x, p.y, 23);
         c.stroke();

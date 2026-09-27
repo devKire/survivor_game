@@ -31,8 +31,7 @@ export class SnapshotStream {
     const near = (id: string, x: number, y: number) => {
       const margin = this.previous.has(id) ? 120 : 0;
       return (
-        Math.abs(x - p.x) < 1000 + margin &&
-        Math.abs(y - p.y) < 800 + margin
+        Math.abs(x - p.x) < 1000 + margin && Math.abs(y - p.y) < 800 + margin
       );
     };
     const round = (n: number) => Math.round(n * 10) / 10;
@@ -72,30 +71,31 @@ export class SnapshotStream {
           y: round(b.y),
           r: b.r,
           type: b.kind,
-          color: b.enemy ? b.color : cosmeticVisual(g.ownerOf(b.source).cosmetics).projectile?.color || b.color,
+          color: b.enemy
+            ? b.color
+            : cosmeticVisual(g.ownerOf(b.source).cosmetics).projectile?.color ||
+              b.color,
           enemy: b.enemy,
         });
-    for (const a of g.areas)
-      {
-        const id = this.identity(a, "a");
-        if (!near(id, a.x, a.y)) continue;
-        entities.push({
-          id,
-          kind: "area",
-          x: round(a.x),
-          y: round(a.y),
-          r: a.r,
-          type: a.kind,
-          color: a.w?.definition.color,
-          enemy: a.enemy,
-          delay: round(a.delay),
-          armed: a.armed,
-        });
-      }
-    for (const o of g.pickups)
-      {
-        const id = this.identity(o, "p");
-        if ((!o.ownerId || o.ownerId === m.id) && near(id, o.x, o.y))
+    for (const a of g.areas) {
+      const id = this.identity(a, "a");
+      if (!near(id, a.x, a.y)) continue;
+      entities.push({
+        id,
+        kind: "area",
+        x: round(a.x),
+        y: round(a.y),
+        r: a.r,
+        type: a.kind,
+        color: a.w?.definition.color,
+        enemy: a.enemy,
+        delay: round(a.delay),
+        armed: a.armed,
+      });
+    }
+    for (const o of g.pickups) {
+      const id = this.identity(o, "p");
+      if ((!o.ownerId || o.ownerId === m.id) && near(id, o.x, o.y))
         entities.push({
           id,
           kind: "pickup",
@@ -106,21 +106,20 @@ export class SnapshotStream {
           value: o.value,
           itemId: o.itemId,
         });
-      }
-    for (const o of g.gems)
-      {
-        const id = this.identity(o, "g");
-        if (!near(id, o.x, o.y)) continue;
-        entities.push({
-          id,
-          kind: "gem",
-          x: round(o.x),
-          y: round(o.y),
-          r: 4,
-          type: "xp",
-          value: o.value,
-        });
-      }
+    }
+    for (const o of g.gems) {
+      const id = this.identity(o, "g");
+      if (!near(id, o.x, o.y)) continue;
+      entities.push({
+        id,
+        kind: "gem",
+        x: round(o.x),
+        y: round(o.y),
+        r: 4,
+        type: "xp",
+        value: o.value,
+      });
+    }
     const now = new Map<string, NetEntity>(),
       upsert: NetEntity[] = [],
       patch: EntityPatch[] = [];
@@ -133,10 +132,13 @@ export class SnapshotStream {
         // Avoid one pair-array per field for every entity, recipient and snapshot.
         for (const field in e) {
           const key = field as keyof NetEntity;
-          const value = e[key], old = previous[key];
-          const changed = Array.isArray(value) && Array.isArray(old)
-            ? value.length !== old.length || value.some((v, i) => v !== old[i])
-            : value !== old;
+          const value = e[key],
+            old = previous[key];
+          const changed =
+            Array.isArray(value) && Array.isArray(old)
+              ? value.length !== old.length ||
+                value.some((v, i) => v !== old[i])
+              : value !== old;
           if (changed) {
             changes ??= { id: e.id };
             Reflect.set(changes, key, value);
@@ -157,6 +159,10 @@ export class SnapshotStream {
       full,
       base,
       players: [...g.members.values()].map((t) => ({
+        attackSeq: t.player.weapons.reduce(
+          (sum, weapon) => sum + weapon.shots,
+          0,
+        ),
         orbit: (() => {
           const w = t.player.weapons.find((w) => w.id === "orbit");
           if (!w) return undefined;

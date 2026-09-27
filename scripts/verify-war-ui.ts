@@ -144,6 +144,27 @@ try {
   const page = await browser.newPage({
     viewport: { width: 1366, height: 768 },
   });
+  await page.addInitScript(`
+    window.characterSpriteDraws = [];
+    const imageIds = new WeakMap();
+    let nextImageId = 1;
+    const original = CanvasRenderingContext2D.prototype.drawImage;
+    CanvasRenderingContext2D.prototype.drawImage = function(image, ...args) {
+      if (image instanceof HTMLImageElement && image.naturalWidth === 2048) {
+        let imageId = imageIds.get(image);
+        if (!imageId) {
+          imageId = nextImageId++;
+          imageIds.set(image, imageId);
+        }
+        window.characterSpriteDraws.push({
+          src: imageId,
+          sw: args[2], sh: args[3], dw: args[6], dh: args[7],
+          smoothing: this.imageSmoothingEnabled,
+        });
+      }
+      return Reflect.apply(original, this, [image, ...args]);
+    };
+  `);
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("http://127.0.0.1:4179/arena");
   await expect(
@@ -220,6 +241,39 @@ try {
     page.getByRole("heading", { name: "PERSONAGENS", exact: true }),
   ).toBeVisible();
   await expect(page.locator(".character-cards canvas")).toHaveCount(4);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (window as typeof window & { characterSpriteDraws: unknown[] })
+            .characterSpriteDraws.length,
+      ),
+    )
+    .toBeGreaterThanOrEqual(4);
+  const sourceDraws = await page.evaluate(
+    () =>
+      (
+        window as typeof window & {
+          characterSpriteDraws: {
+            sw: number;
+            sh: number;
+            dw: number;
+            dh: number;
+            smoothing: boolean;
+          }[];
+        }
+      ).characterSpriteDraws,
+  );
+  expect(
+    sourceDraws.every(
+      (draw) =>
+        draw.sw === 256 &&
+        draw.sh === 256 &&
+        draw.dw === 96 &&
+        draw.dh === 96 &&
+        !draw.smoothing,
+    ),
+  ).toBe(true);
   await expect(page.locator(".character-card").first()).toContainText(
     "Skin · Memória · Vestes",
   );
@@ -355,6 +409,7 @@ try {
           "preview does not equip",
           "equipping updates the character card through the account action",
           "collection cards use the gameplay renderer and equipped skins",
+          "canonical 2048 sheets draw 256px cells at 96 world pixels with smoothing off",
           "lobby character selection",
           "mobile lobby, collection and shop fit viewport",
           "native touch joystick",

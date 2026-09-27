@@ -73,10 +73,7 @@ export interface FighterSeed {
   partyId?: string;
   role?: import("../content/war").WarRole;
 }
-import {
-  MAP_DEFINITIONS,
-  STRUCTURE_DEFINITIONS,
-} from "../content/catalog";
+import { MAP_DEFINITIONS, STRUCTURE_DEFINITIONS } from "../content/catalog";
 import { PVP_RULES } from "../content/mode-rules";
 import { World } from "./world";
 import { CompetitiveCombat, combatBody } from "./competitive-combat";
@@ -134,11 +131,24 @@ export class PvpSimulation {
     let index = 0;
     for (const s of seeds) {
       const player = new Player(s.character, {}, "PVP");
-      const build = modeProfile === "pvp5v5"
-        ? { weapons: [{ id: PVP_CHARACTER_PROFILES[s.character].war.starterWeapon, level: 1 }], passives: {} }
-        : PVP_CHARACTER_PROFILES[s.character].duel;
+      const build =
+        modeProfile === "pvp5v5"
+          ? {
+              weapons: [
+                {
+                  id: PVP_CHARACTER_PROFILES[s.character].war.starterWeapon,
+                  level: 1,
+                },
+              ],
+              passives: {},
+            }
+          : PVP_CHARACTER_PROFILES[s.character].duel;
       player.passives = { ...build.passives };
-      recalculateCompetitivePlayer(player, false, modeProfile === "pvp5v5" ? PVP_RULES.warGrowthCap : undefined);
+      recalculateCompetitivePlayer(
+        player,
+        false,
+        modeProfile === "pvp5v5" ? PVP_RULES.warGrowthCap : undefined,
+      );
       player.cosmetics = s.cosmetics;
       const f: Fighter = {
         id: s.id,
@@ -235,7 +245,13 @@ export class PvpSimulation {
   loadout(f: Fighter) {
     if (this.modeProfile === "pvp5v5")
       return {
-        weapons: [{ id: PVP_CHARACTER_PROFILES[f.player.character as PvpCharacter].war.starterWeapon, level: 1 }],
+        weapons: [
+          {
+            id: PVP_CHARACTER_PROFILES[f.player.character as PvpCharacter].war
+              .starterWeapon,
+            level: 1,
+          },
+        ],
         passives: {},
       };
     return PVP_CHARACTER_BUILDS[f.player.character as PvpCharacter];
@@ -580,21 +596,30 @@ export class PvpSimulation {
         name: f.name,
         team: f.team,
         character: f.player.character,
-        role: this.modeProfile === "pvp5v5" ? "SOLDADO" as import("../content/war").WarRole : null,
-        respawnIn: Math.max(0,f.respawnAt-this.time),
+        role:
+          this.modeProfile === "pvp5v5"
+            ? ("SOLDADO" as import("../content/war").WarRole)
+            : null,
+        respawnIn: Math.max(0, f.respawnAt - this.time),
         buildRevision: f.buildRevision,
         level: f.player.level,
         kills: f.kills,
         deaths: f.deaths,
         assists: f.assists,
         warItems: f.warItems,
-        weapons: (this.combat.get(f.id)?.player.weapons || []).map((weapon) => ({
-          id: weapon.id,
-          level: weapon.level,
-          evolved: weapon.evolved,
-          path: weapon.path,
-          pathLevel: weapon.pathLevel,
-        })),
+        weapons: (this.combat.get(f.id)?.player.weapons || []).map(
+          (weapon) => ({
+            id: weapon.id,
+            level: weapon.level,
+            evolved: weapon.evolved,
+            path: weapon.path,
+            pathLevel: weapon.pathLevel,
+          }),
+        ),
+        attackSeq: (this.combat.get(f.id)?.player.weapons || []).reduce(
+          (sum, weapon) => sum + weapon.shots,
+          0,
+        ),
         x: f.player.x,
         y: f.player.y,
         dx: f.player.dx,

@@ -7,7 +7,15 @@ import { predictMove } from "../network/movement";
 import { TICK_HZ, type ClientMessage } from "../network/protocol";
 import type { ArenaSnapshot, PvpInput } from "../core/pvp";
 import { World } from "../core/world";
-import type { Area, Bullet, Enemy, Line, Pickup, Structure, Vec } from "../core/types";
+import type {
+  Area,
+  Bullet,
+  Enemy,
+  Line,
+  Pickup,
+  Structure,
+  Vec,
+} from "../core/types";
 
 type PendingInput = Pick<PvpInput, "sequence" | "moveX" | "moveY">;
 
@@ -64,7 +72,9 @@ export class CompetitiveRemoteGame extends BrowserGame {
   };
 
   setVirtualMove(x: number, y: number) {
-    const own = this.snapshot?.players.find((player) => player.id === this.userId);
+    const own = this.snapshot?.players.find(
+      (player) => player.id === this.userId,
+    );
     if (!own || own.hp <= 0) {
       this.input.clearVirtualMove();
       return;
@@ -103,11 +113,14 @@ export class CompetitiveRemoteGame extends BrowserGame {
     const own = snapshot.players.find((player) => player.id === this.userId);
     if (!own) return;
     const oldHealth = this.playerHealth;
-    this.playerHealth = new Map(snapshot.players.map((player) => [player.id, player.hp]));
+    this.playerHealth = new Map(
+      snapshot.players.map((player) => [player.id, player.hp]),
+    );
     for (const player of snapshot.players) {
-      const visual = player.id === this.userId
-        ? this.player
-        : this.visualPlayer(player.id, player.character);
+      const visual =
+        player.id === this.userId
+          ? this.player
+          : this.visualPlayer(player.id, player.character);
       this.syncCompetitiveBuild(
         visual,
         player.id,
@@ -115,12 +128,18 @@ export class CompetitiveRemoteGame extends BrowserGame {
         player.buildRevision,
         player.id === this.userId ? snapshot.war?.passives : undefined,
       );
+      this.renderer.setPlayerAttackSequence(visual, player.attackSeq || 0);
       const previous = oldHealth.get(player.id);
       if (previous !== undefined && player.hp < previous) {
         const visual = this.visualPlayer(player.id, player.character);
         this.spark(player.x, player.y, TEAM_COLORS[player.team as 0 | 1], 5);
         if (this.save.settings.numbers)
-          this.float(player.x, player.y, Math.ceil(previous - player.hp), TEAM_COLORS[player.team as 0 | 1]);
+          this.float(
+            player.x,
+            player.y,
+            Math.ceil(previous - player.hp),
+            TEAM_COLORS[player.team as 0 | 1],
+          );
         visual.hurtFlash = 0.14;
       }
       if (!this.renderPositions.has(player.id))
@@ -133,11 +152,15 @@ export class CompetitiveRemoteGame extends BrowserGame {
       }
 
     this.snapshot = snapshot;
-    this.pending = this.pending.filter((input) => input.sequence > snapshot.own.ack);
+    this.pending = this.pending.filter(
+      (input) => input.sequence > snapshot.own.ack,
+    );
     this.sequence = Math.max(this.sequence, snapshot.own.ack);
     const predictionStructures = [
       ...snapshot.structures,
-      ...(snapshot.war?.structures.map((structure) => this.warStructure(structure)) || []),
+      ...(snapshot.war?.structures.map((structure) =>
+        this.warStructure(structure),
+      ) || []),
     ];
     let next = { x: own.x, y: own.y };
     for (const input of this.pending)
@@ -192,11 +215,33 @@ export class CompetitiveRemoteGame extends BrowserGame {
       } satisfies Enemy;
     });
     for (const neutral of snapshot.war?.neutrals || []) {
-      this.enemies.push({...ENEMY_DEFINITIONS[neutral.type],...neutral,dead:false,pattern:neutral.type === "boss" ? "charge" : "",bossEventIndex:null,kx:0,ky:0,flash:0,attack:0,phase:0,statuses:{},burrow:0,shield:0,buffAura:0,specialClock:0,controlImmunity:{}});
+      this.enemies.push({
+        ...ENEMY_DEFINITIONS[neutral.type],
+        ...neutral,
+        dead: false,
+        pattern: neutral.type === "boss" ? "charge" : "",
+        bossEventIndex: null,
+        kx: 0,
+        ky: 0,
+        flash: 0,
+        attack: 0,
+        phase: 0,
+        statuses: {},
+        burrow: 0,
+        shield: 0,
+        buffAura: 0,
+        specialClock: 0,
+        controlImmunity: {},
+      });
     }
     this.pickups = snapshot.pickups.map(
       (pickup) =>
-        ({ ...pickup, type: "heal", life: 1, value: pickup.value } satisfies Pickup),
+        ({
+          ...pickup,
+          type: "heal",
+          life: 1,
+          value: pickup.value,
+        }) satisfies Pickup,
     );
     this.areas = snapshot.areas.map(
       (area) =>
@@ -252,20 +297,26 @@ export class CompetitiveRemoteGame extends BrowserGame {
     this.ui.updateHUD();
     const modeLabel = document.getElementById("wave");
     if (modeLabel)
-      modeLabel.textContent = snapshot.war ? "GUERRA DO LIMIAR" : "DUELO COMPETITIVO";
+      modeLabel.textContent = snapshot.war
+        ? "GUERRA DO LIMIAR"
+        : "DUELO COMPETITIVO";
   }
 
   private startMatch(snapshot: ArenaSnapshot) {
     const own = snapshot.players.find((player) => player.id === this.userId);
     if (!own) return;
     this.start(own.character, "normal", snapshot.mapId, snapshot.seed);
-    const profile = MAP_DEFINITIONS[snapshot.mapId].profiles?.[snapshot.profile];
+    const profile =
+      MAP_DEFINITIONS[snapshot.mapId].profiles?.[snapshot.profile];
     if (!profile) throw new Error(`Perfil PvP ausente: ${snapshot.profile}`);
     this.world = new World(this, snapshot.mapId, snapshot.seed, {}, profile);
     for (let y = 0; y < snapshot.height; y += 640)
       for (let x = 0; x < snapshot.width; x += 640)
         this.world.ensureChunkAt(x, y);
-    this.player = this.createPlayer(own.character as PvpCharacter, own.cosmetics);
+    this.player = this.createPlayer(
+      own.character as PvpCharacter,
+      own.cosmetics,
+    );
     this.player.maxHealth = own.maxHp;
     this.player.health = own.hp;
     this.player.speed = own.speed;
@@ -283,7 +334,10 @@ export class CompetitiveRemoteGame extends BrowserGame {
     this.ui.hud(true);
   }
 
-  private createPlayer(character: PvpCharacter, cosmetics: Record<string, string>) {
+  private createPlayer(
+    character: PvpCharacter,
+    cosmetics: Record<string, string>,
+  ) {
     const player = new Player(character, {}, "PVP");
     const build = PVP_CHARACTER_BUILDS[character];
     player.passives = { ...build.passives };
@@ -334,10 +388,17 @@ export class CompetitiveRemoteGame extends BrowserGame {
     return player;
   }
 
-  private warStructure(structure: NonNullable<ArenaSnapshot["war"]>["structures"][number]): Structure {
+  private warStructure(
+    structure: NonNullable<ArenaSnapshot["war"]>["structures"][number],
+  ): Structure {
     return {
       id: structure.id,
-      type: structure.kind === "CORE" ? "obelisk" : structure.kind === "TORRE" ? "column" : "wall",
+      type:
+        structure.kind === "CORE"
+          ? "obelisk"
+          : structure.kind === "TORRE"
+            ? "column"
+            : "wall",
       x: structure.x,
       y: structure.y,
       r: structure.r,
@@ -354,19 +415,26 @@ export class CompetitiveRemoteGame extends BrowserGame {
   override frame(now: number) {
     if (this.abort.signal.aborted) return;
     if (this.dpr !== Math.min(window.devicePixelRatio || 1, 2)) this.resize();
-    const dt = this.lastFrame ? Math.min(0.1, (now - this.lastFrame) / 1000) : 0;
+    const dt = this.lastFrame
+      ? Math.min(0.1, (now - this.lastFrame) / 1000)
+      : 0;
     this.lastFrame = now;
-    this.fps = dt > 0 ? this.fps * 0.96 + Math.min(240, 1 / dt) * 0.04 : this.fps;
+    this.fps =
+      dt > 0 ? this.fps * 0.96 + Math.min(240, 1 / dt) * 0.04 : this.fps;
     const snapshot = this.snapshot;
     if (snapshot && this.active) {
       const own = snapshot.players.find((player) => player.id === this.userId);
       if (own) {
-        const focused = ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName || "");
-        const move = own.hp > 0 && snapshot.intermission <= 0 && !focused
-          ? this.input.vector()
-          : { x: 0, y: 0 };
+        const focused = ["INPUT", "TEXTAREA", "SELECT"].includes(
+          document.activeElement?.tagName || "",
+        );
+        const move =
+          own.hp > 0 && snapshot.intermission <= 0 && !focused
+            ? this.input.vector()
+            : { x: 0, y: 0 };
         const magnitude = Math.hypot(move.x, move.y);
-        if (magnitude > 0.01) this.face = { x: move.x / magnitude, y: move.y / magnitude };
+        if (magnitude > 0.01)
+          this.face = { x: move.x / magnitude, y: move.y / magnitude };
         this.sendClock += dt;
         while (this.sendClock >= 1 / TICK_HZ) {
           this.sendClock -= 1 / TICK_HZ;
@@ -376,7 +444,12 @@ export class CompetitiveRemoteGame extends BrowserGame {
             moveY: move.y,
             aimX: this.face.x,
             aimY: this.face.y,
-            ability: !focused && own.hp > 0 && (this.input.keys.has("Space") || this.virtualDash) ? "dash" : "none",
+            ability:
+              !focused &&
+              own.hp > 0 &&
+              (this.input.keys.has("Space") || this.virtualDash)
+                ? "dash"
+                : "none",
             seenTick: snapshot.tick,
           };
           this.pending.push(input);
@@ -426,7 +499,8 @@ export class CompetitiveRemoteGame extends BrowserGame {
         visual.cosmetics = player.cosmetics;
         visual.invulnerable = player.protected ? 1 : 0;
       }
-      this.fx = this.save.settings.particles === "off" ? 0 : Math.min(1, this.fps / 60);
+      this.fx =
+        this.save.settings.particles === "off" ? 0 : Math.min(1, this.fps / 60);
       this.updateEffects(dt);
       this.renderer.draw(now / 1000);
       this.drawCompetitiveOverlay(snapshot);
@@ -446,14 +520,26 @@ export class CompetitiveRemoteGame extends BrowserGame {
     );
     for (const player of snapshot.players) {
       const own = player.id === this.userId;
-      const visual = own ? this.player : this.visualPlayer(player.id, player.character);
+      const visual = own
+        ? this.player
+        : this.visualPlayer(player.id, player.character);
       const pos = own ? this.player : visual;
       visual.x = pos.x;
       visual.y = pos.y;
       visual.cosmetics = player.cosmetics;
       if (!own && visual.weapons.some((weapon) => weapon.id === "orbit"))
-        this.renderer.drawOrbit(visual.x, visual.y, visual.weapons.find((weapon) => weapon.id === "orbit")!.values(visual).area, visual.weapons.find((weapon) => weapon.id === "orbit")!.values(visual).amount, false, this.run.simTime);
-      if (!own) this.renderer.player(visual, this.run.simTime);
+        this.renderer.drawOrbit(
+          visual.x,
+          visual.y,
+          visual.weapons.find((weapon) => weapon.id === "orbit")!.values(visual)
+            .area,
+          visual.weapons.find((weapon) => weapon.id === "orbit")!.values(visual)
+            .amount,
+          false,
+          this.run.simTime,
+        );
+      if (!own)
+        this.renderer.player(visual, this.run.simTime, player.attackSeq);
       context.strokeStyle = TEAM_COLORS[player.team as 0 | 1];
       context.lineWidth = own ? 2.5 : 2;
       context.beginPath();
@@ -462,11 +548,22 @@ export class CompetitiveRemoteGame extends BrowserGame {
       context.fillStyle = "#0b171dd9";
       context.fillRect(pos.x - 25, pos.y - 34, 50, 5);
       context.fillStyle = TEAM_COLORS[player.team as 0 | 1];
-      context.fillRect(pos.x - 25, pos.y - 34, 50 * Math.max(0, player.hp / player.maxHp), 5);
+      context.fillRect(
+        pos.x - 25,
+        pos.y - 34,
+        50 * Math.max(0, player.hp / player.maxHp),
+        5,
+      );
       context.fillStyle = "#e4e9dc";
       context.font = "11px system-ui";
       context.textAlign = "center";
-      const state = player.isBot ? " [BOT]" : player.botControlled ? " [BOT temporário]" : !player.connected ? " · reconectando" : "";
+      const state = player.isBot
+        ? " [BOT]"
+        : player.botControlled
+          ? " [BOT temporário]"
+          : !player.connected
+            ? " · reconectando"
+            : "";
       context.fillText(player.name + state, pos.x, pos.y - 42);
     }
     for (const structure of snapshot.war?.structures || []) {
@@ -478,12 +575,22 @@ export class CompetitiveRemoteGame extends BrowserGame {
       context.arc(structure.x, structure.y, structure.r + 3, 0, Math.PI * 2);
       context.stroke();
       context.fillStyle = TEAM_COLORS[structure.team as 0 | 1];
-      context.fillRect(structure.x - structure.r, structure.y - structure.r - 8, 2 * structure.r * Math.max(0, structure.hp / structure.maxHp), 4);
+      context.fillRect(
+        structure.x - structure.r,
+        structure.y - structure.r - 8,
+        2 * structure.r * Math.max(0, structure.hp / structure.maxHp),
+        4,
+      );
       void visual;
     }
     for (const minion of snapshot.war?.minions || []) {
       context.fillStyle = TEAM_COLORS[minion.team as 0 | 1];
-      context.fillRect(minion.x - 9, minion.y - 11, 18 * Math.max(0, minion.hp / minion.maxHp), 3);
+      context.fillRect(
+        minion.x - 9,
+        minion.y - 11,
+        18 * Math.max(0, minion.hp / minion.maxHp),
+        3,
+      );
     }
     if (snapshot.war) {
       context.save();
@@ -492,12 +599,16 @@ export class CompetitiveRemoteGame extends BrowserGame {
       context.fillRect(-3000, snapshot.height, snapshot.width + 6000, 3000);
       context.fillRect(-3000, 0, 3000, snapshot.height);
       context.fillRect(snapshot.width, 0, 3000, snapshot.height);
-      context.strokeStyle = "#c9b877"; context.lineWidth = 5;
-      context.shadowBlur = 16; context.shadowColor = "#83ccb7";
-      context.strokeRect(0,0,snapshot.width,snapshot.height); context.restore();
-      context.strokeStyle = snapshot.war.objective.owner === null
-        ? "#c9b877"
-        : TEAM_COLORS[snapshot.war.objective.owner as 0 | 1];
+      context.strokeStyle = "#c9b877";
+      context.lineWidth = 5;
+      context.shadowBlur = 16;
+      context.shadowColor = "#83ccb7";
+      context.strokeRect(0, 0, snapshot.width, snapshot.height);
+      context.restore();
+      context.strokeStyle =
+        snapshot.war.objective.owner === null
+          ? "#c9b877"
+          : TEAM_COLORS[snapshot.war.objective.owner as 0 | 1];
       context.lineWidth = 3;
       context.beginPath();
       context.arc(snapshot.width / 2, snapshot.height / 2, 110, 0, Math.PI * 2);

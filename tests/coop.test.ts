@@ -135,6 +135,19 @@ describe("V5/V7 shared authoritative simulation", () => {
 });
 
 describe("Co-op regression boundaries", () => {
+  it("includes authoritative player attack sequences for co-op visuals", () => {
+    const g = create(2);
+    const owner = g.members.get("p0")!;
+    owner.player.weapons = [
+      Object.assign(new Weapon("ember"), { ownerId: owner.id, shots: 4 }),
+    ];
+    const snapshot = new SnapshotStream().build(g, owner, 1, true);
+    expect(
+      snapshot.players.find((player) => player.id === owner.id)?.attackSeq,
+    ).toBe(4);
+    expect(snapshotSchema.safeParse(snapshot).success).toBe(true);
+  });
+
   it("isolates banishment and personal counters", () => {
     const g = create(2),
       a = g.members.get("p0")!,
