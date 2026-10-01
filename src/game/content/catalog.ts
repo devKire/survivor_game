@@ -590,60 +590,70 @@ export const WAVE_TABLE: WaveDefinition[] = [
 export const BOSS_EVENTS: BossEvent[] = [
   {
     at: 240,
+    id: "stone_bell",
     name: "O Sineiro de Pedra",
     pattern: "ring",
   },
 
   {
     at: 240,
+    id: "copper_doe",
     name: "A Corça de Cobre",
     pattern: "charge",
   },
 
   {
     at: 360,
+    id: "rift_mother",
     name: "Mãe das Fendas",
     pattern: "summon",
   },
 
   {
     at: 480,
+    id: "blind_cartographer",
     name: "O Cartógrafo Cego",
     pattern: "spiral",
   },
 
   {
     at: 600,
+    id: "wandering_cathedral",
     name: "A Catedral Errante",
     pattern: "pulse",
   },
 
   {
     at: 690,
+    id: "faceless_pilgrim",
     name: "O Peregrino Sem Face",
     pattern: "charge",
   },
 
   {
     at: 780,
+    id: "eye_beneath_stone",
     name: "O Olho Sob a Pedra",
     pattern: "spiral",
   },
 
   {
     at: 870,
+    id: "ash_king",
     name: "O Rei das Cinzas",
     pattern: "summon",
   },
 
   {
     at: 960,
+    id: "abyss_voice",
     name: "A Voz do Abismo",
     pattern: "pulse",
   },
 
   {
     at: 1050,
+    id: "last_custodian",
     name: "O Último Custódio",
     pattern: "ring",
   },

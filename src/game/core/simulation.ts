@@ -1,3 +1,4 @@
+import { discoverCreature } from "../content/creature-discovery";
 import { achievementAmount, achievementCurrency, balanceAfter, completionGold, pveGems } from "./economy";
 import { PROGRESSION, telemetry } from "./progression";
 import {
@@ -1198,8 +1199,7 @@ export class GameSimulation {
         statuses: restore.statuses || {},
       });
     this.enemies.push(e);
-    if (!this.save.discovered.enemies.includes(type))
-      this.save.discovered.enemies.push(type);
+    discoverCreature(this.save.discovered.enemies, e);
     return e;
   }
 

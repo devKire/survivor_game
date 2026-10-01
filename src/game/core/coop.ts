@@ -1,3 +1,4 @@
+import { discoverCreature } from "../content/creature-discovery";
 import { GameSimulation } from "./simulation";
 import { Player, Weapon } from "./entities";
 import { freshSave } from "./save";
@@ -520,8 +521,7 @@ export class CoopSimulation extends GameSimulation {
     this.grid.rebuild(this.enemies);
     for (const m of this.members.values())
       for (const e of this.enemies)
-        if (!m.progress.discovered.enemies.includes(e.type))
-          m.progress.discovered.enemies.push(e.type);
+        discoverCreature(m.progress.discovered.enemies, e);
     for (const m of alive) {
       this.activate(m);
       for (const w of m.player.weapons) w.update(this, dt);

@@ -56,6 +56,8 @@ export interface WaveDefinition {
   name: string;
 }
 export interface BossEvent {
+  /** Stable discovery ID; optional for legacy/custom events. */
+  id?: string;
   at: number;
   name: string;
   pattern: string;

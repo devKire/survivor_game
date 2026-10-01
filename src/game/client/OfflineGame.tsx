@@ -17,10 +17,31 @@ export default function OfflineGame() {
     } catch {}
     const game = new BrowserGame(canvas, save);
     game.onHub = () => router.push("/");
+    let cleanupDebug: (() => void) | undefined;
+    if (process.env.NODE_ENV === "development") {
+      const scene = new URLSearchParams(window.location.search).get(
+        "creatures",
+      );
+      if (scene)
+        void import("./creature-debug-scene").then(
+          ({ showCreatureDebugScene, showWarCreatureDebugScene }) => {
+            if (game.abort.signal.aborted) return;
+            if (scene === "war") {
+              game.persist = () => true;
+              game.saveSnapshot = () => false;
+              game.dispose();
+              cleanupDebug = showWarCreatureDebugScene(canvas);
+            } else showCreatureDebugScene(game, scene);
+          },
+        );
+    }
     const menu = new URLSearchParams(window.location.search).get("menu");
     if (menu === "settings") game.ui.settings(() => game.ui.main());
     if (menu === "codex") game.ui.codex(() => game.ui.main());
-    return () => game.dispose();
+    return () => {
+      cleanupDebug?.();
+      game.dispose();
+    };
   }, [router]);
   return <GameShell canvasRef={canvasRef} />;
 }

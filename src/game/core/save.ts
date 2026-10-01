@@ -1,3 +1,4 @@
+import { CREATURE_DISCOVERY_IDS } from "../content/creature-discovery";
 import { COSMETICS } from "../content/cosmetics";
 import { z } from "zod";
 import { ECONOMY_VERSION } from "./economy";
@@ -292,7 +293,7 @@ export const saveSchema = z.object({
   discovered: z
     .object({
       items: z.array(ids(C.ITEM_DEFINITIONS)).max(8).default([]),
-      enemies: z.array(ids(C.ENEMY_DEFINITIONS)).max(15).default([]),
+      enemies: z.array(z.string().refine((id) => CREATURE_DISCOVERY_IDS.has(id))).max(CREATURE_DISCOVERY_IDS.size).default([]),
       maps: z.array(ids(C.MAP_DEFINITIONS)).max(2).default(["ruins"]),
       synergies: z.array(ids(C.SYNERGY_DEFINITIONS)).max(6).default([]),
       structures: z.array(ids(C.STRUCTURE_DEFINITIONS)).max(16).default([]),

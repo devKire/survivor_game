@@ -1,5 +1,9 @@
+import { CreaturePortraitRenderer } from "./creature-portrait-renderer";
+import { resolveCreatureArt } from "./creature-art";
+import { hasStatus } from "../core/status";
 import {
   CHARACTER_DEFINITIONS,
+  ENEMY_DEFINITIONS,
   CHUNK_SIZE,
   STRUCTURE_DEFINITIONS,
   WEAPON_DEFINITIONS,
@@ -31,10 +35,200 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
   floor: CanvasPattern | null = null;
   waterMask: HTMLCanvasElement | null = null;
   waterKey = "";
+  private creaturePortraits = new CreaturePortraitRenderer();
   private characterSprites = new CharacterSpriteRenderer();
   constructor(public g: G) {
     this.c = g.ctx;
   }
+  creatureVisible(e: T.Enemy) {
+    const art = resolveCreatureArt(e);
+    // Include tall bodies and wide boss art when their ground point is offscreen.
+    return this.visible(
+      e.x,
+      e.y,
+      Math.max(e.r + 30, art ? art.worldHeight * 1.5 : 0),
+    );
+  }
+
+  enemy(e: T.Enemy, time: number) {
+    const c = this.c,
+      special = e.type === "boss" || e.type === "final";
+    c.save();
+    if (e.behavior === "burrow" && e.burrow) c.globalAlpha = 0.28;
+    c.fillStyle = "#030b1088";
+    c.beginPath();
+    c.ellipse(e.x, e.y + 4, e.r, e.r * 0.45, 0, 0, TAU);
+    c.fill();
+    const portrait = this.creaturePortraits.draw(c, e);
+    if (!portrait) this.drawLegacyEnemyBody(e, time);
+    // Competitive minions carry team colors in the existing color field.
+    if (portrait && e.color !== ENEMY_DEFINITIONS[e.type]?.color) {
+      c.strokeStyle = e.color;
+      c.lineWidth = 3;
+      this.circle(e.x, e.y, e.r + 3);
+      c.stroke();
+    }
+    const art = portrait ? resolveCreatureArt(e) : undefined;
+    const top = art
+      ? e.y + art.groundOffsetY - art.worldHeight * art.footY
+      : e.y - e.r;
+    if (portrait && hasStatus(e, "freeze")) {
+      c.strokeStyle = "#bee9f2";
+      this.circle(e.x, e.y, e.r + 3);
+      c.stroke();
+    }
+    if (e.name === "A Catedral Errante" && special) {
+      c.strokeStyle = e.bossPhase >= 3 ? "#ffe2af" : "#d7a7a1";
+      c.lineWidth = 2;
+      const towers = e.bossPhase === 1 ? 4 : e.bossPhase === 2 ? 3 : 2;
+      for (let i = 0; i < towers; i++) {
+        const a =
+          -Math.PI * 0.82 + (i / Math.max(1, towers - 1)) * Math.PI * 0.64;
+        c.beginPath();
+        c.moveTo(
+          e.x + Math.cos(a) * e.r * 0.45,
+          e.y + Math.sin(a) * e.r * 0.45,
+        );
+        c.lineTo(
+          e.x + Math.cos(a) * e.r * 1.12,
+          e.y + Math.sin(a) * e.r * 1.12,
+        );
+        c.stroke();
+      }
+      if (e.bossPhase >= 2) {
+        c.strokeStyle = "#efb1a788";
+        c.beginPath();
+        c.moveTo(e.x - e.r * 0.65, e.y - e.r * 0.35);
+        c.lineTo(e.x + e.r * 0.55, e.y + e.r * 0.28);
+        c.stroke();
+      }
+      if (e.bossPhase >= 3) {
+        c.fillStyle = "#fff0bf";
+        this.circle(e.x, e.y, e.r * 0.18 + Math.sin(time * 7) * 2);
+        c.fill();
+      }
+    }
+
+    if (e.behavior === "sentinel" && e.shield > 0) {
+      c.strokeStyle = "#aee9ef";
+      c.lineWidth = 4;
+      c.beginPath();
+      c.arc(e.x, e.y, e.r + 8, -Math.PI * 0.75, Math.PI * 0.75);
+      c.stroke();
+    }
+    if (e.behavior === "herald") {
+      c.strokeStyle = "#d0af7750";
+      c.lineWidth = 1;
+      this.circle(e.x, e.y, 55 + Math.sin(time * 3) * 5);
+      c.stroke();
+      c.font = "15px Georgia";
+      c.fillStyle = "#ead29b";
+      c.fillText("✧", e.x - 5, e.y + 5);
+    }
+    if (e.behavior === "weaver") {
+      c.strokeStyle = "#76aaa477";
+      for (let i = 0; i < 3; i++) {
+        const a = time + (i * TAU) / 3;
+        c.beginPath();
+        c.moveTo(e.x, e.y);
+        c.lineTo(e.x + Math.cos(a) * e.r * 1.5, e.y + Math.sin(a) * e.r * 1.5);
+        c.stroke();
+      }
+    }
+    if (e.behavior === "charger" && e.charge > 0) {
+      c.strokeStyle = "#ff8f86";
+      c.lineWidth = 2;
+      this.circle(e.x, e.y, e.r + 5);
+      c.stroke();
+    }
+    if (hasStatus(e, "burn")) {
+      c.fillStyle = "#ffac75";
+      c.fillRect(e.x - 2, top - 20, 4, 5);
+    }
+    if (hasStatus(e, "mark")) {
+      c.strokeStyle = "#c6b7ff";
+      this.polygon(e.x, e.y, e.r + 5, 4, Math.PI / 4);
+      c.stroke();
+    }
+
+    if (e.type === "elite" || special) {
+      c.strokeStyle = e.color;
+      c.lineWidth = 1;
+      this.circle(
+        e.x,
+        e.y,
+        e.r +
+          7 +
+          Math.sin(time * 3) * 2 +
+          (special ? (e.bossPhase - 1) * 3 : 0),
+      );
+      c.stroke();
+      if (special && e.bossPhase >= 2) {
+        c.strokeStyle = e.bossPhase === 3 ? "#ffe3b8" : "#eeb5ae";
+        this.circle(e.x, e.y, e.r + 13 + Math.sin(time * 4) * 3);
+        c.stroke();
+      }
+      c.fillStyle = "#102129";
+      c.fillRect(e.x - e.r, top - 12, e.r * 2, 4);
+      c.fillStyle = e.color;
+      c.fillRect(e.x - e.r, top - 12, (e.r * 2 * e.hp) / e.maxHp, 4);
+    }
+    if (e.wind > 0) {
+      c.strokeStyle = "#f6b7ac";
+      c.globalAlpha = 0.65;
+      c.lineWidth = 2;
+      if (
+        e.behavior === "ranged" ||
+        e.behavior === "charger" ||
+        e.pattern === "charge"
+      ) {
+        c.beginPath();
+        c.moveTo(e.x, e.y);
+        c.lineTo(e.x + e.aimX * 320, e.y + e.aimY * 320);
+        c.stroke();
+      } else {
+        this.circle(e.x, e.y, e.r + 28 + Math.sin(time * 8) * 4);
+        c.stroke();
+      }
+      c.globalAlpha = 1;
+    }
+    c.globalAlpha = 1;
+    if (this.g.debug.hitboxes) {
+      c.strokeStyle = "#ff7286";
+      this.circle(e.x, e.y, e.r);
+      c.stroke();
+    }
+    c.restore();
+  }
+
+  private drawLegacyEnemyBody(e: T.Enemy, time: number) {
+    const c = this.c,
+      special = e.type === "boss" || e.type === "final";
+    const angle = e.type === "swarm" ? time * 2 : -Math.PI / 2;
+    c.fillStyle =
+      e.flash > 0 ? "#fff2d2" : hasStatus(e, "freeze") ? "#bee9f2" : e.color;
+    c.strokeStyle = special ? "#ffdec0" : "#23323d";
+    c.lineWidth = special ? 3 : 1.5;
+    this.polygon(
+      e.x,
+      e.y,
+      e.r,
+      e.shape,
+      angle + (special ? (e.bossPhase - 1) * 0.08 : 0),
+    );
+    c.fill();
+    c.stroke();
+    c.fillStyle = "#14252c";
+    this.polygon(e.x, e.y, e.r * 0.66, e.shape, -angle);
+    c.fill();
+    c.fillStyle = e.color;
+    this.polygon(e.x, e.y - 2, e.r * 0.25, 3, time * 0.3);
+    c.fill();
+    c.fillStyle = "#ffdebc";
+    c.fillRect(e.x - e.r * 0.36, e.y - e.r * 0.13, 3, 3);
+    c.fillRect(e.x + e.r * 0.18, e.y - e.r * 0.13, 3, 3);
+  }
+
   drawOrbit(
     x: number,
     y: number,
