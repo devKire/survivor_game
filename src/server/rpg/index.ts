@@ -1,0 +1,1 @@
+export { rpgProfileData } from "./profile";
