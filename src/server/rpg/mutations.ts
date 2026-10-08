@@ -1,32 +1,56 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import { Prisma } from "../../generated/prisma/client";
 import { RPG_CHARACTERS } from "../../game/content/rpg";
-import { canAccessRpgCharacter } from "../../game/core/rpg";
-import { db } from "../db";
-import { progress } from "../progress";
+import {
+  allocateAttributePoints,
+  canAccessRpgCharacter,
+  RPG_ATTRIBUTE_KEYS,
+  RPG_ATTRIBUTE_MAX,
+  rpgAttributesSchema,
+} from "../../game/core/rpg";
 import { UserError } from "../security";
 import { ensureRpgProfile } from "./profile";
+import { requireRpgEnabled } from "./guard";
+import { lockRpgAccount, rpgTransaction } from "./transaction";
 
-export const selectCharacterInput = z
+const characterId = z.enum(
+  Object.keys(RPG_CHARACTERS) as [
+    keyof typeof RPG_CHARACTERS,
+    ...(keyof typeof RPG_CHARACTERS)[],
+  ],
+);
+const common = {
+  requestId: z.uuid(),
+  expectedRevision: z.number().int().min(1).max(2_147_483_646),
+  characterId,
+};
+export const selectCharacterInput = z.object(common).strict();
+export const allocateAttributesInput = z
   .object({
-    requestId: z.uuid(),
-    expectedRevision: z.coerce.number().int().positive(),
-    characterId: z.enum(Object.keys(RPG_CHARACTERS) as [keyof typeof RPG_CHARACTERS, ...(keyof typeof RPG_CHARACTERS)[]]),
+    ...common,
+    attribute: z.enum(RPG_ATTRIBUTE_KEYS),
+    amount: z.number().int().min(1).max(RPG_ATTRIBUTE_MAX),
   })
   .strict();
+const resultSchema = z
+  .object({ revision: z.number().int().positive(), characterId })
+  .strict();
+type Command =
+  | z.infer<typeof selectCharacterInput>
+  | z.infer<typeof allocateAttributesInput>;
 
-const resultSchema = z.object({ revision: z.number().int().positive(), characterId: z.string() }).strict();
-
-export async function selectRpgCharacter(userId: string, input: unknown) {
-  const value = selectCharacterInput.parse(input);
-  const operation = "select-character";
-  const payloadHash = createHash("sha256").update(JSON.stringify(value)).digest("hex");
-  await progress(userId);
-
-  return db().$transaction(async (tx) => {
-    const { save } = await ensureRpgProfile(tx, userId);
+async function mutate(
+  userId: string,
+  operation: "select-character" | "allocate-attributes",
+  value: Command,
+) {
+  // Parsed schemas canonically order fields; preserve Phase 1 selection fingerprints.
+  const payloadHash = createHash("sha256")
+    .update(JSON.stringify(value))
+    .digest("hex");
+  return rpgTransaction(async (tx) => {
+    const save = await lockRpgAccount(tx, userId);
     const prior = await tx.rpgMutationReceipt.findUnique({
       where: { userId_requestId: { userId, requestId: value.requestId } },
     });
@@ -35,26 +59,59 @@ export async function selectRpgCharacter(userId: string, input: unknown) {
         throw new UserError("requestId já utilizado por outra mutação RPG.");
       return resultSchema.parse(prior.result);
     }
-
-    await tx.$queryRaw(Prisma.sql`
-      SELECT "userId" FROM "limiar"."RpgProfile"
-      WHERE "userId" = ${userId} FOR UPDATE
-    `);
     if (!canAccessRpgCharacter(value.characterId, save.unlocked))
       throw new UserError("Personagem ainda não desbloqueado.");
-    const character = await tx.rpgCharacter.findUnique({
+    await ensureRpgProfile(tx, userId, save);
+    const profile = await tx.rpgProfile.findUniqueOrThrow({
+      where: { userId },
+    });
+    if (profile.revision !== value.expectedRevision)
+      throw new UserError(
+        "O perfil RPG mudou em outra aba. Atualize a página antes de tentar novamente.",
+      );
+    const character = await tx.rpgCharacter.findUniqueOrThrow({
       where: { userId_characterId: { userId, characterId: value.characterId } },
     });
-    if (!character) throw new UserError("Personagem RPG indisponível.");
-
+    if (operation === "allocate-attributes" && "attribute" in value) {
+      const attributes = rpgAttributesSchema.parse(character.attributes);
+      let allocation;
+      try {
+        allocation = allocateAttributePoints(
+          { ...character, attributes },
+          value.attribute,
+          value.amount,
+        );
+      } catch (error) {
+        if (error instanceof RangeError) throw new UserError(error.message);
+        throw error;
+      }
+      await tx.rpgCharacter.update({
+        where: {
+          userId_characterId: { userId, characterId: value.characterId },
+        },
+        data: {
+          attributes: allocation.attributes,
+          attributePoints: allocation.attributePoints,
+        },
+      });
+    }
     const updated = await tx.rpgProfile.updateMany({
       where: { userId, revision: value.expectedRevision },
-      data: { activeCharacterId: character.id, revision: { increment: 1 } },
+      data: {
+        ...(operation === "select-character"
+          ? { activeCharacterId: character.id }
+          : {}),
+        revision: { increment: 1 },
+      },
     });
     if (!updated.count)
-      throw new UserError("O perfil RPG mudou em outra aba. Atualize a página.");
-
-    const result = { revision: value.expectedRevision + 1, characterId: value.characterId };
+      throw new UserError(
+        "O perfil RPG mudou em outra aba. Atualize a página.",
+      );
+    const result = {
+      revision: value.expectedRevision + 1,
+      characterId: value.characterId,
+    };
     await tx.rpgMutationReceipt.create({
       data: {
         userId,
@@ -66,5 +123,20 @@ export async function selectRpgCharacter(userId: string, input: unknown) {
       },
     });
     return result;
-  }, { isolationLevel: "Serializable" });
+  });
+}
+
+/** Trusted server calls only; Server Actions derive userId from the session. */
+export async function selectRpgCharacter(userId: string, input: unknown) {
+  requireRpgEnabled();
+  return mutate(userId, "select-character", selectCharacterInput.parse(input));
+}
+
+export async function allocateRpgAttributes(userId: string, input: unknown) {
+  requireRpgEnabled();
+  return mutate(
+    userId,
+    "allocate-attributes",
+    allocateAttributesInput.parse(input),
+  );
 }

@@ -66,6 +66,8 @@ model RpgCharacter {
   characterId   String
   level         Int               @default(1)
   xp            Int               @default(0)
+  attributePoints Int             @default(0)
+  attributes    Json              @default("{\"vitality\":0,\"power\":0,\"agility\":0,\"focus\":0,\"will\":0}")
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   profile       RpgProfile        @relation("RpgProfileCharacters", fields: [userId], references: [userId], onDelete: Cascade)
