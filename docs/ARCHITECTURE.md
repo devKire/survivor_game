@@ -39,6 +39,9 @@ injetáveis, com implementações vazias para execução headless.
 | Posição/HP/inimigos/XP | Memória da room autoritativa |
 | Presença | Sockets em memória; lastSeenAt apenas nos eventos de conexão |
 | Chat | Mensagem autorizada/persistida; transmissão via WebSocket |
+| RPG persistente (flag desligada) | Tabelas RPG e serviços autenticados; nunca save local ou payload de cliente |
+
+O desenho e o baseline do domínio aditivo estão em [RPG-ARCHITECTURE.md](RPG-ARCHITECTURE.md) e [RPG-BASELINE.md](RPG-BASELINE.md).
 
 Saves offline não possuem assinatura histórica. Não é possível provar sua veracidade.
 Importar mantém o arquivo completo e configurações na conta, mas não concede ouro ou

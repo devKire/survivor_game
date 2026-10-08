@@ -8,6 +8,11 @@ export function hasDatabaseConfiguration() {
   return Boolean(process.env.DATABASE_URL?.trim());
 }
 
+/** Server-only rollout gate. Absence and every value except the literal `true` are off. */
+export function isRpgEnabled() {
+  return process.env.RPG_ENABLED?.trim().toLowerCase() === "true";
+}
+
 export function getDatabaseUrl() {
   const value = process.env.DATABASE_URL?.trim();
   if (!value)

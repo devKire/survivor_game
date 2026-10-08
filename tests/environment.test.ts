@@ -4,6 +4,7 @@ import {
   getDatabaseUrl,
   getRealtimeOrigin,
   getRealtimePort,
+  isRpgEnabled,
 } from "../src/server/env";
 import { configurationError } from "../src/server/config";
 import { GET } from "../src/app/api/debug/environment/route";
@@ -16,6 +17,15 @@ afterEach(() => {
 });
 
 describe("Server environment is lazy, private and evaluated at request time", () => {
+  it("keeps the RPG rollout disabled unless explicitly enabled server-side", () => {
+    for (const value of [undefined, "", "false", "1", "yes"]) {
+      vi.stubEnv("RPG_ENABLED", value);
+      expect(isRpgEnabled()).toBe(false);
+    }
+    vi.stubEnv("RPG_ENABLED", " true ");
+    expect(isRpgEnabled()).toBe(true);
+  });
+
   it("distinguishes missing, empty and whitespace-only DATABASE_URL without throwing on import", async () => {
     for (const value of [undefined, "", "   "]) {
       vi.stubEnv("DATABASE_URL", value);
