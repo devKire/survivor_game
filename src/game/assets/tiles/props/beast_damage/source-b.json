@@ -1,0 +1,2374 @@
+{
+  "schemaVersion": 1,
+  "id": "props_beast_damage-b",
+  "kind": "prop",
+  "family": "beast_damage",
+  "image": "./source-b.png",
+  "source": {
+    "width": 1254,
+    "height": 1254,
+    "sha256": "8efd3ff4dd45cddd3c63f5fa5e8b68711eb8792b0162351c83ae1ec5174a308f",
+    "hasAlpha": true
+  },
+  "grid": {
+    "columns": 8,
+    "rows": 8,
+    "slots": 64
+  },
+  "detection": {
+    "method": "alpha-valley-per-band",
+    "confidence": 0.95,
+    "measuredConfidence": 0.2757,
+    "review": "Indexed 64-slot contact sheet visually reviewed. Local alpha separators accepted; boundary-contact slots are excluded from runtime selection and flagged for source repair.",
+    "rows": [
+      0,
+      157,
+      314,
+      465,
+      627,
+      784,
+      933,
+      1092,
+      1254
+    ],
+    "columns": [
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1096,
+        1254
+      ],
+      [
+        0,
+        167,
+        320,
+        482,
+        627,
+        784,
+        941,
+        1091,
+        1254
+      ],
+      [
+        0,
+        157,
+        319,
+        470,
+        627,
+        802,
+        941,
+        1096,
+        1254
+      ],
+      [
+        0,
+        163,
+        315,
+        474,
+        627,
+        784,
+        941,
+        1096,
+        1254
+      ],
+      [
+        0,
+        160,
+        314,
+        480,
+        627,
+        784,
+        940,
+        1089,
+        1254
+      ],
+      [
+        0,
+        158,
+        321,
+        462,
+        627,
+        781,
+        941,
+        1088,
+        1254
+      ]
+    ]
+  },
+  "warnings": [
+    "slot 50: 8.9% opaque boundary contact; source art may touch neighbor",
+    "slot 51: 9.5% opaque boundary contact; source art may touch neighbor",
+    "slot 58: 19.3% opaque boundary contact; source art may touch neighbor",
+    "slot 59: 18.0% opaque boundary contact; source art may touch neighbor"
+  ],
+  "slots": [
+    {
+      "id": "prop_beast_damage_b_00",
+      "index": 0,
+      "row": 0,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 16,
+        "y": 45,
+        "width": 141,
+        "height": 106
+      },
+      "anchor": {
+        "x": 41.0725,
+        "y": 140
+      },
+      "normalizedAnchor": {
+        "x": 0.2616,
+        "y": 0.8917
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4162,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_01",
+      "index": 1,
+      "row": 0,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 28,
+        "width": 155,
+        "height": 129
+      },
+      "anchor": {
+        "x": 89.6553,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.5711,
+        "y": 0.8089
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4578,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_02",
+      "index": 2,
+      "row": 0,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 0,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 20,
+        "y": 46,
+        "width": 136,
+        "height": 111
+      },
+      "anchor": {
+        "x": 90.9907,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.5833,
+        "y": 0.8599
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5911,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_03",
+      "index": 3,
+      "row": 0,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 47,
+        "width": 155,
+        "height": 104
+      },
+      "anchor": {
+        "x": 89.0762,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.5674,
+        "y": 0.8854
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6456,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_04",
+      "index": 4,
+      "row": 0,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 50,
+        "width": 143,
+        "height": 105
+      },
+      "anchor": {
+        "x": 95.0585,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.6055,
+        "y": 0.8344
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4973,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_05",
+      "index": 5,
+      "row": 0,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 47,
+        "width": 148,
+        "height": 110
+      },
+      "anchor": {
+        "x": 64.8405,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.413,
+        "y": 0.8981
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7681,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_06",
+      "index": 6,
+      "row": 0,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 0,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 2,
+        "y": 47,
+        "width": 137,
+        "height": 110
+      },
+      "anchor": {
+        "x": 74.9959,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.4807,
+        "y": 0.8981
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5857,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_07",
+      "index": 7,
+      "row": 0,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 5,
+        "y": 57,
+        "width": 140,
+        "height": 93
+      },
+      "anchor": {
+        "x": 57.2358,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.3646,
+        "y": 0.8535
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5460,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_08",
+      "index": 8,
+      "row": 1,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 157,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 17,
+        "y": 5,
+        "width": 140,
+        "height": 125
+      },
+      "anchor": {
+        "x": 92.7253,
+        "y": 118
+      },
+      "normalizedAnchor": {
+        "x": 0.5906,
+        "y": 0.7516
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 3739,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_09",
+      "index": 9,
+      "row": 1,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 157,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "anchor": {
+        "x": 55.4341,
+        "y": 116
+      },
+      "normalizedAnchor": {
+        "x": 0.3531,
+        "y": 0.7389
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6738,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_10",
+      "index": 10,
+      "row": 1,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 157,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 1,
+        "width": 150,
+        "height": 156
+      },
+      "anchor": {
+        "x": 50.8033,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.3257,
+        "y": 0.8344
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 3964,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_11",
+      "index": 11,
+      "row": 1,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 157,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 7,
+        "y": 7,
+        "width": 150,
+        "height": 150
+      },
+      "anchor": {
+        "x": 65.1984,
+        "y": 130
+      },
+      "normalizedAnchor": {
+        "x": 0.4153,
+        "y": 0.828
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6779,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_12",
+      "index": 12,
+      "row": 1,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 157,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 17,
+        "width": 157,
+        "height": 128
+      },
+      "anchor": {
+        "x": 63.5876,
+        "y": 130
+      },
+      "normalizedAnchor": {
+        "x": 0.405,
+        "y": 0.828
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9408,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_13",
+      "index": 13,
+      "row": 1,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 157,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "anchor": {
+        "x": 86.4197,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.5504,
+        "y": 0.8089
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10307,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_14",
+      "index": 14,
+      "row": 1,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 157,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 140,
+        "height": 153
+      },
+      "anchor": {
+        "x": 62.3471,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.3997,
+        "y": 0.8599
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9228,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_15",
+      "index": 15,
+      "row": 1,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 157,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 5,
+        "width": 140,
+        "height": 146
+      },
+      "anchor": {
+        "x": 55.2252,
+        "y": 138
+      },
+      "normalizedAnchor": {
+        "x": 0.3518,
+        "y": 0.879
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4031,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_16",
+      "index": 16,
+      "row": 2,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 314,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 9,
+        "width": 157,
+        "height": 141
+      },
+      "anchor": {
+        "x": 61.746,
+        "y": 124
+      },
+      "normalizedAnchor": {
+        "x": 0.3933,
+        "y": 0.8212
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10613,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_17",
+      "index": 17,
+      "row": 2,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 314,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 2,
+        "width": 157,
+        "height": 149
+      },
+      "anchor": {
+        "x": 46.5457,
+        "y": 122
+      },
+      "normalizedAnchor": {
+        "x": 0.2965,
+        "y": 0.8079
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9881,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_18",
+      "index": 18,
+      "row": 2,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 314,
+        "width": 156,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 16,
+        "width": 156,
+        "height": 115
+      },
+      "anchor": {
+        "x": 125.5824,
+        "y": 118
+      },
+      "normalizedAnchor": {
+        "x": 0.805,
+        "y": 0.7815
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7027,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_19",
+      "index": 19,
+      "row": 2,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 314,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 139
+      },
+      "anchor": {
+        "x": 50.6068,
+        "y": 120
+      },
+      "normalizedAnchor": {
+        "x": 0.3223,
+        "y": 0.7947
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5669,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_20",
+      "index": 20,
+      "row": 2,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 314,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 5,
+        "width": 156,
+        "height": 146
+      },
+      "anchor": {
+        "x": 62.9431,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.4009,
+        "y": 0.8808
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8421,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_21",
+      "index": 21,
+      "row": 2,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 314,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 151
+      },
+      "anchor": {
+        "x": 53.066,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.338,
+        "y": 0.8874
+      },
+      "boundaryContact": 0.0032,
+      "bodyPixels": 9006,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_22",
+      "index": 22,
+      "row": 2,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 314,
+        "width": 155,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 151
+      },
+      "anchor": {
+        "x": 64.5751,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.4166,
+        "y": 0.9073
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9688,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_23",
+      "index": 23,
+      "row": 2,
+      "column": 7,
+      "rect": {
+        "x": 1096,
+        "y": 314,
+        "width": 158,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 9,
+        "width": 148,
+        "height": 138
+      },
+      "anchor": {
+        "x": 96.7553,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.6124,
+        "y": 0.8344
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9004,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_24",
+      "index": 24,
+      "row": 3,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 465,
+        "width": 167,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 167,
+        "height": 162
+      },
+      "anchor": {
+        "x": 112.981,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.6765,
+        "y": 0.821
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12020,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_25",
+      "index": 25,
+      "row": 3,
+      "column": 1,
+      "rect": {
+        "x": 167,
+        "y": 465,
+        "width": 153,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 153,
+        "height": 160
+      },
+      "anchor": {
+        "x": 74.3732,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.4861,
+        "y": 0.858
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11545,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_26",
+      "index": 26,
+      "row": 3,
+      "column": 2,
+      "rect": {
+        "x": 320,
+        "y": 465,
+        "width": 162,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 162,
+        "height": 150
+      },
+      "anchor": {
+        "x": 92.3308,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.5699,
+        "y": 0.8704
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10965,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_27",
+      "index": 27,
+      "row": 3,
+      "column": 3,
+      "rect": {
+        "x": 482,
+        "y": 465,
+        "width": 145,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 18,
+        "width": 145,
+        "height": 132
+      },
+      "anchor": {
+        "x": 66.7275,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.4602,
+        "y": 0.858
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7994,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_28",
+      "index": 28,
+      "row": 3,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 465,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 162
+      },
+      "anchor": {
+        "x": 86.4071,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.5504,
+        "y": 0.9136
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8854,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_29",
+      "index": 29,
+      "row": 3,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 465,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 162
+      },
+      "anchor": {
+        "x": 96.9519,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.6175,
+        "y": 0.9074
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10330,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_30",
+      "index": 30,
+      "row": 3,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 465,
+        "width": 150,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 150,
+        "height": 162
+      },
+      "anchor": {
+        "x": 66.2222,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.4415,
+        "y": 0.858
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9305,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_31",
+      "index": 31,
+      "row": 3,
+      "column": 7,
+      "rect": {
+        "x": 1091,
+        "y": 465,
+        "width": 163,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 2,
+        "width": 163,
+        "height": 156
+      },
+      "anchor": {
+        "x": 104.6345,
+        "y": 136
+      },
+      "normalizedAnchor": {
+        "x": 0.6419,
+        "y": 0.8395
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11841,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_32",
+      "index": 32,
+      "row": 4,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 627,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "anchor": {
+        "x": 67.6076,
+        "y": 142
+      },
+      "normalizedAnchor": {
+        "x": 0.4306,
+        "y": 0.9045
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11557,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_33",
+      "index": 33,
+      "row": 4,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 627,
+        "width": 162,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 16,
+        "width": 162,
+        "height": 135
+      },
+      "anchor": {
+        "x": 91.816,
+        "y": 130
+      },
+      "normalizedAnchor": {
+        "x": 0.5668,
+        "y": 0.828
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10749,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_34",
+      "index": 34,
+      "row": 4,
+      "column": 2,
+      "rect": {
+        "x": 319,
+        "y": 627,
+        "width": 151,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 29,
+        "width": 151,
+        "height": 120
+      },
+      "anchor": {
+        "x": 95.2558,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.6308,
+        "y": 0.8599
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10421,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_35",
+      "index": 35,
+      "row": 4,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 627,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 27,
+        "width": 157,
+        "height": 120
+      },
+      "anchor": {
+        "x": 97.6334,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.6219,
+        "y": 0.8025
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7298,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_36",
+      "index": 36,
+      "row": 4,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 627,
+        "width": 175,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 175,
+        "height": 155
+      },
+      "anchor": {
+        "x": 89.7073,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.5126,
+        "y": 0.8854
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13266,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_37",
+      "index": 37,
+      "row": 4,
+      "column": 5,
+      "rect": {
+        "x": 802,
+        "y": 627,
+        "width": 139,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 139,
+        "height": 149
+      },
+      "anchor": {
+        "x": 71.466,
+        "y": 140
+      },
+      "normalizedAnchor": {
+        "x": 0.5141,
+        "y": 0.8917
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9816,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_38",
+      "index": 38,
+      "row": 4,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 627,
+        "width": 155,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 1,
+        "width": 155,
+        "height": 146
+      },
+      "anchor": {
+        "x": 76.9539,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.4965,
+        "y": 0.8089
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10488,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_39",
+      "index": 39,
+      "row": 4,
+      "column": 7,
+      "rect": {
+        "x": 1096,
+        "y": 627,
+        "width": 158,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 17,
+        "width": 157,
+        "height": 130
+      },
+      "anchor": {
+        "x": 77.2487,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.4889,
+        "y": 0.8089
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11205,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_40",
+      "index": 40,
+      "row": 5,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 784,
+        "width": 163,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 163,
+        "height": 149
+      },
+      "anchor": {
+        "x": 100.7384,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.618,
+        "y": 0.8591
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11442,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_41",
+      "index": 41,
+      "row": 5,
+      "column": 1,
+      "rect": {
+        "x": 163,
+        "y": 784,
+        "width": 152,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 11,
+        "width": 152,
+        "height": 138
+      },
+      "anchor": {
+        "x": 75.3398,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.4957,
+        "y": 0.8859
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10377,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_42",
+      "index": 42,
+      "row": 5,
+      "column": 2,
+      "rect": {
+        "x": 315,
+        "y": 784,
+        "width": 159,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 17,
+        "width": 159,
+        "height": 132
+      },
+      "anchor": {
+        "x": 67.6982,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.4258,
+        "y": 0.8456
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10438,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_43",
+      "index": 43,
+      "row": 5,
+      "column": 3,
+      "rect": {
+        "x": 474,
+        "y": 784,
+        "width": 153,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 46,
+        "width": 153,
+        "height": 91
+      },
+      "anchor": {
+        "x": 64.5299,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.4218,
+        "y": 0.8523
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7948,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_44",
+      "index": 44,
+      "row": 5,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 784,
+        "width": 157,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 11,
+        "width": 153,
+        "height": 138
+      },
+      "anchor": {
+        "x": 47.136,
+        "y": 130
+      },
+      "normalizedAnchor": {
+        "x": 0.3002,
+        "y": 0.8725
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8817,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_45",
+      "index": 45,
+      "row": 5,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 784,
+        "width": 157,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 2,
+        "width": 156,
+        "height": 147
+      },
+      "anchor": {
+        "x": 80.9289,
+        "y": 136
+      },
+      "normalizedAnchor": {
+        "x": 0.5155,
+        "y": 0.9128
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10779,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_46",
+      "index": 46,
+      "row": 5,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 784,
+        "width": 155,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 3,
+        "width": 155,
+        "height": 146
+      },
+      "anchor": {
+        "x": 83.8769,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.5411,
+        "y": 0.8591
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11720,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_47",
+      "index": 47,
+      "row": 5,
+      "column": 7,
+      "rect": {
+        "x": 1096,
+        "y": 784,
+        "width": 158,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 5,
+        "width": 157,
+        "height": 144
+      },
+      "anchor": {
+        "x": 81.9207,
+        "y": 136
+      },
+      "normalizedAnchor": {
+        "x": 0.5185,
+        "y": 0.9128
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12085,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_48",
+      "index": 48,
+      "row": 6,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 933,
+        "width": 160,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 160,
+        "height": 159
+      },
+      "anchor": {
+        "x": 88.6869,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.5543,
+        "y": 0.8302
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9592,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_49",
+      "index": 49,
+      "row": 6,
+      "column": 1,
+      "rect": {
+        "x": 160,
+        "y": 933,
+        "width": 154,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 156
+      },
+      "anchor": {
+        "x": 72.9286,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.4736,
+        "y": 0.8742
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11148,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_50",
+      "index": 50,
+      "row": 6,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 933,
+        "width": 166,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 166,
+        "height": 159
+      },
+      "anchor": {
+        "x": 104.0438,
+        "y": 142
+      },
+      "normalizedAnchor": {
+        "x": 0.6268,
+        "y": 0.8931
+      },
+      "boundaryContact": 0.0892,
+      "bodyPixels": 14945,
+      "weight": 0,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_51",
+      "index": 51,
+      "row": 6,
+      "column": 3,
+      "rect": {
+        "x": 480,
+        "y": 933,
+        "width": 147,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 14,
+        "width": 147,
+        "height": 145
+      },
+      "anchor": {
+        "x": 30.2153,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.2055,
+        "y": 0.8365
+      },
+      "boundaryContact": 0.0948,
+      "bodyPixels": 6707,
+      "weight": 0,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_52",
+      "index": 52,
+      "row": 6,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 933,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 159
+      },
+      "anchor": {
+        "x": 49.484,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.3152,
+        "y": 0.9245
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11858,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_53",
+      "index": 53,
+      "row": 6,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 933,
+        "width": 156,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 158
+      },
+      "anchor": {
+        "x": 96.6859,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.6198,
+        "y": 0.8428
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11240,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_54",
+      "index": 54,
+      "row": 6,
+      "column": 6,
+      "rect": {
+        "x": 940,
+        "y": 933,
+        "width": 149,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 149,
+        "height": 159
+      },
+      "anchor": {
+        "x": 85.6141,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.5746,
+        "y": 0.8742
+      },
+      "boundaryContact": 0.0049,
+      "bodyPixels": 12661,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_55",
+      "index": 55,
+      "row": 6,
+      "column": 7,
+      "rect": {
+        "x": 1089,
+        "y": 933,
+        "width": 165,
+        "height": 153
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 164,
+        "height": 153
+      },
+      "anchor": {
+        "x": 85.6034,
+        "y": 130
+      },
+      "normalizedAnchor": {
+        "x": 0.5188,
+        "y": 0.8497
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10005,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_56",
+      "index": 56,
+      "row": 7,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 1092,
+        "width": 158,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 158,
+        "height": 162
+      },
+      "anchor": {
+        "x": 80.9741,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.5125,
+        "y": 0.821
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11663,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_57",
+      "index": 57,
+      "row": 7,
+      "column": 1,
+      "rect": {
+        "x": 158,
+        "y": 1092,
+        "width": 163,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 1,
+        "width": 163,
+        "height": 147
+      },
+      "anchor": {
+        "x": 60.6639,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.3722,
+        "y": 0.821
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11941,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_58",
+      "index": 58,
+      "row": 7,
+      "column": 2,
+      "rect": {
+        "x": 321,
+        "y": 1092,
+        "width": 141,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 141,
+        "height": 148
+      },
+      "anchor": {
+        "x": 116.1524,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.8238,
+        "y": 0.8333
+      },
+      "boundaryContact": 0.1931,
+      "bodyPixels": 13340,
+      "weight": 0,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_59",
+      "index": 59,
+      "row": 7,
+      "column": 3,
+      "rect": {
+        "x": 462,
+        "y": 1092,
+        "width": 165,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 165,
+        "height": 162
+      },
+      "anchor": {
+        "x": 68.5175,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.4153,
+        "y": 0.8457
+      },
+      "boundaryContact": 0.1804,
+      "bodyPixels": 18158,
+      "weight": 0,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_60",
+      "index": 60,
+      "row": 7,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 1092,
+        "width": 154,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 162
+      },
+      "anchor": {
+        "x": 60.5064,
+        "y": 130
+      },
+      "normalizedAnchor": {
+        "x": 0.3929,
+        "y": 0.8025
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11245,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_61",
+      "index": 61,
+      "row": 7,
+      "column": 5,
+      "rect": {
+        "x": 781,
+        "y": 1092,
+        "width": 160,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 8,
+        "width": 160,
+        "height": 154
+      },
+      "anchor": {
+        "x": 81.9431,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.5121,
+        "y": 0.8148
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12825,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_62",
+      "index": 62,
+      "row": 7,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 1092,
+        "width": 147,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 147,
+        "height": 148
+      },
+      "anchor": {
+        "x": 84.3764,
+        "y": 138
+      },
+      "normalizedAnchor": {
+        "x": 0.574,
+        "y": 0.8519
+      },
+      "boundaryContact": 0.0178,
+      "bodyPixels": 14670,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_beast_damage_b_63",
+      "index": 63,
+      "row": 7,
+      "column": 7,
+      "rect": {
+        "x": 1088,
+        "y": 1086,
+        "width": 166,
+        "height": 168
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 166,
+        "height": 168
+      },
+      "anchor": {
+        "x": 93.9935,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.5662,
+        "y": 0.8512
+      },
+      "boundaryContact": 0.0195,
+      "bodyPixels": 16000,
+      "weight": 1,
+      "tags": [
+        "beast_damage",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    }
+  ],
+  "canonicalSource": "props/beast_damage/source-a.png"
+}

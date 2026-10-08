@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "ground": {
+    "cave": [
+      "./ground/cave/source.json"
+    ],
+    "corrupted": [
+      "./ground/corrupted/source.json"
+    ],
+    "dead": [
+      "./ground/dead/source.json"
+    ],
+    "forest": [
+      "./ground/forest/source-a.json",
+      "./ground/forest/source-b.json"
+    ],
+    "lava": [
+      "./ground/lava/source.json"
+    ],
+    "rock": [
+      "./ground/rock/source.json"
+    ],
+    "ruins": [
+      "./ground/ruins/source.json"
+    ],
+    "sand": [
+      "./ground/sand/source.json"
+    ],
+    "swamp": [
+      "./ground/swamp/source.json"
+    ]
+  },
+  "props": {
+    "beast_damage": [
+      "./props/beast_damage/source-a.json"
+    ],
+    "cave": [
+      "./props/cave/source.json"
+    ],
+    "corruption": [
+      "./props/corruption/source.json"
+    ],
+    "crystals": [
+      "./props/crystals/source.json"
+    ],
+    "minerals": [
+      "./props/minerals/source.json"
+    ],
+    "mines": [
+      "./props/mines/source.json"
+    ],
+    "rocks": [
+      "./props/rocks/source.json"
+    ],
+    "ruins": [
+      "./props/ruins/source.json"
+    ],
+    "swamp": [
+      "./props/swamp/source.json"
+    ],
+    "trees_dead": [
+      "./props/trees/dead/source.json"
+    ],
+    "trees_living": [
+      "./props/trees/living/source.json"
+    ],
+    "trees_petrified": [
+      "./props/trees/petrified/source.json"
+    ],
+    "volcano": [
+      "./props/volcano/source.json"
+    ]
+  },
+  "duplicates": [
+    {
+      "source": "props/beast_damage/source-b.png",
+      "canonical": "props/beast_damage/source-a.png",
+      "sha256": "8efd3ff4dd45cddd3c63f5fa5e8b68711eb8792b0162351c83ae1ec5174a308f"
+    }
+  ],
+  "renames": {
+    "ground/send": "ground/sand",
+    "props/volvano": "props/volcano",
+    "props/trees/trees": "props/trees/living"
+  }
+}

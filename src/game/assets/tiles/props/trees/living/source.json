@@ -1,0 +1,2368 @@
+{
+  "schemaVersion": 1,
+  "id": "props_trees_living",
+  "kind": "prop",
+  "family": "trees_living",
+  "image": "./source.png",
+  "source": {
+    "width": 1254,
+    "height": 1254,
+    "sha256": "b4e98cc70306928335f254ac9d05a6f00592482d4360d1037b118bdead75526a",
+    "hasAlpha": true
+  },
+  "grid": {
+    "columns": 8,
+    "rows": 8,
+    "slots": 64
+  },
+  "detection": {
+    "method": "alpha-valley-per-band",
+    "confidence": 0.9736,
+    "measuredConfidence": 0.9736,
+    "review": null,
+    "rows": [
+      0,
+      164,
+      323,
+      482,
+      637,
+      787,
+      949,
+      1108,
+      1254
+    ],
+    "columns": [
+      [
+        0,
+        161,
+        317,
+        474,
+        627,
+        781,
+        938,
+        1097,
+        1254
+      ],
+      [
+        0,
+        162,
+        321,
+        475,
+        629,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        933,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        782,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ]
+    ]
+  },
+  "warnings": [],
+  "slots": [
+    {
+      "id": "prop_trees_living_00",
+      "index": 0,
+      "row": 0,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 161,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 161,
+        "height": 164
+      },
+      "anchor": {
+        "x": 89.4588,
+        "y": 158
+      },
+      "normalizedAnchor": {
+        "x": 0.5556,
+        "y": 0.9634
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12941,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_01",
+      "index": 1,
+      "row": 0,
+      "column": 1,
+      "rect": {
+        "x": 161,
+        "y": 0,
+        "width": 156,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 15,
+        "width": 156,
+        "height": 149
+      },
+      "anchor": {
+        "x": 83.8118,
+        "y": 157
+      },
+      "normalizedAnchor": {
+        "x": 0.5373,
+        "y": 0.9573
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12901,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_02",
+      "index": 2,
+      "row": 0,
+      "column": 2,
+      "rect": {
+        "x": 317,
+        "y": 0,
+        "width": 157,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 164
+      },
+      "anchor": {
+        "x": 92.216,
+        "y": 158
+      },
+      "normalizedAnchor": {
+        "x": 0.5874,
+        "y": 0.9634
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13203,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_03",
+      "index": 3,
+      "row": 0,
+      "column": 3,
+      "rect": {
+        "x": 474,
+        "y": 0,
+        "width": 153,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 153,
+        "height": 164
+      },
+      "anchor": {
+        "x": 71.8348,
+        "y": 158
+      },
+      "normalizedAnchor": {
+        "x": 0.4695,
+        "y": 0.9634
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11944,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_04",
+      "index": 4,
+      "row": 0,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 0,
+        "width": 154,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 17,
+        "width": 154,
+        "height": 147
+      },
+      "anchor": {
+        "x": 73.0567,
+        "y": 158
+      },
+      "normalizedAnchor": {
+        "x": 0.4744,
+        "y": 0.9634
+      },
+      "boundaryContact": 0.0079,
+      "bodyPixels": 11884,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_05",
+      "index": 5,
+      "row": 0,
+      "column": 5,
+      "rect": {
+        "x": 781,
+        "y": 0,
+        "width": 157,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 17,
+        "width": 157,
+        "height": 147
+      },
+      "anchor": {
+        "x": 74.5714,
+        "y": 158
+      },
+      "normalizedAnchor": {
+        "x": 0.475,
+        "y": 0.9634
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12923,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_06",
+      "index": 6,
+      "row": 0,
+      "column": 6,
+      "rect": {
+        "x": 938,
+        "y": 0,
+        "width": 159,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 15,
+        "width": 159,
+        "height": 149
+      },
+      "anchor": {
+        "x": 84.1435,
+        "y": 158
+      },
+      "normalizedAnchor": {
+        "x": 0.5292,
+        "y": 0.9634
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12735,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_07",
+      "index": 7,
+      "row": 0,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 0,
+        "width": 157,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 17,
+        "width": 157,
+        "height": 147
+      },
+      "anchor": {
+        "x": 79.9002,
+        "y": 158
+      },
+      "normalizedAnchor": {
+        "x": 0.5089,
+        "y": 0.9634
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12222,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_08",
+      "index": 8,
+      "row": 1,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 164,
+        "width": 162,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 162,
+        "height": 159
+      },
+      "anchor": {
+        "x": 87.0684,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5375,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14229,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_09",
+      "index": 9,
+      "row": 1,
+      "column": 1,
+      "rect": {
+        "x": 162,
+        "y": 164,
+        "width": 159,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 159,
+        "height": 159
+      },
+      "anchor": {
+        "x": 88.4618,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5564,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13624,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_10",
+      "index": 10,
+      "row": 1,
+      "column": 2,
+      "rect": {
+        "x": 321,
+        "y": 164,
+        "width": 154,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 159
+      },
+      "anchor": {
+        "x": 80.5751,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5232,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13205,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_11",
+      "index": 11,
+      "row": 1,
+      "column": 3,
+      "rect": {
+        "x": 475,
+        "y": 164,
+        "width": 154,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 159
+      },
+      "anchor": {
+        "x": 83.5772,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.5427,
+        "y": 0.9623
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13000,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_12",
+      "index": 12,
+      "row": 1,
+      "column": 4,
+      "rect": {
+        "x": 629,
+        "y": 164,
+        "width": 155,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 159
+      },
+      "anchor": {
+        "x": 80.5104,
+        "y": 154
+      },
+      "normalizedAnchor": {
+        "x": 0.5194,
+        "y": 0.9686
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12271,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_13",
+      "index": 13,
+      "row": 1,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 164,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 159
+      },
+      "anchor": {
+        "x": 87.1585,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.5551,
+        "y": 0.9623
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14059,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_14",
+      "index": 14,
+      "row": 1,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 164,
+        "width": 156,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 159
+      },
+      "anchor": {
+        "x": 79.0938,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.507,
+        "y": 0.9623
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13111,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_15",
+      "index": 15,
+      "row": 1,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 164,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 159
+      },
+      "anchor": {
+        "x": 66.729,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.425,
+        "y": 0.9623
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12222,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_16",
+      "index": 16,
+      "row": 2,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 323,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 159
+      },
+      "anchor": {
+        "x": 80.2549,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.5112,
+        "y": 0.9434
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11706,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_17",
+      "index": 17,
+      "row": 2,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 323,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 150,
+        "height": 159
+      },
+      "anchor": {
+        "x": 82.0858,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5228,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11169,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_18",
+      "index": 18,
+      "row": 2,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 323,
+        "width": 156,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 5,
+        "y": 0,
+        "width": 151,
+        "height": 159
+      },
+      "anchor": {
+        "x": 80.991,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5192,
+        "y": 0.9497
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12032,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_19",
+      "index": 19,
+      "row": 2,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 323,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 159
+      },
+      "anchor": {
+        "x": 76.4628,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.487,
+        "y": 0.9434
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10565,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_20",
+      "index": 20,
+      "row": 2,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 323,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 159
+      },
+      "anchor": {
+        "x": 78.4219,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.4995,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11024,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_21",
+      "index": 21,
+      "row": 2,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 323,
+        "width": 149,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 149,
+        "height": 159
+      },
+      "anchor": {
+        "x": 67.8952,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.4557,
+        "y": 0.9371
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11762,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_22",
+      "index": 22,
+      "row": 2,
+      "column": 6,
+      "rect": {
+        "x": 933,
+        "y": 323,
+        "width": 164,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 164,
+        "height": 159
+      },
+      "anchor": {
+        "x": 72.3938,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.4414,
+        "y": 0.9497
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12881,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_23",
+      "index": 23,
+      "row": 2,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 323,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 159
+      },
+      "anchor": {
+        "x": 75.3069,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.4797,
+        "y": 0.9434
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11351,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_24",
+      "index": 24,
+      "row": 3,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 482,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 155
+      },
+      "anchor": {
+        "x": 79.4061,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.5058,
+        "y": 0.9548
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10560,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_25",
+      "index": 25,
+      "row": 3,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 482,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 5,
+        "y": 0,
+        "width": 146,
+        "height": 155
+      },
+      "anchor": {
+        "x": 77.5543,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.494,
+        "y": 0.9548
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10083,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_26",
+      "index": 26,
+      "row": 3,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 482,
+        "width": 156,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 0,
+        "width": 144,
+        "height": 155
+      },
+      "anchor": {
+        "x": 72.504,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.4648,
+        "y": 0.9548
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10090,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_27",
+      "index": 27,
+      "row": 3,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 482,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 7,
+        "y": 0,
+        "width": 150,
+        "height": 155
+      },
+      "anchor": {
+        "x": 75.9732,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.4839,
+        "y": 0.9548
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9553,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_28",
+      "index": 28,
+      "row": 3,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 482,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 155
+      },
+      "anchor": {
+        "x": 83.493,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.5318,
+        "y": 0.9484
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10769,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_29",
+      "index": 29,
+      "row": 3,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 482,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 151,
+        "height": 155
+      },
+      "anchor": {
+        "x": 73.2767,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4667,
+        "y": 0.9484
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10578,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_30",
+      "index": 30,
+      "row": 3,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 482,
+        "width": 156,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 155
+      },
+      "anchor": {
+        "x": 73.2072,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.4693,
+        "y": 0.9548
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10778,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_31",
+      "index": 31,
+      "row": 3,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 482,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 141,
+        "height": 155
+      },
+      "anchor": {
+        "x": 74.4293,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.4741,
+        "y": 0.9548
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10265,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_32",
+      "index": 32,
+      "row": 4,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 637,
+        "width": 157,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 24,
+        "y": 0,
+        "width": 133,
+        "height": 150
+      },
+      "anchor": {
+        "x": 80.8825,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.5152,
+        "y": 0.9533
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7498,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_33",
+      "index": 33,
+      "row": 4,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 637,
+        "width": 157,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 140,
+        "height": 150
+      },
+      "anchor": {
+        "x": 77.4189,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.4931,
+        "y": 0.9533
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8000,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_34",
+      "index": 34,
+      "row": 4,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 637,
+        "width": 156,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 0,
+        "width": 150,
+        "height": 150
+      },
+      "anchor": {
+        "x": 78.0229,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.5001,
+        "y": 0.9533
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8224,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_35",
+      "index": 35,
+      "row": 4,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 637,
+        "width": 157,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 152,
+        "height": 150
+      },
+      "anchor": {
+        "x": 79.9454,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.5092,
+        "y": 0.94
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8450,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_36",
+      "index": 36,
+      "row": 4,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 637,
+        "width": 157,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 156,
+        "height": 150
+      },
+      "anchor": {
+        "x": 92.7256,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.5906,
+        "y": 0.96
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9521,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_37",
+      "index": 37,
+      "row": 4,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 637,
+        "width": 157,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 3,
+        "y": 0,
+        "width": 147,
+        "height": 150
+      },
+      "anchor": {
+        "x": 69.2467,
+        "y": 142
+      },
+      "normalizedAnchor": {
+        "x": 0.4411,
+        "y": 0.9467
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9601,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_38",
+      "index": 38,
+      "row": 4,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 637,
+        "width": 156,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 0,
+        "width": 150,
+        "height": 150
+      },
+      "anchor": {
+        "x": 55.4961,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.3557,
+        "y": 0.96
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9016,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_39",
+      "index": 39,
+      "row": 4,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 637,
+        "width": 157,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 145,
+        "height": 150
+      },
+      "anchor": {
+        "x": 70.2452,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.4474,
+        "y": 0.9667
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9685,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_40",
+      "index": 40,
+      "row": 5,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 787,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 148,
+        "height": 162
+      },
+      "anchor": {
+        "x": 94.497,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.6019,
+        "y": 0.9568
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10811,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_41",
+      "index": 41,
+      "row": 5,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 787,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 5,
+        "y": 0,
+        "width": 148,
+        "height": 162
+      },
+      "anchor": {
+        "x": 86.8123,
+        "y": 156
+      },
+      "normalizedAnchor": {
+        "x": 0.5529,
+        "y": 0.963
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10307,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_42",
+      "index": 42,
+      "row": 5,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 787,
+        "width": 156,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 162
+      },
+      "anchor": {
+        "x": 83.4018,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.5346,
+        "y": 0.9568
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11325,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_43",
+      "index": 43,
+      "row": 5,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 787,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 146,
+        "height": 162
+      },
+      "anchor": {
+        "x": 90.5936,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.577,
+        "y": 0.9568
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11097,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_44",
+      "index": 44,
+      "row": 5,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 787,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 162
+      },
+      "anchor": {
+        "x": 82.4255,
+        "y": 156
+      },
+      "normalizedAnchor": {
+        "x": 0.525,
+        "y": 0.963
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11636,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_45",
+      "index": 45,
+      "row": 5,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 787,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 162
+      },
+      "anchor": {
+        "x": 77.658,
+        "y": 156
+      },
+      "normalizedAnchor": {
+        "x": 0.4946,
+        "y": 0.963
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12309,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_46",
+      "index": 46,
+      "row": 5,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 787,
+        "width": 156,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 162
+      },
+      "anchor": {
+        "x": 76.8525,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.4926,
+        "y": 0.9568
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12660,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_47",
+      "index": 47,
+      "row": 5,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 787,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 153,
+        "height": 162
+      },
+      "anchor": {
+        "x": 68.4382,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.4359,
+        "y": 0.9568
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11740,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_48",
+      "index": 48,
+      "row": 6,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 949,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 159
+      },
+      "anchor": {
+        "x": 82.0969,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5229,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11883,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_49",
+      "index": 49,
+      "row": 6,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 949,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 151,
+        "height": 159
+      },
+      "anchor": {
+        "x": 78.63,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5008,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11048,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_50",
+      "index": 50,
+      "row": 6,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 949,
+        "width": 156,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 9,
+        "y": 0,
+        "width": 147,
+        "height": 159
+      },
+      "anchor": {
+        "x": 81.6721,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5235,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10728,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_51",
+      "index": 51,
+      "row": 6,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 949,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 159
+      },
+      "anchor": {
+        "x": 73.1487,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.4659,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11552,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_52",
+      "index": 52,
+      "row": 6,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 949,
+        "width": 155,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 159
+      },
+      "anchor": {
+        "x": 82.4911,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5322,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11617,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_53",
+      "index": 53,
+      "row": 6,
+      "column": 5,
+      "rect": {
+        "x": 782,
+        "y": 949,
+        "width": 159,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 159,
+        "height": 159
+      },
+      "anchor": {
+        "x": 85.1121,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5353,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11629,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_54",
+      "index": 54,
+      "row": 6,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 949,
+        "width": 156,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 159
+      },
+      "anchor": {
+        "x": 84.9262,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5444,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14051,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_55",
+      "index": 55,
+      "row": 6,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 949,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 149,
+        "height": 159
+      },
+      "anchor": {
+        "x": 81.5266,
+        "y": 154
+      },
+      "normalizedAnchor": {
+        "x": 0.5193,
+        "y": 0.9686
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12238,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_56",
+      "index": 56,
+      "row": 7,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 1108,
+        "width": 157,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 151,
+        "height": 146
+      },
+      "anchor": {
+        "x": 81.8206,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.5212,
+        "y": 0.8767
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8978,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_57",
+      "index": 57,
+      "row": 7,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 1108,
+        "width": 157,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 3,
+        "y": 0,
+        "width": 148,
+        "height": 146
+      },
+      "anchor": {
+        "x": 77.3648,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.4928,
+        "y": 0.8767
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9099,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_58",
+      "index": 58,
+      "row": 7,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 1108,
+        "width": 156,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 146,
+        "height": 146
+      },
+      "anchor": {
+        "x": 83.1159,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.5328,
+        "y": 0.8767
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8780,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_59",
+      "index": 59,
+      "row": 7,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 1108,
+        "width": 157,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 5,
+        "y": 0,
+        "width": 152,
+        "height": 146
+      },
+      "anchor": {
+        "x": 79.0522,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.5035,
+        "y": 0.8767
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10002,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_60",
+      "index": 60,
+      "row": 7,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 1108,
+        "width": 157,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 146
+      },
+      "anchor": {
+        "x": 78.1202,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.4976,
+        "y": 0.8767
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8582,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_61",
+      "index": 61,
+      "row": 7,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 1108,
+        "width": 157,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 146
+      },
+      "anchor": {
+        "x": 76.9548,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.4902,
+        "y": 0.8767
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7968,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_62",
+      "index": 62,
+      "row": 7,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 1108,
+        "width": 156,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 144,
+        "height": 146
+      },
+      "anchor": {
+        "x": 76.5372,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.4906,
+        "y": 0.8767
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8443,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_living_63",
+      "index": 63,
+      "row": 7,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 1108,
+        "width": 157,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 128,
+        "height": 146
+      },
+      "anchor": {
+        "x": 75.9222,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.4836,
+        "y": 0.8767
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7435,
+      "weight": 1,
+      "tags": [
+        "trees_living",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    }
+  ]
+}

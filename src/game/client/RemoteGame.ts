@@ -119,7 +119,7 @@ export class RemoteGame extends BrowserGame {
       return;
     }
     if (!this.active) {
-      super.start("nara", snapshot.mode, snapshot.mapId, snapshot.seed);
+      super.start("nara", snapshot.mode, snapshot.mapId, snapshot.seed, snapshot.duration);
       this.ui.hide();
     }
     const applyStarted = performance.now();

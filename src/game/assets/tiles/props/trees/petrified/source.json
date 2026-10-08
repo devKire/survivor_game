@@ -1,0 +1,2368 @@
+{
+  "schemaVersion": 1,
+  "id": "props_trees_petrified",
+  "kind": "prop",
+  "family": "trees_petrified",
+  "image": "./source.png",
+  "source": {
+    "width": 1254,
+    "height": 1254,
+    "sha256": "61f543e0ceccc265ad6d2f4ba74394f74a9f25caa15cd96475e83f7503fdc5b8",
+    "hasAlpha": true
+  },
+  "grid": {
+    "columns": 8,
+    "rows": 8,
+    "slots": 64
+  },
+  "detection": {
+    "method": "alpha-valley-per-band",
+    "confidence": 1,
+    "measuredConfidence": 1,
+    "review": null,
+    "rows": [
+      0,
+      166,
+      324,
+      485,
+      644,
+      801,
+      954,
+      1095,
+      1254
+    ],
+    "columns": [
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        787,
+        950,
+        1097,
+        1254
+      ],
+      [
+        0,
+        161,
+        321,
+        479,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        318,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        786,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        788,
+        941,
+        1097,
+        1254
+      ]
+    ]
+  },
+  "warnings": [],
+  "slots": [
+    {
+      "id": "prop_trees_petrified_00",
+      "index": 0,
+      "row": 0,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 166
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 15,
+        "width": 157,
+        "height": 151
+      },
+      "anchor": {
+        "x": 88.2681,
+        "y": 160
+      },
+      "normalizedAnchor": {
+        "x": 0.5622,
+        "y": 0.9639
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9321,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_01",
+      "index": 1,
+      "row": 0,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 0,
+        "width": 157,
+        "height": 166
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 28,
+        "width": 152,
+        "height": 138
+      },
+      "anchor": {
+        "x": 80.4575,
+        "y": 161
+      },
+      "normalizedAnchor": {
+        "x": 0.5125,
+        "y": 0.9699
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5838,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_02",
+      "index": 2,
+      "row": 0,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 0,
+        "width": 156,
+        "height": 166
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 17,
+        "width": 143,
+        "height": 149
+      },
+      "anchor": {
+        "x": 85.3297,
+        "y": 162
+      },
+      "normalizedAnchor": {
+        "x": 0.547,
+        "y": 0.9759
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6967,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_03",
+      "index": 3,
+      "row": 0,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 0,
+        "width": 157,
+        "height": 166
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 26,
+        "width": 151,
+        "height": 140
+      },
+      "anchor": {
+        "x": 74.792,
+        "y": 162
+      },
+      "normalizedAnchor": {
+        "x": 0.4764,
+        "y": 0.9759
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6544,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_04",
+      "index": 4,
+      "row": 0,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 0,
+        "width": 157,
+        "height": 166
+      },
+      "alphaBounds": {
+        "x": 17,
+        "y": 17,
+        "width": 132,
+        "height": 149
+      },
+      "anchor": {
+        "x": 68.875,
+        "y": 161
+      },
+      "normalizedAnchor": {
+        "x": 0.4387,
+        "y": 0.9699
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7262,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_05",
+      "index": 5,
+      "row": 0,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 0,
+        "width": 157,
+        "height": 166
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 17,
+        "width": 152,
+        "height": 149
+      },
+      "anchor": {
+        "x": 86.7023,
+        "y": 162
+      },
+      "normalizedAnchor": {
+        "x": 0.5522,
+        "y": 0.9759
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7951,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_06",
+      "index": 6,
+      "row": 0,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 0,
+        "width": 156,
+        "height": 166
+      },
+      "alphaBounds": {
+        "x": 16,
+        "y": 10,
+        "width": 140,
+        "height": 156
+      },
+      "anchor": {
+        "x": 77.1768,
+        "y": 162
+      },
+      "normalizedAnchor": {
+        "x": 0.4947,
+        "y": 0.9759
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7470,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_07",
+      "index": 7,
+      "row": 0,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 0,
+        "width": 157,
+        "height": 166
+      },
+      "alphaBounds": {
+        "x": 21,
+        "y": 11,
+        "width": 122,
+        "height": 155
+      },
+      "anchor": {
+        "x": 82.8373,
+        "y": 161
+      },
+      "normalizedAnchor": {
+        "x": 0.5276,
+        "y": 0.9699
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7503,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_08",
+      "index": 8,
+      "row": 1,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 166,
+        "width": 157,
+        "height": 158
+      },
+      "alphaBounds": {
+        "x": 14,
+        "y": 0,
+        "width": 137,
+        "height": 158
+      },
+      "anchor": {
+        "x": 85.2,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5427,
+        "y": 0.9557
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7945,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_09",
+      "index": 9,
+      "row": 1,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 166,
+        "width": 157,
+        "height": 158
+      },
+      "alphaBounds": {
+        "x": 17,
+        "y": 0,
+        "width": 134,
+        "height": 158
+      },
+      "anchor": {
+        "x": 76.9977,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.4904,
+        "y": 0.9494
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8308,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_10",
+      "index": 10,
+      "row": 1,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 166,
+        "width": 156,
+        "height": 158
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 0,
+        "width": 139,
+        "height": 158
+      },
+      "anchor": {
+        "x": 82.546,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5291,
+        "y": 0.962
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6728,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_11",
+      "index": 11,
+      "row": 1,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 166,
+        "width": 157,
+        "height": 158
+      },
+      "alphaBounds": {
+        "x": 7,
+        "y": 0,
+        "width": 150,
+        "height": 158
+      },
+      "anchor": {
+        "x": 78.8157,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.502,
+        "y": 0.9557
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7772,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_12",
+      "index": 12,
+      "row": 1,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 166,
+        "width": 160,
+        "height": 158
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 149,
+        "height": 158
+      },
+      "anchor": {
+        "x": 75.5367,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.4721,
+        "y": 0.9684
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8816,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_13",
+      "index": 13,
+      "row": 1,
+      "column": 5,
+      "rect": {
+        "x": 787,
+        "y": 166,
+        "width": 163,
+        "height": 158
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 163,
+        "height": 158
+      },
+      "anchor": {
+        "x": 74.2918,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.4558,
+        "y": 0.9684
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8352,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_14",
+      "index": 14,
+      "row": 1,
+      "column": 6,
+      "rect": {
+        "x": 950,
+        "y": 166,
+        "width": 147,
+        "height": 158
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 147,
+        "height": 158
+      },
+      "anchor": {
+        "x": 79.7619,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5426,
+        "y": 0.9557
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7765,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_15",
+      "index": 15,
+      "row": 1,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 166,
+        "width": 157,
+        "height": 158
+      },
+      "alphaBounds": {
+        "x": 22,
+        "y": 0,
+        "width": 123,
+        "height": 158
+      },
+      "anchor": {
+        "x": 80.5645,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5131,
+        "y": 0.9557
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6532,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_16",
+      "index": 16,
+      "row": 2,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 324,
+        "width": 161,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 161,
+        "height": 161
+      },
+      "anchor": {
+        "x": 94.086,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.5844,
+        "y": 0.9503
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9278,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_17",
+      "index": 17,
+      "row": 2,
+      "column": 1,
+      "rect": {
+        "x": 161,
+        "y": 324,
+        "width": 160,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 160,
+        "height": 161
+      },
+      "anchor": {
+        "x": 77.3536,
+        "y": 154
+      },
+      "normalizedAnchor": {
+        "x": 0.4835,
+        "y": 0.9565
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8390,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_18",
+      "index": 18,
+      "row": 2,
+      "column": 2,
+      "rect": {
+        "x": 321,
+        "y": 324,
+        "width": 158,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 12,
+        "width": 158,
+        "height": 149
+      },
+      "anchor": {
+        "x": 65.4966,
+        "y": 154
+      },
+      "normalizedAnchor": {
+        "x": 0.4145,
+        "y": 0.9565
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8989,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_19",
+      "index": 19,
+      "row": 2,
+      "column": 3,
+      "rect": {
+        "x": 479,
+        "y": 324,
+        "width": 148,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 148,
+        "height": 161
+      },
+      "anchor": {
+        "x": 62.8144,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.4244,
+        "y": 0.9627
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8355,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_20",
+      "index": 20,
+      "row": 2,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 324,
+        "width": 157,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 14,
+        "y": 0,
+        "width": 143,
+        "height": 161
+      },
+      "anchor": {
+        "x": 78.9362,
+        "y": 156
+      },
+      "normalizedAnchor": {
+        "x": 0.5028,
+        "y": 0.9689
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9327,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_21",
+      "index": 21,
+      "row": 2,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 324,
+        "width": 157,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 161
+      },
+      "anchor": {
+        "x": 76.9475,
+        "y": 156
+      },
+      "normalizedAnchor": {
+        "x": 0.4901,
+        "y": 0.9689
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8497,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_22",
+      "index": 22,
+      "row": 2,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 324,
+        "width": 156,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 153,
+        "height": 161
+      },
+      "anchor": {
+        "x": 88.2742,
+        "y": 154
+      },
+      "normalizedAnchor": {
+        "x": 0.5659,
+        "y": 0.9565
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8653,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_23",
+      "index": 23,
+      "row": 2,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 324,
+        "width": 157,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 10,
+        "y": 0,
+        "width": 132,
+        "height": 161
+      },
+      "anchor": {
+        "x": 80.1459,
+        "y": 156
+      },
+      "normalizedAnchor": {
+        "x": 0.5105,
+        "y": 0.9689
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8758,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_24",
+      "index": 24,
+      "row": 3,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 485,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 151,
+        "height": 159
+      },
+      "anchor": {
+        "x": 80.5962,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5134,
+        "y": 0.9497
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8436,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_25",
+      "index": 25,
+      "row": 3,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 485,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 5,
+        "y": 0,
+        "width": 152,
+        "height": 159
+      },
+      "anchor": {
+        "x": 77.5543,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.494,
+        "y": 0.9497
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8610,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_26",
+      "index": 26,
+      "row": 3,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 485,
+        "width": 156,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 159
+      },
+      "anchor": {
+        "x": 75.2471,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.4824,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9259,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_27",
+      "index": 27,
+      "row": 3,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 485,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 156,
+        "height": 159
+      },
+      "anchor": {
+        "x": 77.907,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.4962,
+        "y": 0.9623
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10061,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_28",
+      "index": 28,
+      "row": 3,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 485,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 159
+      },
+      "anchor": {
+        "x": 75.3031,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.4796,
+        "y": 0.9497
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8201,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_29",
+      "index": 29,
+      "row": 3,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 485,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 159
+      },
+      "anchor": {
+        "x": 70.1242,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.4467,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8871,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_30",
+      "index": 30,
+      "row": 3,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 485,
+        "width": 156,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 159
+      },
+      "anchor": {
+        "x": 82.6527,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5298,
+        "y": 0.956
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8523,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_31",
+      "index": 31,
+      "row": 3,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 485,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 133,
+        "height": 159
+      },
+      "anchor": {
+        "x": 80.4527,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.5124,
+        "y": 0.9434
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8253,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_32",
+      "index": 32,
+      "row": 4,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 644,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 157
+      },
+      "anchor": {
+        "x": 79.8966,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.5089,
+        "y": 0.9363
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10048,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_33",
+      "index": 33,
+      "row": 4,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 644,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 15,
+        "y": 0,
+        "width": 142,
+        "height": 157
+      },
+      "anchor": {
+        "x": 85.7347,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.5461,
+        "y": 0.9363
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9533,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_34",
+      "index": 34,
+      "row": 4,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 644,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 157
+      },
+      "anchor": {
+        "x": 84.3327,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.5406,
+        "y": 0.949
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10149,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_35",
+      "index": 35,
+      "row": 4,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 644,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 9,
+        "y": 0,
+        "width": 145,
+        "height": 157
+      },
+      "anchor": {
+        "x": 82.4183,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.525,
+        "y": 0.9554
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9179,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_36",
+      "index": 36,
+      "row": 4,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 644,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 14,
+        "y": 0,
+        "width": 143,
+        "height": 157
+      },
+      "anchor": {
+        "x": 81.935,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5219,
+        "y": 0.9618
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9704,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_37",
+      "index": 37,
+      "row": 4,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 644,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 152,
+        "height": 157
+      },
+      "anchor": {
+        "x": 85.8094,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.5466,
+        "y": 0.9745
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9190,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_38",
+      "index": 38,
+      "row": 4,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 644,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 2,
+        "y": 0,
+        "width": 152,
+        "height": 157
+      },
+      "anchor": {
+        "x": 70.6994,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.4532,
+        "y": 0.9554
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8854,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_39",
+      "index": 39,
+      "row": 4,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 644,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 3,
+        "y": 0,
+        "width": 144,
+        "height": 157
+      },
+      "anchor": {
+        "x": 78.6193,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5008,
+        "y": 0.9618
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9744,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_40",
+      "index": 40,
+      "row": 5,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 801,
+        "width": 157,
+        "height": 153
+      },
+      "alphaBounds": {
+        "x": 13,
+        "y": 0,
+        "width": 144,
+        "height": 153
+      },
+      "anchor": {
+        "x": 85.6722,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.5457,
+        "y": 0.9608
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9370,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_41",
+      "index": 41,
+      "row": 5,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 801,
+        "width": 161,
+        "height": 153
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 161,
+        "height": 153
+      },
+      "anchor": {
+        "x": 87.4518,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.5432,
+        "y": 0.9608
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9579,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_42",
+      "index": 42,
+      "row": 5,
+      "column": 2,
+      "rect": {
+        "x": 318,
+        "y": 801,
+        "width": 152,
+        "height": 153
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 150,
+        "height": 153
+      },
+      "anchor": {
+        "x": 83.8747,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.5518,
+        "y": 0.9673
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9965,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_43",
+      "index": 43,
+      "row": 5,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 801,
+        "width": 157,
+        "height": 153
+      },
+      "alphaBounds": {
+        "x": 13,
+        "y": 0,
+        "width": 144,
+        "height": 153
+      },
+      "anchor": {
+        "x": 75.0324,
+        "y": 146
+      },
+      "normalizedAnchor": {
+        "x": 0.4779,
+        "y": 0.9542
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8246,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_44",
+      "index": 44,
+      "row": 5,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 801,
+        "width": 157,
+        "height": 153
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 152,
+        "height": 153
+      },
+      "anchor": {
+        "x": 80.5125,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.5128,
+        "y": 0.9477
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7738,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_45",
+      "index": 45,
+      "row": 5,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 801,
+        "width": 157,
+        "height": 153
+      },
+      "alphaBounds": {
+        "x": 7,
+        "y": 0,
+        "width": 148,
+        "height": 153
+      },
+      "anchor": {
+        "x": 78.8615,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.5023,
+        "y": 0.9608
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8193,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_46",
+      "index": 46,
+      "row": 5,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 801,
+        "width": 156,
+        "height": 153
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 0,
+        "width": 147,
+        "height": 153
+      },
+      "anchor": {
+        "x": 85.9242,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.5508,
+        "y": 0.9477
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7966,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_47",
+      "index": 47,
+      "row": 5,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 801,
+        "width": 157,
+        "height": 153
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 135,
+        "height": 153
+      },
+      "anchor": {
+        "x": 76.0119,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.4842,
+        "y": 0.9477
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8518,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_48",
+      "index": 48,
+      "row": 6,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 954,
+        "width": 157,
+        "height": 141
+      },
+      "alphaBounds": {
+        "x": 17,
+        "y": 0,
+        "width": 140,
+        "height": 141
+      },
+      "anchor": {
+        "x": 78.8945,
+        "y": 130
+      },
+      "normalizedAnchor": {
+        "x": 0.5025,
+        "y": 0.922
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6598,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_49",
+      "index": 49,
+      "row": 6,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 954,
+        "width": 157,
+        "height": 141
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 147,
+        "height": 141
+      },
+      "anchor": {
+        "x": 83.2272,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.5301,
+        "y": 0.9149
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6075,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_50",
+      "index": 50,
+      "row": 6,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 954,
+        "width": 156,
+        "height": 141
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 0,
+        "width": 134,
+        "height": 141
+      },
+      "anchor": {
+        "x": 79.1283,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.5072,
+        "y": 0.9149
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7666,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_51",
+      "index": 51,
+      "row": 6,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 954,
+        "width": 157,
+        "height": 141
+      },
+      "alphaBounds": {
+        "x": 13,
+        "y": 0,
+        "width": 131,
+        "height": 141
+      },
+      "anchor": {
+        "x": 78.2649,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.4985,
+        "y": 0.9433
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7417,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_52",
+      "index": 52,
+      "row": 6,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 954,
+        "width": 159,
+        "height": 141
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 148,
+        "height": 141
+      },
+      "anchor": {
+        "x": 89.5845,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.5634,
+        "y": 0.9149
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8582,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_53",
+      "index": 53,
+      "row": 6,
+      "column": 5,
+      "rect": {
+        "x": 786,
+        "y": 954,
+        "width": 155,
+        "height": 141
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 141
+      },
+      "anchor": {
+        "x": 83.0158,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.5356,
+        "y": 0.9149
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8390,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_54",
+      "index": 54,
+      "row": 6,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 954,
+        "width": 156,
+        "height": 141
+      },
+      "alphaBounds": {
+        "x": 8,
+        "y": 0,
+        "width": 148,
+        "height": 141
+      },
+      "anchor": {
+        "x": 82.5346,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.5291,
+        "y": 0.9007
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6540,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_55",
+      "index": 55,
+      "row": 6,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 954,
+        "width": 157,
+        "height": 141
+      },
+      "alphaBounds": {
+        "x": 10,
+        "y": 0,
+        "width": 132,
+        "height": 141
+      },
+      "anchor": {
+        "x": 88.0401,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.5608,
+        "y": 0.9149
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7692,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_56",
+      "index": 56,
+      "row": 7,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 1095,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 14,
+        "y": 0,
+        "width": 143,
+        "height": 133
+      },
+      "anchor": {
+        "x": 80.5778,
+        "y": 125
+      },
+      "normalizedAnchor": {
+        "x": 0.5132,
+        "y": 0.7862
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7020,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_57",
+      "index": 57,
+      "row": 7,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 1095,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 132
+      },
+      "anchor": {
+        "x": 82.7617,
+        "y": 125
+      },
+      "normalizedAnchor": {
+        "x": 0.5271,
+        "y": 0.7862
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5907,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_58",
+      "index": 58,
+      "row": 7,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 1095,
+        "width": 156,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 37,
+        "width": 154,
+        "height": 98
+      },
+      "anchor": {
+        "x": 79.1659,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.5075,
+        "y": 0.7925
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6345,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_59",
+      "index": 59,
+      "row": 7,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 1095,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 7,
+        "y": 0,
+        "width": 150,
+        "height": 131
+      },
+      "anchor": {
+        "x": 77.6199,
+        "y": 125
+      },
+      "normalizedAnchor": {
+        "x": 0.4944,
+        "y": 0.7862
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6799,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_60",
+      "index": 60,
+      "row": 7,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 1095,
+        "width": 161,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 160,
+        "height": 159
+      },
+      "anchor": {
+        "x": 82.7862,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.5142,
+        "y": 0.8868
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11174,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_61",
+      "index": 61,
+      "row": 7,
+      "column": 5,
+      "rect": {
+        "x": 788,
+        "y": 1095,
+        "width": 153,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 151,
+        "height": 159
+      },
+      "anchor": {
+        "x": 75.8249,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.4956,
+        "y": 0.8868
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9337,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_62",
+      "index": 62,
+      "row": 7,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 1095,
+        "width": 156,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 8,
+        "y": 0,
+        "width": 147,
+        "height": 159
+      },
+      "anchor": {
+        "x": 82.8322,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.531,
+        "y": 0.8868
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10142,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_trees_petrified_63",
+      "index": 63,
+      "row": 7,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 1095,
+        "width": 157,
+        "height": 159
+      },
+      "alphaBounds": {
+        "x": 7,
+        "y": 0,
+        "width": 137,
+        "height": 147
+      },
+      "anchor": {
+        "x": 74.3508,
+        "y": 140
+      },
+      "normalizedAnchor": {
+        "x": 0.4736,
+        "y": 0.8805
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10597,
+      "weight": 1,
+      "tags": [
+        "trees_petrified",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    }
+  ]
+}

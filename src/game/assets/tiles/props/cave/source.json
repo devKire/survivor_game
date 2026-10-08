@@ -1,0 +1,2370 @@
+{
+  "schemaVersion": 1,
+  "id": "props_cave",
+  "kind": "prop",
+  "family": "cave",
+  "image": "./source.png",
+  "source": {
+    "width": 1254,
+    "height": 1254,
+    "sha256": "6df72c79e1b43b2f0b8f9728a7bec9a583359df8ebefc26850dbeb02f34b2057",
+    "hasAlpha": true
+  },
+  "grid": {
+    "columns": 8,
+    "rows": 8,
+    "slots": 64
+  },
+  "detection": {
+    "method": "alpha-valley-per-band",
+    "confidence": 0.9372,
+    "measuredConfidence": 0.9372,
+    "review": null,
+    "rows": [
+      0,
+      157,
+      319,
+      476,
+      641,
+      784,
+      932,
+      1078,
+      1254
+    ],
+    "columns": [
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        625,
+        789,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        940,
+        1105,
+        1254
+      ],
+      [
+        0,
+        158,
+        314,
+        474,
+        628,
+        780,
+        944,
+        1097,
+        1254
+      ],
+      [
+        0,
+        162,
+        313,
+        475,
+        635,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        782,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        783,
+        941,
+        1094,
+        1254
+      ]
+    ]
+  },
+  "warnings": [
+    "slot 27: 2.5% opaque boundary contact; source art may touch neighbor"
+  ],
+  "slots": [
+    {
+      "id": "prop_cave_00",
+      "index": 0,
+      "row": 0,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 32,
+        "y": 49,
+        "width": 97,
+        "height": 108
+      },
+      "anchor": {
+        "x": 82.4638,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.5252,
+        "y": 0.9172
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4949,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_01",
+      "index": 1,
+      "row": 0,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 32,
+        "y": 19,
+        "width": 108,
+        "height": 138
+      },
+      "anchor": {
+        "x": 80.1135,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.5103,
+        "y": 0.9172
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5179,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_02",
+      "index": 2,
+      "row": 0,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 0,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 26,
+        "y": 46,
+        "width": 111,
+        "height": 111
+      },
+      "anchor": {
+        "x": 67.1765,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.4306,
+        "y": 0.9236
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6638,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_03",
+      "index": 3,
+      "row": 0,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 5,
+        "y": 17,
+        "width": 134,
+        "height": 140
+      },
+      "anchor": {
+        "x": 71.6353,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.4563,
+        "y": 0.9108
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6955,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_04",
+      "index": 4,
+      "row": 0,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 26,
+        "y": 30,
+        "width": 117,
+        "height": 127
+      },
+      "anchor": {
+        "x": 75.1094,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4784,
+        "y": 0.9363
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7904,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_05",
+      "index": 5,
+      "row": 0,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 17,
+        "y": 16,
+        "width": 138,
+        "height": 141
+      },
+      "anchor": {
+        "x": 64.8348,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.413,
+        "y": 0.9363
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8641,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_06",
+      "index": 6,
+      "row": 0,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 0,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 21,
+        "y": 21,
+        "width": 133,
+        "height": 136
+      },
+      "anchor": {
+        "x": 72.5015,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.4648,
+        "y": 0.9236
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4891,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_07",
+      "index": 7,
+      "row": 0,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 20,
+        "y": 16,
+        "width": 119,
+        "height": 141
+      },
+      "anchor": {
+        "x": 80.8933,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.5152,
+        "y": 0.9427
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7889,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_08",
+      "index": 8,
+      "row": 1,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 157,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 33,
+        "y": 0,
+        "width": 114,
+        "height": 162
+      },
+      "anchor": {
+        "x": 80.3958,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.5121,
+        "y": 0.9568
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6237,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_09",
+      "index": 9,
+      "row": 1,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 157,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 18,
+        "y": 23,
+        "width": 133,
+        "height": 139
+      },
+      "anchor": {
+        "x": 77.7602,
+        "y": 154
+      },
+      "normalizedAnchor": {
+        "x": 0.4953,
+        "y": 0.9506
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7590,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_10",
+      "index": 10,
+      "row": 1,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 157,
+        "width": 156,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 0,
+        "width": 144,
+        "height": 162
+      },
+      "anchor": {
+        "x": 81.8422,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5246,
+        "y": 0.9321
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6869,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_11",
+      "index": 11,
+      "row": 1,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 157,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 146,
+        "height": 162
+      },
+      "anchor": {
+        "x": 79.6134,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.5071,
+        "y": 0.9444
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11160,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_12",
+      "index": 12,
+      "row": 1,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 157,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 146,
+        "height": 162
+      },
+      "anchor": {
+        "x": 79.3164,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.5052,
+        "y": 0.9568
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7889,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_13",
+      "index": 13,
+      "row": 1,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 157,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 162
+      },
+      "anchor": {
+        "x": 80.5368,
+        "y": 156
+      },
+      "normalizedAnchor": {
+        "x": 0.513,
+        "y": 0.963
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11555,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_14",
+      "index": 14,
+      "row": 1,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 157,
+        "width": 156,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 162
+      },
+      "anchor": {
+        "x": 80.3325,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.515,
+        "y": 0.9321
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6080,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_15",
+      "index": 15,
+      "row": 1,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 157,
+        "width": 157,
+        "height": 162
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 147,
+        "height": 162
+      },
+      "anchor": {
+        "x": 70.2386,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.4474,
+        "y": 0.9383
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8068,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_16",
+      "index": 16,
+      "row": 2,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 319,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "anchor": {
+        "x": 80.08,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.5101,
+        "y": 0.9363
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9982,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_17",
+      "index": 17,
+      "row": 2,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 319,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "anchor": {
+        "x": 78.0484,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4971,
+        "y": 0.9363
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8382,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_18",
+      "index": 18,
+      "row": 2,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 319,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 157
+      },
+      "anchor": {
+        "x": 72.9309,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4675,
+        "y": 0.9363
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11282,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_19",
+      "index": 19,
+      "row": 2,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 319,
+        "width": 155,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 151
+      },
+      "anchor": {
+        "x": 83.5953,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.5393,
+        "y": 0.9172
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7815,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_20",
+      "index": 20,
+      "row": 2,
+      "column": 4,
+      "rect": {
+        "x": 625,
+        "y": 319,
+        "width": 164,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 164,
+        "height": 157
+      },
+      "anchor": {
+        "x": 79.842,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.4868,
+        "y": 0.9618
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13663,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_21",
+      "index": 21,
+      "row": 2,
+      "column": 5,
+      "rect": {
+        "x": 789,
+        "y": 319,
+        "width": 152,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 144,
+        "height": 157
+      },
+      "anchor": {
+        "x": 68.4123,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4501,
+        "y": 0.9363
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7682,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_22",
+      "index": 22,
+      "row": 2,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 319,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 8,
+        "y": 0,
+        "width": 126,
+        "height": 157
+      },
+      "anchor": {
+        "x": 73.9669,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.4741,
+        "y": 0.9554
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10918,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_23",
+      "index": 23,
+      "row": 2,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 319,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 120,
+        "height": 157
+      },
+      "anchor": {
+        "x": 60.5536,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.3857,
+        "y": 0.9554
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8407,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_24",
+      "index": 24,
+      "row": 3,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 476,
+        "width": 157,
+        "height": 165
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 165
+      },
+      "anchor": {
+        "x": 68.4179,
+        "y": 156
+      },
+      "normalizedAnchor": {
+        "x": 0.4358,
+        "y": 0.9455
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11135,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_25",
+      "index": 25,
+      "row": 3,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 476,
+        "width": 157,
+        "height": 165
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 156,
+        "height": 165
+      },
+      "anchor": {
+        "x": 80.1417,
+        "y": 157
+      },
+      "normalizedAnchor": {
+        "x": 0.5105,
+        "y": 0.9515
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12384,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_26",
+      "index": 26,
+      "row": 3,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 476,
+        "width": 156,
+        "height": 165
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 165
+      },
+      "anchor": {
+        "x": 87.1119,
+        "y": 157
+      },
+      "normalizedAnchor": {
+        "x": 0.5584,
+        "y": 0.9515
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11296,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_27",
+      "index": 27,
+      "row": 3,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 476,
+        "width": 157,
+        "height": 165
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 2,
+        "width": 157,
+        "height": 163
+      },
+      "anchor": {
+        "x": 78.6523,
+        "y": 159
+      },
+      "normalizedAnchor": {
+        "x": 0.501,
+        "y": 0.9636
+      },
+      "boundaryContact": 0.0248,
+      "bodyPixels": 12187,
+      "weight": 0,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_28",
+      "index": 28,
+      "row": 3,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 476,
+        "width": 157,
+        "height": 165
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 145,
+        "height": 165
+      },
+      "anchor": {
+        "x": 73.983,
+        "y": 154
+      },
+      "normalizedAnchor": {
+        "x": 0.4712,
+        "y": 0.9333
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7506,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_29",
+      "index": 29,
+      "row": 3,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 476,
+        "width": 156,
+        "height": 165
+      },
+      "alphaBounds": {
+        "x": 15,
+        "y": 0,
+        "width": 141,
+        "height": 165
+      },
+      "anchor": {
+        "x": 71.7314,
+        "y": 159
+      },
+      "normalizedAnchor": {
+        "x": 0.4598,
+        "y": 0.9636
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11890,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_30",
+      "index": 30,
+      "row": 3,
+      "column": 6,
+      "rect": {
+        "x": 940,
+        "y": 476,
+        "width": 165,
+        "height": 165
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 165,
+        "height": 163
+      },
+      "anchor": {
+        "x": 98.8616,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.5992,
+        "y": 0.903
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9298,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_31",
+      "index": 31,
+      "row": 3,
+      "column": 7,
+      "rect": {
+        "x": 1105,
+        "y": 476,
+        "width": 149,
+        "height": 165
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 149,
+        "height": 155
+      },
+      "anchor": {
+        "x": 69.7985,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.4684,
+        "y": 0.8727
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7666,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_32",
+      "index": 32,
+      "row": 4,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 641,
+        "width": 158,
+        "height": 143
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 158,
+        "height": 143
+      },
+      "anchor": {
+        "x": 89.4296,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.566,
+        "y": 0.9301
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14707,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_33",
+      "index": 33,
+      "row": 4,
+      "column": 1,
+      "rect": {
+        "x": 158,
+        "y": 641,
+        "width": 156,
+        "height": 143
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 143
+      },
+      "anchor": {
+        "x": 71.0921,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.4557,
+        "y": 0.8881
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11775,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_34",
+      "index": 34,
+      "row": 4,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 641,
+        "width": 160,
+        "height": 143
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 160,
+        "height": 143
+      },
+      "anchor": {
+        "x": 96.0769,
+        "y": 118
+      },
+      "normalizedAnchor": {
+        "x": 0.6005,
+        "y": 0.8252
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9653,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_35",
+      "index": 35,
+      "row": 4,
+      "column": 3,
+      "rect": {
+        "x": 474,
+        "y": 641,
+        "width": 154,
+        "height": 143
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 143
+      },
+      "anchor": {
+        "x": 41.8216,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.2716,
+        "y": 0.8951
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13324,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_36",
+      "index": 36,
+      "row": 4,
+      "column": 4,
+      "rect": {
+        "x": 628,
+        "y": 641,
+        "width": 152,
+        "height": 143
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 152,
+        "height": 143
+      },
+      "anchor": {
+        "x": 74.7988,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.4921,
+        "y": 0.9231
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12810,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_37",
+      "index": 37,
+      "row": 4,
+      "column": 5,
+      "rect": {
+        "x": 780,
+        "y": 641,
+        "width": 164,
+        "height": 143
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 164,
+        "height": 143
+      },
+      "anchor": {
+        "x": 85.552,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.5217,
+        "y": 0.9231
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14140,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_38",
+      "index": 38,
+      "row": 4,
+      "column": 6,
+      "rect": {
+        "x": 944,
+        "y": 641,
+        "width": 153,
+        "height": 143
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 9,
+        "width": 153,
+        "height": 134
+      },
+      "anchor": {
+        "x": 67.7189,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.4426,
+        "y": 0.9231
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11259,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_39",
+      "index": 39,
+      "row": 4,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 641,
+        "width": 157,
+        "height": 143
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 13,
+        "width": 149,
+        "height": 130
+      },
+      "anchor": {
+        "x": 79.7225,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.5078,
+        "y": 0.9301
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10106,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_40",
+      "index": 40,
+      "row": 5,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 784,
+        "width": 162,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 162,
+        "height": 148
+      },
+      "anchor": {
+        "x": 71.1113,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.439,
+        "y": 0.8514
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13021,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_41",
+      "index": 41,
+      "row": 5,
+      "column": 1,
+      "rect": {
+        "x": 162,
+        "y": 784,
+        "width": 151,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 151,
+        "height": 145
+      },
+      "anchor": {
+        "x": 67.0118,
+        "y": 130
+      },
+      "normalizedAnchor": {
+        "x": 0.4438,
+        "y": 0.8784
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11946,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_42",
+      "index": 42,
+      "row": 5,
+      "column": 2,
+      "rect": {
+        "x": 313,
+        "y": 784,
+        "width": 162,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 162,
+        "height": 135
+      },
+      "anchor": {
+        "x": 81.2309,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.5014,
+        "y": 0.8514
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10706,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_43",
+      "index": 43,
+      "row": 5,
+      "column": 3,
+      "rect": {
+        "x": 475,
+        "y": 784,
+        "width": 160,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 9,
+        "width": 160,
+        "height": 130
+      },
+      "anchor": {
+        "x": 76.8526,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.4803,
+        "y": 0.8716
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12673,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_44",
+      "index": 44,
+      "row": 5,
+      "column": 4,
+      "rect": {
+        "x": 635,
+        "y": 784,
+        "width": 149,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 139,
+        "height": 148
+      },
+      "anchor": {
+        "x": 73.9544,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.4963,
+        "y": 0.8919
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7833,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_45",
+      "index": 45,
+      "row": 5,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 784,
+        "width": 157,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 148
+      },
+      "anchor": {
+        "x": 76.3044,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.486,
+        "y": 0.9257
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10716,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_46",
+      "index": 46,
+      "row": 5,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 784,
+        "width": 156,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 148
+      },
+      "anchor": {
+        "x": 69.068,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.4427,
+        "y": 0.8986
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9810,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_47",
+      "index": 47,
+      "row": 5,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 784,
+        "width": 157,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 148
+      },
+      "anchor": {
+        "x": 81.4694,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.5189,
+        "y": 0.8986
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10838,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_48",
+      "index": 48,
+      "row": 6,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 932,
+        "width": 157,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 146
+      },
+      "anchor": {
+        "x": 77.5996,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.4943,
+        "y": 0.9247
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11807,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_49",
+      "index": 49,
+      "row": 6,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 932,
+        "width": 157,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 18,
+        "width": 134,
+        "height": 128
+      },
+      "anchor": {
+        "x": 79.0927,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.5038,
+        "y": 0.911
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7674,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_50",
+      "index": 50,
+      "row": 6,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 932,
+        "width": 156,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 5,
+        "width": 156,
+        "height": 140
+      },
+      "anchor": {
+        "x": 77.3253,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.4957,
+        "y": 0.8973
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11984,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_51",
+      "index": 51,
+      "row": 6,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 932,
+        "width": 157,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 13,
+        "width": 157,
+        "height": 133
+      },
+      "anchor": {
+        "x": 87.1201,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.5549,
+        "y": 0.8836
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10961,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_52",
+      "index": 52,
+      "row": 6,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 932,
+        "width": 155,
+        "height": 143
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 143
+      },
+      "anchor": {
+        "x": 75.2201,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.4853,
+        "y": 0.9301
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8040,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_53",
+      "index": 53,
+      "row": 6,
+      "column": 5,
+      "rect": {
+        "x": 782,
+        "y": 932,
+        "width": 159,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 159,
+        "height": 141
+      },
+      "anchor": {
+        "x": 71.1941,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.4478,
+        "y": 0.863
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9878,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_54",
+      "index": 54,
+      "row": 6,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 932,
+        "width": 156,
+        "height": 146
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 146
+      },
+      "anchor": {
+        "x": 67.5956,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.4333,
+        "y": 0.8836
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12939,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_55",
+      "index": 55,
+      "row": 6,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 932,
+        "width": 157,
+        "height": 144
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 144
+      },
+      "anchor": {
+        "x": 85.0966,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.542,
+        "y": 0.9097
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12504,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_56",
+      "index": 56,
+      "row": 7,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 1078,
+        "width": 157,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 176
+      },
+      "anchor": {
+        "x": 90.3045,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.5752,
+        "y": 0.8125
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9596,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_57",
+      "index": 57,
+      "row": 7,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 1078,
+        "width": 157,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 156
+      },
+      "anchor": {
+        "x": 84.189,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.5362,
+        "y": 0.8125
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9202,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_58",
+      "index": 58,
+      "row": 7,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 1078,
+        "width": 156,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 18,
+        "width": 156,
+        "height": 132
+      },
+      "anchor": {
+        "x": 84.8419,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.5439,
+        "y": 0.7898
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11508,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_59",
+      "index": 59,
+      "row": 7,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 1078,
+        "width": 157,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 158
+      },
+      "anchor": {
+        "x": 94.5977,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.6025,
+        "y": 0.8182
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8886,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_60",
+      "index": 60,
+      "row": 7,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 1075,
+        "width": 156,
+        "height": 179
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 167
+      },
+      "anchor": {
+        "x": 82.4695,
+        "y": 159
+      },
+      "normalizedAnchor": {
+        "x": 0.5287,
+        "y": 0.8883
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14866,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_61",
+      "index": 61,
+      "row": 7,
+      "column": 5,
+      "rect": {
+        "x": 783,
+        "y": 1078,
+        "width": 158,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 5,
+        "width": 158,
+        "height": 143
+      },
+      "anchor": {
+        "x": 86.5343,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.5477,
+        "y": 0.8011
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11312,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_62",
+      "index": 62,
+      "row": 7,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 1078,
+        "width": 153,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 153,
+        "height": 162
+      },
+      "anchor": {
+        "x": 80.7479,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.5278,
+        "y": 0.8523
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14526,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_cave_63",
+      "index": 63,
+      "row": 7,
+      "column": 7,
+      "rect": {
+        "x": 1094,
+        "y": 1076,
+        "width": 160,
+        "height": 178
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 160,
+        "height": 164
+      },
+      "anchor": {
+        "x": 78.7527,
+        "y": 154
+      },
+      "normalizedAnchor": {
+        "x": 0.4922,
+        "y": 0.8652
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14261,
+      "weight": 1,
+      "tags": [
+        "cave",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    }
+  ]
+}

@@ -19,6 +19,16 @@ export default function OfflineGame() {
     game.onHub = () => router.push("/");
     let cleanupDebug: (() => void) | undefined;
     if (process.env.NODE_ENV === "development") {
+      const tiles = new URLSearchParams(window.location.search).get("tiles");
+      if (tiles) void import("./tile-debug-scene").then(({ showTileDebugScene, showRemoteTileDebugScene }) => {
+        if (game.abort.signal.aborted) return;
+        if (tiles === "remote") {
+          game.persist = () => true;
+          game.saveSnapshot = () => false;
+          game.dispose();
+          cleanupDebug = showRemoteTileDebugScene(canvas);
+        } else showTileDebugScene(game, tiles);
+      });
       const scene = new URLSearchParams(window.location.search).get(
         "creatures",
       );

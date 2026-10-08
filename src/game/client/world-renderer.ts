@@ -1,8 +1,11 @@
+import { WorldTileRenderer } from "./world-tile-renderer";
+import { corruptionPressure } from "../core/world-visuals";
 import { CreaturePortraitRenderer } from "./creature-portrait-renderer";
 import { resolveCreatureArt } from "./creature-art";
 import { hasStatus } from "../core/status";
 import {
   CHARACTER_DEFINITIONS,
+  getExpeditionProfile,
   ENEMY_DEFINITIONS,
   CHUNK_SIZE,
   STRUCTURE_DEFINITIONS,
@@ -19,8 +22,8 @@ export interface WorldRenderContext {
   camera: T.Vec;
   viewW: number;
   viewH: number;
-  world?: Pick<World, "map" | "mapId" | "isWater" | "chunks" | "profile">;
-  run: Pick<T.RunState, "worldSeed" | "simTime">;
+  world?: Pick<World, "map" | "mapId" | "isWater" | "chunks" | "profile"> & Partial<Pick<World, "nearby">>;
+  run: Pick<T.RunState, "worldSeed" | "simTime"> & Partial<Pick<T.RunState, "time" | "expeditionLength">>;
   player: Player;
   debug: {
     chunks: boolean;
@@ -35,6 +38,7 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
   floor: CanvasPattern | null = null;
   waterMask: HTMLCanvasElement | null = null;
   waterKey = "";
+  readonly worldTiles = new WorldTileRenderer();
   private creaturePortraits = new CreaturePortraitRenderer();
   private characterSprites = new CharacterSpriteRenderer();
   constructor(public g: G) {
@@ -287,6 +291,19 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
     c.fillStyle = map?.palette?.floor || map?.floor || this.floor || "#101e24";
     c.fillRect(left, top, g.viewW + 60, g.viewH + 60);
 
+    const tiled = !!(g.world && !g.world.profile && map?.terrainProfile);
+    let tilesDrawn = false;
+    let pressure = 0;
+    if (tiled) {
+      this.worldTiles.begin(
+        { seed: g.run.worldSeed, mapId: g.world!.mapId,
+          profile: map!.terrainProfile!, density: map!.terrainDensity ?? 0.5 },
+        g.camera, g.viewW, g.viewH,
+      );
+      pressure = corruptionPressure(g.run.time ?? 0, getExpeditionProfile(g.run.expeditionLength).bossSchedule);
+      tilesDrawn = this.worldTiles.ground(c, pressure);
+    }
+
     if (map?.water && g.world?.profile) {
       const profile = g.world.profile,
         key = `${g.run.worldSeed}:${g.world.mapId}:${profile.width}`;
@@ -339,48 +356,53 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
         }
     }
 
-    const cell = 560;
-    const density = map?.terrainDensity ?? 0.5;
-    const minX = Math.floor(left / cell) - 1,
-      maxX = Math.ceil((left + g.viewW + 60) / cell) + 1;
-    const minY = Math.floor(top / cell) - 1,
-      maxY = Math.ceil((top + g.viewH + 60) / cell) + 1;
-    for (let cy = minY; cy <= maxY; cy++)
-      for (let cx = minX; cx <= maxX; cx++) {
-        const hash = hashString(
-          `${g.run?.worldSeed || "menu"}|terrain|${g.world?.mapId || "ruins"}|${cx}|${cy}`,
-        );
-        if (hash % 100 >= Math.round(18 * density)) continue;
-        const px = cx * cell + 90 + ((hash >>> 4) % (cell - 180));
-        const py = cy * cell + 90 + ((hash >>> 12) % (cell - 180));
-        const kind = (hash >>> 20) % 3;
-        c.save();
-        c.globalAlpha = map?.water ? 0.18 : 0.22;
-        c.strokeStyle = map?.palette?.accent || "#71998b";
-        c.fillStyle = "#26383b";
-        c.lineWidth = 1;
-        if (kind === 0) {
-          c.beginPath();
-          c.ellipse(px, py, 48, 17, (hash % 31) / 31, 0, TAU);
-          c.stroke();
-          c.beginPath();
-          c.ellipse(px + 8, py - 2, 25, 8, (hash % 19) / 19, 0, TAU);
-          c.stroke();
-        } else if (kind === 1) {
-          this.polygon(px, py, 22, 4, Math.PI / 4);
-          c.stroke();
-          this.polygon(px + 34, py + 10, 11, 5, 0);
-          c.stroke();
-        } else {
-          c.beginPath();
-          c.moveTo(px - 34, py + 12);
-          c.lineTo(px - 7, py - 14);
-          c.lineTo(px + 18, py + 3);
-          c.lineTo(px + 43, py - 18);
-          c.stroke();
+    if (!tilesDrawn) {
+      const cell = 560;
+      const density = map?.terrainDensity ?? 0.5;
+      const minX = Math.floor(left / cell) - 1,
+        maxX = Math.ceil((left + g.viewW + 60) / cell) + 1;
+      const minY = Math.floor(top / cell) - 1,
+        maxY = Math.ceil((top + g.viewH + 60) / cell) + 1;
+      for (let cy = minY; cy <= maxY; cy++)
+        for (let cx = minX; cx <= maxX; cx++) {
+          const hash = hashString(
+            `${g.run?.worldSeed || "menu"}|terrain|${g.world?.mapId || "ruins"}|${cx}|${cy}`,
+          );
+          if (hash % 100 >= Math.round(18 * density)) continue;
+          const px = cx * cell + 90 + ((hash >>> 4) % (cell - 180));
+          const py = cy * cell + 90 + ((hash >>> 12) % (cell - 180));
+          const kind = (hash >>> 20) % 3;
+          c.save();
+          c.globalAlpha = map?.water ? 0.18 : 0.22;
+          c.strokeStyle = map?.palette?.accent || "#71998b";
+          c.fillStyle = "#26383b";
+          c.lineWidth = 1;
+          if (kind === 0) {
+            c.beginPath();
+            c.ellipse(px, py, 48, 17, (hash % 31) / 31, 0, TAU);
+            c.stroke();
+            c.beginPath();
+            c.ellipse(px + 8, py - 2, 25, 8, (hash % 19) / 19, 0, TAU);
+            c.stroke();
+          } else if (kind === 1) {
+            this.polygon(px, py, 22, 4, Math.PI / 4);
+            c.stroke();
+            this.polygon(px + 34, py + 10, 11, 5, 0);
+            c.stroke();
+          } else {
+            c.beginPath();
+            c.moveTo(px - 34, py + 12);
+            c.lineTo(px - 7, py - 14);
+            c.lineTo(px + 18, py + 3);
+            c.lineTo(px + 43, py - 18);
+            c.stroke();
+          }
+          c.restore();
         }
-        c.restore();
-      }
+
+    }
+
+    if (tiled) this.worldTiles.decoration(c, g.world?.nearby ?? [], g.player, pressure);
 
     if (g.debug.chunks && g.world) {
       c.strokeStyle = "#8fd0b755";
@@ -400,8 +422,8 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
     const g = this.g,
       c = this.c,
       d = STRUCTURE_DEFINITIONS[s.type];
-    if (!d) return;
-    if (!this.visible(s.x, s.y, s.r + 30)) {
+    if (!d || s.destroyed) return;
+    if (!this.visible(s.x, s.y, Math.max(s.r + 30, 160))) {
       if (!d.rare) return;
       const x = clamp(
         s.x,
@@ -424,6 +446,20 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
         y + 12,
       );
       c.textAlign = "left";
+      return;
+    }
+    if (!g.world?.profile && g.world?.map.terrainProfile && this.worldTiles.structure(c, s, g.player)) {
+      // The authoritative hazard footprint stays explicit even when its body is a sprite.
+      if (d.hazard) {
+        c.save();
+        c.strokeStyle = d.color;
+        c.lineWidth = 2;
+        c.globalAlpha = 0.7 + 0.2 * Math.sin(time * 4 + s.variant);
+        this.circle(s.x, s.y, s.r);
+        c.stroke();
+        c.restore();
+      }
+      this.structureDebug(s);
       return;
     }
     c.save();
@@ -565,6 +601,11 @@ export class WorldRenderer<G extends WorldRenderContext = WorldRenderContext> {
       }
     }
     c.restore();
+    this.structureDebug(s);
+  }
+
+  private structureDebug(s: T.Structure) {
+    const g = this.g, c = this.c, d = STRUCTURE_DEFINITIONS[s.type];
     if (g.debug.structureIds) {
       c.fillStyle = "#fff";
       c.font = "9px monospace";

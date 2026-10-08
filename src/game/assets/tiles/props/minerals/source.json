@@ -1,0 +1,2368 @@
+{
+  "schemaVersion": 1,
+  "id": "props_minerals",
+  "kind": "prop",
+  "family": "minerals",
+  "image": "./source.png",
+  "source": {
+    "width": 1254,
+    "height": 1254,
+    "sha256": "2770350b508f37550ca07d2995b93d3e40b0f9428e7c94fb01eddfb42716c5a4",
+    "hasAlpha": true
+  },
+  "grid": {
+    "columns": 8,
+    "rows": 8,
+    "slots": 64
+  },
+  "detection": {
+    "method": "alpha-valley-per-band",
+    "confidence": 1,
+    "measuredConfidence": 1,
+    "review": null,
+    "rows": [
+      0,
+      167,
+      318,
+      472,
+      629,
+      786,
+      947,
+      1097,
+      1254
+    ],
+    "columns": [
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        626,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        315,
+        470,
+        630,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        783,
+        931,
+        1090,
+        1254
+      ],
+      [
+        0,
+        161,
+        314,
+        467,
+        627,
+        784,
+        941,
+        1092,
+        1254
+      ]
+    ]
+  },
+  "warnings": [],
+  "slots": [
+    {
+      "id": "prop_minerals_00",
+      "index": 0,
+      "row": 0,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 167
+      },
+      "alphaBounds": {
+        "x": 24,
+        "y": 49,
+        "width": 121,
+        "height": 118
+      },
+      "anchor": {
+        "x": 73.6749,
+        "y": 161
+      },
+      "normalizedAnchor": {
+        "x": 0.4693,
+        "y": 0.9641
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5964,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_01",
+      "index": 1,
+      "row": 0,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 0,
+        "width": 157,
+        "height": 167
+      },
+      "alphaBounds": {
+        "x": 18,
+        "y": 81,
+        "width": 115,
+        "height": 86
+      },
+      "anchor": {
+        "x": 75.3631,
+        "y": 163
+      },
+      "normalizedAnchor": {
+        "x": 0.48,
+        "y": 0.976
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6350,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_02",
+      "index": 2,
+      "row": 0,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 0,
+        "width": 156,
+        "height": 167
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 95,
+        "width": 136,
+        "height": 72
+      },
+      "anchor": {
+        "x": 72.4074,
+        "y": 160
+      },
+      "normalizedAnchor": {
+        "x": 0.4641,
+        "y": 0.9581
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4508,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_03",
+      "index": 3,
+      "row": 0,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 0,
+        "width": 157,
+        "height": 167
+      },
+      "alphaBounds": {
+        "x": 19,
+        "y": 70,
+        "width": 124,
+        "height": 97
+      },
+      "anchor": {
+        "x": 80.9239,
+        "y": 163
+      },
+      "normalizedAnchor": {
+        "x": 0.5154,
+        "y": 0.976
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6372,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_04",
+      "index": 4,
+      "row": 0,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 0,
+        "width": 157,
+        "height": 167
+      },
+      "alphaBounds": {
+        "x": 15,
+        "y": 53,
+        "width": 142,
+        "height": 114
+      },
+      "anchor": {
+        "x": 83.9404,
+        "y": 162
+      },
+      "normalizedAnchor": {
+        "x": 0.5347,
+        "y": 0.9701
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7112,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_05",
+      "index": 5,
+      "row": 0,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 0,
+        "width": 157,
+        "height": 167
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 40,
+        "width": 149,
+        "height": 127
+      },
+      "anchor": {
+        "x": 78.2526,
+        "y": 162
+      },
+      "normalizedAnchor": {
+        "x": 0.4984,
+        "y": 0.9701
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5934,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_06",
+      "index": 6,
+      "row": 0,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 0,
+        "width": 156,
+        "height": 167
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 21,
+        "width": 132,
+        "height": 146
+      },
+      "anchor": {
+        "x": 73.4187,
+        "y": 162
+      },
+      "normalizedAnchor": {
+        "x": 0.4706,
+        "y": 0.9701
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7108,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_07",
+      "index": 7,
+      "row": 0,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 0,
+        "width": 157,
+        "height": 167
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 80,
+        "width": 135,
+        "height": 87
+      },
+      "anchor": {
+        "x": 68.1855,
+        "y": 162
+      },
+      "normalizedAnchor": {
+        "x": 0.4343,
+        "y": 0.9701
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6859,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_08",
+      "index": 8,
+      "row": 1,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 167,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 151
+      },
+      "anchor": {
+        "x": 77.8116,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.4956,
+        "y": 0.9603
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7080,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_09",
+      "index": 9,
+      "row": 1,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 167,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 148,
+        "height": 151
+      },
+      "anchor": {
+        "x": 72.1527,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.4596,
+        "y": 0.9603
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7121,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_10",
+      "index": 10,
+      "row": 1,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 167,
+        "width": 156,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 21,
+        "y": 1,
+        "width": 131,
+        "height": 150
+      },
+      "anchor": {
+        "x": 79.9516,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.5125,
+        "y": 0.9603
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7038,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_11",
+      "index": 11,
+      "row": 1,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 167,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 136,
+        "height": 151
+      },
+      "anchor": {
+        "x": 76.3606,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.4864,
+        "y": 0.947
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6621,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_12",
+      "index": 12,
+      "row": 1,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 167,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 156,
+        "height": 151
+      },
+      "anchor": {
+        "x": 65.866,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4195,
+        "y": 0.9735
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8801,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_13",
+      "index": 13,
+      "row": 1,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 167,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 151
+      },
+      "anchor": {
+        "x": 60.6459,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.3863,
+        "y": 0.9735
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11034,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_14",
+      "index": 14,
+      "row": 1,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 167,
+        "width": 156,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 151
+      },
+      "anchor": {
+        "x": 68.1542,
+        "y": 146
+      },
+      "normalizedAnchor": {
+        "x": 0.4369,
+        "y": 0.9669
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8731,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_15",
+      "index": 15,
+      "row": 1,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 167,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 143,
+        "height": 151
+      },
+      "anchor": {
+        "x": 73.5264,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4683,
+        "y": 0.9735
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8543,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_16",
+      "index": 16,
+      "row": 2,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 318,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 154
+      },
+      "anchor": {
+        "x": 90.2114,
+        "y": 146
+      },
+      "normalizedAnchor": {
+        "x": 0.5746,
+        "y": 0.9481
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9996,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_17",
+      "index": 17,
+      "row": 2,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 318,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 153,
+        "height": 154
+      },
+      "anchor": {
+        "x": 82.7863,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.5273,
+        "y": 0.974
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7685,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_18",
+      "index": 18,
+      "row": 2,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 318,
+        "width": 156,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 7,
+        "y": 0,
+        "width": 149,
+        "height": 154
+      },
+      "anchor": {
+        "x": 66.91,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4289,
+        "y": 0.9545
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8814,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_19",
+      "index": 19,
+      "row": 2,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 318,
+        "width": 156,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 154
+      },
+      "anchor": {
+        "x": 72.6714,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.4658,
+        "y": 0.961
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9642,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_20",
+      "index": 20,
+      "row": 2,
+      "column": 4,
+      "rect": {
+        "x": 626,
+        "y": 318,
+        "width": 158,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 158,
+        "height": 154
+      },
+      "anchor": {
+        "x": 81.9808,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.5189,
+        "y": 0.9675
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9253,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_21",
+      "index": 21,
+      "row": 2,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 318,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 141,
+        "height": 154
+      },
+      "anchor": {
+        "x": 75.7206,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4823,
+        "y": 0.9545
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7188,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_22",
+      "index": 22,
+      "row": 2,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 318,
+        "width": 156,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 2,
+        "y": 0,
+        "width": 154,
+        "height": 154
+      },
+      "anchor": {
+        "x": 68.9429,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.4419,
+        "y": 0.9675
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9807,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_23",
+      "index": 23,
+      "row": 2,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 318,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 141,
+        "height": 154
+      },
+      "anchor": {
+        "x": 71.3504,
+        "y": 146
+      },
+      "normalizedAnchor": {
+        "x": 0.4545,
+        "y": 0.9481
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9726,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_24",
+      "index": 24,
+      "row": 3,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 472,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "anchor": {
+        "x": 77.0774,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.4909,
+        "y": 0.9427
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8812,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_25",
+      "index": 25,
+      "row": 3,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 472,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "anchor": {
+        "x": 86.1382,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.5487,
+        "y": 0.9427
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10487,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_26",
+      "index": 26,
+      "row": 3,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 472,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 157
+      },
+      "anchor": {
+        "x": 88.1044,
+        "y": 146
+      },
+      "normalizedAnchor": {
+        "x": 0.5648,
+        "y": 0.9299
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11121,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_27",
+      "index": 27,
+      "row": 3,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 472,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "anchor": {
+        "x": 82.0395,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.5225,
+        "y": 0.9427
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10458,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_28",
+      "index": 28,
+      "row": 3,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 472,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "anchor": {
+        "x": 82.1085,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.523,
+        "y": 0.9427
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9862,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_29",
+      "index": 29,
+      "row": 3,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 472,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 37,
+        "width": 157,
+        "height": 120
+      },
+      "anchor": {
+        "x": 52.7905,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.3362,
+        "y": 0.9554
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10672,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_30",
+      "index": 30,
+      "row": 3,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 472,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 157
+      },
+      "anchor": {
+        "x": 66.3407,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.4253,
+        "y": 0.9618
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11443,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_31",
+      "index": 31,
+      "row": 3,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 472,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 13,
+        "width": 142,
+        "height": 144
+      },
+      "anchor": {
+        "x": 80.794,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.5146,
+        "y": 0.9554
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8410,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_32",
+      "index": 32,
+      "row": 4,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 629,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 157
+      },
+      "anchor": {
+        "x": 68.2263,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.4346,
+        "y": 0.9554
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11189,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_33",
+      "index": 33,
+      "row": 4,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 629,
+        "width": 158,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 158,
+        "height": 157
+      },
+      "anchor": {
+        "x": 93.6648,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5928,
+        "y": 0.9618
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12122,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_34",
+      "index": 34,
+      "row": 4,
+      "column": 2,
+      "rect": {
+        "x": 315,
+        "y": 629,
+        "width": 155,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 157
+      },
+      "anchor": {
+        "x": 90.4869,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5838,
+        "y": 0.9618
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10978,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_35",
+      "index": 35,
+      "row": 4,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 629,
+        "width": 160,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 160,
+        "height": 157
+      },
+      "anchor": {
+        "x": 84.8388,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.5302,
+        "y": 0.949
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9739,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_36",
+      "index": 36,
+      "row": 4,
+      "column": 4,
+      "rect": {
+        "x": 630,
+        "y": 629,
+        "width": 154,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 157
+      },
+      "anchor": {
+        "x": 77.6707,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.5044,
+        "y": 0.9427
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10790,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_37",
+      "index": 37,
+      "row": 4,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 629,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 19,
+        "width": 157,
+        "height": 138
+      },
+      "anchor": {
+        "x": 73.1158,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.4657,
+        "y": 0.949
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12736,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_38",
+      "index": 38,
+      "row": 4,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 629,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 157
+      },
+      "anchor": {
+        "x": 76.0376,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.4874,
+        "y": 0.9618
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10252,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_39",
+      "index": 39,
+      "row": 4,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 629,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 144,
+        "height": 157
+      },
+      "anchor": {
+        "x": 75.8317,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.483,
+        "y": 0.9554
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10595,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_40",
+      "index": 40,
+      "row": 5,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 786,
+        "width": 157,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 14,
+        "y": 0,
+        "width": 143,
+        "height": 161
+      },
+      "anchor": {
+        "x": 86.5114,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.551,
+        "y": 0.9255
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9668,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_41",
+      "index": 41,
+      "row": 5,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 786,
+        "width": 157,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 161
+      },
+      "anchor": {
+        "x": 81.4318,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.5187,
+        "y": 0.9255
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8117,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_42",
+      "index": 42,
+      "row": 5,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 786,
+        "width": 156,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 161
+      },
+      "anchor": {
+        "x": 83.1722,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.5332,
+        "y": 0.913
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11901,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_43",
+      "index": 43,
+      "row": 5,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 786,
+        "width": 157,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 161
+      },
+      "anchor": {
+        "x": 80.1015,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5102,
+        "y": 0.9379
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10370,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_44",
+      "index": 44,
+      "row": 5,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 786,
+        "width": 157,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 161
+      },
+      "anchor": {
+        "x": 62.9226,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.4008,
+        "y": 0.9441
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8958,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_45",
+      "index": 45,
+      "row": 5,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 786,
+        "width": 157,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 161
+      },
+      "anchor": {
+        "x": 70.0262,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.446,
+        "y": 0.9317
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11245,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_46",
+      "index": 46,
+      "row": 5,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 786,
+        "width": 156,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 161
+      },
+      "anchor": {
+        "x": 79.9226,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5123,
+        "y": 0.9379
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10759,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_47",
+      "index": 47,
+      "row": 5,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 786,
+        "width": 157,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 149,
+        "height": 161
+      },
+      "anchor": {
+        "x": 70.2358,
+        "y": 154
+      },
+      "normalizedAnchor": {
+        "x": 0.4474,
+        "y": 0.9565
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11345,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_48",
+      "index": 48,
+      "row": 6,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 947,
+        "width": 157,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 150
+      },
+      "anchor": {
+        "x": 80.181,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.5107,
+        "y": 0.8733
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8022,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_49",
+      "index": 49,
+      "row": 6,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 947,
+        "width": 157,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 150
+      },
+      "anchor": {
+        "x": 79.2952,
+        "y": 130
+      },
+      "normalizedAnchor": {
+        "x": 0.5051,
+        "y": 0.8667
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8968,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_50",
+      "index": 50,
+      "row": 6,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 947,
+        "width": 156,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 17,
+        "width": 156,
+        "height": 119
+      },
+      "anchor": {
+        "x": 77.3546,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.4959,
+        "y": 0.8533
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9151,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_51",
+      "index": 51,
+      "row": 6,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 947,
+        "width": 157,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 134
+      },
+      "anchor": {
+        "x": 85.5567,
+        "y": 124
+      },
+      "normalizedAnchor": {
+        "x": 0.5449,
+        "y": 0.8267
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8691,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_52",
+      "index": 52,
+      "row": 6,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 947,
+        "width": 156,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 150
+      },
+      "anchor": {
+        "x": 76.953,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.4933,
+        "y": 0.8733
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9293,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_53",
+      "index": 53,
+      "row": 6,
+      "column": 5,
+      "rect": {
+        "x": 783,
+        "y": 947,
+        "width": 148,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 148,
+        "height": 150
+      },
+      "anchor": {
+        "x": 73.3609,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.4957,
+        "y": 0.8467
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9548,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_54",
+      "index": 54,
+      "row": 6,
+      "column": 6,
+      "rect": {
+        "x": 931,
+        "y": 947,
+        "width": 159,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 159,
+        "height": 150
+      },
+      "anchor": {
+        "x": 77.101,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.4849,
+        "y": 0.8733
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8155,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_55",
+      "index": 55,
+      "row": 6,
+      "column": 7,
+      "rect": {
+        "x": 1090,
+        "y": 947,
+        "width": 164,
+        "height": 150
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 151,
+        "height": 135
+      },
+      "anchor": {
+        "x": 72.1917,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.4402,
+        "y": 0.8467
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9531,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_56",
+      "index": 56,
+      "row": 7,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 1097,
+        "width": 161,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 161,
+        "height": 157
+      },
+      "anchor": {
+        "x": 86.8236,
+        "y": 123
+      },
+      "normalizedAnchor": {
+        "x": 0.5393,
+        "y": 0.7834
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12914,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_57",
+      "index": 57,
+      "row": 7,
+      "column": 1,
+      "rect": {
+        "x": 161,
+        "y": 1097,
+        "width": 153,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 8,
+        "width": 153,
+        "height": 125
+      },
+      "anchor": {
+        "x": 79.357,
+        "y": 124
+      },
+      "normalizedAnchor": {
+        "x": 0.5187,
+        "y": 0.7898
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11917,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_58",
+      "index": 58,
+      "row": 7,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 1097,
+        "width": 153,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 2,
+        "width": 153,
+        "height": 141
+      },
+      "anchor": {
+        "x": 72.8336,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.476,
+        "y": 0.8025
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12503,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_59",
+      "index": 59,
+      "row": 7,
+      "column": 3,
+      "rect": {
+        "x": 467,
+        "y": 1097,
+        "width": 160,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 13,
+        "width": 160,
+        "height": 144
+      },
+      "anchor": {
+        "x": 80.4738,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.503,
+        "y": 0.8089
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12200,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_60",
+      "index": 60,
+      "row": 7,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 1097,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 143
+      },
+      "anchor": {
+        "x": 79.7736,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.5081,
+        "y": 0.8089
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13460,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_61",
+      "index": 61,
+      "row": 7,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 1097,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 142
+      },
+      "anchor": {
+        "x": 73.1354,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.4658,
+        "y": 0.8089
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13003,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_62",
+      "index": 62,
+      "row": 7,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 1097,
+        "width": 151,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 151,
+        "height": 143
+      },
+      "anchor": {
+        "x": 66.1038,
+        "y": 125
+      },
+      "normalizedAnchor": {
+        "x": 0.4378,
+        "y": 0.7962
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11001,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_minerals_63",
+      "index": 63,
+      "row": 7,
+      "column": 7,
+      "rect": {
+        "x": 1092,
+        "y": 1097,
+        "width": 162,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 3,
+        "width": 150,
+        "height": 154
+      },
+      "anchor": {
+        "x": 78.2194,
+        "y": 128
+      },
+      "normalizedAnchor": {
+        "x": 0.4828,
+        "y": 0.8153
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13897,
+      "weight": 1,
+      "tags": [
+        "minerals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    }
+  ]
+}

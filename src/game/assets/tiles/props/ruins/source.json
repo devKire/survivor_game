@@ -1,0 +1,2371 @@
+{
+  "schemaVersion": 1,
+  "id": "props_ruins",
+  "kind": "prop",
+  "family": "ruins",
+  "image": "./source.png",
+  "source": {
+    "width": 1254,
+    "height": 1254,
+    "sha256": "790db96ce961812a6bff462a9e5b29a64a6af2208d39ab22bed5bccb4f5bd7a8",
+    "hasAlpha": true
+  },
+  "grid": {
+    "columns": 8,
+    "rows": 8,
+    "slots": 64
+  },
+  "detection": {
+    "method": "alpha-valley-per-band",
+    "confidence": 0.9209,
+    "measuredConfidence": 0.9209,
+    "review": "Eight rows visually confirmed; first row is taller than uniform division. Search local alpha valleys around reviewed bands.",
+    "rows": [
+      0,
+      201,
+      352,
+      516,
+      672,
+      817,
+      966,
+      1105,
+      1254
+    ],
+    "columns": [
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        777,
+        941,
+        1096,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        940,
+        1087,
+        1254
+      ],
+      [
+        0,
+        167,
+        320,
+        470,
+        627,
+        793,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        176,
+        314,
+        470,
+        627,
+        784,
+        929,
+        1094,
+        1254
+      ],
+      [
+        0,
+        160,
+        314,
+        479,
+        627,
+        784,
+        935,
+        1089,
+        1254
+      ],
+      [
+        0,
+        166,
+        325,
+        470,
+        627,
+        784,
+        941,
+        1089,
+        1254
+      ],
+      [
+        0,
+        160,
+        322,
+        473,
+        627,
+        780,
+        938,
+        1092,
+        1254
+      ],
+      [
+        0,
+        166,
+        318,
+        472,
+        627,
+        777,
+        932,
+        1088,
+        1254
+      ]
+    ]
+  },
+  "warnings": [
+    "slot 24: 2.1% opaque boundary contact; source art may touch neighbor",
+    "slot 25: 2.0% opaque boundary contact; source art may touch neighbor"
+  ],
+  "slots": [
+    {
+      "id": "prop_ruins_00",
+      "index": 0,
+      "row": 0,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 201
+      },
+      "alphaBounds": {
+        "x": 46,
+        "y": 31,
+        "width": 101,
+        "height": 170
+      },
+      "anchor": {
+        "x": 100.9943,
+        "y": 191
+      },
+      "normalizedAnchor": {
+        "x": 0.6433,
+        "y": 0.9502
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10035,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_01",
+      "index": 1,
+      "row": 0,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 0,
+        "width": 157,
+        "height": 201
+      },
+      "alphaBounds": {
+        "x": 35,
+        "y": 79,
+        "width": 106,
+        "height": 122
+      },
+      "anchor": {
+        "x": 84.0739,
+        "y": 193
+      },
+      "normalizedAnchor": {
+        "x": 0.5355,
+        "y": 0.9602
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5844,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_02",
+      "index": 2,
+      "row": 0,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 0,
+        "width": 156,
+        "height": 201
+      },
+      "alphaBounds": {
+        "x": 25,
+        "y": 32,
+        "width": 111,
+        "height": 169
+      },
+      "anchor": {
+        "x": 77.3493,
+        "y": 191
+      },
+      "normalizedAnchor": {
+        "x": 0.4958,
+        "y": 0.9502
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11132,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_03",
+      "index": 3,
+      "row": 0,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 0,
+        "width": 157,
+        "height": 201
+      },
+      "alphaBounds": {
+        "x": 26,
+        "y": 29,
+        "width": 129,
+        "height": 172
+      },
+      "anchor": {
+        "x": 77.6556,
+        "y": 190
+      },
+      "normalizedAnchor": {
+        "x": 0.4946,
+        "y": 0.9453
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9995,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_04",
+      "index": 4,
+      "row": 0,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 0,
+        "width": 150,
+        "height": 201
+      },
+      "alphaBounds": {
+        "x": 16,
+        "y": 45,
+        "width": 134,
+        "height": 156
+      },
+      "anchor": {
+        "x": 74.4029,
+        "y": 191
+      },
+      "normalizedAnchor": {
+        "x": 0.496,
+        "y": 0.9502
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9206,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_05",
+      "index": 5,
+      "row": 0,
+      "column": 5,
+      "rect": {
+        "x": 777,
+        "y": 0,
+        "width": 164,
+        "height": 201
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 65,
+        "width": 164,
+        "height": 136
+      },
+      "anchor": {
+        "x": 44.6136,
+        "y": 192
+      },
+      "normalizedAnchor": {
+        "x": 0.272,
+        "y": 0.9552
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8684,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_06",
+      "index": 6,
+      "row": 0,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 0,
+        "width": 155,
+        "height": 201
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 19,
+        "width": 155,
+        "height": 182
+      },
+      "anchor": {
+        "x": 68.8399,
+        "y": 192
+      },
+      "normalizedAnchor": {
+        "x": 0.4441,
+        "y": 0.9552
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6366,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_07",
+      "index": 7,
+      "row": 0,
+      "column": 7,
+      "rect": {
+        "x": 1096,
+        "y": 0,
+        "width": 158,
+        "height": 201
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 92,
+        "width": 127,
+        "height": 103
+      },
+      "anchor": {
+        "x": 56.1145,
+        "y": 188
+      },
+      "normalizedAnchor": {
+        "x": 0.3552,
+        "y": 0.9353
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8381,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_08",
+      "index": 8,
+      "row": 1,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 201,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 35,
+        "y": 0,
+        "width": 112,
+        "height": 151
+      },
+      "anchor": {
+        "x": 78.4861,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.4999,
+        "y": 0.9536
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8700,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_09",
+      "index": 9,
+      "row": 1,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 201,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 34,
+        "y": 0,
+        "width": 115,
+        "height": 151
+      },
+      "anchor": {
+        "x": 87.6131,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.558,
+        "y": 0.947
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8367,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_10",
+      "index": 10,
+      "row": 1,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 201,
+        "width": 156,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 5,
+        "y": 0,
+        "width": 151,
+        "height": 151
+      },
+      "anchor": {
+        "x": 79.5,
+        "y": 138
+      },
+      "normalizedAnchor": {
+        "x": 0.5096,
+        "y": 0.9139
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8993,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_11",
+      "index": 11,
+      "row": 1,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 201,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 5,
+        "width": 157,
+        "height": 146
+      },
+      "anchor": {
+        "x": 67.3051,
+        "y": 142
+      },
+      "normalizedAnchor": {
+        "x": 0.4287,
+        "y": 0.9404
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10551,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_12",
+      "index": 12,
+      "row": 1,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 201,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 22,
+        "width": 157,
+        "height": 129
+      },
+      "anchor": {
+        "x": 78.7254,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.5014,
+        "y": 0.9205
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12512,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_13",
+      "index": 13,
+      "row": 1,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 201,
+        "width": 156,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 151
+      },
+      "anchor": {
+        "x": 70.1622,
+        "y": 142
+      },
+      "normalizedAnchor": {
+        "x": 0.4498,
+        "y": 0.9404
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9608,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_14",
+      "index": 14,
+      "row": 1,
+      "column": 6,
+      "rect": {
+        "x": 940,
+        "y": 201,
+        "width": 147,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 147,
+        "height": 151
+      },
+      "anchor": {
+        "x": 75.1462,
+        "y": 138
+      },
+      "normalizedAnchor": {
+        "x": 0.5112,
+        "y": 0.9139
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7547,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_15",
+      "index": 15,
+      "row": 1,
+      "column": 7,
+      "rect": {
+        "x": 1087,
+        "y": 201,
+        "width": 167,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 7,
+        "width": 150,
+        "height": 144
+      },
+      "anchor": {
+        "x": 62.4553,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.374,
+        "y": 0.9338
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12187,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_16",
+      "index": 16,
+      "row": 2,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 352,
+        "width": 167,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 167,
+        "height": 164
+      },
+      "anchor": {
+        "x": 122.6629,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.7345,
+        "y": 0.9146
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9593,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_17",
+      "index": 17,
+      "row": 2,
+      "column": 1,
+      "rect": {
+        "x": 167,
+        "y": 352,
+        "width": 153,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 153,
+        "height": 164
+      },
+      "anchor": {
+        "x": 81.7038,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.534,
+        "y": 0.9085
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10145,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_18",
+      "index": 18,
+      "row": 2,
+      "column": 2,
+      "rect": {
+        "x": 320,
+        "y": 352,
+        "width": 150,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 150,
+        "height": 164
+      },
+      "anchor": {
+        "x": 84.5782,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.5639,
+        "y": 0.9207
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11293,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_19",
+      "index": 19,
+      "row": 2,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 352,
+        "width": 157,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 164
+      },
+      "anchor": {
+        "x": 89.8489,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.5723,
+        "y": 0.9451
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7413,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_20",
+      "index": 20,
+      "row": 2,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 352,
+        "width": 166,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 166,
+        "height": 164
+      },
+      "anchor": {
+        "x": 91.1991,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.5494,
+        "y": 0.9451
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11914,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_21",
+      "index": 21,
+      "row": 2,
+      "column": 5,
+      "rect": {
+        "x": 793,
+        "y": 352,
+        "width": 148,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 124,
+        "height": 164
+      },
+      "anchor": {
+        "x": 53.9279,
+        "y": 153
+      },
+      "normalizedAnchor": {
+        "x": 0.3644,
+        "y": 0.9329
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8439,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_22",
+      "index": 22,
+      "row": 2,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 352,
+        "width": 156,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 39,
+        "y": 0,
+        "width": 117,
+        "height": 164
+      },
+      "anchor": {
+        "x": 107.7802,
+        "y": 155
+      },
+      "normalizedAnchor": {
+        "x": 0.6909,
+        "y": 0.9451
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7828,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_23",
+      "index": 23,
+      "row": 2,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 352,
+        "width": 157,
+        "height": 164
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 137,
+        "height": 164
+      },
+      "anchor": {
+        "x": 56.8571,
+        "y": 156
+      },
+      "normalizedAnchor": {
+        "x": 0.3621,
+        "y": 0.9512
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8846,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_24",
+      "index": 24,
+      "row": 3,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 516,
+        "width": 176,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 176,
+        "height": 149
+      },
+      "anchor": {
+        "x": 125.2376,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.7116,
+        "y": 0.891
+      },
+      "boundaryContact": 0.0211,
+      "bodyPixels": 8676,
+      "weight": 0,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_25",
+      "index": 25,
+      "row": 3,
+      "column": 1,
+      "rect": {
+        "x": 176,
+        "y": 516,
+        "width": 138,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 131,
+        "height": 156
+      },
+      "anchor": {
+        "x": 61.6356,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.4466,
+        "y": 0.9167
+      },
+      "boundaryContact": 0.0204,
+      "bodyPixels": 9651,
+      "weight": 0,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_26",
+      "index": 26,
+      "row": 3,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 516,
+        "width": 156,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 2,
+        "y": 0,
+        "width": 154,
+        "height": 156
+      },
+      "anchor": {
+        "x": 88.3198,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.5662,
+        "y": 0.9487
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9193,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_27",
+      "index": 27,
+      "row": 3,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 516,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 156
+      },
+      "anchor": {
+        "x": 74.7224,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4759,
+        "y": 0.9423
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8250,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_28",
+      "index": 28,
+      "row": 3,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 516,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 156
+      },
+      "anchor": {
+        "x": 65.3438,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.4162,
+        "y": 0.9295
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9451,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_29",
+      "index": 29,
+      "row": 3,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 516,
+        "width": 145,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 32,
+        "y": 0,
+        "width": 113,
+        "height": 156
+      },
+      "anchor": {
+        "x": 68.2517,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4707,
+        "y": 0.9423
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8290,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_30",
+      "index": 30,
+      "row": 3,
+      "column": 6,
+      "rect": {
+        "x": 929,
+        "y": 516,
+        "width": 165,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 165,
+        "height": 156
+      },
+      "anchor": {
+        "x": 39.7931,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.2412,
+        "y": 0.9167
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9896,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_31",
+      "index": 31,
+      "row": 3,
+      "column": 7,
+      "rect": {
+        "x": 1094,
+        "y": 516,
+        "width": 160,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 140,
+        "height": 156
+      },
+      "anchor": {
+        "x": 45.3418,
+        "y": 146
+      },
+      "normalizedAnchor": {
+        "x": 0.2834,
+        "y": 0.9359
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9128,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_32",
+      "index": 32,
+      "row": 4,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 672,
+        "width": 160,
+        "height": 145
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 32,
+        "width": 160,
+        "height": 113
+      },
+      "anchor": {
+        "x": 75.2893,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.4706,
+        "y": 0.9172
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8531,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_33",
+      "index": 33,
+      "row": 4,
+      "column": 1,
+      "rect": {
+        "x": 160,
+        "y": 672,
+        "width": 154,
+        "height": 145
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 144
+      },
+      "anchor": {
+        "x": 105.2108,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.6832,
+        "y": 0.9034
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10544,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_34",
+      "index": 34,
+      "row": 4,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 672,
+        "width": 165,
+        "height": 145
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 165,
+        "height": 145
+      },
+      "anchor": {
+        "x": 70.4272,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.4268,
+        "y": 0.9034
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9063,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_35",
+      "index": 35,
+      "row": 4,
+      "column": 3,
+      "rect": {
+        "x": 479,
+        "y": 672,
+        "width": 148,
+        "height": 145
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 132,
+        "height": 145
+      },
+      "anchor": {
+        "x": 64.9367,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.4388,
+        "y": 0.9034
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9972,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_36",
+      "index": 36,
+      "row": 4,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 672,
+        "width": 157,
+        "height": 145
+      },
+      "alphaBounds": {
+        "x": 13,
+        "y": 0,
+        "width": 144,
+        "height": 145
+      },
+      "anchor": {
+        "x": 97.8564,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.6233,
+        "y": 0.9241
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10498,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_37",
+      "index": 37,
+      "row": 4,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 672,
+        "width": 151,
+        "height": 145
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 151,
+        "height": 145
+      },
+      "anchor": {
+        "x": 75.0419,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.497,
+        "y": 0.9103
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10016,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_38",
+      "index": 38,
+      "row": 4,
+      "column": 6,
+      "rect": {
+        "x": 935,
+        "y": 672,
+        "width": 154,
+        "height": 145
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 145
+      },
+      "anchor": {
+        "x": 91.248,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.5925,
+        "y": 0.931
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9183,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_39",
+      "index": 39,
+      "row": 4,
+      "column": 7,
+      "rect": {
+        "x": 1089,
+        "y": 672,
+        "width": 165,
+        "height": 145
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 149,
+        "height": 138
+      },
+      "anchor": {
+        "x": 69.1022,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.4188,
+        "y": 0.8759
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9303,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_40",
+      "index": 40,
+      "row": 5,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 817,
+        "width": 166,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 166,
+        "height": 149
+      },
+      "anchor": {
+        "x": 114.1452,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.6876,
+        "y": 0.906
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10800,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_41",
+      "index": 41,
+      "row": 5,
+      "column": 1,
+      "rect": {
+        "x": 166,
+        "y": 817,
+        "width": 159,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 33,
+        "width": 159,
+        "height": 116
+      },
+      "anchor": {
+        "x": 92.4455,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.5814,
+        "y": 0.906
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9529,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_42",
+      "index": 42,
+      "row": 5,
+      "column": 2,
+      "rect": {
+        "x": 325,
+        "y": 817,
+        "width": 145,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 145,
+        "height": 149
+      },
+      "anchor": {
+        "x": 66.8663,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.4611,
+        "y": 0.9195
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9937,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_43",
+      "index": 43,
+      "row": 5,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 817,
+        "width": 157,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 149
+      },
+      "anchor": {
+        "x": 90.761,
+        "y": 140
+      },
+      "normalizedAnchor": {
+        "x": 0.5781,
+        "y": 0.9396
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9900,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_44",
+      "index": 44,
+      "row": 5,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 817,
+        "width": 157,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 149
+      },
+      "anchor": {
+        "x": 61.7711,
+        "y": 142
+      },
+      "normalizedAnchor": {
+        "x": 0.3934,
+        "y": 0.953
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9234,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_45",
+      "index": 45,
+      "row": 5,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 817,
+        "width": 157,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 149
+      },
+      "anchor": {
+        "x": 77.1788,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.4916,
+        "y": 0.9664
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11397,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_46",
+      "index": 46,
+      "row": 5,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 817,
+        "width": 148,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 147,
+        "height": 149
+      },
+      "anchor": {
+        "x": 62.9631,
+        "y": 140
+      },
+      "normalizedAnchor": {
+        "x": 0.4254,
+        "y": 0.9396
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11899,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_47",
+      "index": 47,
+      "row": 5,
+      "column": 7,
+      "rect": {
+        "x": 1089,
+        "y": 817,
+        "width": 165,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 18,
+        "width": 149,
+        "height": 131
+      },
+      "anchor": {
+        "x": 63.9458,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.3876,
+        "y": 0.9463
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10234,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_48",
+      "index": 48,
+      "row": 6,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 966,
+        "width": 160,
+        "height": 140
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 160,
+        "height": 140
+      },
+      "anchor": {
+        "x": 84.1083,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.5257,
+        "y": 0.9571
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10631,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_49",
+      "index": 49,
+      "row": 6,
+      "column": 1,
+      "rect": {
+        "x": 160,
+        "y": 966,
+        "width": 162,
+        "height": 139
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 162,
+        "height": 139
+      },
+      "anchor": {
+        "x": 55.3949,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.3419,
+        "y": 0.9424
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9275,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_50",
+      "index": 50,
+      "row": 6,
+      "column": 2,
+      "rect": {
+        "x": 322,
+        "y": 966,
+        "width": 151,
+        "height": 139
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 151,
+        "height": 137
+      },
+      "anchor": {
+        "x": 58.0929,
+        "y": 125
+      },
+      "normalizedAnchor": {
+        "x": 0.3847,
+        "y": 0.8993
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9525,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_51",
+      "index": 51,
+      "row": 6,
+      "column": 3,
+      "rect": {
+        "x": 473,
+        "y": 966,
+        "width": 154,
+        "height": 140
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 140
+      },
+      "anchor": {
+        "x": 76.9908,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.4999,
+        "y": 0.9571
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10274,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_52",
+      "index": 52,
+      "row": 6,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 966,
+        "width": 153,
+        "height": 133
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 153,
+        "height": 133
+      },
+      "anchor": {
+        "x": 75.9271,
+        "y": 124
+      },
+      "normalizedAnchor": {
+        "x": 0.4963,
+        "y": 0.9323
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7297,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_53",
+      "index": 53,
+      "row": 6,
+      "column": 5,
+      "rect": {
+        "x": 780,
+        "y": 966,
+        "width": 158,
+        "height": 139
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 158,
+        "height": 139
+      },
+      "anchor": {
+        "x": 70.1496,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.444,
+        "y": 0.9065
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10476,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_54",
+      "index": 54,
+      "row": 6,
+      "column": 6,
+      "rect": {
+        "x": 938,
+        "y": 966,
+        "width": 154,
+        "height": 139
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 139
+      },
+      "anchor": {
+        "x": 58.6244,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.3807,
+        "y": 0.9281
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8708,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_55",
+      "index": 55,
+      "row": 6,
+      "column": 7,
+      "rect": {
+        "x": 1092,
+        "y": 966,
+        "width": 162,
+        "height": 139
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 152,
+        "height": 139
+      },
+      "anchor": {
+        "x": 72.0698,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.4449,
+        "y": 0.9281
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8924,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_56",
+      "index": 56,
+      "row": 7,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 1106,
+        "width": 166,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 166,
+        "height": 148
+      },
+      "anchor": {
+        "x": 76.8597,
+        "y": 118
+      },
+      "normalizedAnchor": {
+        "x": 0.463,
+        "y": 0.7973
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10295,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_57",
+      "index": 57,
+      "row": 7,
+      "column": 1,
+      "rect": {
+        "x": 166,
+        "y": 1105,
+        "width": 152,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 152,
+        "height": 149
+      },
+      "anchor": {
+        "x": 68.5051,
+        "y": 123
+      },
+      "normalizedAnchor": {
+        "x": 0.4507,
+        "y": 0.8255
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8808,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_58",
+      "index": 58,
+      "row": 7,
+      "column": 2,
+      "rect": {
+        "x": 318,
+        "y": 1105,
+        "width": 154,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 19,
+        "width": 154,
+        "height": 116
+      },
+      "anchor": {
+        "x": 86.1663,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.5595,
+        "y": 0.8456
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9208,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_59",
+      "index": 59,
+      "row": 7,
+      "column": 3,
+      "rect": {
+        "x": 472,
+        "y": 1106,
+        "width": 155,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 148
+      },
+      "anchor": {
+        "x": 73.5824,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.4747,
+        "y": 0.8716
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9659,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_60",
+      "index": 60,
+      "row": 7,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 1099,
+        "width": 150,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 150,
+        "height": 155
+      },
+      "anchor": {
+        "x": 54.2562,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.3617,
+        "y": 0.871
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10853,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_61",
+      "index": 61,
+      "row": 7,
+      "column": 5,
+      "rect": {
+        "x": 777,
+        "y": 1105,
+        "width": 155,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 149
+      },
+      "anchor": {
+        "x": 54.0637,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.3488,
+        "y": 0.8658
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12442,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_62",
+      "index": 62,
+      "row": 7,
+      "column": 6,
+      "rect": {
+        "x": 932,
+        "y": 1105,
+        "width": 156,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 136
+      },
+      "anchor": {
+        "x": 59.6583,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.3824,
+        "y": 0.8523
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11127,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_ruins_63",
+      "index": 63,
+      "row": 7,
+      "column": 7,
+      "rect": {
+        "x": 1088,
+        "y": 1105,
+        "width": 166,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 165,
+        "height": 149
+      },
+      "anchor": {
+        "x": 107.4866,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.6475,
+        "y": 0.8456
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13393,
+      "weight": 1,
+      "tags": [
+        "ruins",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    }
+  ]
+}

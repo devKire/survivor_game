@@ -1,0 +1,151 @@
+{
+  "ground/forest/source-a.png": {
+    "sha256": "a97be62a7ec49fda3f8cb57583797b6bce2d89916bf0fa648c3a3d7c1ee81c2e",
+    "x": [
+      0,
+      157,
+      314,
+      470,
+      627,
+      784,
+      941,
+      1097,
+      1254
+    ],
+    "y": [
+      0,
+      157,
+      314,
+      470,
+      627,
+      784,
+      941,
+      1097,
+      1254
+    ],
+    "reason": "Visually reviewed 8x8 at native resolution; contiguous foliage makes dark-line detection ambiguous. No directional adjacency semantics claimed."
+  },
+  "props/ruins/source.png": {
+    "sha256": "790db96ce961812a6bff462a9e5b29a64a6af2208d39ab22bed5bccb4f5bd7a8",
+    "y": [
+      0,
+      201,
+      352,
+      514,
+      672,
+      817,
+      966,
+      1107,
+      1254
+    ],
+    "reason": "Eight rows visually confirmed; first row is taller than uniform division. Search local alpha valleys around reviewed bands."
+  },
+  "props/swamp/source.png": {
+    "sha256": "5a21b2c5687310af2b5c666ba9a0a4de2055775164fbacf639491807937dfb3c",
+    "y": [
+      0,
+      182,
+      351,
+      515,
+      671,
+      825,
+      979,
+      1098,
+      1254
+    ],
+    "reason": "Eight rows visually confirmed; reeds occupy taller upper bands and puddles a shorter seventh band."
+  },
+  "ground/cave/source.png": {
+    "sha256": "26dd0f429706c02bfaa23cf8b0b34ccf638969b7defa3fe083727177fdc65be3",
+    "y": [
+      0,
+      156,
+      314,
+      470,
+      627,
+      784,
+      940,
+      1086,
+      1254
+    ],
+    "x": [
+      0,
+      157,
+      314,
+      470,
+      627,
+      784,
+      941,
+      1097,
+      1254
+    ],
+    "reason": "Native source and indexed contact sheet reviewed: eight columns/rows; last band starts above uniform grid. Fixed boundaries avoid texture edges being mistaken for separators."
+  },
+  "ground/rock/source.png": {
+    "sha256": "3423be4376137fd0f2b991f05309be1dc36aeb40b833f0e3abaf1def72190362",
+    "y": [
+      0,
+      157,
+      314,
+      471,
+      628,
+      785,
+      941,
+      1087,
+      1254
+    ],
+    "x": [
+      0,
+      157,
+      314,
+      470,
+      627,
+      784,
+      941,
+      1097,
+      1254
+    ],
+    "reason": "Native source and indexed contact sheet reviewed: eight columns/rows; last band starts above uniform grid. Fixed boundaries avoid texture edges being mistaken for separators."
+  },
+  "ground/swamp/source.png": {
+    "sha256": "cddfa9f8cbb955c876ddf8f8d42dfe90c174c3ab07152175a3f5c609af850c43",
+    "y": [
+      0,
+      157,
+      313,
+      470,
+      628,
+      784,
+      940,
+      1083,
+      1254
+    ],
+    "x": [
+      0,
+      157,
+      314,
+      470,
+      627,
+      784,
+      941,
+      1097,
+      1254
+    ],
+    "reason": "Native source and indexed contact sheet reviewed: eight columns/rows; last band starts above uniform grid. Fixed boundaries avoid texture edges being mistaken for separators."
+  },
+  "props/beast_damage/source-a.png": {
+    "sha256": "8efd3ff4dd45cddd3c63f5fa5e8b68711eb8792b0162351c83ae1ec5174a308f",
+    "reviewedConfidence": 0.95,
+    "reason": "Indexed 64-slot contact sheet visually reviewed. Local alpha separators accepted; boundary-contact slots are excluded from runtime selection and flagged for source repair."
+  },
+  "props/beast_damage/source-b.png": {
+    "sha256": "8efd3ff4dd45cddd3c63f5fa5e8b68711eb8792b0162351c83ae1ec5174a308f",
+    "reviewedConfidence": 0.95,
+    "reason": "Indexed 64-slot contact sheet visually reviewed. Local alpha separators accepted; boundary-contact slots are excluded from runtime selection and flagged for source repair."
+  },
+  "props/crystals/source.png": {
+    "sha256": "be936289c8d8c6c29e9b795778e29f4eb9314dca995dafade256816bb4177fae",
+    "reviewedConfidence": 0.95,
+    "reason": "Indexed 64-slot contact sheet visually reviewed. Local alpha separators accepted; boundary-contact slots are excluded from runtime selection and flagged for source repair."
+  }
+}

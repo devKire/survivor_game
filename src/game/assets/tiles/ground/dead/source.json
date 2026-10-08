@@ -1,0 +1,1344 @@
+{
+  "schemaVersion": 1,
+  "id": "ground_dead",
+  "kind": "ground",
+  "family": "dead",
+  "image": "./source.png",
+  "source": {
+    "width": 1254,
+    "height": 1254,
+    "sha256": "e255988817a37aa82f89ebdad8194be50dbd94f4307971544efebefb5f5ca9ee",
+    "hasAlpha": false
+  },
+  "grid": {
+    "columns": 8,
+    "rows": 8,
+    "slots": 64
+  },
+  "detection": {
+    "method": "dark-line-near-expected",
+    "confidence": 1,
+    "measuredConfidence": 1,
+    "review": null,
+    "rows": [
+      0,
+      157,
+      313,
+      471,
+      627,
+      784,
+      941,
+      1098,
+      1254
+    ],
+    "columns": [
+      [
+        0,
+        157,
+        312,
+        469,
+        628,
+        782,
+        941,
+        1096,
+        1254
+      ],
+      [
+        0,
+        157,
+        313,
+        469,
+        626,
+        784,
+        940,
+        1096,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        469,
+        628,
+        784,
+        941,
+        1096,
+        1254
+      ],
+      [
+        0,
+        156,
+        312,
+        471,
+        628,
+        784,
+        939,
+        1098,
+        1254
+      ],
+      [
+        0,
+        156,
+        312,
+        469,
+        626,
+        783,
+        941,
+        1098,
+        1254
+      ],
+      [
+        0,
+        156,
+        314,
+        471,
+        626,
+        783,
+        939,
+        1098,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        471,
+        626,
+        784,
+        940,
+        1098,
+        1254
+      ],
+      [
+        0,
+        156,
+        312,
+        471,
+        627,
+        784,
+        939,
+        1097,
+        1254
+      ]
+    ]
+  },
+  "warnings": [],
+  "slots": [
+    {
+      "id": "ground_dead_00",
+      "index": 0,
+      "row": 0,
+      "column": 0,
+      "rect": {
+        "x": 3,
+        "y": 3,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_01",
+      "index": 1,
+      "row": 0,
+      "column": 1,
+      "rect": {
+        "x": 160,
+        "y": 3,
+        "width": 149,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_02",
+      "index": 2,
+      "row": 0,
+      "column": 2,
+      "rect": {
+        "x": 315,
+        "y": 3,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_03",
+      "index": 3,
+      "row": 0,
+      "column": 3,
+      "rect": {
+        "x": 472,
+        "y": 3,
+        "width": 153,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_04",
+      "index": 4,
+      "row": 0,
+      "column": 4,
+      "rect": {
+        "x": 631,
+        "y": 3,
+        "width": 148,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_05",
+      "index": 5,
+      "row": 0,
+      "column": 5,
+      "rect": {
+        "x": 785,
+        "y": 3,
+        "width": 153,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_06",
+      "index": 6,
+      "row": 0,
+      "column": 6,
+      "rect": {
+        "x": 944,
+        "y": 3,
+        "width": 149,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_07",
+      "index": 7,
+      "row": 0,
+      "column": 7,
+      "rect": {
+        "x": 1099,
+        "y": 3,
+        "width": 152,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_08",
+      "index": 8,
+      "row": 1,
+      "column": 0,
+      "rect": {
+        "x": 3,
+        "y": 160,
+        "width": 151,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_09",
+      "index": 9,
+      "row": 1,
+      "column": 1,
+      "rect": {
+        "x": 160,
+        "y": 160,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_10",
+      "index": 10,
+      "row": 1,
+      "column": 2,
+      "rect": {
+        "x": 316,
+        "y": 160,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_11",
+      "index": 11,
+      "row": 1,
+      "column": 3,
+      "rect": {
+        "x": 472,
+        "y": 160,
+        "width": 151,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_12",
+      "index": 12,
+      "row": 1,
+      "column": 4,
+      "rect": {
+        "x": 629,
+        "y": 160,
+        "width": 152,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_13",
+      "index": 13,
+      "row": 1,
+      "column": 5,
+      "rect": {
+        "x": 787,
+        "y": 160,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_14",
+      "index": 14,
+      "row": 1,
+      "column": 6,
+      "rect": {
+        "x": 943,
+        "y": 160,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_15",
+      "index": 15,
+      "row": 1,
+      "column": 7,
+      "rect": {
+        "x": 1099,
+        "y": 160,
+        "width": 152,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_16",
+      "index": 16,
+      "row": 2,
+      "column": 0,
+      "rect": {
+        "x": 3,
+        "y": 316,
+        "width": 151,
+        "height": 152
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_17",
+      "index": 17,
+      "row": 2,
+      "column": 1,
+      "rect": {
+        "x": 160,
+        "y": 316,
+        "width": 151,
+        "height": 152
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_18",
+      "index": 18,
+      "row": 2,
+      "column": 2,
+      "rect": {
+        "x": 317,
+        "y": 316,
+        "width": 149,
+        "height": 152
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_19",
+      "index": 19,
+      "row": 2,
+      "column": 3,
+      "rect": {
+        "x": 472,
+        "y": 316,
+        "width": 153,
+        "height": 152
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_20",
+      "index": 20,
+      "row": 2,
+      "column": 4,
+      "rect": {
+        "x": 631,
+        "y": 316,
+        "width": 150,
+        "height": 152
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_21",
+      "index": 21,
+      "row": 2,
+      "column": 5,
+      "rect": {
+        "x": 787,
+        "y": 316,
+        "width": 151,
+        "height": 152
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_22",
+      "index": 22,
+      "row": 2,
+      "column": 6,
+      "rect": {
+        "x": 944,
+        "y": 316,
+        "width": 149,
+        "height": 152
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_23",
+      "index": 23,
+      "row": 2,
+      "column": 7,
+      "rect": {
+        "x": 1099,
+        "y": 316,
+        "width": 152,
+        "height": 152
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_24",
+      "index": 24,
+      "row": 3,
+      "column": 0,
+      "rect": {
+        "x": 3,
+        "y": 474,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_25",
+      "index": 25,
+      "row": 3,
+      "column": 1,
+      "rect": {
+        "x": 159,
+        "y": 474,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_26",
+      "index": 26,
+      "row": 3,
+      "column": 2,
+      "rect": {
+        "x": 315,
+        "y": 474,
+        "width": 153,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_27",
+      "index": 27,
+      "row": 3,
+      "column": 3,
+      "rect": {
+        "x": 474,
+        "y": 474,
+        "width": 151,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_28",
+      "index": 28,
+      "row": 3,
+      "column": 4,
+      "rect": {
+        "x": 631,
+        "y": 474,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_29",
+      "index": 29,
+      "row": 3,
+      "column": 5,
+      "rect": {
+        "x": 787,
+        "y": 474,
+        "width": 149,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_30",
+      "index": 30,
+      "row": 3,
+      "column": 6,
+      "rect": {
+        "x": 942,
+        "y": 474,
+        "width": 153,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_31",
+      "index": 31,
+      "row": 3,
+      "column": 7,
+      "rect": {
+        "x": 1101,
+        "y": 474,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_32",
+      "index": 32,
+      "row": 4,
+      "column": 0,
+      "rect": {
+        "x": 3,
+        "y": 630,
+        "width": 150,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_33",
+      "index": 33,
+      "row": 4,
+      "column": 1,
+      "rect": {
+        "x": 159,
+        "y": 630,
+        "width": 150,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_34",
+      "index": 34,
+      "row": 4,
+      "column": 2,
+      "rect": {
+        "x": 315,
+        "y": 630,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_35",
+      "index": 35,
+      "row": 4,
+      "column": 3,
+      "rect": {
+        "x": 472,
+        "y": 630,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_36",
+      "index": 36,
+      "row": 4,
+      "column": 4,
+      "rect": {
+        "x": 629,
+        "y": 630,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_37",
+      "index": 37,
+      "row": 4,
+      "column": 5,
+      "rect": {
+        "x": 786,
+        "y": 630,
+        "width": 152,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_38",
+      "index": 38,
+      "row": 4,
+      "column": 6,
+      "rect": {
+        "x": 944,
+        "y": 630,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_39",
+      "index": 39,
+      "row": 4,
+      "column": 7,
+      "rect": {
+        "x": 1101,
+        "y": 630,
+        "width": 150,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_40",
+      "index": 40,
+      "row": 5,
+      "column": 0,
+      "rect": {
+        "x": 3,
+        "y": 787,
+        "width": 150,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_41",
+      "index": 41,
+      "row": 5,
+      "column": 1,
+      "rect": {
+        "x": 159,
+        "y": 787,
+        "width": 152,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_42",
+      "index": 42,
+      "row": 5,
+      "column": 2,
+      "rect": {
+        "x": 317,
+        "y": 787,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_43",
+      "index": 43,
+      "row": 5,
+      "column": 3,
+      "rect": {
+        "x": 474,
+        "y": 787,
+        "width": 149,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_44",
+      "index": 44,
+      "row": 5,
+      "column": 4,
+      "rect": {
+        "x": 629,
+        "y": 787,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_45",
+      "index": 45,
+      "row": 5,
+      "column": 5,
+      "rect": {
+        "x": 786,
+        "y": 787,
+        "width": 150,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_46",
+      "index": 46,
+      "row": 5,
+      "column": 6,
+      "rect": {
+        "x": 942,
+        "y": 787,
+        "width": 153,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_47",
+      "index": 47,
+      "row": 5,
+      "column": 7,
+      "rect": {
+        "x": 1101,
+        "y": 787,
+        "width": 150,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_48",
+      "index": 48,
+      "row": 6,
+      "column": 0,
+      "rect": {
+        "x": 3,
+        "y": 944,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_49",
+      "index": 49,
+      "row": 6,
+      "column": 1,
+      "rect": {
+        "x": 160,
+        "y": 944,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_50",
+      "index": 50,
+      "row": 6,
+      "column": 2,
+      "rect": {
+        "x": 317,
+        "y": 944,
+        "width": 151,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_51",
+      "index": 51,
+      "row": 6,
+      "column": 3,
+      "rect": {
+        "x": 474,
+        "y": 944,
+        "width": 149,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_52",
+      "index": 52,
+      "row": 6,
+      "column": 4,
+      "rect": {
+        "x": 629,
+        "y": 944,
+        "width": 152,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_53",
+      "index": 53,
+      "row": 6,
+      "column": 5,
+      "rect": {
+        "x": 787,
+        "y": 944,
+        "width": 150,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_54",
+      "index": 54,
+      "row": 6,
+      "column": 6,
+      "rect": {
+        "x": 943,
+        "y": 944,
+        "width": 152,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_55",
+      "index": 55,
+      "row": 6,
+      "column": 7,
+      "rect": {
+        "x": 1101,
+        "y": 944,
+        "width": 150,
+        "height": 151
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_56",
+      "index": 56,
+      "row": 7,
+      "column": 0,
+      "rect": {
+        "x": 3,
+        "y": 1101,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_57",
+      "index": 57,
+      "row": 7,
+      "column": 1,
+      "rect": {
+        "x": 159,
+        "y": 1101,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_58",
+      "index": 58,
+      "row": 7,
+      "column": 2,
+      "rect": {
+        "x": 315,
+        "y": 1101,
+        "width": 153,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_59",
+      "index": 59,
+      "row": 7,
+      "column": 3,
+      "rect": {
+        "x": 474,
+        "y": 1101,
+        "width": 150,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_60",
+      "index": 60,
+      "row": 7,
+      "column": 4,
+      "rect": {
+        "x": 630,
+        "y": 1101,
+        "width": 151,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_61",
+      "index": 61,
+      "row": 7,
+      "column": 5,
+      "rect": {
+        "x": 787,
+        "y": 1101,
+        "width": 149,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_62",
+      "index": 62,
+      "row": 7,
+      "column": 6,
+      "rect": {
+        "x": 942,
+        "y": 1101,
+        "width": 152,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    },
+    {
+      "id": "ground_dead_63",
+      "index": 63,
+      "row": 7,
+      "column": 7,
+      "rect": {
+        "x": 1100,
+        "y": 1101,
+        "width": 151,
+        "height": 150
+      },
+      "weight": 1,
+      "tags": [
+        "dead",
+        "generic"
+      ],
+      "occlusion": "ground",
+      "collisionHint": "none"
+    }
+  ]
+}

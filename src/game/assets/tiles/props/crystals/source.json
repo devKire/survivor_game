@@ -1,0 +1,2368 @@
+{
+  "schemaVersion": 1,
+  "id": "props_crystals",
+  "kind": "prop",
+  "family": "crystals",
+  "image": "./source.png",
+  "source": {
+    "width": 1254,
+    "height": 1254,
+    "sha256": "be936289c8d8c6c29e9b795778e29f4eb9314dca995dafade256816bb4177fae",
+    "hasAlpha": true
+  },
+  "grid": {
+    "columns": 8,
+    "rows": 8,
+    "slots": 64
+  },
+  "detection": {
+    "method": "alpha-valley-per-band",
+    "confidence": 0.95,
+    "measuredConfidence": 0.7903,
+    "review": "Indexed 64-slot contact sheet visually reviewed. Local alpha separators accepted; boundary-contact slots are excluded from runtime selection and flagged for source repair.",
+    "rows": [
+      0,
+      176,
+      333,
+      489,
+      629,
+      784,
+      940,
+      1078,
+      1254
+    ],
+    "columns": [
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        934,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        159,
+        314,
+        479,
+        621,
+        782,
+        935,
+        1104,
+        1254
+      ]
+    ]
+  },
+  "warnings": [],
+  "slots": [
+    {
+      "id": "prop_crystals_00",
+      "index": 0,
+      "row": 0,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 35,
+        "y": 94,
+        "width": 94,
+        "height": 82
+      },
+      "anchor": {
+        "x": 73.0888,
+        "y": 172
+      },
+      "normalizedAnchor": {
+        "x": 0.4655,
+        "y": 0.9773
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 3607,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_01",
+      "index": 1,
+      "row": 0,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 0,
+        "width": 157,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 35,
+        "y": 95,
+        "width": 122,
+        "height": 81
+      },
+      "anchor": {
+        "x": 62.7934,
+        "y": 169
+      },
+      "normalizedAnchor": {
+        "x": 0.4,
+        "y": 0.9602
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 3971,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_02",
+      "index": 2,
+      "row": 0,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 0,
+        "width": 156,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 95,
+        "width": 121,
+        "height": 81
+      },
+      "anchor": {
+        "x": 73.4791,
+        "y": 171
+      },
+      "normalizedAnchor": {
+        "x": 0.471,
+        "y": 0.9716
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4093,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_03",
+      "index": 3,
+      "row": 0,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 0,
+        "width": 157,
+        "height": 179
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 61,
+        "width": 130,
+        "height": 118
+      },
+      "anchor": {
+        "x": 64.2272,
+        "y": 174
+      },
+      "normalizedAnchor": {
+        "x": 0.4091,
+        "y": 0.9721
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7651,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_04",
+      "index": 4,
+      "row": 0,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 0,
+        "width": 157,
+        "height": 180
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 51,
+        "width": 149,
+        "height": 129
+      },
+      "anchor": {
+        "x": 77.4131,
+        "y": 177
+      },
+      "normalizedAnchor": {
+        "x": 0.4931,
+        "y": 0.9833
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6941,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_05",
+      "index": 5,
+      "row": 0,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 0,
+        "width": 157,
+        "height": 177
+      },
+      "alphaBounds": {
+        "x": 30,
+        "y": 33,
+        "width": 119,
+        "height": 144
+      },
+      "anchor": {
+        "x": 74.5361,
+        "y": 173
+      },
+      "normalizedAnchor": {
+        "x": 0.4748,
+        "y": 0.9774
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6063,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_06",
+      "index": 6,
+      "row": 0,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 0,
+        "width": 156,
+        "height": 179
+      },
+      "alphaBounds": {
+        "x": 6,
+        "y": 63,
+        "width": 150,
+        "height": 116
+      },
+      "anchor": {
+        "x": 68.3623,
+        "y": 174
+      },
+      "normalizedAnchor": {
+        "x": 0.4382,
+        "y": 0.9721
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7739,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_07",
+      "index": 7,
+      "row": 0,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 0,
+        "width": 157,
+        "height": 184
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 33,
+        "width": 141,
+        "height": 151
+      },
+      "anchor": {
+        "x": 72,
+        "y": 179
+      },
+      "normalizedAnchor": {
+        "x": 0.4586,
+        "y": 0.9728
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11321,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_08",
+      "index": 8,
+      "row": 1,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 176,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 30,
+        "y": 0,
+        "width": 99,
+        "height": 157
+      },
+      "anchor": {
+        "x": 69.8333,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4448,
+        "y": 0.9363
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4469,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_09",
+      "index": 9,
+      "row": 1,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 176,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 19,
+        "y": 0,
+        "width": 134,
+        "height": 157
+      },
+      "anchor": {
+        "x": 74.7396,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.476,
+        "y": 0.9427
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8189,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_10",
+      "index": 10,
+      "row": 1,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 176,
+        "width": 156,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 23,
+        "y": 0,
+        "width": 116,
+        "height": 157
+      },
+      "anchor": {
+        "x": 72.1743,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.4627,
+        "y": 0.9427
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7261,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_11",
+      "index": 11,
+      "row": 1,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 179,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 9,
+        "y": 0,
+        "width": 148,
+        "height": 154
+      },
+      "anchor": {
+        "x": 81.3992,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.5185,
+        "y": 0.9675
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9839,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_12",
+      "index": 12,
+      "row": 1,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 180,
+        "width": 157,
+        "height": 153
+      },
+      "alphaBounds": {
+        "x": 31,
+        "y": 0,
+        "width": 95,
+        "height": 153
+      },
+      "anchor": {
+        "x": 72.3739,
+        "y": 142
+      },
+      "normalizedAnchor": {
+        "x": 0.461,
+        "y": 0.9281
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 3959,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_13",
+      "index": 13,
+      "row": 1,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 177,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 156,
+        "height": 156
+      },
+      "anchor": {
+        "x": 51.5604,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.3284,
+        "y": 0.9423
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6070,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_14",
+      "index": 14,
+      "row": 1,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 179,
+        "width": 156,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 152,
+        "height": 154
+      },
+      "anchor": {
+        "x": 76.1116,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4879,
+        "y": 0.9545
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9493,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_15",
+      "index": 15,
+      "row": 1,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 184,
+        "width": 157,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 25,
+        "y": 0,
+        "width": 102,
+        "height": 149
+      },
+      "anchor": {
+        "x": 79.8021,
+        "y": 140
+      },
+      "normalizedAnchor": {
+        "x": 0.5083,
+        "y": 0.9396
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6442,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_16",
+      "index": 16,
+      "row": 2,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 333,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 15,
+        "y": 0,
+        "width": 142,
+        "height": 156
+      },
+      "anchor": {
+        "x": 81.8966,
+        "y": 149
+      },
+      "normalizedAnchor": {
+        "x": 0.5216,
+        "y": 0.9551
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8544,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_17",
+      "index": 17,
+      "row": 2,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 333,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 150,
+        "height": 157
+      },
+      "anchor": {
+        "x": 77.6366,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.4945,
+        "y": 0.9682
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8859,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_18",
+      "index": 18,
+      "row": 2,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 333,
+        "width": 156,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 22,
+        "y": 0,
+        "width": 132,
+        "height": 156
+      },
+      "anchor": {
+        "x": 74.1594,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.4754,
+        "y": 0.9679
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10622,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_19",
+      "index": 19,
+      "row": 2,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 333,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 9,
+        "y": 0,
+        "width": 142,
+        "height": 156
+      },
+      "anchor": {
+        "x": 73.2425,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.4665,
+        "y": 0.9679
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9773,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_20",
+      "index": 20,
+      "row": 2,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 333,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 9,
+        "y": 0,
+        "width": 132,
+        "height": 156
+      },
+      "anchor": {
+        "x": 71.6627,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.4565,
+        "y": 0.9423
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4619,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_21",
+      "index": 21,
+      "row": 2,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 333,
+        "width": 150,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 149,
+        "height": 156
+      },
+      "anchor": {
+        "x": 59.3063,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.3954,
+        "y": 0.9615
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9415,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_22",
+      "index": 22,
+      "row": 2,
+      "column": 6,
+      "rect": {
+        "x": 934,
+        "y": 333,
+        "width": 163,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 163,
+        "height": 156
+      },
+      "anchor": {
+        "x": 74.7409,
+        "y": 150
+      },
+      "normalizedAnchor": {
+        "x": 0.4585,
+        "y": 0.9615
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9411,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_23",
+      "index": 23,
+      "row": 2,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 333,
+        "width": 157,
+        "height": 157
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 157
+      },
+      "anchor": {
+        "x": 68.9509,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.4392,
+        "y": 0.9618
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12575,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_24",
+      "index": 24,
+      "row": 3,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 489,
+        "width": 157,
+        "height": 140
+      },
+      "alphaBounds": {
+        "x": 33,
+        "y": 0,
+        "width": 97,
+        "height": 140
+      },
+      "anchor": {
+        "x": 86.4039,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.5503,
+        "y": 0.9429
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4477,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_25",
+      "index": 25,
+      "row": 3,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 490,
+        "width": 157,
+        "height": 139
+      },
+      "alphaBounds": {
+        "x": 32,
+        "y": 0,
+        "width": 102,
+        "height": 139
+      },
+      "anchor": {
+        "x": 76.2,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.4854,
+        "y": 0.9568
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5504,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_26",
+      "index": 26,
+      "row": 3,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 489,
+        "width": 156,
+        "height": 140
+      },
+      "alphaBounds": {
+        "x": 20,
+        "y": 0,
+        "width": 119,
+        "height": 140
+      },
+      "anchor": {
+        "x": 71.8837,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.4608,
+        "y": 0.9571
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6690,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_27",
+      "index": 27,
+      "row": 3,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 489,
+        "width": 157,
+        "height": 140
+      },
+      "alphaBounds": {
+        "x": 7,
+        "y": 0,
+        "width": 150,
+        "height": 140
+      },
+      "anchor": {
+        "x": 71.5971,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.456,
+        "y": 0.95
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9560,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_28",
+      "index": 28,
+      "row": 3,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 489,
+        "width": 157,
+        "height": 140
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 140
+      },
+      "anchor": {
+        "x": 74.3512,
+        "y": 136
+      },
+      "normalizedAnchor": {
+        "x": 0.4736,
+        "y": 0.9714
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8981,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_29",
+      "index": 29,
+      "row": 3,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 489,
+        "width": 157,
+        "height": 140
+      },
+      "alphaBounds": {
+        "x": 3,
+        "y": 0,
+        "width": 148,
+        "height": 140
+      },
+      "anchor": {
+        "x": 77.4473,
+        "y": 136
+      },
+      "normalizedAnchor": {
+        "x": 0.4933,
+        "y": 0.9714
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8412,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_30",
+      "index": 30,
+      "row": 3,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 489,
+        "width": 156,
+        "height": 140
+      },
+      "alphaBounds": {
+        "x": 8,
+        "y": 0,
+        "width": 148,
+        "height": 140
+      },
+      "anchor": {
+        "x": 62.9072,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.4033,
+        "y": 0.9571
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5376,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_31",
+      "index": 31,
+      "row": 3,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 490,
+        "width": 157,
+        "height": 139
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 144,
+        "height": 139
+      },
+      "anchor": {
+        "x": 71.8898,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.4579,
+        "y": 0.964
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9855,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_32",
+      "index": 32,
+      "row": 4,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 629,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 16,
+        "y": 0,
+        "width": 131,
+        "height": 149
+      },
+      "anchor": {
+        "x": 71.4076,
+        "y": 136
+      },
+      "normalizedAnchor": {
+        "x": 0.4548,
+        "y": 0.8774
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7835,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_33",
+      "index": 33,
+      "row": 4,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 629,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 3,
+        "y": 0,
+        "width": 154,
+        "height": 153
+      },
+      "anchor": {
+        "x": 81.1778,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.5171,
+        "y": 0.8968
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12594,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_34",
+      "index": 34,
+      "row": 4,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 629,
+        "width": 156,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 45,
+        "width": 136,
+        "height": 101
+      },
+      "anchor": {
+        "x": 85.1476,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.5458,
+        "y": 0.871
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 4741,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_35",
+      "index": 35,
+      "row": 4,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 629,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 27,
+        "y": 0,
+        "width": 115,
+        "height": 148
+      },
+      "anchor": {
+        "x": 84.4971,
+        "y": 138
+      },
+      "normalizedAnchor": {
+        "x": 0.5382,
+        "y": 0.8903
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5185,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_36",
+      "index": 36,
+      "row": 4,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 629,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 134,
+        "height": 151
+      },
+      "anchor": {
+        "x": 80.9427,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.5156,
+        "y": 0.8839
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8044,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_37",
+      "index": 37,
+      "row": 4,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 629,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 18,
+        "y": 0,
+        "width": 139,
+        "height": 147
+      },
+      "anchor": {
+        "x": 71.6761,
+        "y": 136
+      },
+      "normalizedAnchor": {
+        "x": 0.4565,
+        "y": 0.8774
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7725,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_38",
+      "index": 38,
+      "row": 4,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 629,
+        "width": 156,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 151
+      },
+      "anchor": {
+        "x": 69.4943,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.4455,
+        "y": 0.9097
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8827,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_39",
+      "index": 39,
+      "row": 4,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 629,
+        "width": 157,
+        "height": 155
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 143,
+        "height": 155
+      },
+      "anchor": {
+        "x": 66.7024,
+        "y": 138
+      },
+      "normalizedAnchor": {
+        "x": 0.4249,
+        "y": 0.8903
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9283,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_40",
+      "index": 40,
+      "row": 5,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 784,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 17,
+        "y": 44,
+        "width": 128,
+        "height": 92
+      },
+      "anchor": {
+        "x": 82.7159,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.5269,
+        "y": 0.8077
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5357,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_41",
+      "index": 41,
+      "row": 5,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 784,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 2,
+        "width": 156,
+        "height": 154
+      },
+      "anchor": {
+        "x": 80.5975,
+        "y": 125
+      },
+      "normalizedAnchor": {
+        "x": 0.5134,
+        "y": 0.8013
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9678,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_42",
+      "index": 42,
+      "row": 5,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 784,
+        "width": 156,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 7,
+        "width": 156,
+        "height": 128
+      },
+      "anchor": {
+        "x": 77.5659,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.4972,
+        "y": 0.8141
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8084,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_43",
+      "index": 43,
+      "row": 5,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 784,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 1,
+        "width": 157,
+        "height": 146
+      },
+      "anchor": {
+        "x": 78.2235,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.4982,
+        "y": 0.8462
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12742,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_44",
+      "index": 44,
+      "row": 5,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 784,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 36,
+        "width": 157,
+        "height": 98
+      },
+      "anchor": {
+        "x": 75.7878,
+        "y": 121
+      },
+      "normalizedAnchor": {
+        "x": 0.4827,
+        "y": 0.7756
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 3784,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "low",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_45",
+      "index": 45,
+      "row": 5,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 784,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 8,
+        "width": 132,
+        "height": 148
+      },
+      "anchor": {
+        "x": 62.3758,
+        "y": 124
+      },
+      "normalizedAnchor": {
+        "x": 0.3973,
+        "y": 0.7949
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5358,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_46",
+      "index": 46,
+      "row": 5,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 784,
+        "width": 156,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 10,
+        "width": 137,
+        "height": 146
+      },
+      "anchor": {
+        "x": 71.2975,
+        "y": 126
+      },
+      "normalizedAnchor": {
+        "x": 0.457,
+        "y": 0.8077
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8852,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_47",
+      "index": 47,
+      "row": 5,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 784,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 8,
+        "y": 0,
+        "width": 128,
+        "height": 135
+      },
+      "anchor": {
+        "x": 68.148,
+        "y": 127
+      },
+      "normalizedAnchor": {
+        "x": 0.4341,
+        "y": 0.8141
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7947,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_48",
+      "index": 48,
+      "row": 6,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 940,
+        "width": 157,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 21,
+        "y": 23,
+        "width": 134,
+        "height": 104
+      },
+      "anchor": {
+        "x": 79.5955,
+        "y": 105
+      },
+      "normalizedAnchor": {
+        "x": 0.507,
+        "y": 0.7609
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5354,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_49",
+      "index": 49,
+      "row": 6,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 940,
+        "width": 157,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 3,
+        "y": 0,
+        "width": 154,
+        "height": 137
+      },
+      "anchor": {
+        "x": 81.2893,
+        "y": 108
+      },
+      "normalizedAnchor": {
+        "x": 0.5178,
+        "y": 0.7826
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8745,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_50",
+      "index": 50,
+      "row": 6,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 940,
+        "width": 156,
+        "height": 131
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 1,
+        "width": 156,
+        "height": 130
+      },
+      "anchor": {
+        "x": 69.367,
+        "y": 111
+      },
+      "normalizedAnchor": {
+        "x": 0.4447,
+        "y": 0.8473
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9842,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_51",
+      "index": 51,
+      "row": 6,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 940,
+        "width": 157,
+        "height": 119
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 6,
+        "width": 157,
+        "height": 113
+      },
+      "anchor": {
+        "x": 81.2065,
+        "y": 109
+      },
+      "normalizedAnchor": {
+        "x": 0.5172,
+        "y": 0.916
+      },
+      "boundaryContact": 0.0036,
+      "bodyPixels": 9564,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_52",
+      "index": 52,
+      "row": 6,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 940,
+        "width": 157,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 18,
+        "width": 148,
+        "height": 120
+      },
+      "anchor": {
+        "x": 70.4705,
+        "y": 108
+      },
+      "normalizedAnchor": {
+        "x": 0.4489,
+        "y": 0.7826
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7596,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_53",
+      "index": 53,
+      "row": 6,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 940,
+        "width": 157,
+        "height": 132
+      },
+      "alphaBounds": {
+        "x": 3,
+        "y": 0,
+        "width": 154,
+        "height": 132
+      },
+      "anchor": {
+        "x": 68.2514,
+        "y": 111
+      },
+      "normalizedAnchor": {
+        "x": 0.4347,
+        "y": 0.8409
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7827,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_54",
+      "index": 54,
+      "row": 6,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 940,
+        "width": 156,
+        "height": 122
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 122
+      },
+      "anchor": {
+        "x": 74.9054,
+        "y": 108
+      },
+      "normalizedAnchor": {
+        "x": 0.4802,
+        "y": 0.8852
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9730,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_55",
+      "index": 55,
+      "row": 6,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 940,
+        "width": 157,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 2,
+        "width": 157,
+        "height": 136
+      },
+      "anchor": {
+        "x": 79.0913,
+        "y": 110
+      },
+      "normalizedAnchor": {
+        "x": 0.5038,
+        "y": 0.7971
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10702,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_56",
+      "index": 56,
+      "row": 7,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 1078,
+        "width": 159,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 2,
+        "width": 159,
+        "height": 174
+      },
+      "anchor": {
+        "x": 81.9137,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.5152,
+        "y": 0.7898
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13422,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_57",
+      "index": 57,
+      "row": 7,
+      "column": 1,
+      "rect": {
+        "x": 159,
+        "y": 1078,
+        "width": 155,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 176
+      },
+      "anchor": {
+        "x": 71.9041,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.4639,
+        "y": 0.8011
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 15249,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_58",
+      "index": 58,
+      "row": 7,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 1071,
+        "width": 165,
+        "height": 183
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 165,
+        "height": 167
+      },
+      "anchor": {
+        "x": 90.8903,
+        "y": 152
+      },
+      "normalizedAnchor": {
+        "x": 0.5509,
+        "y": 0.8306
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 15430,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_59",
+      "index": 59,
+      "row": 7,
+      "column": 3,
+      "rect": {
+        "x": 479,
+        "y": 1059,
+        "width": 142,
+        "height": 195
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 142,
+        "height": 195
+      },
+      "anchor": {
+        "x": 69.1514,
+        "y": 165
+      },
+      "normalizedAnchor": {
+        "x": 0.487,
+        "y": 0.8462
+      },
+      "boundaryContact": 0.0074,
+      "bodyPixels": 13082,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_60",
+      "index": 60,
+      "row": 7,
+      "column": 4,
+      "rect": {
+        "x": 621,
+        "y": 1078,
+        "width": 161,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 161,
+        "height": 176
+      },
+      "anchor": {
+        "x": 62.8307,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.3903,
+        "y": 0.8239
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 15768,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_61",
+      "index": 61,
+      "row": 7,
+      "column": 5,
+      "rect": {
+        "x": 782,
+        "y": 1072,
+        "width": 153,
+        "height": 182
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 153,
+        "height": 168
+      },
+      "anchor": {
+        "x": 76.4272,
+        "y": 151
+      },
+      "normalizedAnchor": {
+        "x": 0.4995,
+        "y": 0.8297
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14172,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_62",
+      "index": 62,
+      "row": 7,
+      "column": 6,
+      "rect": {
+        "x": 935,
+        "y": 1062,
+        "width": 169,
+        "height": 192
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 169,
+        "height": 176
+      },
+      "anchor": {
+        "x": 78.3343,
+        "y": 161
+      },
+      "normalizedAnchor": {
+        "x": 0.4635,
+        "y": 0.8385
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 18894,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_crystals_63",
+      "index": 63,
+      "row": 7,
+      "column": 7,
+      "rect": {
+        "x": 1104,
+        "y": 1078,
+        "width": 150,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 138,
+        "height": 162
+      },
+      "anchor": {
+        "x": 65.9245,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.4395,
+        "y": 0.8239
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13246,
+      "weight": 1,
+      "tags": [
+        "crystals",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    }
+  ]
+}

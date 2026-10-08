@@ -1253,6 +1253,7 @@ function competitiveProfiles(structures: string[]) {
 
 export const MAP_DEFINITIONS: Record<string, MapDefinition> = {
   ruins: {
+    terrainProfile: "ruins",
     profiles: competitiveProfiles(["column", "wall", "stone", "ruin", "tree", "rift"]),
     name: "Ruínas do Obelisco",
     icon: "◇",
@@ -1301,6 +1302,7 @@ export const MAP_DEFINITIONS: Record<string, MapDefinition> = {
     waveModifiers: { rate: 1, hp: 1, elite: 1 },
   },
   gardens: {
+    terrainProfile: "gardens",
     profiles: competitiveProfiles(["column", "stone", "ruin", "tree", "platform", "thorn"]),
     name: "Jardins Submersos",
     icon: "≋",

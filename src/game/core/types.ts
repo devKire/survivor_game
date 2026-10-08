@@ -1,3 +1,4 @@
+import type { TerrainProfile } from "../content/world-biomes";
 import type { Telemetry } from "./progression";
 import type { Weapon } from "./entities";
 export interface Vec {
@@ -148,6 +149,7 @@ export interface PvpMapProfile {
   objective: boolean;
 }
 export interface MapDefinition {
+  terrainProfile?: TerrainProfile;
   profiles?: { pvp1v1: PvpMapProfile; pvp5v5: PvpMapProfile };
   name: string;
   icon: string;

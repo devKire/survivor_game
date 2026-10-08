@@ -1,0 +1,2368 @@
+{
+  "schemaVersion": 1,
+  "id": "props_mines",
+  "kind": "prop",
+  "family": "mines",
+  "image": "./source.png",
+  "source": {
+    "width": 1254,
+    "height": 1254,
+    "sha256": "4acaef6ddacd8b2e5fc57bff0c1f0ea56a92315b96e23827bec1535de768c587",
+    "hasAlpha": true
+  },
+  "grid": {
+    "columns": 8,
+    "rows": 8,
+    "slots": 64
+  },
+  "detection": {
+    "method": "alpha-valley-per-band",
+    "confidence": 0.8822,
+    "measuredConfidence": 0.8822,
+    "review": null,
+    "rows": [
+      0,
+      171,
+      323,
+      474,
+      628,
+      784,
+      922,
+      1078,
+      1254
+    ],
+    "columns": [
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        461,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1096,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        470,
+        627,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        314,
+        469,
+        628,
+        784,
+        941,
+        1097,
+        1254
+      ],
+      [
+        0,
+        157,
+        316,
+        470,
+        626,
+        785,
+        940,
+        1098,
+        1254
+      ],
+      [
+        0,
+        158,
+        314,
+        468,
+        620,
+        784,
+        941,
+        1097,
+        1254
+      ]
+    ]
+  },
+  "warnings": [],
+  "slots": [
+    {
+      "id": "prop_mines_00",
+      "index": 0,
+      "row": 0,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 171
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 17,
+        "width": 143,
+        "height": 154
+      },
+      "anchor": {
+        "x": 69.4694,
+        "y": 158
+      },
+      "normalizedAnchor": {
+        "x": 0.4425,
+        "y": 0.924
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7852,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_01",
+      "index": 1,
+      "row": 0,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 0,
+        "width": 157,
+        "height": 171
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 28,
+        "width": 156,
+        "height": 137
+      },
+      "anchor": {
+        "x": 64.5487,
+        "y": 157
+      },
+      "normalizedAnchor": {
+        "x": 0.4111,
+        "y": 0.9181
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10258,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_02",
+      "index": 2,
+      "row": 0,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 0,
+        "width": 156,
+        "height": 171
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 16,
+        "width": 156,
+        "height": 155
+      },
+      "anchor": {
+        "x": 50.1952,
+        "y": 164
+      },
+      "normalizedAnchor": {
+        "x": 0.3218,
+        "y": 0.9591
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11751,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_03",
+      "index": 3,
+      "row": 0,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 0,
+        "width": 157,
+        "height": 171
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 17,
+        "width": 157,
+        "height": 154
+      },
+      "anchor": {
+        "x": 88.1218,
+        "y": 159
+      },
+      "normalizedAnchor": {
+        "x": 0.5613,
+        "y": 0.9298
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11153,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_04",
+      "index": 4,
+      "row": 0,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 0,
+        "width": 157,
+        "height": 171
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 20,
+        "width": 147,
+        "height": 151
+      },
+      "anchor": {
+        "x": 50.1559,
+        "y": 164
+      },
+      "normalizedAnchor": {
+        "x": 0.3195,
+        "y": 0.9591
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8273,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_05",
+      "index": 5,
+      "row": 0,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 0,
+        "width": 157,
+        "height": 171
+      },
+      "alphaBounds": {
+        "x": 2,
+        "y": 28,
+        "width": 155,
+        "height": 143
+      },
+      "anchor": {
+        "x": 90.2084,
+        "y": 159
+      },
+      "normalizedAnchor": {
+        "x": 0.5746,
+        "y": 0.9298
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10579,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_06",
+      "index": 6,
+      "row": 0,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 0,
+        "width": 156,
+        "height": 171
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 18,
+        "width": 156,
+        "height": 153
+      },
+      "anchor": {
+        "x": 58.0396,
+        "y": 162
+      },
+      "normalizedAnchor": {
+        "x": 0.372,
+        "y": 0.9474
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12422,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_07",
+      "index": 7,
+      "row": 0,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 0,
+        "width": 157,
+        "height": 171
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 29,
+        "width": 151,
+        "height": 142
+      },
+      "anchor": {
+        "x": 48.9687,
+        "y": 159
+      },
+      "normalizedAnchor": {
+        "x": 0.3119,
+        "y": 0.9298
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10364,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_08",
+      "index": 8,
+      "row": 1,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 171,
+        "width": 157,
+        "height": 152
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 152
+      },
+      "anchor": {
+        "x": 131.9345,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.8403,
+        "y": 0.9474
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9997,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_09",
+      "index": 9,
+      "row": 1,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 171,
+        "width": 157,
+        "height": 152
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 2,
+        "width": 157,
+        "height": 150
+      },
+      "anchor": {
+        "x": 61.7015,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.393,
+        "y": 0.9408
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12015,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_10",
+      "index": 10,
+      "row": 1,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 171,
+        "width": 147,
+        "height": 152
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 147,
+        "height": 152
+      },
+      "anchor": {
+        "x": 38.5,
+        "y": 145
+      },
+      "normalizedAnchor": {
+        "x": 0.2619,
+        "y": 0.9539
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8269,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_11",
+      "index": 11,
+      "row": 1,
+      "column": 3,
+      "rect": {
+        "x": 461,
+        "y": 171,
+        "width": 166,
+        "height": 152
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 166,
+        "height": 152
+      },
+      "anchor": {
+        "x": 51.0748,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.3077,
+        "y": 0.9408
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13545,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_12",
+      "index": 12,
+      "row": 1,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 171,
+        "width": 157,
+        "height": 152
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 149,
+        "height": 151
+      },
+      "anchor": {
+        "x": 75.702,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.4822,
+        "y": 0.8882
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9145,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_13",
+      "index": 13,
+      "row": 1,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 171,
+        "width": 157,
+        "height": 152
+      },
+      "alphaBounds": {
+        "x": 4,
+        "y": 0,
+        "width": 148,
+        "height": 152
+      },
+      "anchor": {
+        "x": 77.1186,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.4912,
+        "y": 0.9013
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9623,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_14",
+      "index": 14,
+      "row": 1,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 171,
+        "width": 156,
+        "height": 152
+      },
+      "alphaBounds": {
+        "x": 2,
+        "y": 0,
+        "width": 154,
+        "height": 152
+      },
+      "anchor": {
+        "x": 75.1986,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.482,
+        "y": 0.9013
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9509,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_15",
+      "index": 15,
+      "row": 1,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 171,
+        "width": 157,
+        "height": 152
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 145,
+        "height": 152
+      },
+      "anchor": {
+        "x": 59.9933,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.3821,
+        "y": 0.9276
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11688,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_16",
+      "index": 16,
+      "row": 2,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 323,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 151
+      },
+      "anchor": {
+        "x": 65.6095,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.4179,
+        "y": 0.9205
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9092,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_17",
+      "index": 17,
+      "row": 2,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 323,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 151
+      },
+      "anchor": {
+        "x": 94.0069,
+        "y": 142
+      },
+      "normalizedAnchor": {
+        "x": 0.5988,
+        "y": 0.9404
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9454,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_18",
+      "index": 18,
+      "row": 2,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 323,
+        "width": 156,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 151
+      },
+      "anchor": {
+        "x": 64.8301,
+        "y": 142
+      },
+      "normalizedAnchor": {
+        "x": 0.4156,
+        "y": 0.9404
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8887,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_19",
+      "index": 19,
+      "row": 2,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 323,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 151
+      },
+      "anchor": {
+        "x": 76.2153,
+        "y": 140
+      },
+      "normalizedAnchor": {
+        "x": 0.4854,
+        "y": 0.9272
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9857,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_20",
+      "index": 20,
+      "row": 2,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 323,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 14,
+        "width": 157,
+        "height": 137
+      },
+      "anchor": {
+        "x": 76.6868,
+        "y": 141
+      },
+      "normalizedAnchor": {
+        "x": 0.4885,
+        "y": 0.9338
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10837,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_21",
+      "index": 21,
+      "row": 2,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 323,
+        "width": 157,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 149
+      },
+      "anchor": {
+        "x": 61.5923,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.3923,
+        "y": 0.9205
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8086,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_22",
+      "index": 22,
+      "row": 2,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 323,
+        "width": 155,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 3,
+        "y": 0,
+        "width": 152,
+        "height": 147
+      },
+      "anchor": {
+        "x": 90.8798,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.5863,
+        "y": 0.9073
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8769,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_23",
+      "index": 23,
+      "row": 2,
+      "column": 7,
+      "rect": {
+        "x": 1096,
+        "y": 323,
+        "width": 158,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 148,
+        "height": 151
+      },
+      "anchor": {
+        "x": 81.8175,
+        "y": 143
+      },
+      "normalizedAnchor": {
+        "x": 0.5178,
+        "y": 0.947
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10095,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_24",
+      "index": 24,
+      "row": 3,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 474,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 11,
+        "y": 0,
+        "width": 146,
+        "height": 154
+      },
+      "anchor": {
+        "x": 79.1519,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.5042,
+        "y": 0.8701
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10741,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_25",
+      "index": 25,
+      "row": 3,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 474,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 152,
+        "height": 154
+      },
+      "anchor": {
+        "x": 71.7918,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.4573,
+        "y": 0.8701
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11275,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_26",
+      "index": 26,
+      "row": 3,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 474,
+        "width": 156,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 153
+      },
+      "anchor": {
+        "x": 68.4891,
+        "y": 136
+      },
+      "normalizedAnchor": {
+        "x": 0.439,
+        "y": 0.8831
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10667,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_27",
+      "index": 27,
+      "row": 3,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 474,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 153
+      },
+      "anchor": {
+        "x": 67.6053,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.4306,
+        "y": 0.9026
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11792,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_28",
+      "index": 28,
+      "row": 3,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 474,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 154
+      },
+      "anchor": {
+        "x": 122.6477,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.7812,
+        "y": 0.9351
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11881,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_29",
+      "index": 29,
+      "row": 3,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 474,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 13,
+        "width": 157,
+        "height": 141
+      },
+      "anchor": {
+        "x": 40.0375,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.255,
+        "y": 0.8636
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10460,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_30",
+      "index": 30,
+      "row": 3,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 474,
+        "width": 156,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 23,
+        "width": 154,
+        "height": 131
+      },
+      "anchor": {
+        "x": 69.9639,
+        "y": 140
+      },
+      "normalizedAnchor": {
+        "x": 0.4485,
+        "y": 0.9091
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12469,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_31",
+      "index": 31,
+      "row": 3,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 474,
+        "width": 157,
+        "height": 154
+      },
+      "alphaBounds": {
+        "x": 7,
+        "y": 0,
+        "width": 137,
+        "height": 151
+      },
+      "anchor": {
+        "x": 72.8871,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.4642,
+        "y": 0.8636
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11149,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_32",
+      "index": 32,
+      "row": 4,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 628,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 29,
+        "y": 0,
+        "width": 126,
+        "height": 147
+      },
+      "anchor": {
+        "x": 86.1883,
+        "y": 138
+      },
+      "normalizedAnchor": {
+        "x": 0.549,
+        "y": 0.8846
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 5925,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_33",
+      "index": 33,
+      "row": 4,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 628,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 133,
+        "height": 156
+      },
+      "anchor": {
+        "x": 77.5134,
+        "y": 144
+      },
+      "normalizedAnchor": {
+        "x": 0.4937,
+        "y": 0.9231
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7783,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_34",
+      "index": 34,
+      "row": 4,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 628,
+        "width": 156,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 16,
+        "y": 8,
+        "width": 140,
+        "height": 148
+      },
+      "anchor": {
+        "x": 79.5421,
+        "y": 140
+      },
+      "normalizedAnchor": {
+        "x": 0.5099,
+        "y": 0.8974
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6759,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_35",
+      "index": 35,
+      "row": 4,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 628,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 14,
+        "width": 157,
+        "height": 142
+      },
+      "anchor": {
+        "x": 56.1836,
+        "y": 136
+      },
+      "normalizedAnchor": {
+        "x": 0.3579,
+        "y": 0.8718
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10212,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_36",
+      "index": 36,
+      "row": 4,
+      "column": 4,
+      "rect": {
+        "x": 627,
+        "y": 628,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 152
+      },
+      "anchor": {
+        "x": 54.5211,
+        "y": 129
+      },
+      "normalizedAnchor": {
+        "x": 0.3473,
+        "y": 0.8269
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8212,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_37",
+      "index": 37,
+      "row": 4,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 628,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 152
+      },
+      "anchor": {
+        "x": 61.4703,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.3915,
+        "y": 0.8782
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10265,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_38",
+      "index": 38,
+      "row": 4,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 628,
+        "width": 156,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 154
+      },
+      "anchor": {
+        "x": 51.6143,
+        "y": 140
+      },
+      "normalizedAnchor": {
+        "x": 0.3309,
+        "y": 0.8974
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8601,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_39",
+      "index": 39,
+      "row": 4,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 628,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 156
+      },
+      "anchor": {
+        "x": 63.5915,
+        "y": 136
+      },
+      "normalizedAnchor": {
+        "x": 0.405,
+        "y": 0.8718
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10294,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_40",
+      "index": 40,
+      "row": 5,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 784,
+        "width": 157,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 4,
+        "width": 157,
+        "height": 134
+      },
+      "anchor": {
+        "x": 77.0159,
+        "y": 114
+      },
+      "normalizedAnchor": {
+        "x": 0.4905,
+        "y": 0.8261
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9088,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_41",
+      "index": 41,
+      "row": 5,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 784,
+        "width": 157,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 1,
+        "y": 0,
+        "width": 156,
+        "height": 138
+      },
+      "anchor": {
+        "x": 68.7246,
+        "y": 121
+      },
+      "normalizedAnchor": {
+        "x": 0.4377,
+        "y": 0.8768
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11741,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_42",
+      "index": 42,
+      "row": 5,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 784,
+        "width": 155,
+        "height": 133
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 133
+      },
+      "anchor": {
+        "x": 70.5331,
+        "y": 114
+      },
+      "normalizedAnchor": {
+        "x": 0.4551,
+        "y": 0.8571
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9503,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_43",
+      "index": 43,
+      "row": 5,
+      "column": 3,
+      "rect": {
+        "x": 469,
+        "y": 784,
+        "width": 159,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 159,
+        "height": 138
+      },
+      "anchor": {
+        "x": 60.1543,
+        "y": 118
+      },
+      "normalizedAnchor": {
+        "x": 0.3783,
+        "y": 0.8551
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13458,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_44",
+      "index": 44,
+      "row": 5,
+      "column": 4,
+      "rect": {
+        "x": 628,
+        "y": 784,
+        "width": 156,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 4,
+        "width": 156,
+        "height": 115
+      },
+      "anchor": {
+        "x": 71.5606,
+        "y": 112
+      },
+      "normalizedAnchor": {
+        "x": 0.4587,
+        "y": 0.8116
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7363,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_45",
+      "index": 45,
+      "row": 5,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 784,
+        "width": 157,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 3,
+        "width": 157,
+        "height": 135
+      },
+      "anchor": {
+        "x": 91.7945,
+        "y": 117
+      },
+      "normalizedAnchor": {
+        "x": 0.5847,
+        "y": 0.8478
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9746,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_46",
+      "index": 46,
+      "row": 5,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 784,
+        "width": 156,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 2,
+        "y": 18,
+        "width": 154,
+        "height": 115
+      },
+      "anchor": {
+        "x": 68.4233,
+        "y": 114
+      },
+      "normalizedAnchor": {
+        "x": 0.4386,
+        "y": 0.8261
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 10101,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_47",
+      "index": 47,
+      "row": 5,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 784,
+        "width": 157,
+        "height": 138
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 1,
+        "width": 145,
+        "height": 127
+      },
+      "anchor": {
+        "x": 72.6899,
+        "y": 112
+      },
+      "normalizedAnchor": {
+        "x": 0.463,
+        "y": 0.8116
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9688,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_48",
+      "index": 48,
+      "row": 6,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 922,
+        "width": 157,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 146
+      },
+      "anchor": {
+        "x": 92.1577,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.587,
+        "y": 0.8462
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9837,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_49",
+      "index": 49,
+      "row": 6,
+      "column": 1,
+      "rect": {
+        "x": 157,
+        "y": 922,
+        "width": 159,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 159,
+        "height": 151
+      },
+      "anchor": {
+        "x": 74.347,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.4676,
+        "y": 0.859
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8873,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_50",
+      "index": 50,
+      "row": 6,
+      "column": 2,
+      "rect": {
+        "x": 316,
+        "y": 917,
+        "width": 154,
+        "height": 161
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 150,
+        "height": 161
+      },
+      "anchor": {
+        "x": 44.2326,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.2872,
+        "y": 0.8509
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 7671,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_51",
+      "index": 51,
+      "row": 6,
+      "column": 3,
+      "rect": {
+        "x": 470,
+        "y": 922,
+        "width": 156,
+        "height": 156
+      },
+      "alphaBounds": {
+        "x": 25,
+        "y": 0,
+        "width": 131,
+        "height": 156
+      },
+      "anchor": {
+        "x": 68.1484,
+        "y": 135
+      },
+      "normalizedAnchor": {
+        "x": 0.4368,
+        "y": 0.8654
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 6217,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_52",
+      "index": 52,
+      "row": 6,
+      "column": 4,
+      "rect": {
+        "x": 626,
+        "y": 922,
+        "width": 159,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 14,
+        "width": 159,
+        "height": 135
+      },
+      "anchor": {
+        "x": 107.1897,
+        "y": 131
+      },
+      "normalizedAnchor": {
+        "x": 0.6741,
+        "y": 0.8792
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 8866,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_53",
+      "index": 53,
+      "row": 6,
+      "column": 5,
+      "rect": {
+        "x": 785,
+        "y": 922,
+        "width": 155,
+        "height": 149
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 155,
+        "height": 149
+      },
+      "anchor": {
+        "x": 70.1823,
+        "y": 130
+      },
+      "normalizedAnchor": {
+        "x": 0.4528,
+        "y": 0.8725
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 9611,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_54",
+      "index": 54,
+      "row": 6,
+      "column": 6,
+      "rect": {
+        "x": 940,
+        "y": 922,
+        "width": 158,
+        "height": 151
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 3,
+        "width": 158,
+        "height": 148
+      },
+      "anchor": {
+        "x": 82.2923,
+        "y": 133
+      },
+      "normalizedAnchor": {
+        "x": 0.5208,
+        "y": 0.8808
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11454,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_55",
+      "index": 55,
+      "row": 6,
+      "column": 7,
+      "rect": {
+        "x": 1098,
+        "y": 922,
+        "width": 156,
+        "height": 148
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 1,
+        "width": 155,
+        "height": 147
+      },
+      "anchor": {
+        "x": 84.3841,
+        "y": 132
+      },
+      "normalizedAnchor": {
+        "x": 0.5409,
+        "y": 0.8919
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14736,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_56",
+      "index": 56,
+      "row": 7,
+      "column": 0,
+      "rect": {
+        "x": 0,
+        "y": 1078,
+        "width": 158,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 10,
+        "width": 158,
+        "height": 166
+      },
+      "anchor": {
+        "x": 104.1384,
+        "y": 139
+      },
+      "normalizedAnchor": {
+        "x": 0.6591,
+        "y": 0.7898
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 12211,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_57",
+      "index": 57,
+      "row": 7,
+      "column": 1,
+      "rect": {
+        "x": 158,
+        "y": 1078,
+        "width": 156,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 4,
+        "width": 156,
+        "height": 144
+      },
+      "anchor": {
+        "x": 83.7717,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.537,
+        "y": 0.7784
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13134,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_58",
+      "index": 58,
+      "row": 7,
+      "column": 2,
+      "rect": {
+        "x": 314,
+        "y": 1078,
+        "width": 154,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 154,
+        "height": 146
+      },
+      "anchor": {
+        "x": 87.4194,
+        "y": 137
+      },
+      "normalizedAnchor": {
+        "x": 0.5677,
+        "y": 0.7784
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 11372,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_59",
+      "index": 59,
+      "row": 7,
+      "column": 3,
+      "rect": {
+        "x": 468,
+        "y": 1078,
+        "width": 152,
+        "height": 176
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 152,
+        "height": 176
+      },
+      "anchor": {
+        "x": 111.1543,
+        "y": 134
+      },
+      "normalizedAnchor": {
+        "x": 0.7313,
+        "y": 0.7614
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14058,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_60",
+      "index": 60,
+      "row": 7,
+      "column": 4,
+      "rect": {
+        "x": 620,
+        "y": 1071,
+        "width": 164,
+        "height": 183
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 164,
+        "height": 183
+      },
+      "anchor": {
+        "x": 91.1281,
+        "y": 146
+      },
+      "normalizedAnchor": {
+        "x": 0.5557,
+        "y": 0.7978
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 16354,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_61",
+      "index": 61,
+      "row": 7,
+      "column": 5,
+      "rect": {
+        "x": 784,
+        "y": 1071,
+        "width": 157,
+        "height": 183
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 157,
+        "height": 163
+      },
+      "anchor": {
+        "x": 44.7881,
+        "y": 146
+      },
+      "normalizedAnchor": {
+        "x": 0.2853,
+        "y": 0.7978
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 14817,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_62",
+      "index": 62,
+      "row": 7,
+      "column": 6,
+      "rect": {
+        "x": 941,
+        "y": 1073,
+        "width": 156,
+        "height": 181
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 156,
+        "height": 163
+      },
+      "anchor": {
+        "x": 60.4,
+        "y": 147
+      },
+      "normalizedAnchor": {
+        "x": 0.3872,
+        "y": 0.8122
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 13957,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    },
+    {
+      "id": "prop_mines_63",
+      "index": 63,
+      "row": 7,
+      "column": 7,
+      "rect": {
+        "x": 1097,
+        "y": 1070,
+        "width": 157,
+        "height": 184
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 149,
+        "height": 164
+      },
+      "anchor": {
+        "x": 43.7368,
+        "y": 148
+      },
+      "normalizedAnchor": {
+        "x": 0.2786,
+        "y": 0.8043
+      },
+      "boundaryContact": 0,
+      "bodyPixels": 15271,
+      "weight": 1,
+      "tags": [
+        "mines",
+        "generic"
+      ],
+      "occlusion": "tall",
+      "collisionHint": "none"
+    }
+  ]
+}
