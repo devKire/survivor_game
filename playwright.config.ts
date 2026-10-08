@@ -8,7 +8,12 @@ export default defineConfig({
   expect: { timeout: 30000 },
   use: {
     baseURL: appUrl,
-    channel: "chrome",
+    channel: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+      ? undefined
+      : "chrome",
+    launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+      ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
+      : undefined,
     headless: true,
     viewport: { width: 1280, height: 800 },
     trace: "retain-on-failure",
@@ -28,7 +33,9 @@ export default defineConfig({
       timeout: 120000,
     },
     {
-      command: process.env.QA_ENEMIES ? "node --conditions=react-server --import tsx scripts/stability-realtime.ts" : "npm run realtime",
+      command: process.env.QA_ENEMIES
+        ? "node --conditions=react-server --import tsx scripts/stability-realtime.ts"
+        : "npm run realtime",
       url: `http://localhost:${realtimePort}/health`,
       env: {
         ...process.env,
