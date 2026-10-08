@@ -24,7 +24,7 @@ export const navigation = [
   ] },
 ] satisfies {id:string;label:string;items:{label:string;href:string;description:string;public?:boolean}[]}[];
 
-const paths = new Set(["/", "/solo", "/team", "/offline", "/account", "/shop", "/collection", "/obelisk", "/arena", "/echoes", "/ranked"]);
+const paths = new Set(["/", "/solo", "/team", "/offline", "/account", "/shop", "/collection", "/obelisk", "/arena", "/echoes", "/ranked", "/rpg/character", "/rpg/inventory"]);
 /** Exact internal allowlist; never accept protocol-relative URLs or encoded paths. */
 export function safeCallback(value: unknown): string {
   if (typeof value !== "string" || /[\\\u0000-\u0020]/.test(value)) return "/";
