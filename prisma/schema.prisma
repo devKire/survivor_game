@@ -87,6 +87,9 @@ model RpgItemInstance {
   rarity              String
   level               Int           @default(1)
   quantity            Int           @default(1)
+  contentVersion      Int           @default(1)
+  rollSeed            String?
+  affixes             Json          @default("[]")
   equippedCharacterId String?
   equippedSlot        String?
   createdAt           DateTime      @default(now())
