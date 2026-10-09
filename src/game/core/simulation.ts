@@ -50,9 +50,12 @@ import { validateRunSnapshot } from "./save";
 import { applyStatus, hasStatus } from "./status";
 import type * as T from "./types";
 import { World } from "./world";
+import type { CombatContext } from "./rpg/combat-types";
 export const DEBUG = process.env.NODE_ENV !== "production";
 export const VERSION = "2.0.0";
 export class GameSimulation {
+  protected combatKind: CombatContext["kind"] = "SURVIVOR";
+  get isRpgExpedition() { return this.combatKind === "RPG_EXPEDITION"; }
   playersForWorld(): Player[] {
     return this.player ? [this.player] : [];
   }
@@ -191,6 +194,7 @@ export class GameSimulation {
     mapId: string = this.save.selectedMap,
     seed: string | null = null,
     expeditionLength = this.save.selectedExpeditionLength || 1800,
+    context: CombatContext = { kind: "SURVIVOR" },
   ) {
     if (!Object.hasOwn(CHARACTER_DEFINITIONS, character)) character = "nara";
     if (!this.save.unlocked.includes(character)) character = "nara";
@@ -203,7 +207,9 @@ export class GameSimulation {
     this.expeditionProfile = getExpeditionProfile(expeditionLength);
     this.clockRate = this.modeDef.clockRate;
 
-    this.player = new Player(character, this.save.upgrades);
+    const player = new Player(character, this.save.upgrades, "PVE", context);
+    this.combatKind = context.kind;
+    this.player = player;
     this.player.cosmetics = this.save.cosmetics;
     this.player.weapons.push(
       new Weapon(CHARACTER_DEFINITIONS[character].weapon),
@@ -267,11 +273,13 @@ export class GameSimulation {
     this.hitstop = 0;
     this.world.update();
 
-    this.save.selected = character;
-    this.save.selectedMap = mapId;
-    if (!this.save.discovered.maps.includes(mapId))
-      this.save.discovered.maps.push(mapId);
-    this.persist();
+    if (!this.isRpgExpedition) {
+      this.save.selected = character;
+      this.save.selectedMap = mapId;
+      if (!this.save.discovered.maps.includes(mapId))
+        this.save.discovered.maps.push(mapId);
+      this.persist();
+    }
 
     this.ui.hide();
     this.ui.hud(true);
@@ -333,6 +341,7 @@ export class GameSimulation {
   }
 
   serializeRun(): T.RunSnapshot | null {
+    if (this.isRpgExpedition) return null; // RPG builds never enter local/CloudSolo saves.
     if (!this.run || !this.player || this.run.settled) return null;
     const p = this.player;
     const enemies = this.enemies
@@ -475,6 +484,7 @@ export class GameSimulation {
   }
 
   continueRun() {
+    this.combatKind = "SURVIVOR";
     const s = this.save.activeRun;
     this.active = true;
     if (!validateRunSnapshot(s, false)) {
@@ -2546,6 +2556,7 @@ export class GameSimulation {
   }
 
   checkAchievements() {
+    if (this.isRpgExpedition) return;
     if (this.mode === "test") return;
     let changed = false;
 
@@ -2598,7 +2609,7 @@ export class GameSimulation {
         (this.run.completed ? 10000 : 0),
     );
 
-    if (this.modeDef.savesProgress) {
+    if (this.modeDef.savesProgress && !this.isRpgExpedition) {
       this.save.activeRun = null;
       this.save.gems = balanceAfter(this.save.gems, gemsReward);
       this.save.gold = balanceAfter(this.save.gold, completionGold(this.run.completed, this.run.expeditionLength));

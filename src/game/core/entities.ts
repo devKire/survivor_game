@@ -5,13 +5,27 @@ import { ATTACKS } from "./attacks";
 import { clamp, xpNeed } from "./math";
 import type { GameSimulation } from "./simulation";
 import type * as T from "./types";
+import type { CombatContext } from "./rpg/combat-types";
+import { validateCombatLoadout } from "./rpg/loadout";
+import { compileCombatModifiers, resolveCompiledCombatStats, type CompiledCombatModifiers } from "./rpg/stat-resolver";
 export class Player {
   cosmetics: Record<string,string> = {};
+  private readonly rpgModifiers?: CompiledCombatModifiers;
+  private readonly rpgCharacter?: string;
   constructor(
     character: string,
     readonly meta: Record<string, number> = {},
     readonly ruleset: "PVE" | "PVP" = "PVE",
+    context: CombatContext = { kind: "SURVIVOR" },
   ) {
+    if ((ruleset === "PVP" && context.kind === "RPG_EXPEDITION") || (context.kind === "PVP" && ruleset !== "PVP"))
+      throw new Error("Contexto RPG não permitido no PvP.");
+    if (context.kind === "RPG_EXPEDITION") {
+      const loadout = validateCombatLoadout(context.loadout);
+      if (loadout.characterId !== character) throw new Error("Build de outro personagem.");
+      this.rpgCharacter = character;
+      this.rpgModifiers = compileCombatModifiers(loadout.modifiers);
+    }
     this.character = character;
     this.x = 0;
     this.y = 0;
@@ -65,8 +79,6 @@ export class Player {
         (c === "ivo" ? 0.85 : 1),
     );
 
-    this.health = clamp(this.health + this.maxHealth - old, 0, this.maxHealth);
-
     this.speed =
       195 *
       (1 + 0.07 * p("speed") + 0.01 * (m("speed") + m("stride"))) *
@@ -95,6 +107,19 @@ export class Player {
       recovery:
         0.25 * p("recovery") + m("recovery") + (c === "orin" ? 0.3 : 0),
     };
+    if (this.rpgModifiers) {
+      if (this.ruleset === "PVP" || this.character !== this.rpgCharacter) throw new Error("Contexto de combate RPG incompatível.");
+      const { maxHealth, speed, armor, ...stats } = resolveCompiledCombatStats(
+        { ...this.stats, maxHealth: this.maxHealth, speed: this.speed, armor: this.armor },
+        this.rpgModifiers,
+      );
+      this.maxHealth = maxHealth;
+      this.speed = speed;
+      this.armor = armor;
+      this.stats = stats;
+    }
+    // Apply the health delta only after all max-health contributions are known.
+    this.health = clamp(this.health + this.maxHealth - old, 0, this.maxHealth);
   }
 
   character!: string;
