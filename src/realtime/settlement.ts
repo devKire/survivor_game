@@ -4,6 +4,8 @@ import { json } from "../server/progress";
 import { ACHIEVEMENTS } from "../game/content/catalog";
 import type { CoopSimulation } from "../game/core/coop";
 export async function settle(sessionId: string, g: CoopSimulation) {
+  // Phase 2 sessions are internal, reward-free simulations. Never settle them as Survivor.
+  if (g.isRpgExpedition) throw new Error("Expedição RPG sem fonte de recompensa autorizada.");
   return economyTransaction(
     async (tx) => {
       const claimed = await tx.gameSession.updateMany({
