@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { randomUUID } from "node:crypto";
 import { notFound } from "next/navigation";
-import { RPG_ITEMS, RPG_MATERIALS } from "../../../game/content/rpg";
+import { RPG_MATERIALS } from "../../../game/content/rpg";
+import { rpgPresentation } from "../../../server/rpg/presentation";
+import EquipmentInventory from "./EquipmentInventory";
 import { isRpgEnabled } from "../../../server/env";
 import { requirePageUser } from "../../../server/hub";
 import { rpgProfileData } from "../../../server/rpg";
@@ -11,6 +14,7 @@ export default async function Page() {
   if (!isRpgEnabled()) notFound();
   const user = await requirePageUser("/rpg/inventory");
   const profile = await rpgProfileData(user.id);
+  const presentation = rpgPresentation(profile);
   return (
     <main className="account-shell rpg-page">
       <p className="eyebrow">RPG</p>
@@ -21,27 +25,16 @@ export default async function Page() {
       <nav className="actions">
         <Link href="/rpg/character">Ver personagens RPG</Link>
       </nav>
-      <section>
-        <h2>Itens</h2>
-        {profile.items.length === 0 ? (
-          <p className="muted">Nenhum item RPG.</p>
-        ) : (
-          <div className="cards">
-            {profile.items.map((item) => (
-              <article className="card" key={item.id}>
-                <h3>
-                  {RPG_ITEMS[item.itemId as keyof typeof RPG_ITEMS]?.name ??
-                    item.itemId}
-                </h3>
-                <p>
-                  {item.rarity} · nível {item.level} · quantidade{" "}
-                  {item.quantity}
-                </p>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
+      <EquipmentInventory
+        key={profile.revision}
+        {...presentation}
+        activeCharacter={
+          profile.characters.find((c) => c.id === profile.activeCharacterId)!
+            .characterId
+        }
+        revision={profile.revision}
+        requestId={randomUUID()}
+      />
       <section>
         <h2>Materiais</h2>
         {profile.materials.length === 0 ? (

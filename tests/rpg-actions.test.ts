@@ -4,10 +4,12 @@ import { requireUser } from "../src/server/auth";
 import {
   allocateRpgAttributes,
   selectRpgCharacter,
+  mutateRpgEquipment,
 } from "../src/server/rpg/mutations";
 import {
   allocateRpgAttributesAction,
   selectRpgCharacterAction,
+  mutateRpgEquipmentAction,
 } from "../src/server/rpg/actions";
 import { loginHref, safeCallback } from "../src/app/hub/navigation";
 import { randomUUID } from "node:crypto";
@@ -22,9 +24,14 @@ vi.mock("../src/server/rpg/mutations", async (original) => ({
   ...(await original<object>()),
   selectRpgCharacter: vi.fn(),
   allocateRpgAttributes: vi.fn(),
+  mutateRpgEquipment: vi.fn(),
 }));
 const idle = { status: "idle", message: "" } as const;
-const actions = [selectRpgCharacterAction, allocateRpgAttributesAction];
+const actions = [
+  selectRpgCharacterAction,
+  allocateRpgAttributesAction,
+  mutateRpgEquipmentAction,
+];
 function form(allocation = false) {
   const value = new FormData();
   value.set("requestId", randomUUID());
@@ -66,6 +73,7 @@ describe("RPG Server Action security", () => {
     expect(requireUser).not.toHaveBeenCalled();
     expect(selectRpgCharacter).not.toHaveBeenCalled();
     expect(allocateRpgAttributes).not.toHaveBeenCalled();
+    expect(mutateRpgEquipment).not.toHaveBeenCalled();
   });
   it("rejects unauthenticated calls before mutations", async () => {
     vi.mocked(requireUser).mockRejectedValue(
@@ -159,5 +167,58 @@ describe("RPG Server Action security", () => {
       "/rpg/character\\evil",
     ])
       expect(safeCallback(path)).toBe("/");
+  });
+  it("equipment actions accept only intent and derive ownership from authentication", async () => {
+    vi.mocked(mutateRpgEquipment).mockResolvedValue({
+      revision: 2,
+      characterId: "nara",
+    });
+    const value = form();
+    value.set("operation", "EQUIP_ITEM");
+    value.set("instanceId", "owned-instance");
+    value.set("slot", "WEAPON");
+    expect((await mutateRpgEquipmentAction(idle, value)).status).toBe(
+      "success",
+    );
+    expect(mutateRpgEquipment).toHaveBeenCalledWith(
+      "authenticated-owner",
+      expect.objectContaining({
+        instanceId: "owned-instance",
+        operation: "EQUIP_ITEM",
+      }),
+    );
+    vi.mocked(mutateRpgEquipment).mockClear();
+    for (const key of [
+      "userId",
+      "affixes",
+      "rollSeed",
+      "contentVersion",
+      "stats",
+      "rarity",
+      "level",
+    ]) {
+      value.set(key, "forged");
+      expect((await mutateRpgEquipmentAction(idle, value)).status).toBe(
+        "error",
+      );
+      value.delete(key);
+    }
+    value.append("slot", "ARMOR");
+    expect((await mutateRpgEquipmentAction(idle, value)).status).toBe("error");
+    expect(mutateRpgEquipment).not.toHaveBeenCalled();
+    value.delete("slot");
+    value.set("slot", "WEAPON");
+    vi.mocked(mutateRpgEquipment).mockRejectedValue(
+      new UserError("O perfil RPG mudou em outra aba. Atualize a página."),
+    );
+    expect((await mutateRpgEquipmentAction(idle, value)).message).toContain(
+      "outra aba",
+    );
+    vi.mocked(mutateRpgEquipment).mockRejectedValue(
+      new Error("postgresql://sensitive-host"),
+    );
+    expect((await mutateRpgEquipmentAction(idle, value)).message).not.toContain(
+      "sensitive-host",
+    );
   });
 });
