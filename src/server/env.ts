@@ -13,6 +13,13 @@ export function isRpgEnabled() {
   return process.env.RPG_ENABLED?.trim().toLowerCase() === "true";
 }
 
+export function isRpgExpeditionsEnabled() {
+  return (
+    isRpgEnabled() &&
+    process.env.RPG_EXPEDITIONS_ENABLED?.trim().toLowerCase() === "true"
+  );
+}
+
 export function getDatabaseUrl() {
   const value = process.env.DATABASE_URL?.trim();
   if (!value)
