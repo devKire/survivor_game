@@ -14,6 +14,8 @@ import { migrateSave } from "../game/core/save";
 import { CoopSimulation } from "../game/core/coop";
 import { SnapshotStream } from "./snapshots";
 import { settle } from "./settlement";
+import { createAuthorizedRpgSimulation, settleAuthorizedRpgSimulation } from "./rpg-expeditions";
+import { interruptLostRpgExpeditions, recoverRpgRewards } from "../server/rpg/expedition-recovery";
 import { UserError } from "../server/security";
 import {
   getRealtimeOrigin,
@@ -158,7 +160,7 @@ async function sync(c: Connection) {
     if (room && room.game.reconnect(c.userId)) {
       c.room = room.id;
       c.full = true;
-      send(c, { type: "STARTED", room: room.id });
+      send(c, { type: "STARTED", room: room.id, expeditionKind: room.game.isRpgExpedition ? "RPG_EXPEDITION" : "SURVIVOR" });
     }
   }
   for (const peer of connections)
@@ -325,7 +327,7 @@ wss.on("connection", (ws) => {
           c.userId,
           v.type === "READY"
             ? { ready: v.ready }
-            : { character: v.character, mapId: v.mapId, mode: v.mode, duration: v.duration },
+            : { character: v.character, mapId: v.mapId, mode: v.mode, duration: v.duration, expeditionKind: v.expeditionKind },
         );
         await refreshTeam(team.id);
       }
@@ -348,7 +350,7 @@ wss.on("connection", (ws) => {
             progress: migrateSave((await progress(m.userId)).data),
           })),
         );
-        const game = new CoopSimulation(
+        const game = session.expeditionKind === "RPG_EXPEDITION" ? await createAuthorizedRpgSimulation(session.id) : new CoopSimulation(
           players,
           session.mode,
           session.mapId,
@@ -372,7 +374,7 @@ wss.on("connection", (ws) => {
             peer.room = r.id;
             peer.full = true;
             peer.stream = new SnapshotStream();
-            send(peer, { type: "STARTED", room: r.id });
+            send(peer, { type: "STARTED", room: r.id, expeditionKind: session.expeditionKind });
             for (const friend of connections)
               if (friend.friends.has(peer.userId))
                 send(friend, {
@@ -518,14 +520,15 @@ const interval = setInterval(() => {
       Date.now() > (room.retryAfter || 0)
     ) {
       room.settling = true;
-      void settle(room.id, room.game)
-        .then(() => {
+      void (room.game.isRpgExpedition ? settleAuthorizedRpgSimulation(room.id, room.game) : settle(room.id, room.game))
+        .then((status) => {
           room.endedAt = Date.now();
           void refreshTeam(room.teamId).catch(() => {});
           for (const c of connections)
             if (c.room === room.id) {
               send(c, {
                 type: "RESULT",
+                ...(room.game.isRpgExpedition ? { expeditionKind: "RPG_EXPEDITION", sessionId: room.id, rewardStatus: status } : {}),
                 completed: room.game.run.completed,
                 kills: room.game.run.kills,
                 time: room.game.run.time,
@@ -563,6 +566,7 @@ const maintenance = setInterval(async () => {
           c.ws.close(4401, "Sessão expirada.");
       }
     }
+    await recoverRpgRewards(sessionId => console.error("RPG reward recovery pending", sessionId));
   } catch {
     for (const c of connections)
       c.ws.close(1013, "Sessão temporariamente indisponível.");
@@ -570,14 +574,16 @@ const maintenance = setInterval(async () => {
     maintaining = false;
   }
 }, 10000);
+await interruptLostRpgExpeditions();
 await db().gameSession.updateMany({
-  where: { status: "RUNNING" },
+  where: { status: "RUNNING", expeditionKind: "SURVIVOR" },
   data: { status: "INTERRUPTED", endedAt: new Date() },
 });
 await db().team.updateMany({
-  where: { status: "RUNNING" },
+  where: { status: "RUNNING", games: { none: { rpgExpedition: { status: "TERMINAL" } } } },
   data: { status: "LOBBY" },
 });
+await recoverRpgRewards(sessionId => console.error("RPG reward recovery pending", sessionId));
 await arena.initialize();
 server.listen(port, "0.0.0.0", () =>
   console.log(`LIMIAR realtime · ${TICK_HZ} Hz · snapshots ${SNAPSHOT_HZ} Hz`),

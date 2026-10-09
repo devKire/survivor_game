@@ -24,6 +24,10 @@ import { settleRpgExpedition } from "../src/server/rpg/rewards";
 import { rpgTransaction } from "../src/server/rpg/transaction";
 import { rpgProfileData } from "../src/server/rpg/profile";
 import { rewardHash } from "../src/server/rpg/reward-integrity";
+import {
+  interruptLostRpgExpeditions,
+  recoverRpgRewards,
+} from "../src/server/rpg/expedition-recovery";
 
 const users: string[] = [],
   teams: string[] = [],
@@ -335,6 +339,43 @@ describe.skipIf(process.env.RUN_DATABASE_TESTS !== "1")(
       expect(
         await db().rpgExpeditionParticipant.count({ where: { userId } }),
       ).toBe(0);
+    });
+    it("interrupts lost running simulations but recovers durable terminals after rollout is reenabled", async () => {
+      const lost = await authorized(),
+        pending = await authorized();
+      await persistRpgTerminal(pending.sessionId, terminal(pending.ids));
+      vi.stubEnv("RPG_EXPEDITIONS_ENABLED", "false");
+      await interruptLostRpgExpeditions();
+      await recoverRpgRewards();
+      expect(
+        (
+          await db().rpgExpeditionSession.findUniqueOrThrow({
+            where: { sessionId: lost.sessionId },
+          })
+        ).status,
+      ).toBe("INTERRUPTED");
+      expect(
+        (
+          await db().rpgExpeditionSession.findUniqueOrThrow({
+            where: { sessionId: pending.sessionId },
+          })
+        ).status,
+      ).toBe("TERMINAL");
+      expect(
+        await db().rpgRewardReceipt.count({
+          where: { sessionId: { in: [lost.sessionId, pending.sessionId] } },
+        }),
+      ).toBe(0);
+      vi.stubEnv("RPG_EXPEDITIONS_ENABLED", "true");
+      await recoverRpgRewards();
+      expect(
+        await db().rpgRewardReceipt.count({
+          where: { sessionId: pending.sessionId },
+        }),
+      ).toBe(1);
+      await expect(settleRpgExpedition(lost.sessionId)).rejects.toThrow(
+        "unavailable",
+      );
     });
   },
 );
