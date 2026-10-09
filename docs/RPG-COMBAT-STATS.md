@@ -28,3 +28,21 @@ Os caps limitam a contribuição RPG sobre as estatísticas já calculadas pelo 
 | will | +0,005 HP/s recovery e +0,01 armor |
 
 Não há alteração de raio de colisão, bônus dos personagens ou armas iniciais. A ficha usa `previewRpgBuild`: base, base com atributos e resultado com equipamento, todos pelo mesmo resolver. Os números são uma estimativa da futura sessão RPG; o nível da run continua temporário e independente.
+
+## Medição inicial de balanceamento
+
+O teste determinístico com projétil Ember e colisão real mediu dano relativo
+1,00 no Survivor, 1,01 com cinco pontos em poder e 1,05 acrescentando Lâmina
+Gasta. Repetir o recálculo não acumula esse ganho. Quatro personagens preservam
+armas iniciais, passivas, evoluções e raio de colisão.
+
+O benchmark `scripts/rpg-benchmark.ts` usa Orin, nível RPG 100, 99 pontos em cada
+atributo e três lendários tier 3. A seed `benchmark-v1` produziu dano 1,278,
+cooldown 0,9195 e crítico 0,1405. Com crítico 1,8× do motor, a estimativa de DPS
+direto é 1,464× a base; área e duração dependem de arma e posicionamento, não
+estão incluídas nessa estimativa. Nenhum projétil permanente é acrescentado.
+
+Esses caps são conservadores para a primeira integração e não representam uma
+validação de balanceamento de todas as armas ou da futura economia de loot.
+Antes de expedições públicas, medir também combinações de evoluções, densidade
+de alvos e duração longa. Não compensar isso alterando o Survivor clássico.

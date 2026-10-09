@@ -1,0 +1,325 @@
+{
+  "node": "v22.23.3",
+  "players": 5,
+  "initialEnemies": 1100,
+  "seed": "RPG-LOAD-TEST",
+  "rounds": [
+    {
+      "classic": {
+        "updateMs": {
+          "mean": 2.2432382533333293,
+          "median": 2.0140650000003006,
+          "p95": 3.7024549999996452,
+          "max": 5.539912000000186
+        },
+        "withSnapshotsMs": {
+          "mean": 4.3223751233333045,
+          "median": 2.632343000000219,
+          "p95": 9.367576000000554,
+          "max": 15.486018000000513
+        },
+        "snapshotBytes": {
+          "mean": 40321.94925373134,
+          "median": 39307,
+          "p95": 56959,
+          "max": 123198
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      },
+      "empty": {
+        "updateMs": {
+          "mean": 2.168623849999955,
+          "median": 1.9423340000012104,
+          "p95": 3.596364999999423,
+          "max": 8.552778999999646
+        },
+        "withSnapshotsMs": {
+          "mean": 4.2336492899999545,
+          "median": 2.384942000000592,
+          "p95": 9.372973999999886,
+          "max": 13.953380999999354
+        },
+        "snapshotBytes": {
+          "mean": 40321.94925373134,
+          "median": 39307,
+          "p95": 56959,
+          "max": 123198
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      },
+      "rpg": {
+        "updateMs": {
+          "mean": 2.3794788499999595,
+          "median": 2.186572000000524,
+          "p95": 3.919141000000309,
+          "max": 5.855356000000029
+        },
+        "withSnapshotsMs": {
+          "mean": 4.495594716666668,
+          "median": 2.56293899999946,
+          "p95": 10.019227000000683,
+          "max": 15.447400000000926
+        },
+        "snapshotBytes": {
+          "mean": 42565.977611940296,
+          "median": 40688,
+          "p95": 60089,
+          "max": 123262
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      }
+    },
+    {
+      "classic": {
+        "updateMs": {
+          "mean": 2.1115483866666,
+          "median": 1.916863000000376,
+          "p95": 3.398479999999836,
+          "max": 6.230428999999276
+        },
+        "withSnapshotsMs": {
+          "mean": 4.087717343333328,
+          "median": 2.297043999999005,
+          "p95": 8.95867200000066,
+          "max": 12.913728999999876
+        },
+        "snapshotBytes": {
+          "mean": 40321.94925373134,
+          "median": 39307,
+          "p95": 56959,
+          "max": 123198
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      },
+      "empty": {
+        "updateMs": {
+          "mean": 2.0848665733333536,
+          "median": 1.907467999999426,
+          "p95": 3.3346440000004804,
+          "max": 4.791235000000597
+        },
+        "withSnapshotsMs": {
+          "mean": 4.0618336366666945,
+          "median": 2.405256999998528,
+          "p95": 8.93649799999912,
+          "max": 11.569958000000042
+        },
+        "snapshotBytes": {
+          "mean": 40321.94925373134,
+          "median": 39307,
+          "p95": 56959,
+          "max": 123198
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      },
+      "rpg": {
+        "updateMs": {
+          "mean": 2.4851459800000155,
+          "median": 2.267834000000221,
+          "p95": 3.773431999999957,
+          "max": 7.770019999999931
+        },
+        "withSnapshotsMs": {
+          "mean": 4.614069840000011,
+          "median": 2.637060000000929,
+          "p95": 10.40859300000011,
+          "max": 15.268951000000015
+        },
+        "snapshotBytes": {
+          "mean": 42565.977611940296,
+          "median": 40688,
+          "p95": 60089,
+          "max": 123262
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      }
+    },
+    {
+      "classic": {
+        "updateMs": {
+          "mean": 2.0872044733332222,
+          "median": 1.8886940000011236,
+          "p95": 3.358968000000459,
+          "max": 7.559742000001279
+        },
+        "withSnapshotsMs": {
+          "mean": 4.0595959199999925,
+          "median": 2.248515999999654,
+          "p95": 9.032719999999244,
+          "max": 11.64310100000148
+        },
+        "snapshotBytes": {
+          "mean": 40321.94925373134,
+          "median": 39307,
+          "p95": 56959,
+          "max": 123198
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      },
+      "empty": {
+        "updateMs": {
+          "mean": 2.178867193333414,
+          "median": 1.997576999998273,
+          "p95": 3.4757839999983844,
+          "max": 6.446576000002096
+        },
+        "withSnapshotsMs": {
+          "mean": 4.147705430000072,
+          "median": 2.4357880000025034,
+          "p95": 8.864577000000281,
+          "max": 13.573657000000821
+        },
+        "snapshotBytes": {
+          "mean": 40321.94925373134,
+          "median": 39307,
+          "p95": 56959,
+          "max": 123198
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      },
+      "rpg": {
+        "updateMs": {
+          "mean": 2.1952568399999897,
+          "median": 2.0398710000008577,
+          "p95": 3.402704000000085,
+          "max": 8.610333999997238
+        },
+        "withSnapshotsMs": {
+          "mean": 4.379248653333319,
+          "median": 2.330798999999388,
+          "p95": 9.849679999999353,
+          "max": 13.96078000000125
+        },
+        "snapshotBytes": {
+          "mean": 42565.977611940296,
+          "median": 40688,
+          "p95": 60089,
+          "max": 123262
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      }
+    },
+    {
+      "classic": {
+        "updateMs": {
+          "mean": 2.128441036666627,
+          "median": 1.9082829999970272,
+          "p95": 3.3325670000012906,
+          "max": 8.224311000001762
+        },
+        "withSnapshotsMs": {
+          "mean": 4.129026063333319,
+          "median": 2.4779809999999998,
+          "p95": 8.91219799999817,
+          "max": 14.44615899999917
+        },
+        "snapshotBytes": {
+          "mean": 40321.94925373134,
+          "median": 39307,
+          "p95": 56959,
+          "max": 123198
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      },
+      "empty": {
+        "updateMs": {
+          "mean": 2.325144323333225,
+          "median": 2.018509000001359,
+          "p95": 4.142276999999012,
+          "max": 11.876619999999093
+        },
+        "withSnapshotsMs": {
+          "mean": 4.522393436666583,
+          "median": 2.5547960000003513,
+          "p95": 10.083341000001383,
+          "max": 24.44883000000118
+        },
+        "snapshotBytes": {
+          "mean": 40321.94925373134,
+          "median": 39307,
+          "p95": 56959,
+          "max": 123198
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      },
+      "rpg": {
+        "updateMs": {
+          "mean": 2.7587304966668067,
+          "median": 2.296918000000005,
+          "p95": 5.665303999998287,
+          "max": 17.45379800000228
+        },
+        "withSnapshotsMs": {
+          "mean": 5.489254343333329,
+          "median": 2.8474370000003546,
+          "p95": 13.56611399999747,
+          "max": 32.903518000002805
+        },
+        "snapshotBytes": {
+          "mean": 42565.977611940296,
+          "median": 40688,
+          "p95": 60089,
+          "max": 123262
+        },
+        "peakEnemies": 1100,
+        "remainingEnemies": 1100,
+        "measuredTicks": 300
+      }
+    }
+  ],
+  "recalculateMeanMs": {
+    "classic": 0.0026477052999998706,
+    "rpg": 0.0033870684000001346
+  },
+  "balance": {
+    "classic": {
+      "damage": 1,
+      "area": 1.2,
+      "cooldown": 1,
+      "duration": 1,
+      "amount": 0,
+      "pickupRange": 76,
+      "growth": 1,
+      "luck": 1,
+      "critChance": 0.07,
+      "recovery": 0.3
+    },
+    "rpg": {
+      "damage": 1.278,
+      "area": 1.2395999999999998,
+      "cooldown": 0.9195,
+      "duration": 1.139,
+      "amount": 0,
+      "pickupRange": 80,
+      "growth": 1,
+      "luck": 1,
+      "critChance": 0.1405,
+      "recovery": 1.055
+    },
+    "directDamageRatio": 1.278,
+    "attackRateRatio": 1.0875475802066341,
+    "expectedDirectDpsRatio": 1.4641183449503188
+  }
+}
