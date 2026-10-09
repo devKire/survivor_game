@@ -1,11 +1,14 @@
 import { randomUUID } from "node:crypto";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { RPG_CHARACTERS } from "../../../game/content/rpg";
+import { RPG_CHARACTERS, RPG_ITEMS } from "../../../game/content/rpg";
 import { isRpgEnabled } from "../../../server/env";
 import { requirePageUser } from "../../../server/hub";
 import { rpgProfileData } from "../../../server/rpg";
-import { RPG_ATTRIBUTE_KEYS } from "../../../game/core/rpg";
+import { RPG_ATTRIBUTE_KEYS, RPG_ITEM_SLOTS } from "../../../game/core/rpg";
+import { rpgPresentation } from "../../../server/rpg/presentation";
+import { StatsPreview } from "../StatsPreview";
+import { slotLabels } from "../presentation";
 import CharacterForm from "./CharacterForms";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +17,7 @@ export default async function Page() {
   if (!isRpgEnabled()) notFound();
   const user = await requirePageUser("/rpg/character");
   const profile = await rpgProfileData(user.id);
+  const presentation = rpgPresentation(profile);
   const active = profile.characters.find(
     (character) => character.id === profile.activeCharacterId,
   );
@@ -35,6 +39,9 @@ export default async function Page() {
               character.characterId as keyof typeof RPG_CHARACTERS
             ];
           const selected = active?.id === character.id;
+          const build = presentation.characters.find(
+            (c) => c.characterId === character.characterId,
+          )!;
           return (
             <article className="card" key={character.id}>
               <p className="eyebrow">{definition.archetype}</p>
@@ -75,6 +82,28 @@ export default async function Page() {
                 requestId={randomUUID()}
                 points={character.attributePoints}
               />
+              <h3>Prévia de combate RPG</h3>
+              <StatsPreview base={build.base} loadout={build.loadout} />
+              <h3>Equipamentos</h3>
+              <ul>
+                {RPG_ITEM_SLOTS.map((slot) => {
+                  const item = presentation.items.find(
+                    (i) =>
+                      i.equippedCharacter === character.characterId &&
+                      i.equippedSlot === slot,
+                  );
+                  return (
+                    <li key={slot}>
+                      {slotLabels[slot]}:{" "}
+                      {item
+                        ? (RPG_ITEMS[item.itemId as keyof typeof RPG_ITEMS]
+                            ?.name ?? item.itemId)
+                        : "Slot vazio"}
+                    </li>
+                  );
+                })}
+              </ul>
+              <Link href="/rpg/inventory">Gerenciar equipamentos</Link>
             </article>
           );
         })}
