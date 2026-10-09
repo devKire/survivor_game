@@ -8,11 +8,13 @@ import {
   RPG_ATTRIBUTE_KEYS,
   RPG_ATTRIBUTE_MAX,
   rpgAttributesSchema,
+  RPG_ITEM_SLOTS,
 } from "../../game/core/rpg";
 import { UserError } from "../security";
 import { ensureRpgProfile } from "./profile";
 import { requireRpgEnabled } from "./guard";
 import { lockRpgAccount, rpgTransaction } from "./transaction";
+import { applyEquipmentIntent } from "./equipment";
 
 const characterId = z.enum(
   Object.keys(RPG_CHARACTERS) as [
@@ -33,16 +35,38 @@ export const allocateAttributesInput = z
     amount: z.number().int().min(1).max(RPG_ATTRIBUTE_MAX),
   })
   .strict();
+const equipmentFields = {
+  ...common,
+  instanceId: z.string().min(1).max(100),
+  slot: z.enum(RPG_ITEM_SLOTS),
+};
+export const equipmentCommandInput = z.discriminatedUnion("operation", [
+  z.object({ ...equipmentFields, operation: z.literal("EQUIP_ITEM") }).strict(),
+  z
+    .object({ ...equipmentFields, operation: z.literal("UNEQUIP_ITEM") })
+    .strict(),
+  z
+    .object({
+      ...equipmentFields,
+      operation: z.literal("REPLACE_EQUIPMENT"),
+      expectedEquippedItemId: z.string().min(1).max(100),
+    })
+    .strict(),
+]);
 const resultSchema = z
   .object({ revision: z.number().int().positive(), characterId })
   .strict();
 type Command =
   | z.infer<typeof selectCharacterInput>
-  | z.infer<typeof allocateAttributesInput>;
+  | z.infer<typeof allocateAttributesInput>
+  | z.infer<typeof equipmentCommandInput>;
 
 async function mutate(
   userId: string,
-  operation: "select-character" | "allocate-attributes",
+  operation:
+    | "select-character"
+    | "allocate-attributes"
+    | z.infer<typeof equipmentCommandInput>["operation"],
   value: Command,
 ) {
   // Parsed schemas canonically order fields; preserve Phase 1 selection fingerprints.
@@ -72,6 +96,8 @@ async function mutate(
     const character = await tx.rpgCharacter.findUniqueOrThrow({
       where: { userId_characterId: { userId, characterId: value.characterId } },
     });
+    if ("operation" in value)
+      await applyEquipmentIntent(tx, userId, character, value);
     if (operation === "allocate-attributes" && "attribute" in value) {
       const attributes = rpgAttributesSchema.parse(character.attributes);
       let allocation;
@@ -139,4 +165,11 @@ export async function allocateRpgAttributes(userId: string, input: unknown) {
     "allocate-attributes",
     allocateAttributesInput.parse(input),
   );
+}
+
+/** Internal server API. Actions supply the session user, never a client userId. */
+export async function mutateRpgEquipment(userId: string, input: unknown) {
+  requireRpgEnabled();
+  const value = equipmentCommandInput.parse(input);
+  return mutate(userId, value.operation, value);
 }

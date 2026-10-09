@@ -21,4 +21,13 @@ O perfil nasce sob demanda a partir do `UserProgress` atual. Cada personagem des
 
 A Fase 1.5 fortalece constraints, concorrência, replay e validação; adiciona atributos persistentes com orçamento derivável do nível e uma intenção autenticada de alocação. Também separa leitura consistente de inicialização lazy. Não conecta atributos ao combate nem cria fontes de XP ou recursos. A migração altera apenas tabelas RPG e preserva todos os saves, moedas e versões existentes.
 
+## Limite da Fase 2
+
+Equipamentos e atributos passam a modificar o motor somente no contexto explícito
+RPG_EXPEDITION, exercitado em harness interno sem recompensas. Nenhum modo público
+é convertido em RPG. SAVE_SCHEMA=3, ECONOMY_VERSION=2, RunState, RunSnapshot,
+protocolos, mundo procedural, Survivor e PvP mantêm seus contratos. As novas
+actions alteram exclusivamente o perfil RPG. Ver [RPG-PHASE2-QA.md](RPG-PHASE2-QA.md)
+para auditoria, migração e resultados reais, inclusive falhas e limites conhecidos.
+
 Os testes de compatibilidade incluem save/restore real do Survivor, inventário de quatro slots, seed/worldVersion, XP temporário e cálculos PvP antes/depois de alocação RPG. Integração real exercita importação local/CloudSolo sem grants e transações econômicas paralelas. O relatório de execução é [RPG-HARDENING.md](RPG-HARDENING.md).

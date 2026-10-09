@@ -9,6 +9,8 @@ import {
   allocateRpgAttributes,
   selectCharacterInput,
   selectRpgCharacter,
+  equipmentCommandInput,
+  mutateRpgEquipment,
 } from "./mutations";
 import { requireRpgEnabled } from "./guard";
 
@@ -48,21 +50,30 @@ function formInput(form: FormData) {
 
 async function runAction(
   form: FormData,
-  allocation: boolean,
+  kind: "select" | "allocate" | "equipment",
 ): Promise<RpgActionState> {
   try {
     requireRpgEnabled();
     const user = await requireUser();
-    const input = allocation
-      ? allocateAttributesInput.parse(formInput(form))
-      : selectCharacterInput.parse(formInput(form));
+    const input =
+      kind === "equipment"
+        ? equipmentCommandInput.parse(formInput(form))
+        : kind === "allocate"
+          ? allocateAttributesInput.parse(formInput(form))
+          : selectCharacterInput.parse(formInput(form));
     await limit("rpg:" + user.id, 30);
-    if (allocation) await allocateRpgAttributes(user.id, input);
+    if (kind === "equipment") await mutateRpgEquipment(user.id, input);
+    else if (kind === "allocate") await allocateRpgAttributes(user.id, input);
     else await selectRpgCharacter(user.id, input);
     revalidatePath("/rpg", "layout");
     return {
       status: "success",
-      message: allocation ? "Atributos salvos." : "Personagem selecionado.",
+      message:
+        kind === "equipment"
+          ? "Equipamentos salvos."
+          : kind === "allocate"
+            ? "Atributos salvos."
+            : "Personagem selecionado.",
     };
   } catch (error) {
     return {
@@ -81,12 +92,19 @@ export async function selectRpgCharacterAction(
   _previous: RpgActionState,
   form: FormData,
 ) {
-  return runAction(form, false);
+  return runAction(form, "select");
 }
 
 export async function allocateRpgAttributesAction(
   _previous: RpgActionState,
   form: FormData,
 ) {
-  return runAction(form, true);
+  return runAction(form, "allocate");
+}
+
+export async function mutateRpgEquipmentAction(
+  _previous: RpgActionState,
+  form: FormData,
+) {
+  return runAction(form, "equipment");
 }

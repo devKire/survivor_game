@@ -17,6 +17,10 @@ import type {
   Vec,
 } from "./types";
 import { removeAt } from "./math";
+import type { RpgCombatLoadout } from "./rpg/combat-types";
+export type CoopCombatContext =
+  | { readonly kind: "SURVIVOR" }
+  | { readonly kind: "RPG_EXPEDITION"; readonly loadouts: Readonly<Record<string, RpgCombatLoadout>> };
 export const COOP_SCALING = [
   { hp: 1, spawn: 1, cap: 1, elite: 1, boss: 1, formation: 1, xp: 1 },
   {
@@ -116,12 +120,19 @@ export class CoopSimulation extends GameSimulation {
     mapId: string,
     seed: string,
     expeditionLength = 1800,
+    context: CoopCombatContext = { kind: "SURVIVOR" },
   ) {
     if (players.length < 1 || players.length > 5)
       throw new Error("Equipe deve ter 1–5 jogadores.");
     super(freshSave());
     this.partySizeAtStart = players.length;
     super.start("nara", mode, mapId, seed, expeditionLength);
+    if (context.kind === "RPG_EXPEDITION") {
+      const ids = players.map(p => p.id);
+      if (new Set(ids).size !== ids.length || Object.keys(context.loadouts).length !== ids.length || ids.some(id => !Object.hasOwn(context.loadouts, id)))
+        throw new Error("Builds RPG não correspondem aos participantes.");
+      this.combatKind = "RPG_EXPEDITION";
+    }
     this.run.telemetry = telemetry(players.length);
     this.fx = 0;
     this.ui = {
@@ -146,7 +157,9 @@ export class CoopSimulation extends GameSimulation {
       levelup: () => {},
     };
     players.forEach((data, i) => {
-      const p = new Player(data.character, data.progress.upgrades);
+      const p = new Player(data.character, data.progress.upgrades, "PVE", context.kind === "RPG_EXPEDITION"
+        ? { kind: "RPG_EXPEDITION", loadout: context.loadouts[data.id] }
+        : { kind: "SURVIVOR" });
       p.cosmetics = data.progress.cosmetics;
       const w = new Weapon(CHARACTER_DEFINITIONS[data.character].weapon);
       w.ownerId = data.id;
