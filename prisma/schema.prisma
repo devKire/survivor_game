@@ -73,6 +73,7 @@ model RpgCharacter {
   profile       RpgProfile        @relation("RpgProfileCharacters", fields: [userId], references: [userId], onDelete: Cascade)
   activeFor     RpgProfile?       @relation("ActiveRpgCharacter")
   equippedItems RpgItemInstance[] @relation("RpgEquippedItems")
+  expeditions   RpgExpeditionParticipant[]
 
   @@unique([userId, characterId])
   @@unique([id, userId])
@@ -213,6 +214,7 @@ model Team {
   mapId     String        @default("ruins")
   mode      String        @default("normal")
   duration  Int           @default(1800)
+  expeditionKind String  @default("SURVIVOR")
   createdAt DateTime      @default(now())
   members   TeamMember[]
   messages  ChatMessage[]
@@ -263,13 +265,16 @@ model GameSession {
   mode      String
   duration  Int                 @default(1800)
   partySize Int
+  expeditionKind String         @default("SURVIVOR")
   status    String              @default("RUNNING")
   startedAt DateTime            @default(now())
   endedAt   DateTime?
   result    Json?
   team      Team                @relation(fields: [teamId], references: [id])
   members   GameSessionMember[]
+  rpgExpedition RpgExpeditionSession?
 
+  @@unique([id, expeditionKind])
   @@schema("limiar")
 }
 
@@ -282,9 +287,70 @@ model GameSessionMember {
   reward    Int         @default(0)
   survived  Boolean     @default(false)
   session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  user      User        @relation(fields: [userId], references: [id])
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rpgParticipant RpgExpeditionParticipant?
 
   @@unique([sessionId, userId])
+  @@unique([sessionId, userId, character])
+  @@schema("limiar")
+}
+
+model RpgExpeditionSession {
+  sessionId      String @id
+  expeditionKind String @default("RPG_EXPEDITION")
+  rewardVersion  Int    @default(1)
+  profileId      String @default("ruins-v1")
+  rewardSeed     String
+  status         String @default("RUNNING")
+  terminal       Json?
+  terminalHash   String?
+  terminalAt     DateTime?
+  settledAt      DateTime?
+  createdAt      DateTime @default(now())
+  session        GameSession @relation(fields: [sessionId, expeditionKind], references: [id, expeditionKind], onDelete: Cascade)
+  participants   RpgExpeditionParticipant[]
+
+  @@unique([sessionId, expeditionKind])
+  @@index([status, createdAt])
+  @@schema("limiar")
+}
+
+model RpgExpeditionParticipant {
+  sessionId      String
+  userId         String
+  characterId    String
+  entryRevision  Int
+  entryLevel     Int
+  loadout        Json
+  loadoutHash    String
+  eligibility    String @default("PENDING")
+  activeUserId   String? @unique
+  createdAt      DateTime @default(now())
+  session        RpgExpeditionSession @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+  member         GameSessionMember @relation(fields: [sessionId, userId, characterId], references: [sessionId, userId, character], onDelete: Cascade)
+  character      RpgCharacter @relation(fields: [userId, characterId], references: [userId, characterId], onDelete: Cascade)
+  receipt        RpgRewardReceipt?
+
+  @@id([sessionId, userId])
+  @@unique([sessionId, userId, characterId])
+  @@index([userId, createdAt, sessionId])
+  @@schema("limiar")
+}
+
+model RpgRewardReceipt {
+  sessionId      String
+  userId         String
+  characterId    String
+  xpGranted      Int
+  previousLevel  Int
+  newLevel       Int
+  pointsGranted  Int
+  result         Json
+  createdAt      DateTime @default(now())
+  participant    RpgExpeditionParticipant @relation(fields: [sessionId, userId, characterId], references: [sessionId, userId, characterId], onDelete: Cascade)
+
+  @@id([sessionId, userId])
+  @@unique([sessionId, userId, characterId])
   @@schema("limiar")
 }
 
