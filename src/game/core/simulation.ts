@@ -1652,6 +1652,7 @@ export class GameSimulation {
     }
   }
 
+  protected onEnemyDefeated(enemy: T.Enemy) { void enemy; }
   damageEnemy(
     e: T.Enemy,
     damage: number,
@@ -1806,6 +1807,7 @@ export class GameSimulation {
       const wasFrozen = hasStatus(e, "freeze");
       e.dead = true;
       this.run.kills++;
+      this.onEnemyDefeated(e);
       if (w) w.kills++;
       this.dropXP(e.x, e.y, e.xp);
 

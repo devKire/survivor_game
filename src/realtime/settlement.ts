@@ -9,7 +9,7 @@ export async function settle(sessionId: string, g: CoopSimulation) {
   return economyTransaction(
     async (tx) => {
       const claimed = await tx.gameSession.updateMany({
-        where: { id: sessionId, status: "RUNNING" },
+        where: { id: sessionId, status: "RUNNING", expeditionKind: "SURVIVOR" },
         data: {
           status: "COMPLETED",
           endedAt: new Date(),

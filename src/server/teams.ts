@@ -5,6 +5,9 @@ import { limit, UserError } from "./security";
 import { publicUser } from "./social";
 import { Prisma } from "../generated/prisma/client";
 import { EXPEDITION_LENGTHS } from "../game/content/catalog";
+import { requireRpgExpeditionsEnabled } from "./rpg/guard";
+import { initializeRpgExpedition } from "./rpg/expedition-entry";
+import { isRpgSerializationFailure } from "./rpg/transaction";
 export const MAX_PARTY = 5;
 const include = {
   members: {
@@ -20,19 +23,19 @@ export async function currentTeam(userId: string) {
 }
 async function transaction<T>(
   fn: (tx: Prisma.TransactionClient) => Promise<T>,
+  isolationLevel: "ReadCommitted" | "Serializable" = "ReadCommitted",
 ): Promise<T> {
   for (let i = 0; ; i++) {
     try {
       return await db().$transaction(fn, {
-        isolationLevel: "ReadCommitted",
+        isolationLevel,
         maxWait: 10000,
         timeout: 15000,
       });
     } catch (e) {
       if (
         i < 3 &&
-        e instanceof Prisma.PrismaClientKnownRequestError &&
-        e.code === "P2034"
+        isRpgSerializationFailure(e)
       )
         continue;
       throw e;
@@ -138,6 +141,7 @@ export async function leaveTeam(userId: string, kickId?: string) {
 export const lobbyChoice = z
   .object({
     ready: z.boolean().optional(),
+    expeditionKind: z.enum(["SURVIVOR", "RPG_EXPEDITION"]).optional(),
     character: z.enum(["nara", "orin", "ivo", "sena"]).optional(),
     mapId: z.enum(["ruins", "gardens"]).optional(),
     mode: z.enum(["normal", "nightmare", "endless"]).optional(),
@@ -154,12 +158,17 @@ export async function updateTeam(userId: string, input: unknown) {
       where: { id: member.teamId },
     });
     if (team.status !== "LOBBY") throw new UserError("Expedição já iniciada.");
-    if (v.mapId || v.mode || v.duration) {
+    const expeditionKind = v.expeditionKind ?? team.expeditionKind;
+    if (expeditionKind === "RPG_EXPEDITION") {
+      requireRpgExpeditionsEnabled();
+      if ((v.mapId && v.mapId !== "ruins") || (v.mode && v.mode !== "normal") || (v.duration && v.duration !== 600)) throw new UserError("Expedição RPG: Ruínas, normal, 10 minutos.");
+    }
+    if (v.mapId || v.mode || v.duration || v.expeditionKind) {
       if (team.leaderId !== userId)
         throw new UserError("Somente o líder escolhe mapa e modo.");
       await tx.team.update({
         where: { id: team.id },
-        data: { mapId: v.mapId, mode: v.mode, duration: v.duration },
+        data: { expeditionKind, ...(expeditionKind === "RPG_EXPEDITION" ? { mapId: "ruins", mode: "normal", duration: 600 } : { mapId: v.mapId, mode: v.mode, duration: v.duration }) },
       });
       await tx.teamMember.updateMany({
         where: { teamId: team.id },
@@ -201,7 +210,7 @@ export async function startTeam(userId: string) {
       where: { id: team.id },
       data: { status: "RUNNING" },
     });
-    return tx.gameSession.create({
+    const session = await tx.gameSession.create({
       data: {
         teamId: team.id,
         seed: crypto.randomUUID(),
@@ -209,6 +218,7 @@ export async function startTeam(userId: string) {
         mode: team.mode,
         duration: team.duration,
         partySize: team.members.length,
+        expeditionKind: team.expeditionKind,
         members: {
           create: team.members.map((m) => ({
             userId: m.userId,
@@ -218,7 +228,9 @@ export async function startTeam(userId: string) {
       },
       include: { members: { include: { user: { select: publicUser } } } },
     });
-  });
+    if (team.expeditionKind === "RPG_EXPEDITION") await initializeRpgExpedition(tx, session.id);
+    return session;
+  }, "Serializable");
 }
 
 export async function transferOfflineLeader(
