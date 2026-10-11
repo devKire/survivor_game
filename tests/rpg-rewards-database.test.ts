@@ -24,6 +24,8 @@ import { settleRpgExpedition } from "../src/server/rpg/rewards";
 import { rpgTransaction } from "../src/server/rpg/transaction";
 import { rpgProfileData } from "../src/server/rpg/profile";
 import { rewardHash } from "../src/server/rpg/reward-integrity";
+import { rpgRewardDetail, rpgRewardHistory } from "../src/server/rpg/reward-history";
+import { rpgPresentation } from "../src/server/rpg/presentation";
 import {
   interruptLostRpgExpeditions,
   recoverRpgRewards,
@@ -339,6 +341,21 @@ describe.skipIf(process.env.RUN_DATABASE_TESTS !== "1")(
       expect(
         await db().rpgExpeditionParticipant.count({ where: { userId } }),
       ).toBe(0);
+    });
+    it("projects only owned receipts and public equipment data, and rejects forged query scopes", async () => {
+      const owner = await authorized(), other = await authorized();
+      await persistRpgTerminal(owner.sessionId, terminal(owner.ids));
+      await settleRpgExpedition(owner.sessionId);
+      expect(await rpgRewardDetail(other.ids[0], { sessionId: owner.sessionId })).toBeNull();
+      expect((await rpgRewardHistory(other.ids[0], { cursor: owner.sessionId })).entries).toEqual([]);
+      await expect(rpgRewardHistory(other.ids[0], { userId: owner.ids[0] })).rejects.toThrow();
+      const detail = await rpgRewardDetail(owner.ids[0], { sessionId: owner.sessionId });
+      expect(detail?.receipt?.xpGranted).toBe(120);
+      const presentation = rpgPresentation(await rpgProfileData(owner.ids[0]));
+      expect(JSON.stringify({ detail, presentation })).not.toMatch(/rewardSeed|rollSeed|loadoutHash|userId/);
+      expect(presentation.items.length).toBeGreaterThan(0);
+      vi.stubEnv("RPG_ENABLED", "false");
+      await expect(rpgRewardHistory(owner.ids[0])).rejects.toThrow("indisponível");
     });
     it("interrupts lost running simulations but recovers durable terminals after rollout is reenabled", async () => {
       const lost = await authorized(),

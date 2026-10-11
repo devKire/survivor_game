@@ -4,6 +4,9 @@ import { Player } from "../../game/core/entities";
 import {
   createRpgCombatLoadout,
   equipmentDefinition,
+  equipmentRequirement,
+  previewRpgBuild,
+  type CombatStats,
   type RpgEquipment,
 } from "../../game/core/rpg";
 import { rpgProfileData } from "./profile";
@@ -12,7 +15,15 @@ import { rpgEquipmentData } from "./equipment";
 /** Projection from one consistent profile read; no owner IDs, receipts or dates. */
 export function rpgPresentation(
   profile: Awaited<ReturnType<typeof rpgProfileData>>,
+  compare?: { characterId: string; instanceId: string },
 ) {
+  let comparison: {
+    characterId: string;
+    instanceId: string;
+    revision: number;
+    error: string;
+    stats: CombatStats | null;
+  } | null = null;
   const items = profile.items.map((row) => {
     let equipment: RpgEquipment | null = null;
     try {
@@ -27,6 +38,7 @@ export function rpgPresentation(
       level: row.level,
       quantity: row.quantity,
       equipment,
+      requiredLevel: equipment ? equipmentRequirement(equipment) : null,
       equippedCharacter:
         profile.characters.find((c) => c.id === row.equippedCharacterId)
           ?.characterId ?? null,
@@ -66,13 +78,76 @@ export function rpgPresentation(
     } catch {
       /* Do not display an estimated build that the server would reject. */
     }
+    if (compare?.characterId === character.characterId) {
+      comparison = {
+        ...compare,
+        revision: profile.revision,
+        error: "",
+        stats: null,
+      };
+      try {
+        const selected = items.find(
+          (i) => i.id === compare.instanceId,
+        )?.equipment;
+        if (!selected || !loadout)
+          throw new Error("Equipamento ou build indisponível.");
+        const slot = equipmentDefinition(
+          selected.itemId,
+          selected.contentVersion,
+        ).slot;
+        const after = createRpgCombatLoadout({
+          characterId: character.characterId,
+          level: character.level,
+          attributes: character.attributes,
+          profileRevision: profile.revision,
+          equipment: [
+            ...loadout.equipment
+              .filter((i) => i.slot !== slot)
+              .map(({ slot: ignored, ...item }) => {
+                void ignored;
+                return item;
+              }),
+            selected,
+          ],
+        });
+        comparison.stats = previewRpgBuild(base, after).effective;
+      } catch (error) {
+        comparison.error =
+          error instanceof RangeError
+            ? error.message
+            : "Equipamento ou build indisponível.";
+      }
+    }
     return {
       characterId: character.characterId,
       level: character.level,
       base,
-      loadout,
+      preview: loadout ? previewRpgBuild(base, loadout) : null,
     };
   });
-  return { items, characters };
+  return {
+    items: items.map(({ equipment, ...item }) => ({
+      ...item,
+      equipment: equipment
+        ? {
+            id: equipment.id,
+            itemId: equipment.itemId,
+            rarity: equipment.rarity,
+            level: equipment.level,
+            quantity: equipment.quantity,
+            contentVersion: equipment.contentVersion,
+            affixes: equipment.affixes,
+          }
+        : null,
+    })),
+    characters,
+    comparison: comparison as {
+      characterId: string;
+      instanceId: string;
+      revision: number;
+      error: string;
+      stats: CombatStats | null;
+    } | null,
+  };
 }
 export type RpgPresentation = ReturnType<typeof rpgPresentation>;

@@ -2,26 +2,24 @@ import {
   COMBAT_STAT_KEYS,
   previewRpgBuild,
   type CombatStats,
-  type RpgCombatLoadout,
 } from "../../game/core/rpg";
 import { statLabels, statValue } from "./presentation";
 import styles from "./rpg.module.css";
 
 export function StatsPreview({
   base,
-  loadout,
+  preview,
 }: {
   base: CombatStats;
-  loadout: RpgCombatLoadout | null;
+  preview: ReturnType<typeof previewRpgBuild> | null;
 }) {
-  if (!loadout)
+  if (!preview)
     return (
       <p role="status">
         Prévia indisponível. Remova equipamentos incompatíveis para revisar esta
         build.
       </p>
     );
-  const preview = previewRpgBuild(base, loadout);
   return (
     <div className={styles.tableScroll}>
       <table className={styles.stats}>

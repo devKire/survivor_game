@@ -83,7 +83,7 @@ export default async function Page() {
                 points={character.attributePoints}
               />
               <h3>Prévia de combate RPG</h3>
-              <StatsPreview base={build.base} loadout={build.loadout} />
+              <StatsPreview base={build.base} preview={build.preview} />
               <h3>Equipamentos</h3>
               <ul>
                 {RPG_ITEM_SLOTS.map((slot) => {
