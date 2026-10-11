@@ -9,7 +9,7 @@ import { initialRpgAttributes } from "../../src/game/core/rpg";
 const enabled = process.env.RPG_ENABLED === "true";
 test("RPG disabled routes return 404", async ({ request }) => {
   test.skip(enabled, "Run with RPG_ENABLED=false to verify disabled rollout");
-  for (const path of ["/rpg/character", "/rpg/inventory"])
+  for (const path of ["/rpg", "/rpg/character", "/rpg/inventory", "/rpg/expeditions", "/rpg/rewards"])
     expect((await request.get(path)).status()).toBe(404);
 });
 
@@ -17,7 +17,7 @@ test("RPG enabled routes require login and preserve safe callbacks", async ({
   page,
 }) => {
   test.skip(!enabled, "Requires RPG_ENABLED=true");
-  for (const path of ["/rpg/character", "/rpg/inventory"]) {
+  for (const path of ["/rpg", "/rpg/character", "/rpg/inventory", "/rpg/expeditions", "/rpg/rewards"]) {
     await page.goto(path);
     await expect(page).toHaveURL(
       new RegExp("/login\\?callbackUrl=" + encodeURIComponent(path)),

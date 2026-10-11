@@ -38,7 +38,7 @@ As regras puras em `src/game/core/rpg/attributes.ts` e a constraint SQL concorda
 - Nível entre 1 e 100; total concedido = `5 * (level - 1)`; gasto = soma dos atributos.
 - `attributePoints = total concedido - gasto >= 0`. O saldo é persistido para leitura, mas não é uma fonte independente de pontos.
 - Nível 1 começa com todos os atributos e saldo em zero. Alocar exige saldo suficiente e respeita o teto do atributo.
-- A função pura `attributesAtLevel` recalcula o saldo pelo novo nível, conserva gastos e rejeita regressão. Repetir o mesmo nível não duplica pontos. Ainda não existe operação de evolução/XP; uma futura operação autoritativa deverá salvar nível e saldo juntos.
+- A função pura `attributesAtLevel` recalcula o saldo pelo novo nível, conserva gastos e rejeita regressão. Repetir o mesmo nível não duplica pontos. Na Fase 3, somente o settlement autoritativo salva XP, nível e saldo juntos.
 
 Na Fase 2, atributos geram modificadores exclusivamente no contexto explícito
 `RPG_EXPEDITION`. O cálculo original de `Player.recalculate()` recebe uma etapa
@@ -65,10 +65,29 @@ modificadores compilados → Player/CoopSimulation`. A sessão guarda uma build
 individual por membro; alteração no Hub não muda sessão em andamento. A prévia
 compartilha o resolver e usa nível temporário 1, sem meta do Obelisco ou passivas.
 
-Não há modo público RPG: somente harness interno development-only sem recompensas.
-PvP rejeita contexto RPG; os modos públicos continuam clássicos. Os contratos
-RunState, RunSnapshot, SAVE_SCHEMA=3, ECONOMY_VERSION=2 e protocolo realtime não
-mudaram. Ver [RPG-LOADOUT.md](RPG-LOADOUT.md) e [RPG-PHASE2-QA.md](RPG-PHASE2-QA.md).
+Na Fase 3, o lobby permite `expeditionKind=RPG_EXPEDITION` com ambas as flags
+server-side habilitadas. A dificuldade permanece `normal`; Survivor e PvP seguem
+independentes. O harness da Fase 2 continua sem autoridade para conceder loot.
+RunState, RunSnapshot, SAVE_SCHEMA=3, ECONOMY_VERSION=2 e snapshots realtime não
+mudaram. Somente mensagens de lobby/resultado ganharam metadados opcionais.
+Ver [RPG-EXPEDITION-LIFECYCLE.md](RPG-EXPEDITION-LIFECYCLE.md).
+
+## Loot e recompensas da Fase 3
+
+Catálogo v1 separado em content/rpg; cálculo, elegibilidade e XP puros em core/rpg.
+O ledger limitado recebe mortes reais e baús efetivamente usados, sem IO por kill.
+START congela as builds sob os mesmos locks de criação de GameSession.
+RpgExpeditionSession conserva configuração, seed privada e terminal imutável;
+RpgExpeditionParticipant vincula cada conta ao personagem de entrada;
+RpgRewardReceipt documenta o commit integral por usuário/sessão. Recompensas RPG
+não passam pelo settlement econômico do Survivor. GOLD/GEMS e UserProgress.version
+permanecem separados. Leitura de histórico exige ownership e paginação estável.
+
+O inventário envia somente metadados públicos e prévias calculadas pelo resolver
+no servidor. Não serializa seeds nem builds completas para Client Components.
+Não há endpoint de grant, terminal enviado pelo cliente ou recompensa de save.
+Ver [RPG-REWARDS.md](RPG-REWARDS.md), [RPG-LOOT.md](RPG-LOOT.md),
+[RPG-REWARD-SECURITY.md](RPG-REWARD-SECURITY.md) e [RPG-PHASE3-QA.md](RPG-PHASE3-QA.md).
 
 ## Migração e operação
 

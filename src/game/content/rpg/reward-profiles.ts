@@ -26,14 +26,32 @@ export const RPG_REWARD_SOURCES = [
   "ELITE_DEFEAT",
   "CHEST_OPENED",
 ] as const;
+/** Guaranteed XP is typed separately from weighted item/material rolls. */
+const xpReward = (amount: number) =>
+  Object.freeze({ type: "RPG_XP" as const, amount });
 export const RPG_REWARD_PROFILES_V1 = Object.freeze({
   EXPEDITION_COMPLETION: Object.freeze({
-    xp: 100,
+    xp: xpReward(100),
     dust: 4,
     shards: 1,
     table: "completion-v1",
   }),
-  BOSS_DEFEAT: Object.freeze({ xp: 20, dust: 2, shards: 1, table: "boss-v1" }),
-  ELITE_DEFEAT: Object.freeze({ xp: 2, dust: 1, shards: 0, table: null }),
-  CHEST_OPENED: Object.freeze({ xp: 3, dust: 2, shards: 0, table: null }),
+  BOSS_DEFEAT: Object.freeze({
+    xp: xpReward(20),
+    dust: 2,
+    shards: 1,
+    table: "boss-v1",
+  }),
+  ELITE_DEFEAT: Object.freeze({
+    xp: xpReward(2),
+    dust: 1,
+    shards: 0,
+    table: null,
+  }),
+  CHEST_OPENED: Object.freeze({
+    xp: xpReward(3),
+    dust: 2,
+    shards: 0,
+    table: null,
+  }),
 });

@@ -24,7 +24,10 @@ import { settleRpgExpedition } from "../src/server/rpg/rewards";
 import { rpgTransaction } from "../src/server/rpg/transaction";
 import { rpgProfileData } from "../src/server/rpg/profile";
 import { rewardHash } from "../src/server/rpg/reward-integrity";
-import { rpgRewardDetail, rpgRewardHistory } from "../src/server/rpg/reward-history";
+import {
+  rpgRewardDetail,
+  rpgRewardHistory,
+} from "../src/server/rpg/reward-history";
 import { rpgPresentation } from "../src/server/rpg/presentation";
 import {
   interruptLostRpgExpeditions,
@@ -343,19 +346,133 @@ describe.skipIf(process.env.RUN_DATABASE_TESTS !== "1")(
       ).toBe(0);
     });
     it("projects only owned receipts and public equipment data, and rejects forged query scopes", async () => {
-      const owner = await authorized(), other = await authorized();
+      const owner = await authorized(),
+        other = await authorized();
       await persistRpgTerminal(owner.sessionId, terminal(owner.ids));
       await settleRpgExpedition(owner.sessionId);
-      expect(await rpgRewardDetail(other.ids[0], { sessionId: owner.sessionId })).toBeNull();
-      expect((await rpgRewardHistory(other.ids[0], { cursor: owner.sessionId })).entries).toEqual([]);
-      await expect(rpgRewardHistory(other.ids[0], { userId: owner.ids[0] })).rejects.toThrow();
-      const detail = await rpgRewardDetail(owner.ids[0], { sessionId: owner.sessionId });
+      expect(
+        await rpgRewardDetail(other.ids[0], { sessionId: owner.sessionId }),
+      ).toBeNull();
+      expect(
+        (await rpgRewardHistory(other.ids[0], { cursor: owner.sessionId }))
+          .entries,
+      ).toEqual([]);
+      await expect(
+        rpgRewardHistory(other.ids[0], { userId: owner.ids[0] }),
+      ).rejects.toThrow();
+      const detail = await rpgRewardDetail(owner.ids[0], {
+        sessionId: owner.sessionId,
+      });
       expect(detail?.receipt?.xpGranted).toBe(120);
       const presentation = rpgPresentation(await rpgProfileData(owner.ids[0]));
-      expect(JSON.stringify({ detail, presentation })).not.toMatch(/rewardSeed|rollSeed|loadoutHash|userId/);
+      expect(JSON.stringify({ detail, presentation })).not.toMatch(
+        /rewardSeed|rollSeed|loadoutHash|userId/,
+      );
       expect(presentation.items.length).toBeGreaterThan(0);
       vi.stubEnv("RPG_ENABLED", "false");
-      await expect(rpgRewardHistory(owner.ids[0])).rejects.toThrow("indisponível");
+      await expect(rpgRewardHistory(owner.ids[0])).rejects.toThrow(
+        "indisponível",
+      );
+    });
+    it("rejects disabled entry, corrupt equipped content and concurrent active authorizations", async () => {
+      const f = await fixture();
+      vi.stubEnv("RPG_EXPEDITIONS_ENABLED", "false");
+      await expect(
+        rpgTransaction((tx) => initializeRpgExpedition(tx, f.sessionId)),
+      ).rejects.toThrow("indisponíveis");
+      vi.stubEnv("RPG_EXPEDITIONS_ENABLED", "true");
+      const profile = await rpgProfileData(f.ids[0]);
+      const item = await db().rpgItemInstance.create({
+        data: {
+          userId: f.ids[0],
+          itemId: "retired-unknown-item",
+          rarity: "COMMON",
+          equippedCharacterId: profile.characters[0].id,
+          equippedSlot: "WEAPON",
+        },
+      });
+      await expect(
+        rpgTransaction((tx) => initializeRpgExpedition(tx, f.sessionId)),
+      ).rejects.toThrow();
+      expect(
+        await db().rpgExpeditionSession.count({
+          where: { sessionId: f.sessionId },
+        }),
+      ).toBe(0);
+      await db().rpgItemInstance.delete({ where: { id: item.id } });
+      await rpgTransaction((tx) => initializeRpgExpedition(tx, f.sessionId));
+      const duplicate = await db().gameSession.create({
+        data: {
+          teamId: f.teamId,
+          expeditionKind: "RPG_EXPEDITION",
+          seed: randomUUID(),
+          mapId: "ruins",
+          mode: "normal",
+          duration: 600,
+          partySize: 1,
+          members: { create: { userId: f.ids[0], character: "nara" } },
+        },
+      });
+      sessions.push(duplicate.id);
+      await expect(
+        rpgTransaction((tx) => initializeRpgExpedition(tx, duplicate.id)),
+      ).rejects.toThrow("já está");
+    });
+    it("paginates tied timestamps without duplicates or missing own entries", async () => {
+      const f = await authorized(),
+        userId = f.ids[0];
+      const original = await db().rpgExpeditionSession.findUniqueOrThrow({
+        where: { sessionId: f.sessionId },
+        include: { participants: true },
+      });
+      const participant = original.participants[0],
+        createdAt = new Date("2020-01-01T00:00:00Z");
+      // Historical interrupted-session fixtures, no grants or receipt fabrication.
+      for (let i = 0; i < 20; i++) {
+        const session = await db().gameSession.create({
+          data: {
+            teamId: f.teamId,
+            expeditionKind: "RPG_EXPEDITION",
+            seed: randomUUID(),
+            mapId: "ruins",
+            mode: "normal",
+            duration: 600,
+            partySize: 1,
+            status: "INTERRUPTED",
+            members: { create: { userId, character: "nara" } },
+          },
+        });
+        sessions.push(session.id);
+        await db().rpgExpeditionSession.create({
+          data: {
+            sessionId: session.id,
+            status: "INTERRUPTED",
+            rewardSeed: original.rewardSeed,
+            participants: {
+              create: {
+                userId,
+                characterId: "nara",
+                entryLevel: 1,
+                entryRevision: 1,
+                loadout: economyJson(participant.loadout),
+                loadoutHash: participant.loadoutHash,
+                createdAt,
+              },
+            },
+          },
+        });
+      }
+      const first = await rpgRewardHistory(userId);
+      expect(first.entries).toHaveLength(20);
+      const second = await rpgRewardHistory(userId, {
+        cursor: first.nextCursor,
+      });
+      expect(second.entries).toHaveLength(1);
+      expect(second.nextCursor).toBeNull();
+      expect(
+        new Set([...first.entries, ...second.entries].map((e) => e.sessionId))
+          .size,
+      ).toBe(21);
     });
     it("interrupts lost running simulations but recovers durable terminals after rollout is reenabled", async () => {
       const lost = await authorized(),

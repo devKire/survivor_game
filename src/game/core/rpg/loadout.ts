@@ -11,7 +11,11 @@ import {
 import { RPG_ITEM_SLOTS } from "./types";
 import type { RpgAttributes } from "./types";
 import type { CombatModifier, RpgCombatLoadout } from "./combat-types";
-import { compileCombatModifiers, RPG_RULESET_VERSION } from "./stat-resolver";
+import {
+  combatModifierSchema,
+  compileCombatModifiers,
+  RPG_RULESET_VERSION,
+} from "./stat-resolver";
 
 export function attributeModifiers(a: RpgAttributes): CombatModifier[] {
   rpgAttributesSchema.parse(a);
@@ -126,7 +130,18 @@ export function validateCombatLoadout(
       return item;
     }),
   });
-  if (JSON.stringify(valid.modifiers) !== JSON.stringify(input.modifiers))
+  const supplied = z.array(combatModifierSchema).max(64).parse(input.modifiers);
+  // PostgreSQL JSONB changes object key order, but not array order or values.
+  if (
+    valid.modifiers.length !== supplied.length ||
+    valid.modifiers.some(
+      (m, i) =>
+        m.sourceId !== supplied[i].sourceId ||
+        m.stat !== supplied[i].stat ||
+        m.operation !== supplied[i].operation ||
+        m.value !== supplied[i].value,
+    )
+  )
     throw new RangeError("Modificadores da build inválidos.");
   return valid;
 }
