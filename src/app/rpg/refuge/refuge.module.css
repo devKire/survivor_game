@@ -1,0 +1,162 @@
+.refuge {
+  max-width: 1280px;
+  margin: auto;
+  padding: clamp(12px, 2vw, 28px);
+  color: #e0e7da;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.header h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 42px);
+}
+.safe {
+  border: 1px solid #80bea6;
+  color: #b2e8c9;
+  padding: 8px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.viewport {
+  position: relative;
+  border: 1px solid #6e8977;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #09161a;
+}
+.viewport canvas {
+  display: block;
+  width: 100%;
+  height: clamp(360px, 65vh, 660px);
+  touch-action: none;
+  image-rendering: pixelated;
+}
+.viewport canvas:focus {
+  outline: 3px solid #e5d194;
+  outline-offset: -4px;
+}
+.context {
+  position: absolute;
+  bottom: 14px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.context button {
+  pointer-events: auto;
+  min-height: 44px;
+  background: #102326ed;
+  color: #f5df9c;
+  border: 1px solid #9ba780;
+  max-width: 100%;
+  white-space: normal;
+}
+.services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+.services button,
+.touch button {
+  min-height: 44px;
+}
+.touch {
+  display: grid;
+  grid-template-columns: repeat(3, 48px);
+  gap: 4px;
+  margin: 12px auto;
+  width: max-content;
+}
+.touch button {
+  touch-action: none;
+  user-select: none;
+  padding: 5px;
+  font-size: 20px;
+}
+.dialog {
+  color: #e0e7da;
+  background: #101e24;
+  border: 1px solid #8b9e85;
+  border-radius: 14px;
+  padding: 24px;
+  width: min(980px, 94vw);
+  max-height: 88dvh;
+  overflow: auto;
+}
+.dialog::backdrop {
+  background: #000b;
+}
+.dialog :global(.cards) {
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+}
+.dialog input,
+.dialog select {
+  max-width: 100%;
+}
+.close {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: block;
+  margin-left: auto;
+  background: #273c3d;
+  min-height: 44px;
+}
+@media (min-width: 900px) and (pointer: fine) {
+  .touch {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .header {
+    align-items: flex-start;
+  }
+  .safe {
+    font-size: 12px;
+    padding: 6px;
+  }
+  .viewport canvas {
+    height: 52dvh;
+    min-height: 310px;
+  }
+  .dialog {
+    padding: 12px;
+  }
+  .context {
+    bottom: 8px;
+  }
+  .services button {
+    flex: 1 1 30%;
+  }
+}
+
+.portrait {
+  object-fit: cover;
+  image-rendering: pixelated;
+  border: 1px solid #80bea6;
+  border-radius: 10px;
+}
+.headerActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+@media (max-width: 600px) {
+  .header {
+    flex-wrap: wrap;
+  }
+  .headerActions {
+    width: 100%;
+  }
+  .headerActions button {
+    min-height: 44px;
+  }
+}

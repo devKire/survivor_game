@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { isRpgEnabled, isRpgExpeditionsEnabled } from "../../server/env";
+import { isRpgEnabled, isRpgExpeditionsEnabled, isRpgRefugeEnabled } from "../../server/env";
 import { requirePageUser } from "../../server/hub";
 import { rpgProfileData } from "../../server/rpg/profile";
 import { RPG_CHARACTERS, RPG_ITEMS } from "../../game/content/rpg";
@@ -21,6 +21,7 @@ export default async function Page() {
     <main className="account-shell rpg-page">
       <p className="eyebrow">ECOS DO OBELISCO</p>
       <h1>Sua jornada RPG</h1>
+      {isRpgRefugeEnabled() && <p><Link href="/rpg/refuge">Entrar no Refúgio</Link></p>}
       <section className="card">
         <h2>{name} · personagem ativo</h2>
         <p>
