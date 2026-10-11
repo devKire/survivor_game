@@ -10,6 +10,7 @@ export const clientMessage = z.discriminatedUnion("type", [
   z
     .object({
       type: z.literal("CONFIG"),
+      expeditionKind: z.enum(["SURVIVOR", "RPG_EXPEDITION"]).optional(),
       character: z.enum(["nara", "orin", "ivo", "sena"]).optional(),
       mapId: z.enum(["ruins", "gardens"]).optional(),
       mode: z.enum(["normal", "nightmare", "endless"]).optional(),
@@ -339,6 +340,7 @@ export const chatSchema = z.object({
   sender: user,
 });
 export const teamSchema = z.object({
+  expeditionKind: z.enum(["SURVIVOR", "RPG_EXPEDITION"]).optional(),
   id: z.string(),
   code: z.string(),
   leaderId: z.string(),
@@ -385,9 +387,12 @@ export const serverMessage = z.union([
   z.object({ type: z.literal("PRESENCE"), id: z.string(), state: z.string() }),
   z.object({ type: z.literal("ERROR"), message: z.string() }),
   z.object({ type: z.literal("PONG"), at: z.number() }),
-  z.object({ type: z.literal("STARTED"), room: z.string() }),
+  z.object({ type: z.literal("STARTED"), room: z.string(), expeditionKind: z.enum(["SURVIVOR", "RPG_EXPEDITION"]).optional() }),
   z.object({
     type: z.literal("RESULT"),
+    expeditionKind: z.enum(["SURVIVOR", "RPG_EXPEDITION"]).optional(),
+    sessionId: z.string().optional(),
+    rewardStatus: z.enum(["PENDING", "CONFIRMED"]).optional(),
     completed: z.boolean(),
     kills: z.number(),
     time: z.number(),

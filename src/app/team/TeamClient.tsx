@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { diagnostics } from "../../game/client/diagnostics";
 import { useEffect, useRef, useState } from "react";
 import OnlineCombat from "./OnlineCombat";
@@ -20,9 +21,10 @@ import {
 import { freshSave, migrateSave } from "../../game/core/save";
 import type { SaveData } from "../../game/core/types";
 export default function TeamClient({
-  user, menuHeader,
+  user, menuHeader, rpgExpeditionsEnabled = false,
 }: {
   menuHeader: React.ReactNode;
+  rpgExpeditionsEnabled?: boolean;
   user: { id: string; name: string };
 }) {
   const connection = useRef<RealtimeClient | null>(null),
@@ -35,6 +37,7 @@ export default function TeamClient({
     [session] = useState(() => new OnlineSession()),
     [started, setStarted] = useState(false),
     [result, setResult] = useState(""),
+    [rewardSessionId, setRewardSessionId] = useState<string | null>(null),
     [messages, setMessages] = useState<ChatMessage[]>([]),
     [chat, setChat] = useState<{ scope: "dm" | "team"; target: string } | null>(
       null,
@@ -62,6 +65,7 @@ export default function TeamClient({
           session.begin(message.room);
           setStarted(true);
           setResult("");
+          setRewardSessionId(null);
         }
         if (message.type === "SNAPSHOT") session.receive(message);
         if (message.type === "CHAT")
@@ -82,9 +86,8 @@ export default function TeamClient({
         if (message.type === "RESULT") {
           setStarted(false);
 
-          setResult(
-            `${message.completed ? "Travessia concluída" : "A equipe caiu"} · ${Math.floor(message.time / 60)} min · ${message.kills} baixas. Recompensas salvas na conta.`,
-          );
+          setRewardSessionId(message.expeditionKind === "RPG_EXPEDITION" ? message.sessionId ?? null : null);
+          setResult(`${message.completed ? "Travessia concluída" : "A equipe caiu"} · ${Math.floor(message.time / 60)} min · ${message.kills} baixas. ${message.expeditionKind === "RPG_EXPEDITION" ? message.rewardStatus === "CONFIRMED" ? "Resultado RPG confirmado. Consulte seu recibo." : "Resultado registrado. Recompensas pendentes de confirmação." : "Recompensas salvas na conta."}`);
         }
       },
       setStatus,
@@ -167,6 +170,8 @@ export default function TeamClient({
               Escolha seu eco. Encontre sua equipe. Atravessem a névoa juntos.
             </p>
             {result && <p role="status">{result}</p>}
+            {rewardSessionId && <Link href={`/rpg/rewards?sessionId=${encodeURIComponent(rewardSessionId)}`}>Ver recompensas RPG</Link>}
+            {rpgExpeditionsEnabled && <p><Link href="/rpg/expeditions">Regras da Expedição RPG</Link> · <Link href="/rpg/rewards">Histórico RPG</Link></p>}
             <div className="account-grid">
               <section>
                 <h2>MODO EQUIPE</h2>
@@ -271,10 +276,12 @@ export default function TeamClient({
                         )}
                       </select>
                     </label>
+                    {(rpgExpeditionsEnabled || team.expeditionKind === "RPG_EXPEDITION") && <label>Tipo de expedição<select aria-label="Tipo de expedição" value={team.expeditionKind ?? "SURVIVOR"} disabled={team.leaderId !== user.id || team.status !== "LOBBY"} onChange={e => connection.current?.send({ type: "CONFIG", expeditionKind: e.target.value as "SURVIVOR" | "RPG_EXPEDITION" })}><option value="SURVIVOR">Survivor clássico</option><option value="RPG_EXPEDITION" disabled={!rpgExpeditionsEnabled}>Expedição RPG · recompensas persistentes</option></select></label>}
+                    {team.expeditionKind === "RPG_EXPEDITION" && <p>RPG · Ruínas · 10 minutos. A build do personagem será fixada ao iniciar.</p>}
                     <label>
                       Expedição
                       <select
-                        disabled={team.leaderId !== user.id || team.status !== "LOBBY"}
+                        disabled={team.leaderId !== user.id || team.status !== "LOBBY" || team.expeditionKind === "RPG_EXPEDITION"}
                         value={team.duration}
                         onChange={(e) => connection.current?.send({ type: "CONFIG", duration: Number(e.target.value) as 600 | 900 | 1800 })}
                       >
@@ -287,7 +294,7 @@ export default function TeamClient({
                       Mapa
                       <select
                         disabled={
-                          team.leaderId !== user.id || team.status !== "LOBBY"
+                          team.leaderId !== user.id || team.status !== "LOBBY" || team.expeditionKind === "RPG_EXPEDITION"
                         }
                         value={team.mapId}
                         onChange={(e) =>
@@ -308,7 +315,7 @@ export default function TeamClient({
                       Modo
                       <select
                         disabled={
-                          team.leaderId !== user.id || team.status !== "LOBBY"
+                          team.leaderId !== user.id || team.status !== "LOBBY" || team.expeditionKind === "RPG_EXPEDITION"
                         }
                         value={team.mode}
                         onChange={(e) =>

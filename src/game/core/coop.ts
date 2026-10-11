@@ -15,7 +15,9 @@ import type {
   Structure,
   RunState,
   Vec,
+  Enemy,
 } from "./types";
+import { RpgRewardLedger } from "./rpg/reward-ledger";
 import { removeAt } from "./math";
 import type { RpgCombatLoadout } from "./rpg/combat-types";
 export type CoopCombatContext =
@@ -109,6 +111,7 @@ export class CoopSimulation extends GameSimulation {
   >();
   ended = false;
   activeMember?: Participant;
+  private rewardLedger?: RpgRewardLedger;
   constructor(
     players: {
       id: string;
@@ -132,6 +135,7 @@ export class CoopSimulation extends GameSimulation {
       if (new Set(ids).size !== ids.length || Object.keys(context.loadouts).length !== ids.length || ids.some(id => !Object.hasOwn(context.loadouts, id)))
         throw new Error("Builds RPG não correspondem aos participantes.");
       this.combatKind = "RPG_EXPEDITION";
+      this.rewardLedger = new RpgRewardLedger(players.map(p => ({ userId: p.id, characterId: context.loadouts[p.id].characterId, entryLevel: context.loadouts[p.id].level })));
     }
     this.run.telemetry = telemetry(players.length);
     this.fx = 0;
@@ -292,6 +296,7 @@ export class CoopSimulation extends GameSimulation {
     }
   }
   override finish(victory = false) {
+    if (victory && this.isRpgExpedition && this.run.time < this.expeditionProfile.duration) return;
     if (victory) {
       this.run.completed = true;
       this.ended = true;
@@ -306,6 +311,16 @@ export class CoopSimulation extends GameSimulation {
       this.run.settled = true;
       this.state = "result";
     }
+  }
+  protected override onEnemyDefeated(enemy: Enemy) {
+    if (!this.rewardLedger || this.ended) return;
+    if ((enemy.type === "boss" || enemy.type === "final") && enemy.bossEventIndex !== null && enemy.bossEventIndex >= 0 && enemy.bossEventIndex <= 9)
+      this.rewardLedger.event("BOSS_DEFEAT", `enemy:${enemy.id}`, `boss:${enemy.bossEventIndex}`);
+    else if (enemy.type === "elite") this.rewardLedger.event("ELITE_DEFEAT", `enemy:${enemy.id}`, "elite");
+  }
+  rpgTerminalResult() {
+    if (!this.ended || !this.rewardLedger) throw new Error("Expedição RPG ainda não terminou.");
+    return this.rewardLedger.terminal(this.run.completed);
   }
   override collectsDrop(point: Vec & { ownerId?: string }) {
     return point.ownerId
@@ -409,6 +424,7 @@ export class CoopSimulation extends GameSimulation {
     this.capture(m);
   }
   interactOnline(id: string, structureId: string, accept: boolean) {
+    if (this.isRpgExpedition && this.ended) return;
     const m = this.members.get(id);
     if (!m || m.downed) return;
     this.activate(m);
@@ -445,7 +461,10 @@ export class CoopSimulation extends GameSimulation {
     this.addTeamXp((m.player.xp - oldXp) / m.player.stats.growth);
     m.player.xp = oldXp;
     for (const drop of this.pickups) if (!oldDrops.has(drop)) drop.ownerId = id;
-    if (this.run.structuresUsed > before) m.personalStructures.add(s.id);
+    if (this.run.structuresUsed > before) {
+      m.personalStructures.add(s.id);
+      if (s.type === "chest") this.rewardLedger?.event("CHEST_OPENED", `chest:${id}:${s.id}`, "chest", id);
+    }
     s.used = old.used;
     s.opened = old.opened;
     delete this.world.changes[s.id];
@@ -464,6 +483,7 @@ export class CoopSimulation extends GameSimulation {
   }
   override update(dt: number) {
     if (this.ended) return;
+    this.rewardLedger?.step(dt);
     this.run.time += dt * this.clockRate;
     this.run.simTime += dt;
     this.run.eventTime = Math.max(0, this.run.eventTime - dt);
@@ -480,13 +500,18 @@ export class CoopSimulation extends GameSimulation {
       p.buff = Math.max(0, p.buff - dt);
       p.luckBuff = Math.max(0, p.luckBuff - dt);
       p.hurtFlash = Math.max(0, p.hurtFlash - dt);
-      if (m.downed) continue;
+      if (m.downed) {
+        this.rewardLedger?.participation(m.id, dt, m.connected, false);
+        continue;
+      }
       p.health = Math.min(p.maxHealth, p.health + p.stats.recovery * dt);
       const input =
         this.run.time - m.lastInput < 0.25
           ? m.input
           : { moveX: 0, moveY: 0, interact: false };
+      const previousX = p.x, previousY = p.y;
       this.movePlayer(p, { x: input.moveX, y: input.moveY }, dt);
+      this.rewardLedger?.participation(m.id, dt, m.connected, Math.hypot(p.x - previousX, p.y - previousY) > 0.1);
       p.inWater = this.world.isWater(p.x, p.y);
       if (
         Math.floor(this.run.time * 2) !== Math.floor((this.run.time - dt) * 2)

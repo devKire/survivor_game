@@ -1,16 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RPG_CHARACTERS, RPG_ITEMS } from "../../../game/content/rpg";
 import { RPG_AFFIXES } from "../../../game/content/rpg/affixes";
 import {
-  assertCanEquip,
   COMBAT_STAT_KEYS,
-  createRpgCombatLoadout,
   equipmentDefinition,
-  equipmentRequirement,
-  previewRpgBuild,
   RPG_ITEM_SLOTS,
-  type RpgCombatLoadout,
   type RpgRarity,
 } from "../../../game/core/rpg";
 import type { RpgPresentation } from "../../../server/rpg/presentation";
@@ -22,6 +17,7 @@ import {
   statValue,
 } from "../presentation";
 import { StatsPreview } from "../StatsPreview";
+import { compareRpgItemAction } from "../../../server/rpg/preview-action";
 import EquipmentForm from "./EquipmentForm";
 import styles from "../rpg.module.css";
 
@@ -53,42 +49,54 @@ export default function EquipmentInventory({
       )
     : null;
   const sameItem = current?.id === selected?.id;
-  let unavailable = "";
-  let after: RpgCombatLoadout | null = null;
-  if (item && definition && !sameItem) {
-    try {
-      assertCanEquip(item, character, definition.slot);
-      if (!character.loadout)
-        throw new Error(
-          "Remova equipamentos incompatíveis para comparar esta build.",
+  const [comparison, setComparison] =
+    useState<RpgPresentation["comparison"]>(null);
+  useEffect(() => {
+    if (!selectedId) return;
+    let cancelled = false;
+    void compareRpgItemAction({ characterId, instanceId: selectedId })
+      .then((response) => {
+        if (cancelled) return;
+        setComparison(
+          response.ok
+            ? response.result
+            : {
+                characterId,
+                instanceId: selectedId,
+                revision,
+                error: response.error,
+                stats: null,
+              },
         );
-      after = createRpgCombatLoadout({
-        characterId,
-        level: character.level,
-        attributes: character.loadout.attributes,
-        equipment: [
-          ...character.loadout.equipment
-            .filter((i) => i.slot !== definition.slot)
-            .map((i) => items.find((owned) => owned.id === i.id)!.equipment!),
-          item,
-        ],
-        profileRevision: revision,
+      })
+      .catch(() => {
+        if (!cancelled)
+          setComparison({
+            characterId,
+            instanceId: selectedId,
+            revision,
+            error: "Sem conexão. Selecione o item novamente para comparar.",
+            stats: null,
+          });
       });
-    } catch (error) {
-      unavailable =
-        error instanceof Error ? error.message : "Equipamento indisponível.";
-    }
-  }
+    return () => {
+      cancelled = true;
+    };
+  }, [characterId, selectedId, revision, requestId]);
+  const matched =
+    comparison?.characterId === characterId &&
+    comparison.instanceId === selectedId;
+  const unavailable = sameItem
+    ? ""
+    : !matched
+      ? "Calculando comparação…"
+      : comparison.error;
   const name = (id: string) =>
     RPG_ITEMS[id as keyof typeof RPG_ITEMS]?.name ?? id;
   const characterName = (id: string) =>
     RPG_CHARACTERS[id as keyof typeof RPG_CHARACTERS]?.name ?? id;
-  const beforeStats = character.loadout
-    ? previewRpgBuild(character.base, character.loadout).effective
-    : null;
-  const afterStats = after
-    ? previewRpgBuild(character.base, after).effective
-    : null;
+  const beforeStats = character.preview?.effective ?? null;
+  const afterStats = matched && !unavailable ? comparison.stats : null;
   return (
     <>
       <p>
@@ -111,8 +119,8 @@ export default function EquipmentInventory({
         </select>
       </label>
       <p className={styles.note}>
-        Prévia para a futura Expedição RPG. Survivor e PvP não recebem estes
-        bônus. Mudanças valem na próxima sessão RPG.
+        Prévia para a Expedição RPG. Survivor e PvP não recebem estes bônus.
+        Mudanças valem na próxima sessão RPG.
       </p>
       <div className={styles.layout}>
         <section className={styles.panel} aria-label="Equipamentos por slot">
@@ -170,7 +178,7 @@ export default function EquipmentInventory({
                 <>
                   <p>{definition.description}</p>
                   <p>
-                    Requisito: nível RPG {equipmentRequirement(item)} ·{" "}
+                    Requisito: nível RPG {selected.requiredLevel} ·{" "}
                     {definition.allowedCharacters
                       ?.map(characterName)
                       .join(", ") ?? "Todos os personagens"}
@@ -295,7 +303,7 @@ export default function EquipmentInventory({
           </ul>
         )}
       </section>
-      <StatsPreview base={character.base} loadout={character.loadout} />
+      <StatsPreview base={character.base} preview={character.preview} />
     </>
   );
 }

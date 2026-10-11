@@ -33,13 +33,16 @@ export default defineConfig({
       timeout: 120000,
     },
     {
-      command: process.env.QA_ENEMIES
+      command: process.env.RPG_EXPEDITION_BROWSER_DRIVER === "1"
+        ? "node --conditions=react-server --import tsx tests/helpers/browser-rpg-realtime.ts"
+        : process.env.QA_ENEMIES
         ? "node --conditions=react-server --import tsx scripts/stability-realtime.ts"
         : "npm run realtime",
       url: `http://localhost:${realtimePort}/health`,
       env: {
         ...process.env,
         REALTIME_PORT: String(realtimePort),
+        ...(process.env.RPG_EXPEDITION_BROWSER_DRIVER === "1" ? { NODE_ENV: "test" } : {}),
         REALTIME_ORIGIN: appUrl,
       },
       reuseExistingServer: false,
