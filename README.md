@@ -33,6 +33,34 @@ Abra **http://localhost:3000**. Crie contas, crie uma equipe, compartilhe o cód
 - Importação de legado é explícita. Preserva o arquivo solo e configurações; ouro/achievements locais não viram recompensas verificadas de co-op.
 - Saves antigos, resume, export/import, personagens, armas, mapas e modos continuam disponíveis. A baseline original está em `baseline/v1.3.0/`; os três arquivos originais na raiz também foram mantidos como referência histórica.
 
+## RPG (rollout controlado)
+
+`RPG_ENABLED=false` e `RPG_EXPEDITIONS_ENABLED=false` são os padrões seguros.
+Após aplicar as migrações e integrar toda a Fase 3, habilite ambas no processo web
+e realtime de um ambiente de validação. Acesse `/rpg`, prepare o personagem e
+escolha **Expedição RPG** no lobby. Todos ficam prontos antes de START.
+Ruínas/normal/10 minutos são a configuração inicial autorizada; Survivor continua
+separado. Recompensas confirmadas aparecem em `/rpg/rewards` e no inventário RPG.
+
+Consulte [regras e recuperação](docs/RPG-REWARDS.md),
+[segurança](docs/RPG-REWARD-SECURITY.md), [QA e PRs](docs/RPG-PHASE3-QA.md)
+e [plano das próximas fases](docs/RPG-ROADMAP.md).
+
+Validação completa em banco temporário, sem jogadores ativos:
+
+```bash
+RUN_DATABASE_TESTS=1 RUN_MIGRATION_TESTS=1 npm test
+RUN_REALTIME_TESTS=1 npm test -- tests/realtime.test.ts tests/rpg-equipment-realtime.test.ts tests/rpg-expedition-realtime.test.ts
+RPG_ENABLED=true RPG_EXPEDITIONS_ENABLED=true RPG_EXPEDITION_BROWSER_DRIVER=1 npm run test:browser
+RPG_ENABLED=false RPG_EXPEDITIONS_ENABLED=false npm run test:browser -- tests/browser/rpg.spec.ts
+RUN_RPG_BENCHMARK=1 RPG_ENABLED=true RPG_EXPEDITIONS_ENABLED=true node --expose-gc --conditions=react-server --import tsx scripts/rpg-rewards-benchmark.ts
+```
+
+O driver de navegador acima é exclusivo de testes, acelera ticks do motor real
+e não deve integrar o comando realtime de produção. Use Next dev em localhost,
+sem desativar as proteções HTTPS de produção. Veja o relatório para falhas
+preexistentes de estabilidade do navegador.
+
 ## Produção
 
 ```bash

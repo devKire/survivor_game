@@ -47,7 +47,7 @@ export function calculateRpgReward(
     ];
     for (const event of events) {
       const profile = RPG_REWARD_PROFILES_V1[event.source];
-      xp += profile.xp;
+      xp += profile.xp.amount;
       materials["obelisk-dust"] += profile.dust;
       materials["echo-shard"] += profile.shards;
       origins.push({

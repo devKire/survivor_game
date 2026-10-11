@@ -12,6 +12,9 @@ import {
   type ServerMessage,
 } from "../src/game/network/protocol";
 import { settleRpgExpedition } from "../src/server/rpg/rewards";
+import { rpgProfileData } from "../src/server/rpg/profile";
+import { allocateRpgAttributes } from "../src/server/rpg/mutations";
+import { initialRpgAttributes } from "../src/game/core/rpg";
 import { CoopSimulation } from "../src/game/core/coop";
 import { freshSave } from "../src/game/core/save";
 import { settleAuthorizedRpgSimulation } from "../src/realtime/rpg-expeditions";
@@ -123,6 +126,22 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
             },
           });
         }
+        if (size === 2) {
+          await rpgProfileData(ids[0]);
+          await db().rpgCharacter.update({
+            where: {
+              userId_characterId: { userId: ids[0], characterId: "nara" },
+            },
+            data: { ...initialRpgAttributes(2), xp: 100 },
+          });
+          await allocateRpgAttributes(ids[0], {
+            requestId: randomUUID(),
+            expectedRevision: 1,
+            characterId: "nara",
+            attribute: "power",
+            amount: 1,
+          });
+        }
         const team = await teams.createTeam(ids[0]);
         teamIds.push(team.id);
         for (const id of ids.slice(1)) await teams.joinTeam(id, team.code);
@@ -151,13 +170,52 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
             ),
           );
           peers[0].send({ type: "START" });
-          await until(() =>
-            peers.every((p) => p.messages.some((m) => m.type === "STARTED")),
+          await until(
+            () =>
+              peers.every((p) =>
+                p.messages.some((m) => m.type === "STARTED"),
+              ) ||
+              peers.some((p) => p.messages.some((m) => m.type === "ERROR")),
           );
+          expect(
+            peers.flatMap((p) => p.messages.filter((m) => m.type === "ERROR")),
+            `START size=${size}`,
+          ).toEqual([]);
           const started = peers[0].messages.find((m) => m.type === "STARTED")!;
           if (started.type !== "STARTED") throw new Error("Missing start");
           const sessionId = started.room;
           expect(started.expeditionKind).toBe("RPG_EXPEDITION");
+          if (size === 2) {
+            await until(() =>
+              peers.every((p) => p.messages.some((m) => m.type === "SNAPSHOT")),
+            );
+            const original = peers[0].messages.find(
+              (m) => m.type === "SNAPSHOT",
+            );
+            if (original?.type !== "SNAPSHOT")
+              throw new Error("snapshot missing");
+            expect(original.own.stats.damage).toBe(1.002);
+            await allocateRpgAttributes(ids[0], {
+              requestId: randomUUID(),
+              expectedRevision: 2,
+              characterId: "nara",
+              attribute: "power",
+              amount: 4,
+            });
+            const closed = once(peers[0].ws, "close");
+            peers[0].ws.close();
+            await closed;
+            peers[0] = await connect(ids[0]);
+            await until(() =>
+              peers[0].messages.some((m) => m.type === "SNAPSHOT"),
+            );
+            const restored = peers[0].messages.find(
+              (m) => m.type === "SNAPSHOT",
+            );
+            if (restored?.type !== "SNAPSHOT")
+              throw new Error("snapshot missing");
+            expect(restored.own.stats.damage).toBe(original.own.stats.damage);
+          }
           const before = await db().userProgress.findMany({
             where: { userId: { in: ids } },
             orderBy: { userId: "asc" },
@@ -165,7 +223,10 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
           peers[0].send({ type: "GRANT_RPG", xp: 999999, userId: ids[0] });
           await until(() => peers[0].messages.some((m) => m.type === "ERROR"));
           const driven = once(child, "message");
-          child.send?.({ sessionId });
+          child.send?.({
+            sessionId,
+            ...(size === 5 ? { inactiveUserId: ids[4] } : {}),
+          });
           expect((await driven)[0]).toMatchObject({
             completed: sessionId,
             ended: true,
@@ -181,7 +242,15 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
             where: { sessionId },
           });
           expect(receipts).toHaveLength(size);
-          expect(receipts.every((r) => r.xpGranted >= 100)).toBe(true);
+          expect(
+            receipts
+              .filter((r) => size !== 5 || r.userId !== ids[4])
+              .every((r) => r.xpGranted >= 100),
+          ).toBe(true);
+          if (size === 5)
+            expect(receipts.find((r) => r.userId === ids[4])?.xpGranted).toBe(
+              0,
+            );
           const expedition = await db().rpgExpeditionSession.findUniqueOrThrow({
             where: { sessionId },
           });

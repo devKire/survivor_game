@@ -1,0 +1,73 @@
+{
+  "rewards": {
+    "node": "v22.23.3",
+    "players": 5,
+    "lootFivePlayersMs": {
+      "mean": 0.7438971289999975,
+      "p95": 1.4042060000001584,
+      "max": 4.268019000000095
+    },
+    "events": {
+      "attempts": 1000000,
+      "recorded": 6,
+      "totalMs": 94.450108,
+      "nsPerAttempt": 94.450108,
+      "retainedHeapDelta": -1576,
+      "peakHeapDelta": 16378496,
+      "forcedGc": true
+    },
+    "emptySerializableTransactionMs": {
+      "mean": 1.4573950000000422,
+      "p95": 2.732861999999841,
+      "max": 2.732861999999841
+    },
+    "atomicFivePlayerSettlementMs": {
+      "mean": 83.75907859999992,
+      "p95": 130.03870899999993,
+      "max": 130.03870899999993
+    },
+    "newSettlementRows": {
+      "mean": 26.1,
+      "p95": 30,
+      "max": 30
+    }
+  },
+  "combat": {
+    "classic": {
+      "updateMeanMs": 2.622689027500044,
+      "withSnapshotsMeanMs": 5.013915201666714,
+      "updateP95RangeMs": [
+        3.832362000000103,
+        5.108421000000817
+      ]
+    },
+    "empty": {
+      "updateMeanMs": 2.9010144558333937,
+      "withSnapshotsMeanMs": 5.693431282499994,
+      "updateP95RangeMs": [
+        4.110882000000856,
+        6.83802999999898
+      ]
+    },
+    "rpg": {
+      "updateMeanMs": 2.960200567500012,
+      "withSnapshotsMeanMs": 5.491878427500003,
+      "updateP95RangeMs": [
+        4.7562940000007075,
+        6.07805499999813
+      ]
+    }
+  },
+  "combatConditions": {
+    "players": 5,
+    "enemies": 1100,
+    "rounds": 4,
+    "ticksPerRound": 300
+  },
+  "historicalPhase2UpdateMeanMs": {
+    "classic": 2.143,
+    "empty": 2.189,
+    "rpg": 2.455
+  },
+  "note": "Local measurements, not production SLA; historical Phase 2 results are not same-run baselines."
+}

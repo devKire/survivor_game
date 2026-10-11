@@ -4,6 +4,7 @@ import { freshSave } from "../src/game/core/save";
 import {
   createRpgCombatLoadout,
   initialRpgAttributes,
+  validateCombatLoadout,
 } from "../src/game/core/rpg";
 import { RpgRewardLedger } from "../src/game/core/rpg/reward-ledger";
 import type { Structure } from "../src/game/core/types";
@@ -31,6 +32,34 @@ function defeat(g: CoopSimulation) {
   return g.rpgTerminalResult();
 }
 describe("bounded authoritative reward ledger", () => {
+  it("validates persisted JSONB builds by values while rejecting changed modifiers", () => {
+    const build = createRpgCombatLoadout({
+      characterId: "nara",
+      level: 2,
+      attributes: { ...initialRpgAttributes(2).attributes, power: 1 },
+      equipment: [],
+      profileRevision: 1,
+    });
+    const persisted = {
+      ...build,
+      modifiers: build.modifiers.map((m) => ({
+        value: m.value,
+        operation: m.operation,
+        stat: m.stat,
+        sourceId: m.sourceId,
+      })),
+    };
+    expect(validateCombatLoadout(persisted)).toEqual(build);
+    expect(() =>
+      validateCombatLoadout({
+        ...persisted,
+        modifiers: persisted.modifiers.map((m) => ({
+          ...m,
+          value: m.value + 0.1,
+        })),
+      }),
+    ).toThrow("inválidos");
+  });
   it("counts a real defeated boss/elite once, excludes common enemies and ignores duplicate damage", () => {
     const g = game();
     g.update(0.04);
