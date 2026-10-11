@@ -122,7 +122,10 @@ incluem o fluxo RPG. Traces e relatórios locais estão em artifacts/rpg-phase3/
 | [B #15](https://github.com/devKire/survivor_game/pull/15) | codex/rpg-phase3-persistence | codex/rpg-phase3-domain | Migração e persistência |
 | [C #16](https://github.com/devKire/survivor_game/pull/16) | codex/rpg-phase3-lifecycle | codex/rpg-phase3-persistence | Ciclo autoritativo |
 | [D #17](https://github.com/devKire/survivor_game/pull/17) | codex/rpg-phase3-ui | codex/rpg-phase3-lifecycle | Interface e histórico |
-| E — a publicar | codex/rpg-phase3 | codex/rpg-phase3-ui | QA, correção JSONB, entrada central e relatório |
+| [E #18](https://github.com/devKire/survivor_game/pull/18) | codex/rpg-phase3 | codex/rpg-phase3-ui | QA, correção JSONB, entrada central e relatório |
+
+Commits funcionais: A `fa16308`, B `506eb6c`, C `fc6c41f`, D `e842e66`,
+E `023bf02`; atualização final dos links em commit documental separado.
 
 Integrar A → B → C → D → E. Depois de cada merge em main, alterar a base do
 próximo PR para main e conferir o diff. Não finalizar merges somente nas branches
