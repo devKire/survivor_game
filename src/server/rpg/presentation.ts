@@ -24,7 +24,7 @@ export function rpgPresentation(
     error: string;
     stats: CombatStats | null;
   } | null = null;
-  const items = profile.items.map((row) => {
+  const items = profile.items.filter((row) => row.location === "INVENTORY").map((row) => {
     let equipment: RpgEquipment | null = null;
     try {
       equipment = rpgEquipmentData(row);

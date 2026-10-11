@@ -12,7 +12,9 @@ import {
   equipmentCommandInput,
   mutateRpgEquipment,
 } from "./mutations";
-import { requireRpgEnabled } from "./guard";
+import { storageCommandInput } from "../../game/core/rpg/storage";
+import { transferRpgItem } from "./storage";
+import { requireRpgEnabled, requireRpgRefugeEnabled } from "./guard";
 
 export type RpgActionState = {
   status: "idle" | "success" | "error";
@@ -50,26 +52,32 @@ function formInput(form: FormData) {
 
 async function runAction(
   form: FormData,
-  kind: "select" | "allocate" | "equipment",
+  kind: "select" | "allocate" | "equipment" | "storage",
 ): Promise<RpgActionState> {
   try {
     requireRpgEnabled();
+    if (kind === "storage") requireRpgRefugeEnabled();
     const user = await requireUser();
     const input =
-      kind === "equipment"
+      kind === "storage"
+        ? storageCommandInput.parse(formInput(form))
+        : kind === "equipment"
         ? equipmentCommandInput.parse(formInput(form))
         : kind === "allocate"
           ? allocateAttributesInput.parse(formInput(form))
           : selectCharacterInput.parse(formInput(form));
     await limit("rpg:" + user.id, 30);
-    if (kind === "equipment") await mutateRpgEquipment(user.id, input);
+    if (kind === "storage") await transferRpgItem(user.id, input);
+    else if (kind === "equipment") await mutateRpgEquipment(user.id, input);
     else if (kind === "allocate") await allocateRpgAttributes(user.id, input);
     else await selectRpgCharacter(user.id, input);
     revalidatePath("/rpg", "layout");
     return {
       status: "success",
       message:
-        kind === "equipment"
+        kind === "storage"
+          ? "Transferência confirmada."
+          : kind === "equipment"
           ? "Equipamentos salvos."
           : kind === "allocate"
             ? "Atributos salvos."
@@ -107,4 +115,8 @@ export async function mutateRpgEquipmentAction(
   form: FormData,
 ) {
   return runAction(form, "equipment");
+}
+
+export async function transferRpgItemAction(_previous: RpgActionState, form: FormData) {
+  return runAction(form, "storage");
 }

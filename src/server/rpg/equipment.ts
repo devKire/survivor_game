@@ -65,6 +65,8 @@ export async function applyEquipmentIntent(
     });
     return;
   }
+  if (row.location !== "INVENTORY")
+    throw new UserError("Retire o item do Depósito antes de equipar.");
   try {
     assertCanEquip(rpgEquipmentData(row), character, intent.slot);
   } catch (error) {
