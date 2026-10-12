@@ -90,6 +90,8 @@ export const RPG_ITEMS = {
 } as const satisfies Record<string, RpgEquipmentDefinition>;
 
 export const RPG_MATERIALS = {
+  "weathered-ore": { name: "Minério Gasto" },
+  "ruins-fiber": { name: "Fibra das Ruínas" },
   "obelisk-dust": { name: "Pó do Obelisco" },
   "echo-shard": { name: "Fragmento de Eco" },
 } as const;
