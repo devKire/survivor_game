@@ -21,10 +21,11 @@ import {
 import { freshSave, migrateSave } from "../../game/core/save";
 import type { SaveData } from "../../game/core/types";
 export default function TeamClient({
-  user, menuHeader, rpgExpeditionsEnabled = false,
+  user, menuHeader, rpgExpeditionsEnabled = false, rpgRefugeEnabled = false,
 }: {
   menuHeader: React.ReactNode;
   rpgExpeditionsEnabled?: boolean;
+  rpgRefugeEnabled?: boolean;
   user: { id: string; name: string };
 }) {
   const connection = useRef<RealtimeClient | null>(null),
@@ -170,6 +171,7 @@ export default function TeamClient({
               Escolha seu eco. Encontre sua equipe. Atravessem a névoa juntos.
             </p>
             {result && <p role="status">{result}</p>}
+            {rpgRefugeEnabled && <Link href="/rpg/refuge">Voltar ao Refúgio</Link>}
             {rewardSessionId && <Link href={`/rpg/rewards?sessionId=${encodeURIComponent(rewardSessionId)}`}>Ver recompensas RPG</Link>}
             {rpgExpeditionsEnabled && <p><Link href="/rpg/expeditions">Regras da Expedição RPG</Link> · <Link href="/rpg/rewards">Histórico RPG</Link></p>}
             <div className="account-grid">
