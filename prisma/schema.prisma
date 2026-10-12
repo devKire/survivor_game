@@ -91,6 +91,7 @@ model RpgItemInstance {
   contentVersion      Int           @default(1)
   rollSeed            String?
   affixes             Json          @default("[]")
+  location            String        @default("INVENTORY")
   equippedCharacterId String?
   equippedSlot        String?
   createdAt           DateTime      @default(now())
@@ -100,6 +101,7 @@ model RpgItemInstance {
 
   @@unique([equippedCharacterId, equippedSlot])
   @@index([userId, itemId])
+  @@index([userId, location])
   @@schema("limiar")
 }
 

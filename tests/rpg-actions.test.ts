@@ -10,7 +10,10 @@ import {
   allocateRpgAttributesAction,
   selectRpgCharacterAction,
   mutateRpgEquipmentAction,
+  transferRpgItemAction,
 } from "../src/server/rpg/actions";
+import { transferRpgItem } from "../src/server/rpg/storage";
+vi.mock("../src/server/rpg/storage", () => ({ transferRpgItem: vi.fn() }));
 import { loginHref, safeCallback } from "../src/app/hub/navigation";
 import { randomUUID } from "node:crypto";
 
@@ -31,6 +34,7 @@ const actions = [
   selectRpgCharacterAction,
   allocateRpgAttributesAction,
   mutateRpgEquipmentAction,
+  transferRpgItemAction,
 ];
 function form(allocation = false) {
   const value = new FormData();
@@ -45,6 +49,7 @@ function form(allocation = false) {
 }
 beforeEach(() => {
   vi.stubEnv("RPG_ENABLED", "true");
+  vi.stubEnv("RPG_REFUGE_ENABLED", "true");
   vi.mocked(requireUser).mockResolvedValue({
     id: "authenticated-owner",
   } as Awaited<ReturnType<typeof requireUser>>);
@@ -221,4 +226,18 @@ describe("RPG Server Action security", () => {
       "sensitive-host",
     );
   });
+});
+
+it("storage rejects client authority, hides internal failures and uses session owner", async () => {
+  const value = new FormData();
+  for (const [k,v] of Object.entries({requestId:randomUUID(),expectedRevision:"1",instanceId:"owned-item",operation:"DEPOSIT_ITEM"})) value.set(k,v);
+  value.set("userId","other");
+  expect((await transferRpgItemAction(idle,value)).status).toBe("error");
+  expect(transferRpgItem).not.toHaveBeenCalled();value.delete("userId");
+  vi.mocked(transferRpgItem).mockRejectedValueOnce(new Error("database-secret"));
+  expect((await transferRpgItemAction(idle,value)).message).not.toContain("secret");
+  await transferRpgItemAction(idle,value);
+  expect(transferRpgItem).toHaveBeenCalledWith("authenticated-owner",expect.objectContaining({instanceId:"owned-item"}));
+  vi.mocked(transferRpgItem).mockClear();vi.stubEnv("RPG_REFUGE_ENABLED","false");
+  expect((await transferRpgItemAction(idle,value)).status).toBe("error");expect(transferRpgItem).not.toHaveBeenCalled();
 });
