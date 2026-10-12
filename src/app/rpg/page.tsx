@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { isRpgEnabled, isRpgExpeditionsEnabled, isRpgRefugeEnabled } from "../../server/env";
+import {
+  isRpgExplorationEnabled,
+  isRpgEnabled,
+  isRpgExpeditionsEnabled,
+  isRpgRefugeEnabled,
+} from "../../server/env";
 import { requirePageUser } from "../../server/hub";
 import { rpgProfileData } from "../../server/rpg/profile";
 import { RPG_CHARACTERS, RPG_ITEMS } from "../../game/content/rpg";
@@ -21,7 +26,11 @@ export default async function Page() {
     <main className="account-shell rpg-page">
       <p className="eyebrow">ECOS DO OBELISCO</p>
       <h1>Sua jornada RPG</h1>
-      {isRpgRefugeEnabled() && <p><Link href="/rpg/refuge">Entrar no Refúgio</Link></p>}
+      {isRpgRefugeEnabled() && (
+        <p>
+          <Link href="/rpg/refuge">Entrar no Refúgio</Link>
+        </p>
+      )}
       <section className="card">
         <h2>{name} · personagem ativo</h2>
         <p>
@@ -50,6 +59,12 @@ export default async function Page() {
           A build será fixada ao iniciar. No lobby, cada jogador confirma seu
           personagem antes de ficar pronto.
         </p>
+        {isRpgExplorationEnabled() && (
+          <nav className="actions">
+            <Link href="/rpg/exploration">Explorar os arredores</Link>
+            <Link href="/rpg/discoveries">Diário de exploração</Link>
+          </nav>
+        )}
         <nav className="actions">
           <Link href="/rpg/character">Preparar personagem</Link>
           <Link href="/rpg/inventory">Gerenciar equipamentos</Link>

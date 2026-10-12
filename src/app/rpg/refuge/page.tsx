@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { notFound } from "next/navigation";
 import {
   isRpgRefugeEnabled,
+  isRpgExplorationEnabled,
   isRpgExpeditionsEnabled,
 } from "../../../server/env";
 import { requirePageUser } from "../../../server/hub";
@@ -32,6 +33,20 @@ export default async function Page() {
       level={active.level}
       xp={active.xp}
       panels={{
+        EXPLORATION: (
+          <section>
+            <h2>Portal de exploração</h2>
+            <p>
+              Descubra locais e colete recursos pessoais fora do Refúgio, em uma
+              região sem ondas de combate.
+            </p>
+            {isRpgExplorationEnabled() ? (
+              <Link href="/rpg/exploration">Escolher região de exploração</Link>
+            ) : (
+              <p>Exploração indisponível no momento.</p>
+            )}
+          </section>
+        ),
         CHARACTER: <CharacterPanel profile={profile} />,
         EQUIPMENT: (
           <section>
