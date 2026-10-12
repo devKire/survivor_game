@@ -1,0 +1,26 @@
+
+> limiar@2.0.0 test:browser
+> node --conditions=react-server node_modules/@playwright/test/cli.js test tests/browser/rpg-refuge.spec.ts
+
+[WebServer] (node:141275) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:141287) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:141319) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:141344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/rpg-refuge.spec.ts:11:1 › Refuge rollout and safe login callbacks (2.4s)
+[WebServer] (node:141287) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: ground_forest-a (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: ground_ruins (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_trees_living (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_ruins (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_crystals (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_rocks (src/game/client/tile-renderer.ts:14:13)
+  ✓  2 tests/browser/rpg-refuge.spec.ts:22:1 › real refuge scene, NPC services, storage, mobile and repeated cleanup (26.7s)
+
+  2 passed (38.7s)

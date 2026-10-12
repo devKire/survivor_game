@@ -1,0 +1,16 @@
+
+> limiar@2.0.0 test
+> vitest run tests/realtime.test.ts tests/rpg-equipment-realtime.test.ts tests/rpg-expedition-realtime.test.ts
+
+
+ RUN  v5.0.1 /workspace/survivor_game
+
+(node:126388) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:126430) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+ Test Files  3 passed (3)
+      Tests  3 passed (3)
+   Start at  20:11:20
+   Duration  98.41s (tests 98%, transform 1%, import 1%)

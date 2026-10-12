@@ -1,0 +1,117 @@
+{
+  "metrics": {
+    "resizeMs": "0.100",
+    "sprite": "canonical",
+    "x": "600.0",
+    "y": "620.0",
+    "character": "ivo",
+    "target": "refuge:guardian",
+    "renderP95": "8.100",
+    "frameP95": "50.000",
+    "entryMs": "36.000"
+  },
+  "navigation": [
+    {
+      "instances": 0,
+      "loops": 0,
+      "listeners": 0,
+      "observers": 0,
+      "mounts": 2,
+      "disposed": 2,
+      "heap": {
+        "usedSize": 17251432,
+        "totalSize": 18210816,
+        "embedderHeapUsedSize": 2366464,
+        "backingStorageSize": 8019830
+      },
+      "dom": {
+        "documents": 1,
+        "nodes": 401,
+        "jsEventListeners": 710
+      },
+      "leaveMs": 327.3520609999978
+    },
+    {
+      "instances": 0,
+      "loops": 0,
+      "listeners": 0,
+      "observers": 0,
+      "mounts": 3,
+      "disposed": 3,
+      "heap": {
+        "usedSize": 17483200,
+        "totalSize": 18735104,
+        "embedderHeapUsedSize": 2159208,
+        "backingStorageSize": 8111691
+      },
+      "dom": {
+        "documents": 1,
+        "nodes": 387,
+        "jsEventListeners": 709
+      },
+      "leaveMs": 222.1659010000003
+    },
+    {
+      "instances": 0,
+      "loops": 0,
+      "listeners": 0,
+      "observers": 0,
+      "mounts": 4,
+      "disposed": 4,
+      "heap": {
+        "usedSize": 17675272,
+        "totalSize": 18735104,
+        "embedderHeapUsedSize": 2151136,
+        "backingStorageSize": 8203330
+      },
+      "dom": {
+        "documents": 1,
+        "nodes": 401,
+        "jsEventListeners": 710
+      },
+      "leaveMs": 484.6222369999996
+    },
+    {
+      "instances": 0,
+      "loops": 0,
+      "listeners": 0,
+      "observers": 0,
+      "mounts": 5,
+      "disposed": 5,
+      "heap": {
+        "usedSize": 17630028,
+        "totalSize": 18472960,
+        "embedderHeapUsedSize": 1819200,
+        "backingStorageSize": 8294972
+      },
+      "dom": {
+        "documents": 1,
+        "nodes": 388,
+        "jsEventListeners": 709
+      },
+      "leaveMs": 321.1176369999994
+    },
+    {
+      "instances": 0,
+      "loops": 0,
+      "listeners": 0,
+      "observers": 0,
+      "mounts": 6,
+      "disposed": 6,
+      "heap": {
+        "usedSize": 17781468,
+        "totalSize": 18997248,
+        "embedderHeapUsedSize": 2031432,
+        "backingStorageSize": 8386613
+      },
+      "dom": {
+        "documents": 1,
+        "nodes": 388,
+        "jsEventListeners": 709
+      },
+      "leaveMs": 234.40506399999867
+    }
+  ],
+  "routeEntryMs": 1513.9059040000002,
+  "interactionMs": 62.15235799999937
+}

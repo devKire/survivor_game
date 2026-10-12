@@ -40,6 +40,7 @@ export async function buildRpgCombatLoadoutInTransaction(
   const equipment = rows.map((row) => {
     const item = rpgEquipmentData(row);
     if (
+      row.location !== "INVENTORY" ||
       row.equippedSlot !==
       equipmentDefinition(item.itemId, item.contentVersion).slot
     )
@@ -72,7 +73,8 @@ export async function buildRpgCombatLoadout(
     .map((row) => {
       const item = rpgEquipmentData(row);
       if (
-        row.equippedSlot !==
+        row.location !== "INVENTORY" ||
+      row.equippedSlot !==
         equipmentDefinition(item.itemId, item.contentVersion).slot
       )
         throw new UserError("Slot de equipamento inválido.");

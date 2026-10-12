@@ -94,3 +94,7 @@ Ver [RPG-REWARDS.md](RPG-REWARDS.md), [RPG-LOOT.md](RPG-LOOT.md),
 `20261008180000_rpg_foundation_hardening` adiciona colunas e constraints no schema `limiar`, atribui o saldo correspondente aos níveis existentes e move pilhas equipadas para o inventário sem perder unidades. A operação é atômica e limita a espera por lock a cinco segundos; requer uma janela compatível com o tamanho das tabelas RPG. Em falha de lock, resolver a tentativa registrada pelo Prisma como revertida antes de executar novamente. Não aplicar reset nem apagar migrações anteriores.
 
 As constraints de CHECK e a função `rpg_attribute_spent_v1` são mantidas no SQL da migração; Prisma não representa essas regras no datamodel. Reverter a aplicação pode manter as colunas aditivas, mas gravadores antigos que alterem nível isoladamente serão rejeitados: desabilitar RPG até atualizar esses gravadores. Ver [RPG-HARDENING.md](RPG-HARDENING.md) para auditoria e resultados reais.
+
+## Refúgio e Depósito (Fase 4)
+
+Cena segura e local em `/rpg/refuge`, gated por RPG_ENABLED e RPG_REFUGE_ENABLED. Reutiliza TileRenderer/CharacterSpriteRenderer, sem iniciar simulação de combate ou persistir posição. NPCs/estruturas abrem serviços reais. `RpgItemInstance.location` separa INVENTORY/STASH na mesma instância, com CHECK contra equipamento armazenado. Transferências usam lock, Serializable, revisão e receipts existentes; não alteram economia ou UserProgress.version. Ver [RPG-REFUGE.md](RPG-REFUGE.md) e [RPG-STORAGE.md](RPG-STORAGE.md).

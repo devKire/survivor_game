@@ -1,0 +1,20 @@
+
+> limiar@2.0.0 test:browser
+> node --conditions=react-server node_modules/@playwright/test/cli.js test tests/browser/rpg-refuge.spec.ts
+
+[WebServer] (node:141951) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:141963) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:141996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:142009) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/rpg-refuge.spec.ts:11:1 › Refuge rollout and safe login callbacks (596ms)
+  -  2 tests/browser/rpg-refuge.spec.ts:22:1 › real refuge scene, NPC services, storage, mobile and repeated cleanup
+
+  1 skipped
+  1 passed (5.6s)
