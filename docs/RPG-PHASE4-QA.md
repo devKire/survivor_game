@@ -1,4 +1,4 @@
-# Fase 4 — auditoria e acompanhamento
+# Fase 4 — auditoria, entrega e QA
 
 Base confirmada: main `6029231db7c6c251b16b6c12e8b25f6a733388bb`, merge #19 da Fase 3. Branch `codex/rpg-phase4`.
 Baseline executado em banco local isolado: npm test, 258 aprovados / 59 ignorados; migrações da main aplicadas.
@@ -90,3 +90,85 @@ Terreno usa um raster offscreen fixo de 1200×900 (~4,12 MiB RGBA), reconstruíd
 `RUN_RPG_BENCHMARK=1 RPG_ENABLED=true RPG_REFUGE_ENABLED=true node --conditions=react-server --import tsx scripts/rpg-storage-benchmark.ts`: 100 transferências confirmadas, média 15,798 ms, P95 22,177 ms, máximo 350,798 ms (inclui aquecimento), uma instância ao final e 100 receipts. Fixture removida ao terminar. Medida local não substitui latência de produção.
 
 Logs selecionados para revisão estão em [qa/refuge/logs](qa/refuge/logs).
+
+## GitHub e ordem de integração
+
+Nenhum PR foi mesclado pelo agente. Branch principal `codex/rpg-phase4`, cinco entregas empilhadas prontas para revisão.
+
+| Etapa | Branch | Commit principal | PR | Base de revisão |
+|---|---|---|---|---|
+| A | `codex/rpg-phase4-domain` | `37dd6ac` | [#20](https://github.com/devKire/survivor_game/pull/20) | `main` |
+| B | `codex/rpg-phase4-scene` | `a76737d` | [#21](https://github.com/devKire/survivor_game/pull/21) | `codex/rpg-phase4-domain` |
+| C | `codex/rpg-phase4-storage` | `9c5d797` | [#22](https://github.com/devKire/survivor_game/pull/22) | `codex/rpg-phase4-scene` |
+| D | `codex/rpg-phase4-ui` | `5a68a62` | [#23](https://github.com/devKire/survivor_game/pull/23) | `codex/rpg-phase4-storage` |
+| E | `codex/rpg-phase4` | `e368547` | [#24](https://github.com/devKire/survivor_game/pull/24) | `codex/rpg-phase4-ui` |
+
+Ordem A → B → C → D → E. Após integrar uma etapa à main, redirecionar o próximo PR para main e revisar seu diff. Não concluir a integração apenas mesclando em branches intermediárias. A branch principal contém toda a entrega. Habilitar rollout somente depois de integrar todas as etapas e aplicar a migração. Não houve deployment.
+
+Os commits de trabalho foram organizados antes da publicação; a árvore final foi comparada e permaneceu idêntica à árvore validada. A atualização posterior deste relatório apenas adiciona referências dos PRs.
+
+## Arquivos criados e modificados
+
+Lista auditada contra a base; A = criado, M = modificado.
+
+```text
+M	.env.example
+M	README.md
+M	docs/RPG-ARCHITECTURE.md
+A	docs/RPG-NPCS.md
+A	docs/RPG-PHASE4-QA.md
+A	docs/RPG-REFUGE-SCENE.md
+A	docs/RPG-REFUGE.md
+M	docs/RPG-ROADMAP.md
+A	docs/RPG-STORAGE.md
+A	docs/qa/refuge/browser-metrics.json
+A	docs/qa/refuge/desktop.png
+A	docs/qa/refuge/fallback.png
+A	docs/qa/refuge/logs/rpg4-browser-final.log
+A	docs/qa/refuge/logs/rpg4-browser-full.log
+A	docs/qa/refuge/logs/rpg4-browser-off.log
+A	docs/qa/refuge/logs/rpg4-browser-refuge-off.log
+A	docs/qa/refuge/logs/rpg4-build-last.log
+A	docs/qa/refuge/logs/rpg4-database-final.log
+A	docs/qa/refuge/logs/rpg4-lint-last.log
+A	docs/qa/refuge/logs/rpg4-realtime.log
+A	docs/qa/refuge/logs/rpg4-typecheck-last.log
+A	docs/qa/refuge/logs/rpg4-unit-final.log
+A	docs/qa/refuge/mobile.png
+A	docs/qa/refuge/storage-benchmark.json
+A	prisma/migrations/20261011100000_rpg_refuge_storage/migration.sql
+M	prisma/schema.prisma
+A	scripts/rpg-storage-benchmark.ts
+M	src/app/hub/navigation.ts
+A	src/app/rpg/character/CharacterPanel.tsx
+M	src/app/rpg/character/page.tsx
+M	src/app/rpg/layout.tsx
+M	src/app/rpg/page.tsx
+A	src/app/rpg/refuge/RefugeClient.tsx
+A	src/app/rpg/refuge/page.tsx
+A	src/app/rpg/refuge/refuge.module.css
+A	src/app/rpg/storage/StoragePanel.tsx
+A	src/app/rpg/storage/page.tsx
+M	src/app/team/TeamClient.tsx
+M	src/app/team/page.tsx
+A	src/game/client/refuge-scene.ts
+A	src/game/content/rpg/refuge-npcs.ts
+A	src/game/content/rpg/refuge.ts
+A	src/game/core/rpg/refuge/scene.ts
+A	src/game/core/rpg/refuge/types.ts
+A	src/game/core/rpg/storage.ts
+M	src/server/env.ts
+M	src/server/rpg/actions.ts
+M	src/server/rpg/equipment.ts
+M	src/server/rpg/guard.ts
+M	src/server/rpg/loadout.ts
+M	src/server/rpg/presentation.ts
+A	src/server/rpg/storage-presentation.ts
+A	src/server/rpg/storage.ts
+A	tests/browser/rpg-refuge.spec.ts
+M	tests/rpg-actions.test.ts
+A	tests/rpg-refuge-domain.test.ts
+A	tests/rpg-refuge-scene.test.ts
+A	tests/rpg-storage-database.test.ts
+A	tests/rpg-storage-migrations.test.ts
+```
