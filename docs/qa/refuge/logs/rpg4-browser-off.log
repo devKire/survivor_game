@@ -1,0 +1,23 @@
+
+> limiar@2.0.0 test:browser
+> node --conditions=react-server node_modules/@playwright/test/cli.js test tests/browser/rpg.spec.ts tests/browser/rpg-refuge.spec.ts
+
+[WebServer] (node:141691) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:141703) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:141735) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 1 worker
+
+(node:141749) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/rpg-refuge.spec.ts:11:1 › Refuge rollout and safe login callbacks (534ms)
+  -  2 tests/browser/rpg-refuge.spec.ts:22:1 › real refuge scene, NPC services, storage, mobile and repeated cleanup
+  ✓  3 tests/browser/rpg.spec.ts:10:1 › RPG disabled routes return 404 (356ms)
+  -  4 tests/browser/rpg.spec.ts:16:1 › RPG enabled routes require login and preserve safe callbacks
+  -  5 tests/browser/rpg.spec.ts:33:1 › RPG selection and attributes handle stale tabs inline and preserve Survivor state
+
+  3 skipped
+  2 passed (8.0s)
