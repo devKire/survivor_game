@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GameShell } from "../../game/client/OfflineGame";
 import {
@@ -12,12 +12,15 @@ import type { ExplorationNode } from "../../game/core/rpg/exploration/types";
 import { explorationResource } from "../../game/content/rpg/exploration-resources";
 import { RPG_CHARACTERS } from "../../game/content/rpg";
 import styles from "./exploration.module.css";
+import QuestTracker from "../rpg/quests/QuestTracker";
 export default function OnlineExploration({
   userId,
   session,
   connection,
   state,
+  questsEnabled=false,
 }: {
+  questsEnabled?:boolean;
   userId: string;
   session: OnlineSession;
   connection: React.RefObject<RealtimeClient | null>;
@@ -46,8 +49,13 @@ export default function OnlineExploration({
       game.current = null;
     };
   }, [userId, session, connection, router]);
+  const questRevision=useRef(0);
+  const narrativeRevision=useCallback((revision:number)=>{
+    questRevision.current=Math.max(questRevision.current,revision);
+    if(game.current?.exploration)game.current.exploration={...game.current.exploration,revision:Math.max(game.current.exploration.revision,revision)};
+  },[]);
   useEffect(() => {
-    if (game.current) game.current.exploration = state ?? undefined;
+    if (game.current) game.current.exploration = state ? {...state,revision:Math.max(state.revision,questRevision.current)} : undefined;
   }, [state]);
   const depleted = !!target && state?.depleted.includes(target.id);
   function move(code: string, down: boolean) {
@@ -62,6 +70,7 @@ export default function OnlineExploration({
       aria-label="Exploração autoritativa"
     >
       <GameShell canvasRef={canvas} />
+      {questsEnabled && <div className={styles.questTracker}><QuestTracker onRevision={narrativeRevision} evidenceKey={`${state?.depleted.join(",")??""}:${state?.discovered.join(",")??""}`}/></div>}
       <header className={styles.header}>
         <strong>Arredores das Ruínas</strong>
         <small>

@@ -12,6 +12,10 @@ import type {
   RefugeDialogue,
 } from "../../../game/core/rpg/refuge/types";
 import styles from "./refuge.module.css";
+import QuestJournal, {questNpcNames} from "../quests/QuestJournal";
+import QuestTracker from "../quests/QuestTracker";
+import type {QuestJournalData} from "../../../server/rpg/quests/types";
+import {REFUGE_NPCS} from "../../../game/content/rpg/refuge-npcs";
 const labels: Record<RefugeService, string> = {
   CHARACTER: "Personagem",
   EQUIPMENT: "Arsenal",
@@ -26,13 +30,16 @@ export default function RefugeClient({
   level,
   xp,
   panels,
+  journal: initialJournal,
 }: {
   characterId: string;
   name: string;
   level: number;
   xp: number;
   panels: Record<RefugeService, ReactNode>;
+  journal?: QuestJournalData;
 }) {
+  const [journal,setJournal]=useState(initialJournal);
   const canvas = useRef<HTMLCanvasElement>(null),
     scene = useRef<RefugeScene | null>(null),
     dialog = useRef<HTMLDialogElement>(null),
@@ -44,6 +51,7 @@ export default function RefugeClient({
   const [panel, setPanel] = useState<RefugeService | null>(null),
     [talk, setTalk] = useState<{
       name: string;
+      npcId: string;
       dialogue: RefugeDialogue;
       line: number;
     } | null>(null);
@@ -54,7 +62,7 @@ export default function RefugeClient({
     const dialogue = npc?.dialogueId
       ? REFUGE_DIALOGUES[npc.dialogueId as keyof typeof REFUGE_DIALOGUES]
       : undefined;
-    setTalk(dialogue ? { name: npc!.name, dialogue, line: 0 } : null);
+    setTalk(dialogue ? { name: npc!.name, npcId: npc!.id, dialogue, line: 0 } : null);
     dialog.current?.showModal();
   }
   useEffect(() => {
@@ -197,6 +205,7 @@ export default function RefugeClient({
         ))}
         <button onClick={() => router.refresh()}>Atualizar dados</button>
       </nav>
+      {journal && <><QuestTracker initial={journal}/><nav className="actions" aria-label="NPCs narrativos">{REFUGE_NPCS.map(npc=><button key={npc.id} onClick={()=>show(undefined,npc)}>Falar: {questNpcNames[npc.id]}</button>)}</nav></>}
       <details>
         <summary>Orientação e controles</summary>
         <p>
@@ -250,6 +259,7 @@ export default function RefugeClient({
             )}
           </section>
         )}
+        {talk && journal && <QuestJournal key={talk.npcId} initial={journal} npcId={talk.npcId} onChange={setJournal}/>}
         {panel && panels[panel]}
       </dialog>
     </main>

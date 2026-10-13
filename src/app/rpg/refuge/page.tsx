@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { notFound } from "next/navigation";
 import {
   isRpgRefugeEnabled,
+  isRpgQuestsEnabled,
   isRpgExplorationEnabled,
   isRpgExpeditionsEnabled,
 } from "../../../server/env";
@@ -15,17 +16,20 @@ import CharacterPanel from "../character/CharacterPanel";
 import EquipmentInventory from "../inventory/EquipmentInventory";
 import StoragePanel from "../storage/StoragePanel";
 import RefugeClient from "./RefugeClient";
+import { rpgQuestJournal } from "../../../server/rpg/quests/journal";
 export const dynamic = "force-dynamic";
 export default async function Page() {
   if (!isRpgRefugeEnabled()) notFound();
-  const user = await requirePageUser("/rpg/refuge"),
-    profile = await rpgProfileData(user.id);
+  const user = await requirePageUser("/rpg/refuge");
+  const journal = isRpgQuestsEnabled() ? await rpgQuestJournal(user.id) : undefined;
+  const profile = await rpgProfileData(user.id);
   const active = profile.characters.find(
     (c) => c.id === profile.activeCharacterId,
   )!;
   const presentation = rpgPresentation(profile);
   return (
     <RefugeClient
+      journal={journal}
       characterId={active.characterId}
       name={
         RPG_CHARACTERS[active.characterId as keyof typeof RPG_CHARACTERS].name

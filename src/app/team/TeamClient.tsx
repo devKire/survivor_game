@@ -28,11 +28,13 @@ export default function TeamClient({
   rpgExpeditionsEnabled = false,
   rpgRefugeEnabled = false,
   rpgExplorationEnabled = false,
+  rpgQuestsEnabled = false,
 }: {
   menuHeader: React.ReactNode;
   rpgExpeditionsEnabled?: boolean;
   rpgRefugeEnabled?: boolean;
   rpgExplorationEnabled?: boolean;
+  rpgQuestsEnabled?: boolean;
   user: { id: string; name: string };
 }) {
   const connection = useRef<RealtimeClient | null>(null),
@@ -183,6 +185,7 @@ export default function TeamClient({
       {started ? (
         exploring ? (
           <OnlineExploration
+            questsEnabled={rpgQuestsEnabled}
             userId={user.id}
             session={session}
             connection={connection}
