@@ -1,3 +1,14 @@
+import { ExplorationSimulation } from "../game/core/rpg/exploration/simulation";
+import {
+  createAuthorizedExploration,
+  startExplorationGather,
+  refreshExploration,
+  explorationState,
+  processExploration,
+  leaveExploration,
+  finishExploration,
+} from "./rpg-exploration";
+import { interruptLostExplorations } from "../server/rpg/exploration/persistence";
 import { ArenaService } from "./arena";
 import { arenaCommand } from "../game/network/pvp";
 import "dotenv/config";
@@ -14,8 +25,14 @@ import { migrateSave } from "../game/core/save";
 import { CoopSimulation } from "../game/core/coop";
 import { SnapshotStream } from "./snapshots";
 import { settle } from "./settlement";
-import { createAuthorizedRpgSimulation, settleAuthorizedRpgSimulation } from "./rpg-expeditions";
-import { interruptLostRpgExpeditions, recoverRpgRewards } from "../server/rpg/expedition-recovery";
+import {
+  createAuthorizedRpgSimulation,
+  settleAuthorizedRpgSimulation,
+} from "./rpg-expeditions";
+import {
+  interruptLostRpgExpeditions,
+  recoverRpgRewards,
+} from "../server/rpg/expedition-recovery";
 import { UserError } from "../server/security";
 import {
   getRealtimeOrigin,
@@ -72,7 +89,9 @@ function recordRealtimeMetric(values: number[], value: number) {
 function percentile(values: number[], percentileValue: number) {
   if (!values.length) return 0;
   const sorted = [...values].sort((a, b) => a - b);
-  return sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * percentileValue))];
+  return sorted[
+    Math.min(sorted.length - 1, Math.floor(sorted.length * percentileValue))
+  ];
 }
 function realtimeMetrics() {
   return {
@@ -114,9 +133,14 @@ function send(c: Connection, message: unknown) {
     c.ws.close(1013, "Conexão lenta; reconecte.");
 }
 const online = (id: string) => [...connections].filter((c) => c.userId === id);
-const arena = new ArenaService((id,message)=>{for(const c of online(id))send(c,message);});
-const arenaTimer=setInterval(()=>arena.update(),40);
-const arenaQueueTimer=setInterval(()=>void arena.pair().catch(()=>{}),1000);
+const arena = new ArenaService((id, message) => {
+  for (const c of online(id)) send(c, message);
+});
+const arenaTimer = setInterval(() => arena.update(), 40);
+const arenaQueueTimer = setInterval(
+  () => void arena.pair().catch(() => {}),
+  1000,
+);
 function presence(id: string) {
   const c = online(id)[0];
   return !c
@@ -160,7 +184,18 @@ async function sync(c: Connection) {
     if (room && room.game.reconnect(c.userId)) {
       c.room = room.id;
       c.full = true;
-      send(c, { type: "STARTED", room: room.id, expeditionKind: room.game.isRpgExpedition ? "RPG_EXPEDITION" : "SURVIVOR" });
+      if (room.game instanceof ExplorationSimulation)
+        await refreshExploration(room.game, c.userId);
+      send(c, {
+        type: "STARTED",
+        room: room.id,
+        expeditionKind:
+          room.game instanceof ExplorationSimulation
+            ? "RPG_EXPLORATION"
+            : room.game.isRpgExpedition
+              ? "RPG_EXPEDITION"
+              : "SURVIVOR",
+      });
     }
   }
   for (const peer of connections)
@@ -263,7 +298,8 @@ wss.on("connection", (ws) => {
     }
     const room = c.room ? rooms.get(c.room) : undefined;
     if (v.type === "ARENA_INPUT") {
-      void arena.handle(c.userId,c.username,v); return;
+      void arena.handle(c.userId, c.username, v);
+      return;
     }
     if (v.type === "INPUT") {
       room?.game.acceptInput(c.userId, v);
@@ -274,7 +310,10 @@ wss.on("connection", (ws) => {
       return;
     }
     if (
-      v.type.startsWith("ARENA_") || ["HELLO", "SYNC", "READY", "CONFIG", "START", "KICK", "CHAT"].includes(
+      v.type.startsWith("GATHER_") ||
+      v.type.startsWith("EXPLORATION_") ||
+      v.type.startsWith("ARENA_") ||
+      ["HELLO", "SYNC", "READY", "CONFIG", "START", "KICK", "CHAT"].includes(
         v.type,
       )
     ) {
@@ -311,7 +350,8 @@ wss.on("connection", (ws) => {
         if (c.userId) throw new UserError("Conexão já autenticada.");
         await hello(c, v.ticket);
       }
-      if(v.type.startsWith("ARENA_")) await arena.handle(c.userId,c.username,arenaCommand.parse(v));
+      if (v.type.startsWith("ARENA_"))
+        await arena.handle(c.userId, c.username, arenaCommand.parse(v));
       if (v.type === "SYNC") {
         const old = c.teamId,
           related = new Set(c.related);
@@ -327,7 +367,13 @@ wss.on("connection", (ws) => {
           c.userId,
           v.type === "READY"
             ? { ready: v.ready }
-            : { character: v.character, mapId: v.mapId, mode: v.mode, duration: v.duration, expeditionKind: v.expeditionKind },
+            : {
+                character: v.character,
+                mapId: v.mapId,
+                mode: v.mode,
+                duration: v.duration,
+                expeditionKind: v.expeditionKind,
+              },
         );
         await refreshTeam(team.id);
       }
@@ -337,8 +383,15 @@ wss.on("connection", (ws) => {
         if (team) await refreshTeam(team.id);
       }
       if (v.type === "START") {
-        const existingTeam=await teams.currentTeam(c.userId);
-        if(existingTeam?.members.some(m=>arena.active.has(m.userId)||arena.queue.has(m.userId))) throw new UserError("Um membro está na Arena ou na fila competitiva.");
+        const existingTeam = await teams.currentTeam(c.userId);
+        if (
+          existingTeam?.members.some(
+            (m) => arena.active.has(m.userId) || arena.queue.has(m.userId),
+          )
+        )
+          throw new UserError(
+            "Um membro está na Arena ou na fila competitiva.",
+          );
         if (rooms.size >= 32)
           throw new UserError("Servidor cheio. Tente mais tarde.");
         const session = await teams.startTeam(c.userId);
@@ -350,13 +403,18 @@ wss.on("connection", (ws) => {
             progress: migrateSave((await progress(m.userId)).data),
           })),
         );
-        const game = session.expeditionKind === "RPG_EXPEDITION" ? await createAuthorizedRpgSimulation(session.id) : new CoopSimulation(
-          players,
-          session.mode,
-          session.mapId,
-          session.seed,
-          session.duration,
-        );
+        const game =
+          session.expeditionKind === "RPG_EXPLORATION"
+            ? await createAuthorizedExploration(session.id)
+            : session.expeditionKind === "RPG_EXPEDITION"
+              ? await createAuthorizedRpgSimulation(session.id)
+              : new CoopSimulation(
+                  players,
+                  session.mode,
+                  session.mapId,
+                  session.seed,
+                  session.duration,
+                );
         const r: Room = {
           id: session.id,
           teamId: session.teamId,
@@ -374,7 +432,11 @@ wss.on("connection", (ws) => {
             peer.room = r.id;
             peer.full = true;
             peer.stream = new SnapshotStream();
-            send(peer, { type: "STARTED", room: r.id, expeditionKind: session.expeditionKind });
+            send(peer, {
+              type: "STARTED",
+              room: r.id,
+              expeditionKind: session.expeditionKind,
+            });
             for (const friend of connections)
               if (friend.friends.has(peer.userId))
                 send(friend, {
@@ -402,6 +464,38 @@ wss.on("connection", (ws) => {
           for (const peer of connections)
             if (members.some((m) => m.userId === peer.userId))
               send(peer, { type: "CHAT", message });
+        }
+      }
+      if (v.type.startsWith("GATHER_") || v.type.startsWith("EXPLORATION_")) {
+        if (
+          !(room?.game instanceof ExplorationSimulation) ||
+          room.game.ended ||
+          room.game.departed.has(c.userId)
+        )
+          throw new UserError("Exploração ativa necessária.");
+        if (v.type === "GATHER_START") {
+          const intent = {
+            nodeId: v.nodeId,
+            requestId: v.requestId,
+            expectedRevision: v.expectedRevision,
+          };
+          await startExplorationGather(room.game, c.userId, intent);
+        }
+        if (v.type === "GATHER_CANCEL") room.game.gathering.delete(c.userId);
+        if (v.type === "EXPLORATION_REFRESH")
+          await refreshExploration(room.game, c.userId);
+        if (v.type === "EXPLORATION_LEAVE") {
+          await leaveExploration(room.game, c.userId);
+          send(c, {
+            type: "RESULT",
+            expeditionKind: "RPG_EXPLORATION",
+            sessionId: room.id,
+            completed: false,
+            kills: 0,
+            time: room.game.run.time,
+          });
+          c.room = undefined;
+          await sync(c);
         }
       }
       if (v.type === "USE_ITEM") room?.game.use(c.userId, v.slot);
@@ -478,7 +572,7 @@ const interval = setInterval(() => {
     elapsed = Math.min(0.2, (now - previous) / 1000);
   recordRealtimeMetric(
     realtimeDiagnostics.tickDrift,
-    Math.abs((now - previous) - 1000 / TICK_HZ),
+    Math.abs(now - previous - 1000 / TICK_HZ),
   );
   previous = now;
   for (const room of rooms.values()) {
@@ -494,6 +588,8 @@ const interval = setInterval(() => {
       // emitting the next delta in a burst on the following server tick.
       room.snapshotClock %= 1 / SNAPSHOT_HZ;
       const snapshotStarted = performance.now();
+      if (room.game instanceof ExplorationSimulation)
+        processExploration(room.game);
       for (const c of connections)
         if (c.room === room.id) {
           const member = room.game.members.get(c.userId);
@@ -506,6 +602,10 @@ const interval = setInterval(() => {
             );
             snapshot.room = room.id;
             send(c, snapshot);
+            if (room.game instanceof ExplorationSimulation) {
+              const state = explorationState(room.game, c.userId);
+              if (state) send(c, state);
+            }
             c.full = false;
           }
         }
@@ -520,7 +620,13 @@ const interval = setInterval(() => {
       Date.now() > (room.retryAfter || 0)
     ) {
       room.settling = true;
-      void (room.game.isRpgExpedition ? settleAuthorizedRpgSimulation(room.id, room.game) : settle(room.id, room.game))
+      void (
+        room.game instanceof ExplorationSimulation
+          ? finishExploration(room.game)
+          : room.game.isRpgExpedition
+            ? settleAuthorizedRpgSimulation(room.id, room.game)
+            : settle(room.id, room.game)
+      )
         .then((status) => {
           room.endedAt = Date.now();
           void refreshTeam(room.teamId).catch(() => {});
@@ -528,7 +634,15 @@ const interval = setInterval(() => {
             if (c.room === room.id) {
               send(c, {
                 type: "RESULT",
-                ...(room.game.isRpgExpedition ? { expeditionKind: "RPG_EXPEDITION", sessionId: room.id, rewardStatus: status } : {}),
+                ...(room.game instanceof ExplorationSimulation
+                  ? { expeditionKind: "RPG_EXPLORATION", sessionId: room.id }
+                  : room.game.isRpgExpedition
+                    ? {
+                        expeditionKind: "RPG_EXPEDITION",
+                        sessionId: room.id,
+                        rewardStatus: status,
+                      }
+                    : {}),
                 completed: room.game.run.completed,
                 kills: room.game.run.kills,
                 time: room.game.run.time,
@@ -545,7 +659,10 @@ const interval = setInterval(() => {
     if (room.endedAt && Date.now() - room.endedAt > 60000)
       rooms.delete(room.id);
   }
-  recordRealtimeMetric(realtimeDiagnostics.tickDurations, performance.now() - tickStarted);
+  recordRealtimeMetric(
+    realtimeDiagnostics.tickDurations,
+    performance.now() - tickStarted,
+  );
 }, 1000 / TICK_HZ);
 let maintaining = false;
 const maintenance = setInterval(async () => {
@@ -566,7 +683,9 @@ const maintenance = setInterval(async () => {
           c.ws.close(4401, "Sessão expirada.");
       }
     }
-    await recoverRpgRewards(sessionId => console.error("RPG reward recovery pending", sessionId));
+    await recoverRpgRewards((sessionId) =>
+      console.error("RPG reward recovery pending", sessionId),
+    );
   } catch {
     for (const c of connections)
       c.ws.close(1013, "Sessão temporariamente indisponível.");
@@ -574,22 +693,29 @@ const maintenance = setInterval(async () => {
     maintaining = false;
   }
 }, 10000);
+await interruptLostExplorations();
 await interruptLostRpgExpeditions();
 await db().gameSession.updateMany({
   where: { status: "RUNNING", expeditionKind: "SURVIVOR" },
   data: { status: "INTERRUPTED", endedAt: new Date() },
 });
 await db().team.updateMany({
-  where: { status: "RUNNING", games: { none: { rpgExpedition: { status: "TERMINAL" } } } },
+  where: {
+    status: "RUNNING",
+    games: { none: { rpgExpedition: { status: "TERMINAL" } } },
+  },
   data: { status: "LOBBY" },
 });
-await recoverRpgRewards(sessionId => console.error("RPG reward recovery pending", sessionId));
+await recoverRpgRewards((sessionId) =>
+  console.error("RPG reward recovery pending", sessionId),
+);
 await arena.initialize();
 server.listen(port, "0.0.0.0", () =>
   console.log(`LIMIAR realtime · ${TICK_HZ} Hz · snapshots ${SNAPSHOT_HZ} Hz`),
 );
 function close() {
-  clearInterval(arenaTimer);clearInterval(arenaQueueTimer);
+  clearInterval(arenaTimer);
+  clearInterval(arenaQueueTimer);
   clearInterval(interval);
   clearInterval(maintenance);
   for (const c of connections) c.ws.close(1012, "Servidor reiniciando.");

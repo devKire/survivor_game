@@ -1,16 +1,30 @@
+import { explorationNodeId } from "../core/rpg/exploration/gathering";
 import { arenaCommands, arenaMessages } from "./pvp";
 import { z } from "zod";
 import { saveSchema } from "../core/save";
 const id = z.string().min(1).max(100);
 export const clientMessage = z.discriminatedUnion("type", [
   ...arenaCommands,
+  z
+    .object({
+      type: z.literal("GATHER_START"),
+      nodeId: explorationNodeId,
+      requestId: z.uuid(),
+      expectedRevision: z.number().int().min(1).max(2147483646),
+    })
+    .strict(),
+  z.object({ type: z.literal("GATHER_CANCEL") }).strict(),
+  z.object({ type: z.literal("EXPLORATION_REFRESH") }).strict(),
+  z.object({ type: z.literal("EXPLORATION_LEAVE") }).strict(),
   z.object({ type: z.literal("HELLO"), ticket: z.string().max(1500) }).strict(),
   z.object({ type: z.literal("SYNC") }).strict(),
   z.object({ type: z.literal("READY"), ready: z.boolean() }).strict(),
   z
     .object({
       type: z.literal("CONFIG"),
-      expeditionKind: z.enum(["SURVIVOR", "RPG_EXPEDITION"]).optional(),
+      expeditionKind: z
+        .enum(["SURVIVOR", "RPG_EXPEDITION", "RPG_EXPLORATION"])
+        .optional(),
       character: z.enum(["nara", "orin", "ivo", "sena"]).optional(),
       mapId: z.enum(["ruins", "gardens"]).optional(),
       mode: z.enum(["normal", "nightmare", "endless"]).optional(),
@@ -340,7 +354,9 @@ export const chatSchema = z.object({
   sender: user,
 });
 export const teamSchema = z.object({
-  expeditionKind: z.enum(["SURVIVOR", "RPG_EXPEDITION"]).optional(),
+  expeditionKind: z
+    .enum(["SURVIVOR", "RPG_EXPEDITION", "RPG_EXPLORATION"])
+    .optional(),
   id: z.string(),
   code: z.string(),
   leaderId: z.string(),
@@ -371,6 +387,25 @@ export const friendSchema = z.object({
 });
 export const serverMessage = z.union([
   ...arenaMessages,
+  z.object({
+    type: z.literal("EXPLORATION_STATE"),
+    characterId: z.enum(["nara", "orin", "ivo", "sena"]),
+    level: z.number().int().min(1).max(100),
+    room: z.string(),
+    regionId: z.string(),
+    revision: z.number().int(),
+    cycle: z.number().int(),
+    depleted: z.array(explorationNodeId).max(36),
+    discovered: z.array(explorationNodeId).max(9),
+    message: z.string().max(500),
+    gathering: z
+      .object({
+        nodeId: explorationNodeId,
+        elapsed: z.number(),
+        duration: z.number(),
+      })
+      .nullable(),
+  }),
   snapshotSchema,
   z.object({
     type: z.literal("ACCOUNT"),
@@ -387,10 +422,18 @@ export const serverMessage = z.union([
   z.object({ type: z.literal("PRESENCE"), id: z.string(), state: z.string() }),
   z.object({ type: z.literal("ERROR"), message: z.string() }),
   z.object({ type: z.literal("PONG"), at: z.number() }),
-  z.object({ type: z.literal("STARTED"), room: z.string(), expeditionKind: z.enum(["SURVIVOR", "RPG_EXPEDITION"]).optional() }),
+  z.object({
+    type: z.literal("STARTED"),
+    room: z.string(),
+    expeditionKind: z
+      .enum(["SURVIVOR", "RPG_EXPEDITION", "RPG_EXPLORATION"])
+      .optional(),
+  }),
   z.object({
     type: z.literal("RESULT"),
-    expeditionKind: z.enum(["SURVIVOR", "RPG_EXPEDITION"]).optional(),
+    expeditionKind: z
+      .enum(["SURVIVOR", "RPG_EXPEDITION", "RPG_EXPLORATION"])
+      .optional(),
     sessionId: z.string().optional(),
     rewardStatus: z.enum(["PENDING", "CONFIRMED"]).optional(),
     completed: z.boolean(),

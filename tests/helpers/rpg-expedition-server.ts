@@ -24,7 +24,7 @@ process.on("message", async (input) => {
       .strict()
       .parse(input);
     const room = rooms.get(sessionId);
-    if (!room?.game.isRpgExpedition)
+    if (room?.game.activityKind !== "RPG_EXPEDITION")
       throw new Error("Public RPG START required");
     const { steps, ended } = await driveRpgGame(room, inactiveUserId);
     process.send?.({ completed: sessionId, steps, ended });

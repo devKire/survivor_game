@@ -22,7 +22,10 @@ import { removeAt } from "./math";
 import type { RpgCombatLoadout } from "./rpg/combat-types";
 export type CoopCombatContext =
   | { readonly kind: "SURVIVOR" }
-  | { readonly kind: "RPG_EXPEDITION"; readonly loadouts: Readonly<Record<string, RpgCombatLoadout>> };
+  | {
+      readonly kind: "RPG_EXPEDITION" | "RPG_EXPLORATION";
+      readonly loadouts: Readonly<Record<string, RpgCombatLoadout>>;
+    };
 export const COOP_SCALING = [
   { hp: 1, spawn: 1, cap: 1, elite: 1, boss: 1, formation: 1, xp: 1 },
   {
@@ -101,6 +104,7 @@ export interface Participant {
 export class CoopSimulation extends GameSimulation {
   readonly members = new Map<string, Participant>();
   readonly partySizeAtStart: number;
+  readonly activityKind: CoopCombatContext["kind"];
   teamXp = 0;
   teamLevel = 1;
   manual = 0;
@@ -129,13 +133,25 @@ export class CoopSimulation extends GameSimulation {
       throw new Error("Equipe deve ter 1–5 jogadores.");
     super(freshSave());
     this.partySizeAtStart = players.length;
+    this.activityKind = context.kind;
     super.start("nara", mode, mapId, seed, expeditionLength);
-    if (context.kind === "RPG_EXPEDITION") {
-      const ids = players.map(p => p.id);
-      if (new Set(ids).size !== ids.length || Object.keys(context.loadouts).length !== ids.length || ids.some(id => !Object.hasOwn(context.loadouts, id)))
+    if (context.kind !== "SURVIVOR") {
+      const ids = players.map((p) => p.id);
+      if (
+        new Set(ids).size !== ids.length ||
+        Object.keys(context.loadouts).length !== ids.length ||
+        ids.some((id) => !Object.hasOwn(context.loadouts, id))
+      )
         throw new Error("Builds RPG não correspondem aos participantes.");
       this.combatKind = "RPG_EXPEDITION";
-      this.rewardLedger = new RpgRewardLedger(players.map(p => ({ userId: p.id, characterId: context.loadouts[p.id].characterId, entryLevel: context.loadouts[p.id].level })));
+      if (context.kind === "RPG_EXPEDITION")
+        this.rewardLedger = new RpgRewardLedger(
+          players.map((p) => ({
+            userId: p.id,
+            characterId: context.loadouts[p.id].characterId,
+            entryLevel: context.loadouts[p.id].level,
+          })),
+        );
     }
     this.run.telemetry = telemetry(players.length);
     this.fx = 0;
@@ -161,9 +177,14 @@ export class CoopSimulation extends GameSimulation {
       levelup: () => {},
     };
     players.forEach((data, i) => {
-      const p = new Player(data.character, data.progress.upgrades, "PVE", context.kind === "RPG_EXPEDITION"
-        ? { kind: "RPG_EXPEDITION", loadout: context.loadouts[data.id] }
-        : { kind: "SURVIVOR" });
+      const p = new Player(
+        data.character,
+        data.progress.upgrades,
+        "PVE",
+        context.kind !== "SURVIVOR"
+          ? { kind: "RPG_EXPEDITION", loadout: context.loadouts[data.id] }
+          : { kind: "SURVIVOR" },
+      );
       p.cosmetics = data.progress.cosmetics;
       const w = new Weapon(CHARACTER_DEFINITIONS[data.character].weapon);
       w.ownerId = data.id;
@@ -296,7 +317,12 @@ export class CoopSimulation extends GameSimulation {
     }
   }
   override finish(victory = false) {
-    if (victory && this.isRpgExpedition && this.run.time < this.expeditionProfile.duration) return;
+    if (
+      victory &&
+      this.isRpgExpedition &&
+      this.run.time < this.expeditionProfile.duration
+    )
+      return;
     if (victory) {
       this.run.completed = true;
       this.ended = true;
@@ -314,12 +340,23 @@ export class CoopSimulation extends GameSimulation {
   }
   protected override onEnemyDefeated(enemy: Enemy) {
     if (!this.rewardLedger || this.ended) return;
-    if ((enemy.type === "boss" || enemy.type === "final") && enemy.bossEventIndex !== null && enemy.bossEventIndex >= 0 && enemy.bossEventIndex <= 9)
-      this.rewardLedger.event("BOSS_DEFEAT", `enemy:${enemy.id}`, `boss:${enemy.bossEventIndex}`);
-    else if (enemy.type === "elite") this.rewardLedger.event("ELITE_DEFEAT", `enemy:${enemy.id}`, "elite");
+    if (
+      (enemy.type === "boss" || enemy.type === "final") &&
+      enemy.bossEventIndex !== null &&
+      enemy.bossEventIndex >= 0 &&
+      enemy.bossEventIndex <= 9
+    )
+      this.rewardLedger.event(
+        "BOSS_DEFEAT",
+        `enemy:${enemy.id}`,
+        `boss:${enemy.bossEventIndex}`,
+      );
+    else if (enemy.type === "elite")
+      this.rewardLedger.event("ELITE_DEFEAT", `enemy:${enemy.id}`, "elite");
   }
   rpgTerminalResult() {
-    if (!this.ended || !this.rewardLedger) throw new Error("Expedição RPG ainda não terminou.");
+    if (!this.ended || !this.rewardLedger)
+      throw new Error("Expedição RPG ainda não terminou.");
     return this.rewardLedger.terminal(this.run.completed);
   }
   override collectsDrop(point: Vec & { ownerId?: string }) {
@@ -463,7 +500,13 @@ export class CoopSimulation extends GameSimulation {
     for (const drop of this.pickups) if (!oldDrops.has(drop)) drop.ownerId = id;
     if (this.run.structuresUsed > before) {
       m.personalStructures.add(s.id);
-      if (s.type === "chest") this.rewardLedger?.event("CHEST_OPENED", `chest:${id}:${s.id}`, "chest", id);
+      if (s.type === "chest")
+        this.rewardLedger?.event(
+          "CHEST_OPENED",
+          `chest:${id}:${s.id}`,
+          "chest",
+          id,
+        );
     }
     s.used = old.used;
     s.opened = old.opened;
@@ -509,9 +552,15 @@ export class CoopSimulation extends GameSimulation {
         this.run.time - m.lastInput < 0.25
           ? m.input
           : { moveX: 0, moveY: 0, interact: false };
-      const previousX = p.x, previousY = p.y;
+      const previousX = p.x,
+        previousY = p.y;
       this.movePlayer(p, { x: input.moveX, y: input.moveY }, dt);
-      this.rewardLedger?.participation(m.id, dt, m.connected, Math.hypot(p.x - previousX, p.y - previousY) > 0.1);
+      this.rewardLedger?.participation(
+        m.id,
+        dt,
+        m.connected,
+        Math.hypot(p.x - previousX, p.y - previousY) > 0.1,
+      );
       p.inWater = this.world.isWater(p.x, p.y);
       if (
         Math.floor(this.run.time * 2) !== Math.floor((this.run.time - dt) * 2)
@@ -582,7 +631,8 @@ export class CoopSimulation extends GameSimulation {
       ((this.manual >= 26 &&
         this.run.time - (this.run.lastDecisionAt ?? -100) >= 20) ||
         (this.manual < 26 &&
-          this.run.time >= (this.expeditionProfile.decisionSchedule[this.manual] ?? Infinity)))
+          this.run.time >=
+            (this.expeditionProfile.decisionSchedule[this.manual] ?? Infinity)))
     ) {
       this.teamXp -= xpNeed(this.teamLevel++);
       const manual = this.manual++ < 26;
@@ -626,6 +676,10 @@ export class CoopSimulation extends GameSimulation {
         this.run.telemetry!.levels[minute] === undefined
       )
         this.run.telemetry!.levels[minute] = this.teamLevel;
-    if (this.mode !== "endless" && this.run.time >= this.expeditionProfile.duration) this.finish(true);
+    if (
+      this.mode !== "endless" &&
+      this.run.time >= this.expeditionProfile.duration
+    )
+      this.finish(true);
   }
 }
