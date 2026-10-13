@@ -18,6 +18,7 @@ const labels: Record<RefugeService, string> = {
   STORAGE: "Depósito",
   EXPEDITIONS: "Expedições",
   REWARDS: "Recompensas",
+  EXPLORATION: "Exploração",
 };
 export default function RefugeClient({
   characterId,
