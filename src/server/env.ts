@@ -102,3 +102,7 @@ export function isRpgRefugeEnabled() {
 export function isRpgExplorationEnabled() {
   return isRpgEnabled() && process.env.RPG_EXPLORATION_ENABLED?.trim().toLowerCase() === "true";
 }
+
+export function isRpgQuestsEnabled() {
+  return isRpgEnabled() && process.env.RPG_QUESTS_ENABLED?.trim().toLowerCase() === "true";
+}

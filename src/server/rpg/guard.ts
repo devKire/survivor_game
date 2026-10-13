@@ -1,5 +1,5 @@
 import "server-only";
-import { isRpgEnabled, isRpgExpeditionsEnabled, isRpgRefugeEnabled, isRpgExplorationEnabled } from "../env";
+import { isRpgEnabled, isRpgExpeditionsEnabled, isRpgRefugeEnabled, isRpgExplorationEnabled, isRpgQuestsEnabled } from "../env";
 import { UserError } from "../security";
 
 export function requireRpgEnabled() {
@@ -17,4 +17,8 @@ export function requireRpgRefugeEnabled() {
 
 export function requireRpgExplorationEnabled() {
   if (!isRpgExplorationEnabled()) throw new UserError("Exploração RPG indisponível.");
+}
+
+export function requireRpgQuestsEnabled() {
+  if (!isRpgQuestsEnabled()) throw new UserError("Missões RPG indisponíveis.");
 }
