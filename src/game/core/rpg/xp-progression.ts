@@ -8,12 +8,21 @@ export function applyRpgRewardXp(
   state: RpgAttributeState & { xp: number },
   amount: number,
 ) {
+  return applyRpgProgressionXp(state, amount, RPG_EXPEDITION_V1.maxXp);
+}
+
+/** Internal source-specific caps remain with the caller; no client grant API. */
+export function applyRpgProgressionXp(
+  state: RpgAttributeState & { xp: number }, amount: number, maximum: number,
+) {
+  if (!Number.isInteger(maximum) || maximum < 0 || maximum > 1000)
+    throw new RangeError("Limite de XP inválido.");
   validateRpgAttributes(state);
   rpgLevelFromXp(state.xp);
   if (
     !Number.isInteger(amount) ||
     amount < 0 ||
-    amount > RPG_EXPEDITION_V1.maxXp
+    amount > maximum
   )
     throw new RangeError("XP de recompensa inválido.");
   if (amount === 0)
