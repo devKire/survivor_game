@@ -98,3 +98,7 @@ export function getRealtimePort() {
 export function isRpgRefugeEnabled() {
   return isRpgEnabled() && process.env.RPG_REFUGE_ENABLED?.trim().toLowerCase() === "true";
 }
+
+export function isRpgExplorationEnabled() {
+  return isRpgEnabled() && process.env.RPG_EXPLORATION_ENABLED?.trim().toLowerCase() === "true";
+}
