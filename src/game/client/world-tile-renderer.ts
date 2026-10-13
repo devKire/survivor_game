@@ -321,6 +321,15 @@ export class WorldTileRenderer {
       fade * (s.used || s.opened ? 0.46 : 1),
     );
   }
+  /** Release offscreen canvases when an activity unmounts. Shared image cache is separate. */
+  dispose() {
+    for (const raster of this.rasters.values()) { raster.canvas.width = 1; raster.canvas.height = 1; }
+    this.rasters.clear(); this.chunks.chunks.clear(); this.structureCache.clear();
+    this.visible = []; this.props = []; this.propKey = "";
+    if (this.scratch) this.scratch.width = 1;
+    if (this.mask) this.mask.width = 1;
+    this.scratch = undefined; this.mask = undefined;
+  }
   get cacheStats() {
     return {
       visualChunks: this.chunks.chunks.size,

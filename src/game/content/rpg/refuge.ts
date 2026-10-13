@@ -8,6 +8,16 @@ export const REFUGE = {
   spawn: { x: 600, y: 620 },
   structures: [
     {
+      id: "refuge:exploration-portal",
+      name: "Portal de exploração",
+      x: 380,
+      y: 795,
+      radius: 85,
+      collisionRadius: 24,
+      visual: "portal",
+      service: "EXPLORATION",
+    },
+    {
       id: "refuge:obelisk",
       name: "Praça do Obelisco",
       x: 600,

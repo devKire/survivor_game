@@ -5,6 +5,7 @@ export const REFUGE_SERVICES = [
   "STORAGE",
   "EXPEDITIONS",
   "REWARDS",
+  "EXPLORATION",
 ] as const;
 export type RefugeService = (typeof REFUGE_SERVICES)[number];
 export interface RefugePoint {

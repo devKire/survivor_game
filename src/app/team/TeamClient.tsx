@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { diagnostics } from "../../game/client/diagnostics";
 import { useEffect, useRef, useState } from "react";
+import OnlineExploration from "./OnlineExploration";
+import type { ExplorationState } from "../../game/client/RemoteExploration";
 import OnlineCombat from "./OnlineCombat";
 import FriendsPanel from "./FriendsPanel";
 import { accountAction, realtimeTicket } from "../../server/actions";
@@ -21,11 +23,16 @@ import {
 import { freshSave, migrateSave } from "../../game/core/save";
 import type { SaveData } from "../../game/core/types";
 export default function TeamClient({
-  user, menuHeader, rpgExpeditionsEnabled = false, rpgRefugeEnabled = false,
+  user,
+  menuHeader,
+  rpgExpeditionsEnabled = false,
+  rpgRefugeEnabled = false,
+  rpgExplorationEnabled = false,
 }: {
   menuHeader: React.ReactNode;
   rpgExpeditionsEnabled?: boolean;
   rpgRefugeEnabled?: boolean;
+  rpgExplorationEnabled?: boolean;
   user: { id: string; name: string };
 }) {
   const connection = useRef<RealtimeClient | null>(null),
@@ -46,7 +53,13 @@ export default function TeamClient({
     [chatOpen, setChatOpen] = useState(false),
     [code, setCode] = useState(""),
     [busy, setBusy] = useState(false);
-  useEffect(() => { diagnostics.accountRenders++; });
+  useEffect(() => {
+    diagnostics.accountRenders++;
+  });
+  const [exploring, setExploring] = useState(false),
+    [explorationState, setExplorationState] = useState<ExplorationState | null>(
+      null,
+    );
   const [rtt, setRtt] = useState(0);
   useEffect(() => {
     const client = new RealtimeClient(
@@ -62,7 +75,9 @@ export default function TeamClient({
           setProgress(migrateSave(message.progress.data));
         }
         if (message.type === "ERROR") setError(message.message);
+        if (message.type === "EXPLORATION_STATE") setExplorationState(message);
         if (message.type === "STARTED") {
+          setExploring(message.expeditionKind === "RPG_EXPLORATION");
           session.begin(message.room);
           setStarted(true);
           setResult("");
@@ -87,8 +102,16 @@ export default function TeamClient({
         if (message.type === "RESULT") {
           setStarted(false);
 
-          setRewardSessionId(message.expeditionKind === "RPG_EXPEDITION" ? message.sessionId ?? null : null);
-          setResult(`${message.completed ? "Travessia concluída" : "A equipe caiu"} · ${Math.floor(message.time / 60)} min · ${message.kills} baixas. ${message.expeditionKind === "RPG_EXPEDITION" ? message.rewardStatus === "CONFIRMED" ? "Resultado RPG confirmado. Consulte seu recibo." : "Resultado registrado. Recompensas pendentes de confirmação." : "Recompensas salvas na conta."}`);
+          setRewardSessionId(
+            message.expeditionKind === "RPG_EXPEDITION"
+              ? (message.sessionId ?? null)
+              : null,
+          );
+          setResult(
+            message.expeditionKind === "RPG_EXPLORATION"
+              ? "Exploração encerrada. Materiais e descobertas confirmados permanecem na conta."
+              : `${message.completed ? "Travessia concluída" : "A equipe caiu"} · ${Math.floor(message.time / 60)} min · ${message.kills} baixas. ${message.expeditionKind === "RPG_EXPEDITION" ? (message.rewardStatus === "CONFIRMED" ? "Resultado RPG confirmado. Consulte seu recibo." : "Resultado registrado. Recompensas pendentes de confirmação.") : "Recompensas salvas na conta."}`,
+          );
         }
       },
       setStatus,
@@ -158,7 +181,21 @@ export default function TeamClient({
   return (
     <>
       {started ? (
-        <OnlineCombat userId={user.id} session={session} connection={connection} settings={progress.settings} />
+        exploring ? (
+          <OnlineExploration
+            userId={user.id}
+            session={session}
+            connection={connection}
+            state={explorationState}
+          />
+        ) : (
+          <OnlineCombat
+            userId={user.id}
+            session={session}
+            connection={connection}
+            settings={progress.settings}
+          />
+        )
       ) : (
         <main className="account-screen team-screen">
           <section className="panel wide">
@@ -171,9 +208,28 @@ export default function TeamClient({
               Escolha seu eco. Encontre sua equipe. Atravessem a névoa juntos.
             </p>
             {result && <p role="status">{result}</p>}
-            {rpgRefugeEnabled && <Link href="/rpg/refuge">Voltar ao Refúgio</Link>}
-            {rewardSessionId && <Link href={`/rpg/rewards?sessionId=${encodeURIComponent(rewardSessionId)}`}>Ver recompensas RPG</Link>}
-            {rpgExpeditionsEnabled && <p><Link href="/rpg/expeditions">Regras da Expedição RPG</Link> · <Link href="/rpg/rewards">Histórico RPG</Link></p>}
+            {rpgRefugeEnabled && (
+              <Link href="/rpg/refuge">Voltar ao Refúgio</Link>
+            )}
+            {rpgExplorationEnabled && (
+              <p>
+                <Link href="/rpg/exploration">Explorar região</Link> ·{" "}
+                <Link href="/rpg/discoveries">Diário de exploração</Link>
+              </p>
+            )}
+            {rewardSessionId && (
+              <Link
+                href={`/rpg/rewards?sessionId=${encodeURIComponent(rewardSessionId)}`}
+              >
+                Ver recompensas RPG
+              </Link>
+            )}
+            {rpgExpeditionsEnabled && (
+              <p>
+                <Link href="/rpg/expeditions">Regras da Expedição RPG</Link> ·{" "}
+                <Link href="/rpg/rewards">Histórico RPG</Link>
+              </p>
+            )}
             <div className="account-grid">
               <section>
                 <h2>MODO EQUIPE</h2>
@@ -278,14 +334,72 @@ export default function TeamClient({
                         )}
                       </select>
                     </label>
-                    {(rpgExpeditionsEnabled || team.expeditionKind === "RPG_EXPEDITION") && <label>Tipo de expedição<select aria-label="Tipo de expedição" value={team.expeditionKind ?? "SURVIVOR"} disabled={team.leaderId !== user.id || team.status !== "LOBBY"} onChange={e => connection.current?.send({ type: "CONFIG", expeditionKind: e.target.value as "SURVIVOR" | "RPG_EXPEDITION" })}><option value="SURVIVOR">Survivor clássico</option><option value="RPG_EXPEDITION" disabled={!rpgExpeditionsEnabled}>Expedição RPG · recompensas persistentes</option></select></label>}
-                    {team.expeditionKind === "RPG_EXPEDITION" && <p>RPG · Ruínas · 10 minutos. A build do personagem será fixada ao iniciar.</p>}
+                    {(rpgExplorationEnabled ||
+                      rpgExpeditionsEnabled ||
+                      team.expeditionKind !== "SURVIVOR") && (
+                      <label>
+                        Tipo de expedição
+                        <select
+                          aria-label="Tipo de expedição"
+                          value={team.expeditionKind ?? "SURVIVOR"}
+                          disabled={
+                            team.leaderId !== user.id || team.status !== "LOBBY"
+                          }
+                          onChange={(e) =>
+                            connection.current?.send({
+                              type: "CONFIG",
+                              expeditionKind: e.target.value as
+                                | "SURVIVOR"
+                                | "RPG_EXPEDITION"
+                                | "RPG_EXPLORATION",
+                            })
+                          }
+                        >
+                          <option value="SURVIVOR">Survivor clássico</option>
+                          <option
+                            value="RPG_EXPEDITION"
+                            disabled={!rpgExpeditionsEnabled}
+                          >
+                            Expedição RPG · recompensas persistentes
+                          </option>
+                          <option
+                            value="RPG_EXPLORATION"
+                            disabled={!rpgExplorationEnabled}
+                          >
+                            Exploração RPG · recursos e descobertas
+                          </option>
+                        </select>
+                      </label>
+                    )}
+                    {team.expeditionKind === "RPG_EXPLORATION" && (
+                      <p>
+                        Arredores das Ruínas · recursos pessoais por dia UTC ·
+                        até 15 minutos. Sem ondas ou recompensas de combate.
+                      </p>
+                    )}
+                    {team.expeditionKind === "RPG_EXPEDITION" && (
+                      <p>
+                        RPG · Ruínas · 10 minutos. A build do personagem será
+                        fixada ao iniciar.
+                      </p>
+                    )}
                     <label>
                       Expedição
                       <select
-                        disabled={team.leaderId !== user.id || team.status !== "LOBBY" || team.expeditionKind === "RPG_EXPEDITION"}
+                        disabled={
+                          team.leaderId !== user.id ||
+                          team.status !== "LOBBY" ||
+                          (team.expeditionKind !== undefined &&
+                            team.expeditionKind !== "SURVIVOR")
+                        }
                         value={team.duration}
-                        onChange={(e) => connection.current?.send({ type: "CONFIG", duration: Number(e.target.value) as 600 | 900 | 1800 })}
+                        onChange={(e) =>
+                          connection.current?.send({
+                            type: "CONFIG",
+                            duration: Number(e.target.value) as
+                              600 | 900 | 1800,
+                          })
+                        }
                       >
                         <option value={600}>10 min · x0,45</option>
                         <option value={900}>15 min · x0,70</option>
@@ -296,7 +410,10 @@ export default function TeamClient({
                       Mapa
                       <select
                         disabled={
-                          team.leaderId !== user.id || team.status !== "LOBBY" || team.expeditionKind === "RPG_EXPEDITION"
+                          team.leaderId !== user.id ||
+                          team.status !== "LOBBY" ||
+                          (team.expeditionKind !== undefined &&
+                            team.expeditionKind !== "SURVIVOR")
                         }
                         value={team.mapId}
                         onChange={(e) =>
@@ -317,7 +434,10 @@ export default function TeamClient({
                       Modo
                       <select
                         disabled={
-                          team.leaderId !== user.id || team.status !== "LOBBY" || team.expeditionKind === "RPG_EXPEDITION"
+                          team.leaderId !== user.id ||
+                          team.status !== "LOBBY" ||
+                          (team.expeditionKind !== undefined &&
+                            team.expeditionKind !== "SURVIVOR")
                         }
                         value={team.mode}
                         onChange={(e) =>
@@ -374,9 +494,13 @@ export default function TeamClient({
                     </div>
                   </>
                 )}
-
               </section>
-<FriendsPanel user={user} friends={friends} action={action} openChat={openChat} />
+              <FriendsPanel
+                user={user}
+                friends={friends}
+                action={action}
+                openChat={openChat}
+              />
             </div>
           </section>
         </main>
@@ -393,6 +517,7 @@ export default function TeamClient({
       {started && !chatOpen && (
         <button
           className="chat-toggle"
+          style={exploring ? { top: 92, bottom: "auto" } : undefined}
           onClick={() => {
             if (team) setChat({ scope: "team", target: team.id });
             setChatOpen(true);

@@ -55,6 +55,7 @@ model RpgProfile {
   items             RpgItemInstance[]
   materials         RpgMaterialBalance[]
   mutationReceipts  RpgMutationReceipt[]
+  discoveredPois    RpgDiscoveredPoi[]
 
   @@unique([activeCharacterId, userId])
   @@schema("limiar")
@@ -74,6 +75,7 @@ model RpgCharacter {
   activeFor     RpgProfile?       @relation("ActiveRpgCharacter")
   equippedItems RpgItemInstance[] @relation("RpgEquippedItems")
   expeditions   RpgExpeditionParticipant[]
+  explorations  RpgExplorationParticipant[]
 
   @@unique([userId, characterId])
   @@unique([id, userId])
@@ -275,6 +277,7 @@ model GameSession {
   team      Team                @relation(fields: [teamId], references: [id])
   members   GameSessionMember[]
   rpgExpedition RpgExpeditionSession?
+  rpgExploration RpgExplorationSession?
 
   @@unique([id, expeditionKind])
   @@schema("limiar")
@@ -291,6 +294,7 @@ model GameSessionMember {
   session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   rpgParticipant RpgExpeditionParticipant?
+  explorationParticipant RpgExplorationParticipant?
 
   @@unique([sessionId, userId])
   @@unique([sessionId, userId, character])
@@ -535,5 +539,74 @@ model ArenaReport {
   match     ArenaMatch @relation(fields: [matchId], references: [id], onDelete: Cascade)
 
   @@unique([userId, targetId, matchId])
+  @@schema("limiar")
+}
+
+model RpgExplorationSession {
+  sessionId String @id
+  expeditionKind String @default("RPG_EXPLORATION")
+  regionId String
+  regionVersion Int
+  generationVersion Int @default(1)
+  worldVersion Int @default(3)
+  rulesVersion Int @default(1)
+  status String @default("RUNNING")
+  createdAt DateTime @default(now())
+  endedAt DateTime?
+  session GameSession @relation(fields: [sessionId, expeditionKind], references: [id, expeditionKind], onDelete: Cascade)
+  participants RpgExplorationParticipant[]
+  @@unique([sessionId, expeditionKind])
+  @@index([status, createdAt])
+  @@schema("limiar")
+}
+model RpgExplorationParticipant {
+  sessionId String
+  userId String
+  characterId String
+  loadout Json
+  loadoutHash String
+  activeUserId String? @unique
+  leftAt DateTime?
+  session RpgExplorationSession @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+  member GameSessionMember @relation(fields: [sessionId, userId, characterId], references: [sessionId, userId, character], onDelete: Cascade)
+  character RpgCharacter @relation(fields: [userId, characterId], references: [userId, characterId], onDelete: Cascade)
+  claims RpgResourceClaim[]
+  @@unique([sessionId, userId, characterId])
+  @@id([sessionId, userId])
+  @@index([userId, sessionId])
+  @@schema("limiar")
+}
+model RpgResourceClaim {
+  id String @id @default(cuid())
+  sessionId String
+  userId String
+  regionId String
+  regionVersion Int
+  nodeId String
+  cycle Int
+  rulesVersion Int @default(1)
+  requestId String
+  payloadHash String
+  materialId String
+  quantity Int
+  revision Int
+  createdAt DateTime @default(now())
+  participant RpgExplorationParticipant @relation(fields: [sessionId, userId], references: [sessionId, userId], onDelete: Cascade)
+  @@unique([userId, regionId, regionVersion, nodeId, cycle])
+  @@unique([userId, requestId])
+  @@index([userId, cycle])
+  @@index([sessionId, userId])
+  @@index([userId, createdAt, id])
+  @@schema("limiar")
+}
+model RpgDiscoveredPoi {
+  userId String
+  regionId String
+  regionVersion Int
+  poiId String
+  discoveredAt DateTime @default(now())
+  profile RpgProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  @@id([userId, regionId, regionVersion, poiId])
+  @@index([userId, discoveredAt])
   @@schema("limiar")
 }

@@ -12,7 +12,7 @@ let driving = false;
 const timer = setInterval(() => {
   if (driving) return;
   const room = [...rooms.values()].find(
-    (r) => r.game.isRpgExpedition && !driven.has(r) && !r.game.ended,
+    (r) => r.game.activityKind === "RPG_EXPEDITION" && !driven.has(r) && !r.game.ended,
   );
   if (!room) return;
   driven.add(room);

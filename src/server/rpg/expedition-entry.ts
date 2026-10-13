@@ -53,6 +53,12 @@ export async function initializeRpgExpedition(
       throw new UserError(
         "Um membro já está em expedição ou precisa aguardar um minuto para iniciar outra.",
       );
+    if (
+      await tx.rpgExplorationParticipant.count({
+        where: { activeUserId: member.userId },
+      })
+    )
+      throw new UserError("Um membro está em exploração.");
     const loadout = await buildRpgCombatLoadoutInTransaction(
       tx,
       member.userId,

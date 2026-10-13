@@ -1,0 +1,99 @@
+
+> limiar@2.0.0 test:browser
+> node --conditions=react-server node_modules/@playwright/test/cli.js test
+
+[WebServer] (node:248431) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:248447) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:248528) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 16 tests using 1 worker
+
+(node:248541) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/browser/economy.spec.ts:9:1 › V25 Chrome migrates offline gold, buys with gems and preserves it across reload (2.3s)
+  ✓   2 tests/browser/economy.spec.ts:24:1 › V22/V23 two Chrome contexts purchasing the same rank debit once (6.2s)
+  ✓   3 tests/browser/offline.spec.ts:4:1 › V1/V2 migrated offline game preserves movement, pause and legacy resume (6.3s)
+  ✓   4 tests/browser/online.spec.ts:11:3 › V3/V4/V8: 2 browsers register, lobby, synchronize gameplay and chat (23.5s)
+  ✓   5 tests/browser/online.spec.ts:11:3 › V3/V4/V8: 3 browsers register, lobby, synchronize gameplay and chat (31.5s)
+[WebServer] (node:248447) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+  ✓   6 tests/browser/rpg-equipment.spec.ts:13:1 › RPG equipment comparison, atomic replacement, stale tab feedback, persistence, transfer and mobile layout (13.2s)
+  ✓   7 tests/browser/rpg-expeditions.spec.ts:7:1 › public RPG expedition reaches confirmed rewards, persistent XP, usable inventory and private history (18.5s)
+  ✓   8 tests/browser/rpg-exploration.spec.ts:56:1 › exploration flags and safe authentication callbacks (1.1s)
+  ✓   9 tests/browser/rpg-exploration.spec.ts:70:1 › real refuge to exploration, gathering, discovery, reconnect, mobile, journal and persistent inventory (24.0s)
+  ✓  10 tests/browser/rpg-refuge.spec.ts:11:1 › Refuge rollout and safe login callbacks (1.3s)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: ground_forest-a (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: ground_ruins (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_trees_living (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_ruins (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_crystals (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_rocks (src/game/client/tile-renderer.ts:14:13)
+  ✓  11 tests/browser/rpg-refuge.spec.ts:22:1 › real refuge scene, NPC services, storage, mobile and repeated cleanup (17.1s)
+  -  12 tests/browser/rpg.spec.ts:10:1 › RPG disabled routes return 404
+  ✓  13 tests/browser/rpg.spec.ts:16:1 › RPG enabled routes require login and preserve safe callbacks (2.8s)
+  ✓  14 tests/browser/rpg.spec.ts:33:1 › RPG selection and attributes handle stale tabs inline and preserve Survivor state (6.4s)
+  ✘  15 tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 2 clients (1.2m)
+(node:249948) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  16 tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 5 clients (1.4m)
+
+
+  1) tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 2 clients ───────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+      100 |     writeFileSync(join(reportDir, `stability-${process.env.STABILITY_BASELINE ? 'baseline' : 'after'}-${count}-${process.env.QA_ENEMIES || 'natural'}.json`), JSON.stringify({seconds:(Date.now()-started)/1000, metrics, server, errors},null,2));
+      101 |     if (!process.env.STABILITY_BASELINE) for(const d of metrics) {
+    > 102 |       expect(d.remoteGameInstances).toBe(1); expect(d.rafLoops).toBe(1);
+          |                                     ^
+      103 |       expect(d.resyncRequests).toBe(0); expect(d.canvasResizes).toBeLessThanOrEqual(4);
+      104 |     }
+      105 |     expect(errors).toEqual([]);
+        at /workspace/survivor_game/tests/browser/stability.spec.ts:102:37
+
+    Error Context: test-results/stability-V16-V17-V18-stability-2-clients/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/stability-V16-V17-V18-stability-2-clients/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/stability-V16-V17-V18-stability-2-clients/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 5 clients ───────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+      100 |     writeFileSync(join(reportDir, `stability-${process.env.STABILITY_BASELINE ? 'baseline' : 'after'}-${count}-${process.env.QA_ENEMIES || 'natural'}.json`), JSON.stringify({seconds:(Date.now()-started)/1000, metrics, server, errors},null,2));
+      101 |     if (!process.env.STABILITY_BASELINE) for(const d of metrics) {
+    > 102 |       expect(d.remoteGameInstances).toBe(1); expect(d.rafLoops).toBe(1);
+          |                                     ^
+      103 |       expect(d.resyncRequests).toBe(0); expect(d.canvasResizes).toBeLessThanOrEqual(4);
+      104 |     }
+      105 |     expect(errors).toEqual([]);
+        at /workspace/survivor_game/tests/browser/stability.spec.ts:102:37
+
+    Error Context: test-results/stability-V16-V17-V18-stability-5-clients/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/stability-V16-V17-V18-stability-5-clients/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/stability-V16-V17-V18-stability-5-clients/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 2 clients ────────────────────────
+    tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 5 clients ────────────────────────
+  1 skipped
+  13 passed (5.6m)
