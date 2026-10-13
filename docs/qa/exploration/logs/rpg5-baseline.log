@@ -1,0 +1,16 @@
+
+> limiar@2.0.0 test
+> vitest run
+
+
+ RUN  v5.0.1 /workspace/survivor_game
+
+
+ Test Files  29 passed | 15 skipped (44)
+      Tests  264 passed | 68 skipped (332)
+   Start at  02:29:30
+   Duration  8.09s (import 43%, tests 32%, transform 22%, setup 3%, worker 1%)
+
+     Import  274 modules were evaluated 690 times · 7.51s total, 43% of tracked time
+             ~522ms faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+             learn more: https://vitest.dev/guide/improving-performance#test-isolation

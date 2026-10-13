@@ -1,0 +1,12 @@
+
+> limiar@2.0.0 test
+> vitest run tests/rpg-exploration-recovery.test.ts
+
+
+ RUN  v5.0.1 /workspace/survivor_game
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  22:57:38
+   Duration  1.95s (transform 42%, tests 35%, import 21%, setup 1%)

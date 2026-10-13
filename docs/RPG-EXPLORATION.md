@@ -17,3 +17,21 @@ Arredores das Ruínas: seed pública canônica `limiar:exploration:ruins-outskir
 Recursos pessoais por conta: minério e fibra concedem 2 unidades; cristal concede 1 pó do Obelisco. Duração mínima 1,8/1,2/2,2 s respectivamente. Uma concessão por conta/nó/versão/dia UTC, até 12 claims por sessão e 18 por ciclo. Máximo conservador 24 unidades/sessão e 36/dia/conta; cinco contas têm direitos individuais, sem distribuição implícita. Nível mínimo 1, sem bônus por nível que aumente a oferta. Não há XP, equipamentos, moeda ou recompensa de conclusão.
 
 Esta fase não implementa quests, crafting, dungeons, corrupção ou reputação. Nomes dos novos recursos são conteúdo descritivo inicial sujeito a revisão narrativa antes de produção.
+
+## Interface e assets
+
+Entrada pelo novo `refuge:exploration-portal` (380,795), sem renomear estruturas existentes. `/rpg/exploration` prepara a região e o personagem ativo no lobby existente; líder e membros confirmam READY/START. `/team` monta RemoteExploration sobre RemoteGame: mesmos inputs, previsão/reconciliação, sprites, renderer e RAF. O HUD mostra personagem/nível congelados, região, alvo, duração, confirmação e disponibilidade pessoal. Não mostra XP temporário/ondas/itens Survivor. Menu permite atualizar perfil e sair; chat permanece separado dos controles de toque.
+
+Os dados globais de Snapshot não mudam. CONFIG/ACCOUNT/STARTED/RESULT aceitam o tipo aditivo RPG_EXPLORATION; comandos GATHER_START/CANCEL e EXPLORATION_REFRESH/LEAVE só funcionam na sala autorizada. EXPLORATION_STATE contém estado pessoal, nunca seed privada ou inventário. O renderer só usa geometria pública; qualquer posição prevista é corrigida pela simulação e nunca serve como prova de coleta.
+
+| Uso | Asset existente / caminho relativo a src/game/assets | Dimensões / frames | Estado e fallback | Prioridade de arte própria |
+|---|---|---|---|---|
+| Personagens | character/{nara,orin,ivo,sena}/source.png | 2048², células256, oito direções idle/walk | canônico, renderer compartilhado | nenhuma substituição |
+| Terreno | tiles/**/source*.png (manifest) | atlases1254², slots8×8 | forest/ruins/rock existentes; cor de fundo se indisponível | baixa |
+| Minério | família rocks no manifest | atlas1254², slot estático | prop existente + anel/rótulo de recurso | média: assets/rpg/exploration/ore.png, sugestão64² |
+| Planta | família swamp no manifest | atlas1254², slot estático | prop vegetal provisório + anel/rótulo | alta: assets/rpg/exploration/herb.png, sugestão64² |
+| Cristal | família crystals no manifest | atlas1254², slot estático | prop existente + anel/rótulo | média: assets/rpg/exploration/crystal.png, sugestão64² |
+| Vestígios | família ruins no manifest | atlas1254², slot estático | marco provisório, rótulo muda após descoberta | média: assets/rpg/exploration/poi.png, sugestão128² |
+| Coleta | barra de progresso, sem sprite sheet novo | duração configurável no servidor | não há animação canônica de gathering | futura animação após revisão artística |
+
+Caminhos novos são sugestões de produção, não arquivos presentes. Em falha de imagem, marcador geométrico, anel e nome preservam legibilidade; disponibilidade esgotada reduz opacidade. Nenhum PNG canônico foi alterado. O cache de WorldTileRenderer permanece limitado a 36 rasters; dispose libera seus canvases e descritores na saída da exploração. Capturas de QA mostram a aplicação real.

@@ -1,0 +1,17 @@
+{
+  "fps": 59.92801593799547,
+  "renderP95Ms": 7.5,
+  "frameP95Ms": 16.800000000000182,
+  "cache": {
+    "visualChunks": 9,
+    "rasters": 9,
+    "rasterBytes": 5308416
+  },
+  "cleanup": {
+    "instances": 0,
+    "loops": 0
+  },
+  "gatherMs": 2404.027913,
+  "navigationAndInteractionMs": 14243.388789,
+  "errors": []
+}

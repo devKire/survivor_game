@@ -1,0 +1,51 @@
+{
+  "totalTickIncludingSnapshotsMs": {
+    "mean": 15.146100320000002,
+    "p95": 46.269812,
+    "max": 107.4324059999999
+  },
+  "snapshotBatchMs": {
+    "mean": 17.78153630252098,
+    "p95": 39.693843000000015,
+    "max": 81.28501800000004
+  },
+  "players": 5,
+  "initialEnemies": 1100,
+  "remainingEnemies": 1100,
+  "ticks": 300,
+  "tickHz": 25,
+  "tickMs": {
+    "mean": 8.08965612666667,
+    "p95": 25.74309900000003,
+    "max": 107.43045299999994
+  },
+  "heapDeltaMB": 68.7628402709961,
+  "heapMB": 89.09551239013672,
+  "snapshots": [
+    {
+      "meanBytes": 31005,
+      "maxBytes": 89139,
+      "approxBytesPerSecondAt10Hz": 310047
+    },
+    {
+      "meanBytes": 43486,
+      "maxBytes": 122529,
+      "approxBytesPerSecondAt10Hz": 434857
+    },
+    {
+      "meanBytes": 44876,
+      "maxBytes": 123605,
+      "approxBytesPerSecondAt10Hz": 448756
+    },
+    {
+      "meanBytes": 47628,
+      "maxBytes": 124649,
+      "approxBytesPerSecondAt10Hz": 476280
+    },
+    {
+      "meanBytes": 37102,
+      "maxBytes": 101869,
+      "approxBytesPerSecondAt10Hz": 371018
+    }
+  ]
+}
