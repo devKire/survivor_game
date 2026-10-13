@@ -96,3 +96,15 @@ C: simulação, `src/realtime/rpg-exploration.ts`, integração em teams/server/
 D: novas rotas, ações, portal, TeamClient, OnlineExploration/RemoteExploration/CSS, callbacks, descarte de cache e testes browser/actions.
 
 E: documentos finais, benchmark e evidências. Revisar/integrar A → B → C → D → E; os PRs seguintes têm a branch anterior como base para manter o diff revisável. A branch consolidada contém a fase inteira. A lista completa está em [arquivos alterados](qa/exploration/changed-files.txt).
+
+## Pull requests publicados
+
+| Camada | Branch | Commit da camada | PR | Base |
+|---|---|---|---|---|
+| A | `codex/rpg-phase5-domain` | `e0fb8c1` | [#26](https://github.com/devKire/survivor_game/pull/26) | `main` |
+| B | `codex/rpg-phase5-persistence` | `a683a26` | [#27](https://github.com/devKire/survivor_game/pull/27) | `codex/rpg-phase5-domain` |
+| C | `codex/rpg-phase5-gameplay` | `e8eacd8` | [#28](https://github.com/devKire/survivor_game/pull/28) | `codex/rpg-phase5-persistence` |
+| D | `codex/rpg-phase5-ui` | `f412f87` | [#29](https://github.com/devKire/survivor_game/pull/29) | `codex/rpg-phase5-gameplay` |
+| E | `codex/rpg-phase5` | `e3e8236` | [#30](https://github.com/devKire/survivor_game/pull/30) | `codex/rpg-phase5-ui` |
+
+Os cinco PRs estão abertos para revisão, sem merge automático. Os hashes acima identificam os cinco commits lógicos; a branch consolidada inclui também o índice de entrega deste relatório. A organização dos fixups em commits foi verificada por igualdade da árvore Git antes/depois; não alterou o conteúdo validado.
