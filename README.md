@@ -35,7 +35,8 @@ Abra **http://localhost:3000**. Crie contas, crie uma equipe, compartilhe o cód
 
 ## RPG (rollout controlado)
 
-`RPG_ENABLED=false`, `RPG_EXPEDITIONS_ENABLED=false` e `RPG_REFUGE_ENABLED=false` são os padrões seguros.
+`RPG_ENABLED=false`, `RPG_EXPEDITIONS_ENABLED=false`, `RPG_REFUGE_ENABLED=false` e `RPG_EXPLORATION_ENABLED=false` são os padrões seguros.
+A exploração usa RPG_ENABLED e RPG_EXPLORATION_ENABLED no web e realtime; entrada em `/rpg/exploration` ou no portal do Refúgio. Veja [região, gathering e segurança](docs/RPG-EXPLORATION.md).
 O Refúgio requer RPG e sua flag própria; consulte [cena, serviços e Depósito](docs/RPG-REFUGE.md).
 Após aplicar as migrações e integrar toda a Fase 3, habilite ambas no processo web
 e realtime de um ambiente de validação. Acesse `/rpg`, prepare o personagem e

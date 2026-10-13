@@ -1,0 +1,21 @@
+{
+  "players": 5,
+  "resources": 22,
+  "pois": 9,
+  "chunks": 19,
+  "createMs": 74.15847199999985,
+  "heapRegionBytes": 409672,
+  "heapPerPlayerEstimateBytes": 81934.4,
+  "generationP95Ms": 3.4994779999999537,
+  "tickP95Ms": 0.11325099999999111,
+  "snapshotFivePlayersP95Ms": 0.4311209999998482,
+  "tickQueries": 0,
+  "gatheringMs": 2258.175606,
+  "gatherQueries": 115,
+  "intentValidationP95Ms": 3.654541999999992,
+  "transactionP95Ms": 50.4727170000001,
+  "measuredTransactions": 5,
+  "sqlQueryP95Ms": 2.6012040000000525,
+  "claims": 5,
+  "notes": "Local Node/PostgreSQL. Movement ticks accelerated by test navigator; gathering requires real elapsed time. Heap estimate includes region and Prisma warmup, not isolated player allocation. Generation measures resources and POIs together. Transaction latency is whole promise wall time including lock wait, measured with a benchmark-only wrapper."
+}

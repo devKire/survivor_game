@@ -1,0 +1,9 @@
+
+> limiar@2.0.0 lint
+> eslint src tests scripts
+
+
+/workspace/survivor_game/src/game/client/browser.ts
+  28:10  warning  'TAU' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 1 problem (0 errors, 1 warning)

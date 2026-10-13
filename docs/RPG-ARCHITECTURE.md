@@ -98,3 +98,7 @@ As constraints de CHECK e a função `rpg_attribute_spent_v1` são mantidas no S
 ## Refúgio e Depósito (Fase 4)
 
 Cena segura e local em `/rpg/refuge`, gated por RPG_ENABLED e RPG_REFUGE_ENABLED. Reutiliza TileRenderer/CharacterSpriteRenderer, sem iniciar simulação de combate ou persistir posição. NPCs/estruturas abrem serviços reais. `RpgItemInstance.location` separa INVENTORY/STASH na mesma instância, com CHECK contra equipamento armazenado. Transferências usam lock, Serializable, revisão e receipts existentes; não alteram economia ou UserProgress.version. Ver [RPG-REFUGE.md](RPG-REFUGE.md) e [RPG-STORAGE.md](RPG-STORAGE.md).
+
+## Exploração e gathering (Fase 5)
+
+RPG_EXPLORATION é uma atividade independente das recompensas RPG_EXPEDITION. Reutiliza Team/GameSession, CoopSimulation, movimento/colisão, RemoteGame e renderer. Regiões/nós/POIs versionados têm geração independente e área finita. RpgExplorationSession/Participant conservam a autorização e build; RpgResourceClaim deduplica concessão pessoal por conta/nó/ciclo UTC; RpgDiscoveredPoi registra descoberta por conta. Materiais e revisão são confirmados atomicamente, sem UserProgress.version. Não há XP ou settlement de combate na exploração. Ver [arquitetura](RPG-EXPLORATION.md), [persistência](RPG-RESOURCE-PERSISTENCE.md), [segurança](RPG-EXPLORATION-SECURITY.md) e [QA](RPG-PHASE5-QA.md).
