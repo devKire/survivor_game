@@ -21,3 +21,8 @@ Antes de cada fase: conferir novas alterações na main e documentos de lore;
 definir versões de conteúdo, origem de cada mutação, limites, locks, política de
 erro/recuperação e impacto de migração; comprovar fluxo real e apresentar PRs.
 Não reexecutar extração histórica do motor nem criar renderer paralelo.
+
+
+## Fase 6 — narrativa persistente
+
+Missões, diálogos e escolhas usam [domínio versionado](RPG-QUESTS.md), provas duráveis das fases anteriores e resgate transacional. Rollout `RPG_QUESTS_ENABLED=false`; sem alterações em snapshots, economia Survivor ou combate. Consulte o [relatório de QA](RPG-PHASE6-QA.md). A Fase 7 não foi iniciada.

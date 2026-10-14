@@ -1,0 +1,247 @@
+
+> limiar@2.0.0 test:browser
+> node --conditions=react-server node_modules/@playwright/test/cli.js test
+
+[WebServer] (node:308969) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:308981) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:309001) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 19 tests using 1 worker
+
+(node:309015) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/browser/economy.spec.ts:9:1 › V25 Chrome migrates offline gold, buys with gems and preserves it across reload (3.4s)
+  ✓   2 tests/browser/economy.spec.ts:24:1 › V22/V23 two Chrome contexts purchasing the same rank debit once (6.4s)
+  ✓   3 tests/browser/offline.spec.ts:4:1 › V1/V2 migrated offline game preserves movement, pause and legacy resume (5.6s)
+  ✓   4 tests/browser/online.spec.ts:11:3 › V3/V4/V8: 2 browsers register, lobby, synchronize gameplay and chat (25.8s)
+  ✓   5 tests/browser/online.spec.ts:11:3 › V3/V4/V8: 3 browsers register, lobby, synchronize gameplay and chat (28.9s)
+[WebServer] (node:308981) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+  ✓   6 tests/browser/rpg-equipment.spec.ts:13:1 › RPG equipment comparison, atomic replacement, stale tab feedback, persistence, transfer and mobile layout (12.1s)
+  ✓   7 tests/browser/rpg-expeditions.spec.ts:7:1 › public RPG expedition reaches confirmed rewards, persistent XP, usable inventory and private history (19.7s)
+  ✓   8 tests/browser/rpg-exploration.spec.ts:69:1 › exploration flags and safe authentication callbacks (2.3s)
+  ✓   9 tests/browser/rpg-exploration.spec.ts:83:1 › real refuge to exploration, gathering, discovery, reconnect, mobile, journal and persistent inventory (40.6s)
+  ✓  10 tests/browser/rpg-quests.spec.ts:65:1 › quest rollout and authentication (2.9s)
+  ✓  11 tests/browser/rpg-quests.spec.ts:130:1 › real three-quest arc, exclusive dialogue choice, exploration, delivery, side quest and refresh (2.3m)
+  ✘  12 tests/browser/rpg-quests.spec.ts:299:1 › quest tabs, network retry, private journal and mobile dialogue controls (6.0s)
+(node:310358) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 tests/browser/rpg-refuge.spec.ts:11:1 › Refuge rollout and safe login callbacks (2.6s)
+  ✘  14 tests/browser/rpg-refuge.spec.ts:22:1 › real refuge scene, NPC services, storage, mobile and repeated cleanup (39.6s)
+(node:310538) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  15 tests/browser/rpg.spec.ts:10:1 › RPG disabled routes return 404
+  ✓  16 tests/browser/rpg.spec.ts:16:1 › RPG enabled routes require login and preserve safe callbacks (3.8s)
+  ✓  17 tests/browser/rpg.spec.ts:33:1 › RPG selection and attributes handle stale tabs inline and preserve Survivor state (8.9s)
+  ✘  18 tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 2 clients (1.3m)
+(node:311076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  19 tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 5 clients (1.5m)
+
+
+  1) tests/browser/rpg-quests.spec.ts:299:1 › quest tabs, network retry, private journal and mobile dialogue controls
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "outra aba"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert">Seu perfil mudou em outra aba ou atividade. Atual…</p> aka getByText('Seu perfil mudou em outra aba')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 30000ms
+      - waiting for getByRole('alert')
+        2 × locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+          - unexpected value ""
+
+
+      319 |       .getByRole("button", { name: "Aceitar missão" })
+      320 |       .click();
+    > 321 |     await expect(tab.getByRole("alert")).toContainText("outra aba");
+          |                                          ^
+      322 |     await tab
+      323 |       .getByRole("button", { name: "Atualizar diário", exact: true })
+      324 |       .click();
+        at /workspace/survivor_game/tests/browser/rpg-quests.spec.ts:321:42
+
+    Error Context: test-results/rpg-quests-quest-tabs-netw-fe671-nd-mobile-dialogue-controls/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/rpg-quests-quest-tabs-netw-fe671-nd-mobile-dialogue-controls/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/rpg-quests-quest-tabs-netw-fe671-nd-mobile-dialogue-controls/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/browser/rpg-refuge.spec.ts:22:1 › real refuge scene, NPC services, storage, mobile and repeated cleanup
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('canvas')
+    Expected: "refuge:guardian"
+    Received: ""
+    Timeout:  30000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('canvas') with timeout 30000ms
+      - waiting for locator('canvas')
+        3 × locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="521.9" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-frame-p95="33.300" data-render-p95="13.200" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+          - unexpected value ""
+        2 × locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-frame-p95="33.300" data-render-p95="12.600" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+          - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-frame-p95="16.800" data-render-p95="11.500" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="7.100" data-frame-p95="16.800" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.000" data-frame-p95="16.800" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="5.100" data-frame-p95="16.800" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="5.800" data-frame-p95="16.800" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="5.100" data-frame-p95="16.800" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="5.300" data-frame-p95="16.800" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="5.600" data-frame-p95="16.800" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        3 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="5.300" data-frame-p95="16.700" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="5.600" data-frame-p95="16.700" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="5.400" data-frame-p95="16.700" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="5.500" data-frame-p95="16.700" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.500" data-frame-p95="16.700" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        3 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.500" data-frame-p95="16.800" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.500" data-frame-p95="33.300" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.600" data-frame-p95="33.300" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.100" data-frame-p95="33.300" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.300" data-frame-p95="33.300" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        3 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.100" data-frame-p95="33.300" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.600" data-frame-p95="33.300" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.800" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="6.900" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        2 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="8.100" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        2 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="8.400" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="8.800" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        2 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="8.400" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        2 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="8.300" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="8.800" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        2 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="8.000" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="8.400" data-frame-p95="49.900" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        2 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="9.600" data-frame-p95="50.000" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        2 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="8.400" data-frame-p95="50.000" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="8.200" data-frame-p95="50.000" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        2 × unexpected value ""
+          - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="7.800" data-frame-p95="50.000" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="7.300" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+        - locator resolved to <canvas tabindex="0" width="1179" height="520" data-x="600.0" data-y="550.4" data-target="" data-character="nara" data-resize-ms="0.100" data-entry-ms="16.200" data-sprite="canonical" data-render-p95="7.100" data-frame-p95="33.400" aria-describedby="refuge-controls" aria-label="Cena do Refúgio — Nara"></canvas>
+        - unexpected value ""
+
+
+      76 |     await page.waitForTimeout(780);
+      77 |     await page.keyboard.up("KeyS");
+    > 78 |     await expect(scene).toHaveAttribute("data-target", "refuge:guardian");
+         |                         ^
+      79 |     const interactionStart = performance.now();
+      80 |     await page.keyboard.press("KeyE");
+      81 |     await expect(dialog).toHaveAccessibleName("Guardião do Refúgio");
+        at /workspace/survivor_game/tests/browser/rpg-refuge.spec.ts:78:25
+
+    Error Context: test-results/rpg-refuge-real-refuge-sce-4ad2d-mobile-and-repeated-cleanup/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/rpg-refuge-real-refuge-sce-4ad2d-mobile-and-repeated-cleanup/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/rpg-refuge-real-refuge-sce-4ad2d-mobile-and-repeated-cleanup/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 2 clients ───────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+      100 |     writeFileSync(join(reportDir, `stability-${process.env.STABILITY_BASELINE ? 'baseline' : 'after'}-${count}-${process.env.QA_ENEMIES || 'natural'}.json`), JSON.stringify({seconds:(Date.now()-started)/1000, metrics, server, errors},null,2));
+      101 |     if (!process.env.STABILITY_BASELINE) for(const d of metrics) {
+    > 102 |       expect(d.remoteGameInstances).toBe(1); expect(d.rafLoops).toBe(1);
+          |                                     ^
+      103 |       expect(d.resyncRequests).toBe(0); expect(d.canvasResizes).toBeLessThanOrEqual(4);
+      104 |     }
+      105 |     expect(errors).toEqual([]);
+        at /workspace/survivor_game/tests/browser/stability.spec.ts:102:37
+
+    Error Context: test-results/stability-V16-V17-V18-stability-2-clients/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/stability-V16-V17-V18-stability-2-clients/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/stability-V16-V17-V18-stability-2-clients/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 5 clients ───────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+      100 |     writeFileSync(join(reportDir, `stability-${process.env.STABILITY_BASELINE ? 'baseline' : 'after'}-${count}-${process.env.QA_ENEMIES || 'natural'}.json`), JSON.stringify({seconds:(Date.now()-started)/1000, metrics, server, errors},null,2));
+      101 |     if (!process.env.STABILITY_BASELINE) for(const d of metrics) {
+    > 102 |       expect(d.remoteGameInstances).toBe(1); expect(d.rafLoops).toBe(1);
+          |                                     ^
+      103 |       expect(d.resyncRequests).toBe(0); expect(d.canvasResizes).toBeLessThanOrEqual(4);
+      104 |     }
+      105 |     expect(errors).toEqual([]);
+        at /workspace/survivor_game/tests/browser/stability.spec.ts:102:37
+
+    Error Context: test-results/stability-V16-V17-V18-stability-5-clients/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/stability-V16-V17-V18-stability-5-clients/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/stability-V16-V17-V18-stability-5-clients/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    tests/browser/rpg-quests.spec.ts:299:1 › quest tabs, network retry, private journal and mobile dialogue controls
+    tests/browser/rpg-refuge.spec.ts:22:1 › real refuge scene, NPC services, storage, mobile and repeated cleanup
+    tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 2 clients ────────────────────────
+    tests/browser/stability.spec.ts:11:29 › V16/V17/V18 stability 5 clients ────────────────────────
+  1 skipped
+  14 passed (9.5m)

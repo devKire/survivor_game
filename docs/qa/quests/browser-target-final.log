@@ -1,0 +1,35 @@
+
+> limiar@2.0.0 test:browser
+> node --conditions=react-server node_modules/@playwright/test/cli.js test tests/browser/rpg-quests.spec.ts tests/browser/rpg-refuge.spec.ts
+
+[WebServer] (node:358727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:358739) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:358774) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 1 worker
+
+(node:358792) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/rpg-quests.spec.ts:65:1 › quest rollout and authentication (2.6s)
+[WebServer] (node:358739) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+  ✓  2 tests/browser/rpg-quests.spec.ts:130:1 › real three-quest arc, exclusive dialogue choice, exploration, delivery, side quest and refresh (3.7m)
+  ✓  3 tests/browser/rpg-quests.spec.ts:305:1 › quest tabs, network retry, private journal and mobile dialogue controls (14.4s)
+  ✓  4 tests/browser/rpg-refuge.spec.ts:11:1 › Refuge rollout and safe login callbacks (2.2s)
+[WebServer] [browser] Each child in a list should have a unique "key" prop.
+[WebServer]
+[WebServer] Check the render method of `RefugeClient`. It was passed a child from Page. See https://react.dev/link/warning-keys for more information.
+[WebServer] [browser] Each child in a list should have a unique "key" prop.
+[WebServer]
+[WebServer] Check the render method of `RefugeClient`. It was passed a child from Page. See https://react.dev/link/warning-keys for more information.
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: ground_forest-a (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: ground_ruins (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_trees_living (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_ruins (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_crystals (src/game/client/tile-renderer.ts:14:13)
+[WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_rocks (src/game/client/tile-renderer.ts:14:13)
+  ✓  5 tests/browser/rpg-refuge.spec.ts:22:1 › real refuge scene, NPC services, storage, mobile and repeated cleanup (27.3s)
+
+  5 passed (4.7m)
