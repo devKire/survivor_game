@@ -6,6 +6,7 @@ import {
   isRpgExplorationEnabled,
   isRpgRefugeEnabled,
   isRpgEnabled,
+  isRpgQuestsEnabled,
   isRpgExpeditionsEnabled,
 } from "../../server/env";
 import TeamClient from "./TeamClient";
@@ -15,6 +16,7 @@ export default async function Page() {
   const { player } = await playerData();
   return (
     <TeamClient
+      rpgQuestsEnabled={isRpgQuestsEnabled()}
       rpgExplorationEnabled={isRpgExplorationEnabled()}
       rpgRefugeEnabled={isRpgRefugeEnabled()}
       rpgExpeditionsEnabled={isRpgExpeditionsEnabled()}
