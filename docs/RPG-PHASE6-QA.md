@@ -136,7 +136,15 @@ Reprodução dos benchmarks no banco local isolado: `RUN_RPG_BENCHMARK=1 RPG_ENA
 
 Cinco PRs encadeados, integração na ordem A → B → C → D → E. O settlement de recompensas foi agrupado com as fontes em C, pois depende delas; B contém persistência/migração. Teste browser integrado e capturas estão em E para executar a pilha completa. Cada PR descreve seu escopo e dependências. Nenhum merge automático.
 
-PR_LINKS_PENDING
+| PR | Branch | Base | Commit principal |
+|---|---|---|---|
+| [A — #32](https://github.com/devKire/survivor_game/pull/32) | `codex/rpg-phase6-domain` | `main` | `3dd6103` |
+| [B — #33](https://github.com/devKire/survivor_game/pull/33) | `codex/rpg-phase6-persistence` | `codex/rpg-phase6-domain` | `24cec94` |
+| [C — #34](https://github.com/devKire/survivor_game/pull/34) | `codex/rpg-phase6-integration` | `codex/rpg-phase6-persistence` | `531952e` |
+| [D — #35](https://github.com/devKire/survivor_game/pull/35) | `codex/rpg-phase6-ui` | `codex/rpg-phase6-integration` | `c6db9d8` |
+| [E — #36](https://github.com/devKire/survivor_game/pull/36) | `codex/rpg-phase6` | `codex/rpg-phase6-ui` | `5495bf5` + documentação final dos links |
+
+As cinco branches foram publicadas e as bases verificadas via GitHub. Após integrar cada PR, atualizar a base do seguinte conforme a estratégia de merge escolhida pelo mantenedor. A árvore de arquivos foi comparada antes/depois da organização dos commits e permaneceu idêntica à validada.
 
 O [manifesto de arquivos](qa/quests/files.txt) lista alterações de implementação, testes e documentação. Artefatos de QA ficam em `docs/qa/quests`; saídas históricas de browser em outros diretórios foram preservadas. As flags desligadas permitem integrar a pilha sem publicar a campanha antes de revisão narrativa e operacional.
 
@@ -150,3 +158,5 @@ O [manifesto de arquivos](qa/quests/files.txt) lista alterações de implementa�
 - Nenhuma alteração no modelo de autoridade do realtime ou solução de múltiplos processos concorrentes de simulação nesta fase.
 - Rollback de rollout: desligar `RPG_QUESTS_ENABLED`, conservar tabelas/dados; reativar reconcilia fontes duráveis. Não remover a migração com DROP.
 - Fase 7, crafting, comércio, novas moedas, facções e campanha completa permanecem fora desta entrega.
+
+O setup reutilizável do ambiente recebeu atualização de `start_skill` em rascunho, removendo o bloqueio antigo de Prisma já resolvido e registrando os comandos de QA isolado. Isso não publica um snapshot: revisar/salvar nas configurações e publicar o ambiente continua sendo uma ação da plataforma/usuário. Restauração em uma nova tarefa não foi testada nesta entrega.

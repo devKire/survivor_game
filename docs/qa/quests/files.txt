@@ -30,6 +30,7 @@ docs/qa/quests/database-final.log
 docs/qa/quests/exploration-benchmark.json
 docs/qa/quests/exploration-benchmark.log
 docs/qa/quests/exploration.png
+docs/qa/quests/files.txt
 docs/qa/quests/gathering.png
 docs/qa/quests/lint-final.log
 docs/qa/quests/mobile-reward.png
