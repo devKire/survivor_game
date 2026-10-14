@@ -110,3 +110,8 @@ A construção Docker precisa de acesso à rede para dependências; não foi pre
 `node --import tsx scripts/balance.ts` simula três runs completas com RNG fixo.
 
 O proxy reverso deve suportar Upgrade e conservar conexões. O limite de conexão usa o endereço do socket; quando tudo passa por um proxy, este deve limitar conexões na borda e a política por endereço deve ser ajustada à topologia antes de oferecer muitas salas públicas.
+
+
+## Fase 6 — narrativa persistente
+
+Missões, diálogos e escolhas usam [domínio versionado](RPG-QUESTS.md), provas duráveis das fases anteriores e resgate transacional. Rollout `RPG_QUESTS_ENABLED=false`; sem alterações em snapshots, economia Survivor ou combate. Consulte o [relatório de QA](RPG-PHASE6-QA.md). A Fase 7 não foi iniciada.

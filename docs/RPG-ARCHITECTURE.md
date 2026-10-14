@@ -102,3 +102,7 @@ Cena segura e local em `/rpg/refuge`, gated por RPG_ENABLED e RPG_REFUGE_ENABLED
 ## Exploração e gathering (Fase 5)
 
 RPG_EXPLORATION é uma atividade independente das recompensas RPG_EXPEDITION. Reutiliza Team/GameSession, CoopSimulation, movimento/colisão, RemoteGame e renderer. Regiões/nós/POIs versionados têm geração independente e área finita. RpgExplorationSession/Participant conservam a autorização e build; RpgResourceClaim deduplica concessão pessoal por conta/nó/ciclo UTC; RpgDiscoveredPoi registra descoberta por conta. Materiais e revisão são confirmados atomicamente, sem UserProgress.version. Não há XP ou settlement de combate na exploração. Ver [arquitetura](RPG-EXPLORATION.md), [persistência](RPG-RESOURCE-PERSISTENCE.md), [segurança](RPG-EXPLORATION-SECURITY.md) e [QA](RPG-PHASE5-QA.md).
+
+## Quests, diálogos e narrativa (Fase 6)
+
+Catálogos versionados e regras puras em `game/{core,content}/rpg`, serviços autenticados em `server/rpg/quests`. A reconciliação lê descobertas, claims e receipts de expedição confirmados; não adiciona consultas ao tick nem aceita provas do cliente. Provas deduplicadas, escolhas exclusivas, custos, XP e materiais usam transações Serializable, lock da conta, revisão RPG e receipts. O beneficiário é congelado no aceite. `RPG_QUESTS_ENABLED=false` controla o rollout independentemente das outras atividades. Ver [quests](RPG-QUESTS.md), [segurança](RPG-QUEST-SECURITY.md), [conteúdo proposto](RPG-NARRATIVE-CONTENT.md) e [QA](RPG-PHASE6-QA.md).

@@ -1,0 +1,21 @@
+
+> limiar@2.0.0 test:browser
+> node --conditions=react-server node_modules/@playwright/test/cli.js test tests/browser/rpg-quests.spec.ts
+
+[WebServer] (node:359917) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:359929) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:359961) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:359974) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/rpg-quests.spec.ts:65:1 › quest rollout and authentication (890ms)
+  -  2 tests/browser/rpg-quests.spec.ts:130:1 › real three-quest arc, exclusive dialogue choice, exploration, delivery, side quest and refresh
+  -  3 tests/browser/rpg-quests.spec.ts:305:1 › quest tabs, network retry, private journal and mobile dialogue controls
+
+  2 skipped
+  1 passed (17.7s)

@@ -10,3 +10,8 @@ Conteúdo tipado em `content/rpg/refuge-npcs.ts`, contrato em `core/rpg/refuge/t
 | refuge:guide | 950,655 | 85 | expeditions, 2 falas | Preparação |
 
 Todos têm raio de colisão 14. Textos, posições e serviços ficam fora do renderer. Interação local encontra apenas alvos conhecidos e próximos; E repetido e interação em modal não disparam novamente. Diálogo permite avançar, escolher serviço e fechar com Escape. O dispatcher abre UI; jamais executa grant nem considera npcId uma autorização de mutação. Dialog e passos não persistem. Fase 6 poderá evoluir o catálogo sem inferir objetivos ou recompensas de conversa local.
+
+
+## Fase 6 — narrativa persistente
+
+Missões, diálogos e escolhas usam [domínio versionado](RPG-QUESTS.md), provas duráveis das fases anteriores e resgate transacional. Rollout `RPG_QUESTS_ENABLED=false`; sem alterações em snapshots, economia Survivor ou combate. Consulte o [relatório de QA](RPG-PHASE6-QA.md). A Fase 7 não foi iniciada.
