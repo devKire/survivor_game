@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import {
   isRpgExplorationEnabled,
   isRpgEnabled,
+  isRpgQuestsEnabled,
   isRpgExpeditionsEnabled,
   isRpgRefugeEnabled,
 } from "../../server/env";
@@ -26,6 +27,7 @@ export default async function Page() {
     <main className="account-shell rpg-page">
       <p className="eyebrow">ECOS DO OBELISCO</p>
       <h1>Sua jornada RPG</h1>
+      {isRpgQuestsEnabled() && <Link href="/rpg/quests">Diário de missões</Link>}
       {isRpgRefugeEnabled() && (
         <p>
           <Link href="/rpg/refuge">Entrar no Refúgio</Link>

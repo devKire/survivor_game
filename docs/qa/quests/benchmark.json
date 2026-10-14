@@ -1,0 +1,31 @@
+{
+  "environment": "local PostgreSQL, sequential requests, 10 accounts; not production load",
+  "samples": {
+    "accept": {
+      "count": 10,
+      "p95Ms": 427.10560499999997,
+      "p95Queries": 32
+    },
+    "dialogue": {
+      "count": 40,
+      "p95Ms": 197.22581600000012,
+      "p95Queries": 55
+    },
+    "proof-and-completion": {
+      "count": 20,
+      "p95Ms": 117.90264800000023,
+      "p95Queries": 56
+    },
+    "reward": {
+      "count": 10,
+      "p95Ms": 86.08597399999962,
+      "p95Queries": 38
+    },
+    "journal-and-history": {
+      "count": 30,
+      "p95Ms": 50.833330999999816,
+      "p95Queries": 21
+    }
+  },
+  "heapDeltaBytes": 47130120
+}

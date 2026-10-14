@@ -56,6 +56,9 @@ model RpgProfile {
   materials         RpgMaterialBalance[]
   mutationReceipts  RpgMutationReceipt[]
   discoveredPois    RpgDiscoveredPoi[]
+  quests            RpgQuestProgress[]
+  narrativeChoices  RpgNarrativeChoice[]
+  dialogueStates    RpgDialogueState[]
 
   @@unique([activeCharacterId, userId])
   @@schema("limiar")
@@ -76,6 +79,7 @@ model RpgCharacter {
   equippedItems RpgItemInstance[] @relation("RpgEquippedItems")
   expeditions   RpgExpeditionParticipant[]
   explorations  RpgExplorationParticipant[]
+  quests        RpgQuestProgress[]
 
   @@unique([userId, characterId])
   @@unique([id, userId])
@@ -340,6 +344,7 @@ model RpgExpeditionParticipant {
   @@id([sessionId, userId])
   @@unique([sessionId, userId, characterId])
   @@index([userId, createdAt, sessionId])
+  @@index([userId, entryRevision, sessionId])
   @@schema("limiar")
 }
 
@@ -597,6 +602,7 @@ model RpgResourceClaim {
   @@index([userId, cycle])
   @@index([sessionId, userId])
   @@index([userId, createdAt, id])
+  @@index([userId, revision, id])
   @@schema("limiar")
 }
 model RpgDiscoveredPoi {
@@ -608,5 +614,99 @@ model RpgDiscoveredPoi {
   profile RpgProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
   @@id([userId, regionId, regionVersion, poiId])
   @@index([userId, discoveredAt])
+  @@schema("limiar")
+}
+
+model RpgQuestProgress {
+  id               String   @id @default(cuid())
+  userId           String
+  questId          String
+  questVersion     Int
+  scope            String
+  scopeKey         String
+  characterId      String
+  status           String   @default("ACTIVE")
+  acceptedRevision Int
+  acceptedAt       DateTime @default(now())
+  completedAt      DateTime?
+  rewardedAt       DateTime?
+  updatedAt        DateTime @updatedAt
+  profile          RpgProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  character        RpgCharacter @relation(fields: [userId, characterId], references: [userId, characterId], onDelete: Cascade)
+  proofs           RpgQuestObjectiveProof[]
+  rewardReceipt    RpgQuestRewardReceipt?
+  storyFlags       RpgStoryFlag[]
+
+  @@unique([userId, questId, scopeKey])
+  @@unique([id, userId])
+  @@index([userId, status, acceptedAt, id])
+  @@schema("limiar")
+}
+
+model RpgQuestObjectiveProof {
+  id              String   @id @default(cuid())
+  userId          String
+  questProgressId String
+  objectiveId     String
+  sourceKind      String
+  sourceId        String
+  quantity        Int
+  createdAt       DateTime @default(now())
+  questProgress   RpgQuestProgress @relation(fields: [questProgressId, userId], references: [id, userId], onDelete: Cascade)
+
+  @@unique([questProgressId, objectiveId, sourceKind, sourceId], map: "RpgQuestObjectiveProof_origin_key")
+  @@index([userId, createdAt, id])
+  @@schema("limiar")
+}
+
+model RpgQuestRewardReceipt {
+  questProgressId String   @id
+  userId          String
+  revision        Int
+  result          Json
+  createdAt       DateTime @default(now())
+  questProgress   RpgQuestProgress @relation(fields: [questProgressId, userId], references: [id, userId], onDelete: Cascade)
+
+  @@unique([questProgressId, userId])
+  @@index([userId, createdAt, questProgressId])
+  @@schema("limiar")
+}
+
+model RpgStoryFlag {
+  userId           String
+  flagId           String
+  sourceProgressId String
+  createdAt        DateTime @default(now())
+  sourceProgress   RpgQuestProgress @relation(fields: [sourceProgressId, userId], references: [id, userId], onDelete: Cascade)
+
+  @@id([userId, flagId])
+  @@index([sourceProgressId, userId])
+  @@schema("limiar")
+}
+
+model RpgNarrativeChoice {
+  userId          String
+  groupId         String
+  value           String
+  dialogueId      String
+  dialogueVersion Int
+  nodeId          String
+  createdAt       DateTime @default(now())
+  profile         RpgProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([userId, groupId])
+  @@schema("limiar")
+}
+
+model RpgDialogueState {
+  userId          String
+  npcId           String
+  dialogueId      String
+  dialogueVersion Int
+  nodeId          String
+  updatedAt       DateTime @updatedAt
+  profile         RpgProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([userId, npcId])
   @@schema("limiar")
 }
