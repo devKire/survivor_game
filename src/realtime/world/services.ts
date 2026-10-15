@@ -1,3 +1,4 @@
+import { worldRewardHistory } from "../../server/rpg/world/rewards";
 import { z } from "zod";
 import { UserError } from "../../server/security";
 import { REFUGE } from "../../game/content/rpg/refuge";
@@ -81,6 +82,7 @@ export async function executeWorldService(
         const profile = await rpgProfileData(c.userId);
         return { revision: profile.revision };
       }
+      if (operation === "REWARDS") return worldRewardHistory(c.userId, args);
       if (operation === "JOURNAL") return rpgQuestJournal(c.userId, args);
       if (operation === "CHARACTER") return selectRpgCharacter(c.userId, args);
       if (operation === "ATTRIBUTES")

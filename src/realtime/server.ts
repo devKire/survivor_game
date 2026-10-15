@@ -1,3 +1,4 @@
+import { recoverWorldFieldRewards } from "../server/rpg/world/rewards";
 import { WorldCoordinator, type WorldConnection } from "./world/coordinator";
 import { acquireRealtimeAuthority } from "./world/lease";
 import { recoverWorldVisits } from "../server/rpg/world/presence";
@@ -731,6 +732,7 @@ const releaseAuthority = await acquireRealtimeAuthority(()=>{
   process.exit(1);
 });
 await recoverWorldVisits();
+await recoverWorldFieldRewards();
 await interruptLostExplorations();
 await interruptLostRpgExpeditions();
 await db().gameSession.updateMany({

@@ -230,14 +230,18 @@
 @media (pointer: coarse) {
   .joystick {
     display: flex;
+    bottom: 130px;
   }
   .hotbar {
-    bottom: 10px;
-    left: auto;
-    right: 10px;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
     transform: none;
-    max-width: calc(100% - 140px);
-    flex-wrap: wrap;
+    max-width: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    padding: 6px;
   }
   .hotbar button {
     font-size: 11px;
@@ -245,7 +249,7 @@
     min-height: 42px;
   }
   .interact {
-    bottom: 116px;
+    bottom: 130px;
     left: auto;
     right: 12px;
     transform: none;
@@ -253,7 +257,7 @@
     min-height: 48px !important;
   }
   .chat {
-    bottom: 172px;
+    bottom: 195px;
     right: 10px;
   }
   .character {

@@ -13,6 +13,7 @@ import {
 import type { WorldSnapshot } from "../src/game/network/world";
 import { WorldZone } from "../src/realtime/world/zone";
 import { explorationPath } from "./helpers/exploration-navigation";
+import { settleWorldFieldEvent } from "../src/server/rpg/world/rewards";
 import { mutateRpgEquipment } from "../src/server/rpg/mutations";
 
 const users: string[] = [],
@@ -94,6 +95,7 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
         child.kill("SIGTERM");
         await once(child, "exit");
       }
+      await db().team.deleteMany({ where: { leaderId: { in: users } } });
       await db().user.deleteMany({ where: { id: { in: users } } });
       await db().$disconnect();
       vi.unstubAllEnvs();
@@ -147,6 +149,99 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
       expect(
         await db().teamMember.count({ where: { userId: { in: users } } }),
       ).toBe(0);
+      expect(
+        await db().gameSessionMember.count({
+          where: { userId: { in: users } },
+        }),
+      ).toBe(0);
+      const leader = peers[0];
+      for (const member of peers.slice(1, 5)) {
+        leader.send({
+          type: "WORLD_GROUP",
+          epoch: leader.snapshot().epoch,
+          action: "INVITE",
+          target: member.snapshot().selfId,
+        });
+        await until(() =>
+          member.messages.some(
+            (m) => m.type === "WORLD_GROUP" && m.invites.length > 0,
+          ),
+        );
+        const invite = member.messages.findLast(
+          (m) => m.type === "WORLD_GROUP" && m.invites.length > 0,
+        )! as Extract<ServerMessage, { type: "WORLD_GROUP" }>;
+        member.send({
+          type: "WORLD_GROUP",
+          epoch: member.snapshot().epoch,
+          action: "ACCEPT",
+          inviteId: invite.invites[0].id,
+        });
+        await until(() =>
+          leader.messages.some(
+            (m) =>
+              m.type === "WORLD_GROUP" &&
+              m.members.length === peers.indexOf(member) + 1,
+          ),
+        );
+      }
+      const groupStart = peers[5].messages.length;
+      leader.send({
+        type: "WORLD_GROUP",
+        epoch: leader.snapshot().epoch,
+        action: "INVITE",
+        target: peers[5].snapshot().selfId,
+      });
+      await until(() =>
+        leader.messages.some(
+          (m) => m.type === "ERROR" && m.message.includes("vaga"),
+        ),
+      );
+      expect(
+        peers[5].messages
+          .slice(groupStart)
+          .some((m) => m.type === "WORLD_GROUP" && m.invites.length),
+      ).toBe(false);
+      const groupText = "grupo-" + randomUUID();
+      leader.send({
+        type: "WORLD_CHAT",
+        epoch: leader.snapshot().epoch,
+        scope: "GROUP",
+        text: groupText,
+      });
+      await until(() =>
+        peers[4].messages.some(
+          (m) => m.type === "WORLD_CHAT" && m.text === groupText,
+        ),
+      );
+      expect(
+        peers[5].messages.some(
+          (m) => m.type === "WORLD_CHAT" && m.text === groupText,
+        ),
+      ).toBe(false);
+      const localText = "local-" + randomUUID();
+      leader.send({
+        type: "WORLD_CHAT",
+        epoch: leader.snapshot().epoch,
+        scope: "LOCAL",
+        text: localText,
+      });
+      await until(() =>
+        peers[5].messages.some(
+          (m) => m.type === "WORLD_CHAT" && m.text === localText,
+        ),
+      );
+      leader.send({
+        type: "WORLD_CHAT",
+        epoch: leader.snapshot().epoch,
+        scope: "DM",
+        target: peers[5].snapshot().selfId,
+        text: "não autorizado",
+      });
+      await until(() =>
+        leader.messages.some(
+          (m) => m.type === "ERROR" && m.message.includes("amigos"),
+        ),
+      );
       expect(
         await db().gameSessionMember.count({
           where: { userId: { in: users } },
@@ -286,6 +381,29 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
           geometry.world.createChunk((i % 3) - 1, Math.floor(i / 3) - 1)
             .structures,
       ).flat();
+      for (const point of explorationPath(
+        own(p),
+        { x: 260, y: 160 },
+        obstacles,
+        15,
+      ))
+        await walk(p, point.x, point.y);
+      await until(
+        () => p.messages.some((m) => m.type === "WORLD_REWARDS"),
+        30000,
+      );
+      const reward = p.messages.find(
+        (m) => m.type === "WORLD_REWARDS",
+      )! as Extract<ServerMessage, { type: "WORLD_REWARDS" }>;
+      expect(reward.rewards[0].xp).toBe(3);
+      const itemCount = await db().rpgItemInstance.count({
+        where: { userId: p.id },
+      });
+      expect(itemCount).toBe(1);
+      await settleWorldFieldEvent(reward.rewards[0].id);
+      expect(
+        await db().rpgItemInstance.count({ where: { userId: p.id } }),
+      ).toBe(itemCount);
       for (const point of explorationPath(own(p), target, obstacles))
         await walk(p, point.x, point.y);
       const gather = {

@@ -32,6 +32,7 @@ import type { QuestJournalData } from "../../../server/rpg/quests/types";
 import QuestJournal from "../quests/QuestJournal";
 import { WorldActionContext } from "./WorldActionContext";
 import WorldMap from "./WorldMap";
+import WorldRewards from "./WorldRewards";
 import styles from "./world.module.css";
 type State = Extract<ServerMessage, { type: "WORLD_STATE" }>;
 type Group = Extract<ServerMessage, { type: "WORLD_GROUP" }>;
@@ -248,6 +249,12 @@ export default function WorldClient({
             });
         } else setPanel(v.service === "NPC" ? "NPC" : v.service);
       }
+      if (v.type === "WORLD_REWARDS") {
+        setMessage(
+          `Recompensa de campo confirmada: +${v.rewards.reduce((n, r) => n + r.xp, 0)} XP RPG. Consulte Recompensas.`,
+        );
+        refresh();
+      }
       if (v.type === "WORLD_CHAT") setChat((old) => [...old, v].slice(-50));
       if (v.type === "WORLD_GROUP") setGroup(v);
       if (v.type === "WORLD_LEFT") {
@@ -278,7 +285,7 @@ export default function WorldClient({
       }
       outstanding.clear();
     };
-  }, [rpc]);
+  }, [rpc, refresh]);
   useEffect(() => {
     game.current?.setPaused(!!panel || chatOpen);
     if (panel) {
@@ -436,10 +443,13 @@ export default function WorldClient({
           </section>
         )}
         <nav className={styles.hotbar} aria-label="Ações do mundo">
-          {["INVENTORY", "CHARACTER", "QUESTS", "MAP", "GROUP"].map(
+          {["INVENTORY", "CHARACTER", "QUESTS", "MAP", "GROUP", "REWARDS"].map(
             (action) => (
               <button key={action} onClick={() => perform.current(action)}>
                 {names[action]}
+                {action === "GROUP" && group?.invites.length
+                  ? ` (${group.invites.length})`
+                  : ""}
               </button>
             ),
           )}
@@ -611,6 +621,9 @@ export default function WorldClient({
             </h2>
             <button onClick={closePanel}>Fechar · Esc</button>
           </header>
+          {panel === "REWARDS" && (
+            <WorldRewards key={snapshot?.self.revision} />
+          )}
           {panel === "MAP" && snapshot && (
             <WorldMap
               snapshot={snapshot}
