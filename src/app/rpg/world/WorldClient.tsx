@@ -49,6 +49,7 @@ export default function WorldClient({
   panels: Record<string, ReactNode>;
   initialJournal?: QuestJournalData;
 }) {
+  const questsAvailable = useRef(!!initialJournal);
   const router = useRouter(),
     canvas = useRef<HTMLCanvasElement>(null),
     game = useRef<WorldGame>(null),
@@ -151,10 +152,15 @@ export default function WorldClient({
       if (!s) return;
       if (action !== "INTERACT") {
         setNpc(undefined);
-        setPanel(action);
+        setPanel(
+          action === "QUESTS" && initialJournal ? "QUESTS_LOADING" : action,
+        );
         if (action === "QUESTS" && initialJournal)
           void rpc("JOURNAL", {})
-            .then((data) => setJournal(data as QuestJournalData))
+            .then((data) => {
+              setJournal(data as QuestJournalData);
+              setPanel("QUESTS");
+            })
             .catch((e) => setMessage(e.message));
         return;
       }
@@ -214,6 +220,7 @@ export default function WorldClient({
       }
       if (v.type === "WORLD_STATE" && v.epoch === latest.current?.epoch) {
         setState(v);
+        view.setResources(v.depleted);
         if (v.message) setMessage(v.message);
       }
       if (v.type === "WORLD_RESULT") {
@@ -228,7 +235,18 @@ export default function WorldClient({
       }
       if (v.type === "WORLD_INTERACTION" && v.epoch === latest.current?.epoch) {
         setNpc(v.service === "NPC" ? v.targetId : undefined);
-        setPanel(v.service === "NPC" ? "NPC" : v.service);
+        if (v.service === "NPC" && questsAvailable.current) {
+          setPanel("NPC_LOADING");
+          void rpc("JOURNAL", {})
+            .then((data) => {
+              setJournal(data as QuestJournalData);
+              setPanel("NPC");
+            })
+            .catch((error) => {
+              setMessage(error.message);
+              setPanel(undefined);
+            });
+        } else setPanel(v.service === "NPC" ? "NPC" : v.service);
       }
       if (v.type === "WORLD_CHAT") setChat((old) => [...old, v].slice(-50));
       if (v.type === "WORLD_GROUP") setGroup(v);
@@ -260,7 +278,7 @@ export default function WorldClient({
       }
       outstanding.clear();
     };
-  }, []);
+  }, [rpc]);
   useEffect(() => {
     game.current?.setPaused(!!panel || chatOpen);
     if (panel) {
@@ -270,6 +288,23 @@ export default function WorldClient({
       canvas.current?.focus();
     }
   }, [panel, chatOpen]);
+  const resourceKey = state
+    ? JSON.stringify([state.cycle, state.depleted, state.discovered])
+    : undefined;
+  const lastResources = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    const previous = lastResources.current;
+    lastResources.current = resourceKey;
+    if (!previous || !resourceKey || previous === resourceKey) return;
+    const timer = setTimeout(() => {
+      router.refresh();
+      if (questsAvailable.current)
+        void rpc("JOURNAL", {})
+          .then((data) => setJournal(data as QuestJournalData))
+          .catch(() => {});
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [resourceKey, rpc, router]);
   function closePanel() {
     setPanel(undefined);
     setNpc(undefined);
@@ -692,6 +727,29 @@ export default function WorldClient({
             ) : (
               <p>Missões indisponíveis no momento.</p>
             ))}
+          {panel === "EXPEDITIONS" && (
+            <section>
+              <p>
+                Expedições são atividades instanciadas. Sua exploração livre
+                continua disponível pelo portal das ruínas.
+              </p>
+              <button
+                onClick={() => {
+                  if (snapshot)
+                    client.current?.send({
+                      type: "WORLD_LEAVE",
+                      epoch: snapshot.epoch,
+                    });
+                  setPanel("EXPEDITION_EXIT");
+                }}
+              >
+                Sair do mundo para preparar expedição
+              </button>
+            </section>
+          )}
+          {panel === "EXPEDITION_EXIT" && !snapshot && (
+            <Link href="/rpg/expeditions">Preparar expedição</Link>
+          )}
           {panel && panels[panel]}
         </dialog>
       </main>

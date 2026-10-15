@@ -168,7 +168,12 @@ export async function collectQuestEvidence(
         revision: { gt: progress.acceptedRevision },
         id: { notIn: [...used] },
         ...(progress.scope === "CHARACTER"
-          ? { participant: { characterId: progress.characterId } }
+          ? {
+              OR: [
+                { participant: { characterId: progress.characterId } },
+                { worldVisit: { characterId: progress.characterId } },
+              ],
+            }
           : {}),
       },
       select: { id: true, quantity: true },

@@ -1,0 +1,11 @@
+# Connected zones and existing services
+
+The Refuge and Ruins outskirts are persistent public regions of the same coordinator. A portal checks authoritative proximity, reserves destination capacity, commits the checkpoint and changes the presence epoch before accepting destination movement. Neither entering nor transferring creates a Team or GameSession.
+
+Character, attributes and equipment may be changed in the Refuge. Storage additionally requires proximity to the stash/keeper. Quest and dialogue commands require proximity to their catalog NPC. All commands reuse existing account locks, revisions, receipts and strict schemas through a private service permit. An authenticated legacy action cannot mutate the build behind a live world presence. Changing character creates another visit, preserving the historical character associated with resource claims.
+
+World gathering and legacy exploration share the same runtime and persistence functions. The coordinator validates position, active epoch, level and both simulation/wall duration. Movement, a service operation, transition or loss of presence cancels gathering. The existing unique daily resource origin is shared across both modes; creating another visit never renews the daily right. Limits remain twelve claims per visit and eighteen per UTC account cycle. Confirmed discoveries likewise use the existing ledger and quest evidence. No SQL is issued per movement frame.
+
+Panels keep the Canvas/socket alive. Resources use existing prop atlases, personal depletion, and catalog names. Confirmed resources/discoveries refresh inventory and journal. Instanced expeditions remain an explicit exit to their existing preparation flow; ordinary free exploration uses the physical shared-world portal.
+
+Validation on the isolated PostgreSQL database: 11 gathering/database tests (new world and existing exploration), and one real WebSocket scenario with six authenticated independent accounts, physical gathering, replay without duplicate materials, distant storage rejection, strict profile input, nearby NPC interaction, zone transfers and reconnect. Typecheck and lint also ran; lint retains the existing unused `TAU` warning. Browser validation remains part of the final QA stage.

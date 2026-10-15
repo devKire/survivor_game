@@ -1,3 +1,18 @@
+import { executeWorldService } from "./services";
+import { rpgProfileData } from "../../server/rpg/profile";
+import { buildRpgCombatLoadout } from "../../server/rpg/loadout";
+import {
+  persistWorldGathering,
+  persistWorldDiscovery,
+  readWorldResources,
+  worldGatheringReplay,
+} from "../../server/rpg/world/resources";
+import { gatheringReady } from "../../game/core/rpg/exploration/runtime";
+import { gatheringCycle } from "../../game/core/rpg/exploration/gathering";
+import { explorationResource } from "../../game/content/rpg/exploration-resources";
+import { inDiscoveryRange } from "../../game/core/rpg/exploration/generation";
+import { REFUGE } from "../../game/content/rpg/refuge";
+import { withinWorldInteraction } from "../../game/core/rpg/world/rules";
 import { randomUUID } from "node:crypto";
 import type { WorldCommand } from "../../game/network/world";
 import {
@@ -23,7 +38,7 @@ export interface WorldConnection {
   isOpen: () => boolean;
   send: (message: unknown) => void;
 }
-interface Presence {
+export interface WorldPresence {
   connection: WorldConnection;
   zone: WorldZone;
   avatar: WorldAvatar;
@@ -33,7 +48,7 @@ interface Presence {
 export class WorldCoordinator {
   readonly authorityId = randomUUID();
   readonly zones = new Map<WorldZoneId, WorldZone>();
-  readonly presence = new Map<string, Presence>();
+  readonly presence = new Map<string, WorldPresence>();
   private queues = new Map<string, Promise<unknown>>();
   private snapshotClock = 0;
   private accumulator = 0;
@@ -105,6 +120,7 @@ export class WorldCoordinator {
       lastActivity: Date.now(),
       transitions: new Map(),
     });
+    await this.refreshResources(this.current(c));
     c.send(zone.snapshot(avatar));
   }
   async leave(c: WorldConnection) {
@@ -161,6 +177,7 @@ export class WorldCoordinator {
       p.transitions.set(v.requestId, { portalId: v.portalId });
       if (p.transitions.size > 16)
         p.transitions.delete(p.transitions.keys().next().value!);
+      await this.refreshResources(p);
       c.send(dest.snapshot(p.avatar));
     } catch (error) {
       // A lost commit acknowledgement must not leave a live entity authorized
@@ -169,6 +186,194 @@ export class WorldCoordinator {
       throw error;
     } finally {
       dest.reservations--;
+      p.avatar.busy = false;
+    }
+  }
+  sendResourceState(p: WorldPresence, message?: string) {
+    const g = p.avatar.gathering;
+    p.connection.send({
+      type: "WORLD_STATE",
+      epoch: p.avatar.epoch,
+      revision: p.avatar.revision,
+      cycle: p.avatar.cycle,
+      depleted: [...p.avatar.depleted],
+      discovered: [...p.avatar.discoveries],
+      gathering: g
+        ? {
+            nodeId: g.node.id,
+            elapsed: g.elapsed,
+            duration: explorationResource(g.node.definitionId).durationMs,
+          }
+        : null,
+      ...(message ? { message } : {}),
+    });
+  }
+  async refreshResources(p: WorldPresence) {
+    const state = await readWorldResources(p.connection.userId);
+    p.avatar.revision = state.revision;
+    p.avatar.cycle = state.cycle;
+    p.avatar.depleted = new Set(state.depleted);
+    p.avatar.discoveries = new Set(state.discovered);
+    p.connection.send(p.zone.snapshot(p.avatar));
+    this.sendResourceState(p);
+  }
+  async refreshAvatar(p: WorldPresence) {
+    const profile = await rpgProfileData(p.connection.userId),
+      active = profile.characters.find(
+        (c) => c.id === profile.activeCharacterId,
+      )!;
+    if (p.zone.definition.safe) {
+      const loadout = await buildRpgCombatLoadout(
+        p.connection.userId,
+        active.characterId,
+      );
+      const old = p.avatar;
+      let visitId = old.visitId,
+        epoch = old.epoch;
+      if (loadout.characterId !== old.loadout.characterId) {
+        const entry = await openWorldVisit(old.userId, this.authorityId, () => {
+          this.current(p.connection, old.epoch);
+        });
+        visitId = entry.visit.id;
+        epoch = entry.visit.epoch;
+      }
+      const next = p.zone.createAvatar({
+        userId: old.userId,
+        publicId: old.publicId,
+        visitId,
+        epoch,
+        name: old.name,
+        loadout,
+        xp: active.xp,
+        revision: profile.revision,
+      });
+      const position = { x: old.player.x, y: old.player.y },
+        ratio = old.player.health / old.player.maxHealth;
+      p.zone.remove(old.userId);
+      p.zone.add(next);
+      Object.assign(next.player, position);
+      next.player.health = next.player.maxHealth * ratio;
+      next.sequence = epoch === old.epoch ? old.sequence : 0;
+      next.busy = old.busy;
+      next.profileLevel = active.level;
+      p.avatar = next;
+      p.zone.refreshPresence(next);
+    } else {
+      p.avatar.revision = profile.revision;
+      p.avatar.xp = active.xp;
+      p.avatar.profileLevel = active.level;
+    }
+  }
+  processEvents(p: WorldPresence) {
+    const a = p.avatar,
+      c = p.connection;
+    if (a.refreshPending || a.busy) return;
+    if (a.cycle !== gatheringCycle(Date.now())) {
+      a.refreshPending = true;
+      void this.serialized(c.userId, () => this.refreshResources(p))
+        .catch(() => {})
+        .finally(() => {
+          a.refreshPending = false;
+        });
+      return;
+    }
+    if (p.zone.definition.safe) return;
+    const g = gatheringReady(a.gathering);
+    if (g) {
+      g.pending = true;
+      void this.serialized(c.userId, async () => {
+        const assertLive = () => {
+          this.current(c, a.epoch);
+          p.zone.assertGather(a, g);
+        };
+        try {
+          const result = await persistWorldGathering(
+            c.userId,
+            a.visitId,
+            a.epoch,
+            g,
+            assertLive,
+          );
+          if (a.gathering === g) a.gathering = undefined;
+          await this.refreshResources(p);
+          c.send({
+            type: "WORLD_RESULT",
+            requestId: g.intent.requestId,
+            ok: true,
+            message: `Coleta confirmada: +${result.quantity} ${result.materialId}.`,
+            data: result,
+          });
+        } catch (error) {
+          if (a.gathering === g) a.gathering = undefined;
+          c.send({
+            type: "WORLD_RESULT",
+            requestId: g.intent.requestId,
+            ok: false,
+            message:
+              error instanceof UserError
+                ? error.message
+                : "Coleta cancelada ou indisponível. Tente novamente.",
+          });
+          await this.refreshResources(p).catch(() => {});
+        }
+      });
+      return;
+    }
+    if (a.gathering) return;
+    for (const node of p.zone.nodes.filter(
+      (n) =>
+        inDiscoveryRange(n, a.player) &&
+        !a.discoveries.has(n.id) &&
+        !a.discoveryPending.has(n.id),
+    )) {
+      a.discoveryPending.add(node.id);
+      void this.serialized(c.userId, async () => {
+        if (a.gathering || a.busy) return;
+        const assertLive = () => {
+          this.current(c, a.epoch);
+          if (
+            p.zone.zoneId !== "ruins-outskirts" ||
+            !inDiscoveryRange(node, a.player)
+          )
+            throw new UserError("Descoberta cancelada.");
+        };
+        await persistWorldDiscovery(
+          c.userId,
+          a.visitId,
+          a.epoch,
+          node,
+          assertLive,
+        );
+        a.discoveries.add(node.id);
+        await this.refreshResources(p);
+      })
+        .catch(() => {})
+        .finally(() => a.discoveryPending.delete(node.id));
+    }
+  }
+  async rpc(
+    c: WorldConnection,
+    v: Extract<WorldCommand, { type: "WORLD_RPC" }>,
+  ) {
+    const p = this.current(c, v.epoch);
+    p.avatar.busy = true;
+    p.avatar.gathering = undefined;
+    p.avatar.input = { x: 0, y: 0 };
+    try {
+      const data = await executeWorldService(c, p, v.operation, v.args, () => {
+        this.current(c, v.epoch);
+      });
+      if (v.operation !== "JOURNAL") await this.refreshAvatar(p);
+      await this.refreshResources(p);
+      c.send({
+        type: "WORLD_RESULT",
+        requestId: v.requestId,
+        ok: true,
+        message: "Registro confirmado.",
+        data,
+      });
+      c.send(p.zone.snapshot(p.avatar));
+    } finally {
       p.avatar.busy = false;
     }
   }
@@ -198,11 +403,77 @@ export class WorldCoordinator {
       return;
     }
     if (v.type === "WORLD_REFRESH") {
+      await this.refreshAvatar(p);
+      await this.refreshResources(p);
       c.send(p.zone.snapshot(p.avatar));
       return;
     }
     if (v.type === "WORLD_CANCEL") {
       p.avatar.gathering = undefined;
+      this.sendResourceState(p);
+      return;
+    }
+    if (v.type === "WORLD_RPC") {
+      await this.rpc(c, v);
+      return;
+    }
+    if (v.type === "WORLD_INTERACT") {
+      const target = [...REFUGE.npcs, ...REFUGE.structures].find(
+        (t) => t.id === v.targetId,
+      );
+      if (
+        p.zone.zoneId !== "obelisk-refuge" ||
+        !target ||
+        !withinWorldInteraction(p.avatar.player, target) ||
+        p.avatar.player.health <= 0
+      )
+        throw new UserError("Aproxime-se de um serviço válido.");
+      c.send({
+        type: "WORLD_INTERACTION",
+        epoch: p.avatar.epoch,
+        targetId: target.id,
+        service:
+          target.visual === "npc" ? "NPC" : (target.service ?? "CHARACTER"),
+      });
+      return;
+    }
+    if (v.type === "WORLD_GATHER") {
+      await this.refreshResources(p);
+      const intent = {
+        nodeId: v.nodeId,
+        requestId: v.requestId,
+        expectedRevision: v.expectedRevision,
+      };
+      const replay = await worldGatheringReplay(c.userId, intent);
+      if (replay) {
+        c.send({
+          type: "WORLD_RESULT",
+          requestId: v.requestId,
+          ok: true,
+          message: "Coleta já confirmada.",
+          data: replay,
+        });
+        return;
+      }
+      if (v.expectedRevision !== p.avatar.revision)
+        throw new UserError("O perfil mudou. Atualize e tente novamente.");
+      try {
+        p.zone.startGather(p.avatar, intent);
+      } catch (error) {
+        throw new UserError(
+          error instanceof Error ? error.message : "Coleta inválida.",
+        );
+      }
+      if (p.avatar.depleted.has(v.nodeId)) {
+        p.avatar.gathering = undefined;
+        this.sendResourceState(p, "Recurso já coletado neste ciclo UTC.");
+        c.send({
+          type: "WORLD_RESULT",
+          requestId: v.requestId,
+          ok: true,
+          message: "Recurso já coletado neste ciclo UTC.",
+        });
+      } else this.sendResourceState(p);
       return;
     }
     throw new UserError("Serviço indisponível nesta etapa.");
@@ -210,7 +481,7 @@ export class WorldCoordinator {
   input(c: WorldConnection, v: Extract<WorldCommand, { type: "WORLD_INPUT" }>) {
     if (!isRpgSharedWorldEnabled()) return;
     const p = this.current(c, v.epoch);
-    p.lastActivity = Date.now();
+    if (Math.hypot(v.moveX, v.moveY) > 0.01) p.lastActivity = Date.now();
     p.zone.acceptMovement(c.userId, v);
   }
   step(dt: number) {
@@ -231,8 +502,11 @@ export class WorldCoordinator {
     this.snapshotClock += dt;
     if (this.snapshotClock >= 0.1) {
       this.snapshotClock %= 0.1;
-      for (const p of this.presence.values())
+      for (const p of this.presence.values()) {
+        this.processEvents(p);
         p.connection.send(p.zone.snapshot(p.avatar));
+        if (p.avatar.gathering) this.sendResourceState(p);
+      }
     }
   }
   async maintenance() {

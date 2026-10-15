@@ -1,4 +1,5 @@
 "use client";
+import { useWorldTransport } from "../world/WorldActionContext";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { RPG_ITEMS, RPG_MATERIALS } from "../../../game/content/rpg";
@@ -19,13 +20,16 @@ export interface StorageItem {
 }
 function Transfer({ item, revision }: { item: StorageItem; revision: number }) {
   const router = useRouter();
+  const world = useWorldTransport();
   const [state, action, pending] = useActionState<RpgActionState, FormData>(
     async (
       previous: RpgActionState,
       form: FormData,
     ): Promise<RpgActionState> => {
       try {
-        return await transferRpgItemAction(previous, form);
+        return world
+          ? await world.form("STORAGE", form)
+          : await transferRpgItemAction(previous, form);
       } catch {
         return {
           status: "error",

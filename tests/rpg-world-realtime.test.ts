@@ -11,6 +11,8 @@ import {
   type ServerMessage,
 } from "../src/game/network/protocol";
 import type { WorldSnapshot } from "../src/game/network/world";
+import { WorldZone } from "../src/realtime/world/zone";
+import { explorationPath } from "./helpers/exploration-navigation";
 import { mutateRpgEquipment } from "../src/server/rpg/mutations";
 
 const users: string[] = [],
@@ -179,6 +181,50 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
           requestId: randomUUID(),
         }),
       ).rejects.toThrow(/dentro do mundo/);
+      const invalidProfile = randomUUID();
+      p.send({
+        type: "WORLD_RPC",
+        epoch: p.snapshot().epoch,
+        requestId: invalidProfile,
+        operation: "PROFILE",
+        args: { userId: peers[1].id },
+      });
+      await until(() =>
+        p.messages.some(
+          (m) =>
+            m.type === "WORLD_RESULT" &&
+            m.requestId === invalidProfile &&
+            !m.ok,
+        ),
+      );
+      p.send({
+        type: "WORLD_INTERACT",
+        epoch: p.snapshot().epoch,
+        targetId: "refuge:guardian",
+      });
+      await until(() =>
+        p.messages.some(
+          (m) =>
+            m.type === "WORLD_INTERACTION" && m.targetId === "refuge:guardian",
+        ),
+      );
+      const farStorage = randomUUID();
+      p.send({
+        type: "WORLD_RPC",
+        epoch: p.snapshot().epoch,
+        requestId: farStorage,
+        operation: "STORAGE",
+        args: {},
+      });
+      await until(() =>
+        p.messages.some(
+          (m) =>
+            m.type === "WORLD_RESULT" &&
+            m.requestId === farStorage &&
+            !m.ok &&
+            m.message.includes("Depósito"),
+        ),
+      );
       await walk(p, 380, 620);
       await walk(p, 380, 735);
       await until(() =>
@@ -229,6 +275,64 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
           q.snapshot().zoneId === "ruins-outskirts" &&
           p.snapshot().players.length === 2,
       );
+      // Public geometry is used only to navigate with normal input packets.
+      const geometry = new WorldZone("ruins-outskirts", "test-navigation");
+      const target = [...geometry.nodes]
+        .filter((n) => n.kind === "RESOURCE")
+        .sort((a, b) => Math.hypot(a.x, a.y) - Math.hypot(b.x, b.y))[0];
+      const obstacles = Array.from(
+        { length: 9 },
+        (_, i) =>
+          geometry.world.createChunk((i % 3) - 1, Math.floor(i / 3) - 1)
+            .structures,
+      ).flat();
+      for (const point of explorationPath(own(p), target, obstacles))
+        await walk(p, point.x, point.y);
+      const gather = {
+        type: "WORLD_GATHER",
+        epoch: p.snapshot().epoch,
+        nodeId: target.id,
+        requestId: randomUUID(),
+        expectedRevision: p.snapshot().self.revision,
+      };
+      p.send(gather);
+      await until(() =>
+        p.messages.some(
+          (m) =>
+            m.type === "WORLD_RESULT" &&
+            m.requestId === gather.requestId &&
+            m.ok,
+        ),
+      );
+      const claim = await db().rpgResourceClaim.findUniqueOrThrow({
+        where: {
+          userId_requestId: { userId: p.id, requestId: gather.requestId },
+        },
+      });
+      expect(claim.worldVisitId).toBeTruthy();
+      expect(claim.sessionId).toBeNull();
+      const balance = await db().rpgMaterialBalance.findMany({
+        where: { userId: p.id },
+      });
+      const beforeReplay = p.messages.length;
+      p.send(gather);
+      await until(() =>
+        p.messages
+          .slice(beforeReplay)
+          .some(
+            (m) =>
+              m.type === "WORLD_RESULT" &&
+              m.requestId === gather.requestId &&
+              m.ok,
+          ),
+      );
+      expect(
+        await db().rpgMaterialBalance.findMany({ where: { userId: p.id } }),
+      ).toEqual(balance);
+      expect(
+        await db().rpgResourceClaim.count({ where: { userId: p.id } }),
+      ).toBe(1);
+      geometry.dispose();
       p.ws.close();
       await until(() => q.snapshot().players.length === 1);
       const reconnect = await peer(p.id);
@@ -260,6 +364,6 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
       await until(() =>
         reconnect.messages.some((m) => m.type === "WORLD_LEFT"),
       );
-    }, 90000);
+    }, 150000);
   },
 );
