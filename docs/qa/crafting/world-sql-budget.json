@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-16T14:22:55.667Z",
+  "method": "Actual pg.Client.query calls including transaction boundaries on isolated PostgreSQL; one account, no concurrency or retries. Simulation movement uses only normal input commands. Counts are observations, not hard-coded allowances.",
+  "results": [
+    {
+      "operation": "first authenticated world entry",
+      "statements": 33,
+      "durationMs": 133.130895
+    },
+    {
+      "operation": "50 simulation ticks and 20 snapshot batches in safe Refuge",
+      "statements": 0,
+      "durationMs": 3.75162499999999
+    },
+    {
+      "operation": "strict profile refresh RPC",
+      "statements": 33,
+      "durationMs": 28.530783000000042
+    },
+    {
+      "operation": "leave and checkpoint cleanup",
+      "statements": 6,
+      "durationMs": 6.0443050000000085
+    },
+    {
+      "operation": "existing profile reentry",
+      "statements": 31,
+      "durationMs": 24.52431999999999
+    }
+  ]
+}

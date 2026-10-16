@@ -1,0 +1,25 @@
+
+> limiar@2.0.0 test:browser
+> node --conditions=react-server node_modules/@playwright/test/cli.js test tests/browser/rpg-world.spec.ts tests/browser/rpg-crafting.spec.ts
+
+[WebServer] (node:87831) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:87843) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:87883) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:87898) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:87843) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+[WebServer] (node:87883) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+  ✓  1 tests/browser/rpg-crafting.spec.ts:19:1 › real gathering to forge, rarity upgrade, equipment, barter, sale and persistent world (5.7m)
+  ✓  2 tests/browser/rpg-crafting.spec.ts:288:1 › mobile forge confirmation and continuous Canvas (isolated material fixture) (11.7s)
+  ✓  3 tests/browser/rpg-world.spec.ts:76:1 › shared-world flag and authentication callback (747ms)
+  ✓  4 tests/browser/rpg-world.spec.ts:86:1 › two independent accounts, persistent shell, real field rewards and refresh (1.0m)
+
+  Slow test file: tests/browser/rpg-crafting.spec.ts (5.8m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  4 passed (7.0m)

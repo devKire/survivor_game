@@ -1,0 +1,9 @@
+{
+  "browsers": 3,
+  "fps": 37.822968857423916,
+  "viewport": [
+    1280,
+    800
+  ],
+  "scenario": "Início da run real, navegadores simultâneos; sem carga sintética de 1100 inimigos."
+}

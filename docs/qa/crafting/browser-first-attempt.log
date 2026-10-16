@@ -1,0 +1,55 @@
+
+> limiar@2.0.0 test:browser
+> node --conditions=react-server node_modules/@playwright/test/cli.js test tests/browser/rpg-crafting.spec.ts
+
+[WebServer] (node:39338) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:39350) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:39382) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:39410) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:39350) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+[WebServer] (node:39382) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+  ✘  1 tests/browser/rpg-crafting.spec.ts:19:1 › real gathering to forge, rarity upgrade, equipment, barter, sale and persistent world (49.4s)
+(node:39639) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/browser/rpg-crafting.spec.ts:263:1 › mobile forge confirmation and continuous Canvas (isolated material fixture) (11.8s)
+
+
+  1) tests/browser/rpg-crafting.spec.ts:19:1 › real gathering to forge, rarity upgrade, equipment, barter, sale and persistent world 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+    Call Log:
+    - Timeout 15000ms exceeded while waiting on the predicate
+
+      70 |             timeout: 15000,
+      71 |           })
+    > 72 |           .toBe(++collected);
+         |            ^
+      73 |       }
+      74 |     }
+      75 |     await walkWorldField(page, { x: 260, y: 160 }, 15);
+        at /workspace/survivor_game/tests/browser/rpg-crafting.spec.ts:72:12
+
+    Error Context: test-results/rpg-crafting-real-gatherin-1dedd-r-sale-and-persistent-world/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/rpg-crafting-real-gatherin-1dedd-r-sale-and-persistent-world/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/rpg-crafting-real-gatherin-1dedd-r-sale-and-persistent-world/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/browser/rpg-crafting.spec.ts:19:1 › real gathering to forge, rarity upgrade, equipment, barter, sale and persistent world 
+  1 passed (1.3m)

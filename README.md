@@ -118,4 +118,4 @@ Os scripts `extract-engine.py`, `type-engine.mjs`, `coop-hooks.py` e `organize.m
 
 ## Fase 6 — narrativa persistente
 
-Missões, diálogos e escolhas usam [domínio versionado](docs/RPG-QUESTS.md), provas duráveis das fases anteriores e resgate transacional. Rollout `RPG_QUESTS_ENABLED=false`; sem alterações em snapshots, economia Survivor ou combate. Consulte o [relatório de QA](docs/RPG-PHASE6-QA.md). A Fase 7 não foi iniciada.
+Missões, diálogos e escolhas usam [domínio versionado](docs/RPG-QUESTS.md), provas duráveis das fases anteriores e resgate transacional. Rollout `RPG_QUESTS_ENABLED=false`; sem alterações em snapshots, economia Survivor ou combate. Consulte o [relatório de QA](docs/RPG-PHASE6-QA.md). A Fase 7 adiciona a [Forja dos Ecos](docs/RPG-CRAFTING.md), com flag própria `RPG_CRAFTING_ENABLED=false`. Veja [implantação](docs/RPG-PHASE7-DEPLOYMENT.md) e [QA](docs/RPG-PHASE7-QA.md). Fase 8 não iniciada.

@@ -1,0 +1,8 @@
+
+> limiar@2.0.0 assets:characters:validate
+> node scripts/canonicalize-character-sheets.mjs --validate
+
+nara: estrutura validada 2048×2048 RGBA · 64 slots (8 idle / 32 walk / 24 attack) · escala 1 · walk3 repete walk2 · 0 recortes com contato alpha significativo na fronteira
+orin: estrutura validada 2048×2048 RGBA · 64 slots (8 idle / 32 walk / 24 attack) · escala 1 · 0 recortes com contato alpha significativo na fronteira
+ivo: estrutura validada 2048×2048 RGBA · 64 slots (8 idle / 32 walk / 24 attack) · escala 1 · walk3 repete walk2 · 0 recortes com contato alpha significativo na fronteira
+sena: estrutura validada 2048×2048 RGBA · 64 slots (8 idle / 32 walk / 24 attack) · escala 1 · 4 recortes com contato alpha significativo na fronteira
