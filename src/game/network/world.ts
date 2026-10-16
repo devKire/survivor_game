@@ -26,7 +26,7 @@ export const worldCommands = [
   z
     .object({
       type: z.literal("WORLD_ENTER"),
-      protocol: z.literal(WORLD_PROTOCOL),
+      protocol: z.number().int().min(1).max(WORLD_PROTOCOL),
     })
     .strict(),
   z
@@ -124,7 +124,7 @@ export const worldSnapshot = z.object({
   instanceId: id,
   epoch,
   zoneId: worldZoneId,
-  zoneVersion: z.literal(1),
+  zoneVersion: z.union([z.literal(1), z.literal(2)]),
   tick: z.number().int().min(0),
   selfId: id,
   ack: z.number().int(),

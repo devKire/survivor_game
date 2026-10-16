@@ -7,6 +7,7 @@ import { ensureRpgProfile } from "../profile";
 import { lockRpgAccount, rpgTransaction } from "../transaction";
 import { buildRpgCombatLoadoutInTransaction } from "../loadout";
 import type { WorldZoneId } from "../../../game/core/rpg/world/types";
+import { WORLD_ZONES } from "../../../game/content/rpg/world-zones";
 
 export async function openWorldVisit(
   userId: string,
@@ -62,6 +63,7 @@ export async function openWorldVisit(
         authorityId,
         epoch: randomUUID(),
         checkpointZone: zoneId,
+        zoneVersion: WORLD_ZONES[zoneId].version,
         entryRevision: profile.revision,
       },
     });
@@ -89,7 +91,11 @@ export async function checkpointWorldVisit(
     assertLive();
     const changed = await tx.rpgWorldVisit.updateMany({
       where: { id: visitId, activeUserId: userId },
-      data: { epoch, checkpointZone: zoneId },
+      data: {
+        epoch,
+        checkpointZone: zoneId,
+        zoneVersion: WORLD_ZONES[zoneId].version,
+      },
     });
     if (changed.count !== 1)
       throw new UserError("Presença expirada. Reconecte ao mundo.");

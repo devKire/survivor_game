@@ -18,7 +18,7 @@ describe("Shared world domain", () => {
   it("has connected versioned zones, safe spawns and population independent of group size", () => {
     expect(WORLD_ZONE_CAPACITY).toBeGreaterThan(5);
     for (const z of Object.values(WORLD_ZONES)) {
-      expect(z.version).toBe(1);
+      expect(z.version).toBe(z.id === "obelisk-refuge" ? 2 : 1);
       expect(clampWorldPosition(z, z.spawn)).toEqual(z.spawn);
       for (const portal of z.portals) {
         expect(worldPortal(z, portal, portal.id).destination).toBe(

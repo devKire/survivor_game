@@ -1,10 +1,11 @@
-import type { RefugeTarget } from "../core/rpg/refuge/types";
+import type { RefugeTarget, RefugeDefinition } from "../core/rpg/refuge/types";
 import { REFUGE } from "../content/rpg/refuge";
 import { TileRenderer, tileImageGeneration } from "./tile-renderer";
 import { resolveGroundAtlas } from "./tile-art";
 
 /** Shared static refuge art. No input, RAF, position or authority. */
 export class RefugeLayer {
+  constructor(private readonly definition: RefugeDefinition = REFUGE) {}
   readonly tiles = new TileRenderer();
   private terrain?: HTMLCanvasElement;
   private terrainGeneration = -1;
@@ -12,8 +13,8 @@ export class RefugeLayer {
     if (this.terrain && this.terrainGeneration === tileImageGeneration())
       return this.terrain;
     this.terrain ??= document.createElement("canvas");
-    this.terrain.width = REFUGE.bounds.width;
-    this.terrain.height = REFUGE.bounds.height;
+    this.terrain.width = this.definition.bounds.width;
+    this.terrain.height = this.definition.bounds.height;
     const c = this.terrain.getContext("2d")!;
     for (let y = 0; y < 900; y += 100)
       for (let x = 0; x < 1200; x += 100) {
@@ -64,6 +65,21 @@ export class RefugeLayer {
       c.fillStyle = "#8eedc7";
       c.fillRect(-3, -99, 5, 66);
       c.fillRect(-10, -60, 20, 4);
+    } else if (t.visual === "forge") {
+      // Pixel fallback: aged metal/anvil and a stone hearth with embers.
+      c.fillStyle = "#27333b"; c.fillRect(-36, -39, 72, 42);
+      c.fillStyle = "#53616a"; c.fillRect(-38, -42, 76, 9); c.fillRect(-24, -33, 9, 30); c.fillRect(23, -33, 9, 30);
+      c.fillStyle = "#120f11"; c.fillRect(-9, -29, 26, 25);
+      c.fillStyle = "#c7532d"; c.fillRect(-7, -17, 22, 12);
+      c.fillStyle = "#edb35e"; c.fillRect(-4, -15, 7, 5); c.fillRect(6, -19, 6, 10);
+      c.fillStyle = "#92918a"; c.fillRect(-21, -53, 39, 9); c.fillRect(-10, -44, 14, 6);
+      c.fillStyle = "#8dd7bd"; c.fillRect(26, -57, 6, 12);
+    } else if (t.visual === "refinery") {
+      c.fillStyle = "#4e4940"; c.fillRect(-32, -32, 64, 35);
+      c.fillStyle = "#81705b"; c.fillRect(-35, -38, 70, 9);
+      c.fillStyle = "#9aa9a4"; c.fillRect(-22, -48, 19, 11); c.fillRect(-18, -57, 11, 9);
+      c.fillStyle = "#87cbbd"; c.fillRect(7, -54, 12, 16); c.fillRect(10, -63, 6, 9);
+      c.fillStyle = "#c2ab79"; c.fillRect(-24, -22, 6, 16); c.fillRect(21, -22, 6, 16);
     } else if (t.visual === "npc") {
       c.fillStyle = "#abc4b2";
       c.fillRect(-7, -40, 14, 13);

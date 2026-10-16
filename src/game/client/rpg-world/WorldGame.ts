@@ -4,7 +4,7 @@ import type { Vec, Enemy } from "../../core/types";
 import { ENEMY_DEFINITIONS } from "../../content/catalog";
 import { EXPLORATION_RUINS } from "../../content/rpg/exploration-regions";
 import { explorationResource } from "../../content/rpg/exploration-resources";
-import { REFUGE } from "../../content/rpg/refuge";
+import { WORLD_REFUGE as REFUGE } from "../../content/rpg/world-refuge";
 import { WORLD_ZONES } from "../../content/rpg/world-zones";
 import { moveInRefuge, refugeTarget } from "../../core/rpg/refuge/scene";
 import {
@@ -53,7 +53,7 @@ export class WorldGame {
   snapshot?: WorldSnapshot;
   private readonly context: WorldRenderContext;
   private readonly renderer: WorldRenderer;
-  private readonly refuge = new RefugeLayer();
+  private readonly refuge = new RefugeLayer(REFUGE);
   readonly world: World;
   readonly nodes;
   private readonly abort = new AbortController();

@@ -15,7 +15,7 @@ import { requireRpgCraftingEnabled } from "../../server/rpg/guard";
 import { recordCraftingMetric } from "../../server/rpg/crafting/metrics";
 import { z } from "zod";
 import { UserError } from "../../server/security";
-import { REFUGE } from "../../game/content/rpg/refuge";
+import { WORLD_REFUGE as REFUGE } from "../../game/content/rpg/world-refuge";
 import { withinWorldInteraction } from "../../game/core/rpg/world/rules";
 import type { WorldOperation } from "../../game/network/world";
 import { rpgProfileData } from "../../server/rpg/profile";

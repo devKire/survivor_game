@@ -33,7 +33,9 @@ import QuestJournal from "../quests/QuestJournal";
 import { WorldActionContext } from "./WorldActionContext";
 import WorldMap from "./WorldMap";
 import WorldRewards from "./WorldRewards";
+import CraftingPanel from "./CraftingPanel";
 import styles from "./world.module.css";
+import { WORLD_PROTOCOL } from "../../../game/core/rpg/world/types";
 type State = Extract<ServerMessage, { type: "WORLD_STATE" }>;
 type Group = Extract<ServerMessage, { type: "WORLD_GROUP" }>;
 type Chat = Extract<ServerMessage, { type: "WORLD_CHAT" }>;
@@ -46,9 +48,11 @@ type RpcPending = {
 export default function WorldClient({
   panels,
   initialJournal,
+  craftingEnabled = false,
 }: {
   panels: Record<string, ReactNode>;
   initialJournal?: QuestJournalData;
+  craftingEnabled?: boolean;
 }) {
   const questsAvailable = useRef(!!initialJournal);
   const router = useRouter(),
@@ -207,7 +211,7 @@ export default function WorldClient({
     game.current = view;
     const receive = (v: ServerMessage) => {
       if (v.type === "ACCOUNT")
-        client.current?.send({ type: "WORLD_ENTER", protocol: 1 });
+        client.current?.send({ type: "WORLD_ENTER", protocol: WORLD_PROTOCOL });
       if (v.type === "WORLD_SNAPSHOT") {
         view.apply(v);
         if (view.snapshot !== v) return;
@@ -349,6 +353,9 @@ export default function WorldClient({
     setText("");
   }
   const names: Record<string, string> = {
+    FORGE: "Forja dos Ecos",
+    REFINEMENT: "Bancada de Refinamento",
+    TRADER: "Comerciante do Refúgio",
     INVENTORY: "Inventário",
     EQUIPMENT: "Equipamentos",
     CHARACTER: "Personagem",
@@ -433,7 +440,7 @@ export default function WorldClient({
             <p>{status}</p>
             <button
               onClick={() =>
-                client.current?.send({ type: "WORLD_ENTER", protocol: 1 })
+                client.current?.send({ type: "WORLD_ENTER", protocol: WORLD_PROTOCOL })
               }
             >
               Entrar no mundo
@@ -624,6 +631,7 @@ export default function WorldClient({
           {panel === "REWARDS" && (
             <WorldRewards key={snapshot?.self.revision} />
           )}
+          {(panel === "FORGE" || panel === "REFINEMENT" || panel === "TRADER") && <CraftingPanel key={panel} stationId={panel === "FORGE" ? "refuge:forge" : panel === "REFINEMENT" ? "refuge:refinery" : "refuge:trader"} enabled={craftingEnabled} />}
           {panel === "MAP" && snapshot && (
             <WorldMap
               snapshot={snapshot}

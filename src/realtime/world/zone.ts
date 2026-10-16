@@ -12,7 +12,7 @@ import { Player, Weapon } from "../../game/core/entities";
 import { freshSave } from "../../game/core/save";
 import { CHARACTER_DEFINITIONS } from "../../game/content/catalog";
 import { EXPLORATION_RUINS } from "../../game/content/rpg/exploration-regions";
-import { REFUGE } from "../../game/content/rpg/refuge";
+import { WORLD_REFUGE as REFUGE } from "../../game/content/rpg/world-refuge";
 import { WORLD_ZONES } from "../../game/content/rpg/world-zones";
 import { moveInRefuge } from "../../game/core/rpg/refuge/scene";
 import { generateExploration } from "../../game/core/rpg/exploration/generation";
@@ -24,6 +24,7 @@ import {
 } from "../../game/core/rpg/world/rules";
 import {
   WORLD_ID,
+  WORLD_PROTOCOL,
   WORLD_INPUT_TIMEOUT,
   type WorldZoneId,
   type WorldPublicPlayer,
@@ -376,10 +377,10 @@ export class WorldZone extends GameSimulation {
   snapshot(a: WorldAvatar): WorldSnapshot {
     return {
       type: "WORLD_SNAPSHOT",
-      protocol: 1,
+      protocol: WORLD_PROTOCOL,
       worldId: WORLD_ID,
       zoneId: this.zoneId,
-      zoneVersion: 1,
+      zoneVersion: this.definition.version,
       instanceId: this.instanceId,
       epoch: a.epoch,
       tick: this.tick,

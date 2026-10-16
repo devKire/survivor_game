@@ -17,7 +17,7 @@ import { gatheringReady } from "../../game/core/rpg/exploration/runtime";
 import { gatheringCycle } from "../../game/core/rpg/exploration/gathering";
 import { explorationResource } from "../../game/content/rpg/exploration-resources";
 import { inDiscoveryRange } from "../../game/core/rpg/exploration/generation";
-import { REFUGE } from "../../game/content/rpg/refuge";
+import { WORLD_REFUGE as REFUGE } from "../../game/content/rpg/world-refuge";
 import { isCraftingOperation } from "../../game/core/rpg/crafting/types";
 import { craftingMetrics } from "../../server/rpg/crafting/metrics";
 import { withinWorldInteraction } from "../../game/core/rpg/world/rules";
@@ -458,7 +458,7 @@ export class WorldCoordinator {
         epoch: p.avatar.epoch,
         targetId: target.id,
         service:
-          target.visual === "npc" ? "NPC" : (target.service ?? "CHARACTER"),
+          target.worldService ?? (target.visual === "npc" ? "NPC" : (target.service ?? "CHARACTER")),
       });
       return;
     }

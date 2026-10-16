@@ -1,7 +1,7 @@
 import type { RpgCharacterId } from "../../../content/rpg/catalog";
 import type { Vec } from "../../types";
 
-export const WORLD_PROTOCOL = 1;
+export const WORLD_PROTOCOL = 2;
 export const WORLD_ID = "limiar-open-world-v1";
 export const WORLD_TICK_HZ = 25;
 export const WORLD_SNAPSHOT_HZ = 10;
@@ -26,7 +26,7 @@ export interface WorldPortal extends Vec {
 }
 export interface WorldZoneDefinition {
   id: WorldZoneId;
-  version: number;
+  version: 1 | 2;
   name: string;
   safe: boolean;
   bounds: { minX: number; minY: number; maxX: number; maxY: number };
