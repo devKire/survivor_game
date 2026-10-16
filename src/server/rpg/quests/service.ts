@@ -1,3 +1,4 @@
+import { assertWorldMutationAllowed, recheckWorldServicePermit } from "../world/service-context";
 import "server-only";
 import { z } from "zod";
 import type { Prisma } from "../../../generated/prisma/client";
@@ -107,12 +108,14 @@ async function mutate(
   return rpgTransaction(async (tx) => {
     requireRpgQuestsEnabled();
     const save = await lockRpgAccount(tx, userId);
+    await assertWorldMutationAllowed(tx,userId);
     const prior = await tx.rpgMutationReceipt.findUnique({
       where: { userId_requestId: { userId, requestId: value.requestId } },
     });
     if (prior) {
       if (prior.operation !== operation || prior.payloadHash !== payloadHash)
         throw new UserError("requestId já utilizado por outra intenção.");
+      recheckWorldServicePermit();
       return prior.result as unknown as QuestMutationResult;
     }
     await ensureRpgProfile(tx, userId, save);
@@ -303,6 +306,7 @@ async function mutate(
         result: economyJson(result),
       },
     });
+    recheckWorldServicePermit();
     return result;
   });
 }

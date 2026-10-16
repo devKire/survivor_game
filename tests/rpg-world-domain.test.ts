@@ -47,7 +47,7 @@ describe("Shared world domain", () => {
     expect(
       clampWorldPosition(WORLD_ZONES["obelisk-refuge"], { x: -100, y: 10000 }),
     ).toEqual({ x: 13, y: 887 });
-    let p = { ...REFUGE.spawn };
+    let p: {x:number;y:number} = { ...REFUGE.spawn };
     for (let i = 0; i < 500; i++)
       p = moveInRefuge(REFUGE, p, { x: 0, y: -1 }, 0.04);
     expect(refugePositionAllowed(REFUGE, p)).toBe(true);

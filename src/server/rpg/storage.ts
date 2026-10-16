@@ -1,3 +1,5 @@
+import { hasWorldServicePermit } from "./world/service-context";
+import { assertWorldMutationAllowed, recheckWorldServicePermit } from "./world/service-context";
 import "server-only";
 import { createHash } from "node:crypto";
 import {
@@ -11,14 +13,15 @@ import { ensureRpgProfile } from "./profile";
 import { UserError } from "../security";
 /** Internal service; the public action derives userId exclusively from the session. */
 export async function transferRpgItem(userId: string, input: unknown) {
-  requireRpgRefugeEnabled();
+  if (!hasWorldServicePermit()) requireRpgRefugeEnabled();
   const value = storageCommandInput.parse(input);
   const payloadHash = createHash("sha256")
     .update(JSON.stringify(value))
     .digest("hex");
   return rpgTransaction(async (tx) => {
-    requireRpgRefugeEnabled();
+    if (!hasWorldServicePermit()) requireRpgRefugeEnabled();
     const save = await lockRpgAccount(tx, userId);
+    await assertWorldMutationAllowed(tx,userId);
     const prior = await tx.rpgMutationReceipt.findUnique({
       where: { userId_requestId: { userId, requestId: value.requestId } },
     });
@@ -28,6 +31,7 @@ export async function transferRpgItem(userId: string, input: unknown) {
         prior.payloadHash !== payloadHash
       )
         throw new UserError("requestId já utilizado por outra mutação RPG.");
+      recheckWorldServicePermit();
       return storageResultSchema.parse(prior.result);
     }
     await ensureRpgProfile(tx, userId, save);
@@ -91,6 +95,7 @@ export async function transferRpgItem(userId: string, input: unknown) {
         result,
       },
     });
+    recheckWorldServicePermit();
     return storageResultSchema.parse(result);
   });
 }
