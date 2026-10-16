@@ -1,3 +1,4 @@
+import { db } from "../../server/db";
 import { randomUUID } from "node:crypto";
 import * as teams from "../../server/teams";
 import { sendChat, chatInput } from "../../server/social";
@@ -107,6 +108,11 @@ export class WorldSocial {
         throw new UserError(
           "Somente o líder pode convidar para um grupo com vaga.",
         );
+      if (team.expiresAt.getTime() < Date.now() + 60000)
+        await db().team.updateMany({
+          where: { id: team.id, leaderId: c.userId, status: "LOBBY" },
+          data: { expiresAt: new Date(Date.now() + 3600000) },
+        });
       if (
         [...this.invites.values()].filter((i) => i.target === target).length >=
           10 ||

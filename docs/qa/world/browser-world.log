@@ -1,0 +1,21 @@
+
+> limiar@2.0.0 test:browser
+> node --conditions=react-server node_modules/@playwright/test/cli.js test tests/browser/rpg-world.spec.ts
+
+[WebServer] (node:27729) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27741) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27819) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:27845) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/rpg-world.spec.ts:76:1 › shared-world flag and authentication callback (990ms)
+[WebServer] (node:27741) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+[WebServer] (node:27819) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+  ✓  2 tests/browser/rpg-world.spec.ts:86:1 › two independent accounts, persistent shell, real field rewards and refresh (52.1s)
+
+  2 passed (1.0m)

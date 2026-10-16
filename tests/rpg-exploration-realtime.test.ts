@@ -366,7 +366,19 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
             p.messages.some((m) => m.type === "ARENA_LOBBY_STATE"),
           ),
         45000,
-      );
+      ).catch((error) => {
+        throw new Error(
+          "Arena lobby after exploration: " +
+            JSON.stringify(
+              arenaPeers.map((p) =>
+                p.messages.filter(
+                  (m) => m.type === "ERROR" || m.type === "ARENA_QUEUE_STATUS",
+                ),
+              ),
+            ),
+          { cause: error },
+        );
+      });
       for (const p of arenaPeers) p.send({ type: "ARENA_LOCK_SELECTION" });
       await until(
         () =>

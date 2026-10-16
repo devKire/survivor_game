@@ -1,0 +1,280 @@
+{
+  "at": "2026-10-15T18:36:44.257Z",
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V45 96-Core Processor",
+  "logicalCpus": 5,
+  "totalMemoryBytes": 35743784960,
+  "method": "Loopback real authenticated WebSockets in safe Refuge. Fifty connections include thirty capacity rejections, not fifty simultaneous avatars. Existing IP limits preserved. Samples include maintenance and PostgreSQL authentication/entry; not WAN latency.",
+  "samples": [
+    {
+      "connections": 1,
+      "admitted": 1,
+      "rejected": 0,
+      "entryP95": 83.41783299999997,
+      "rttP95": 4,
+      "messagesPerSecond": 11.330047649728373,
+      "bytesPerSecond": 6151.549400411346,
+      "health": {
+        "ok": true,
+        "rooms": 0,
+        "connections": 1,
+        "tickRate": 25,
+        "build": "limiar-phase6.5-v1",
+        "sharedWorld": {
+          "enabled": true,
+          "protocol": 1,
+          "capacityPerZone": 20,
+          "authority": "single",
+          "metrics": {
+            "snapshotBatchP95": 0.4727619999998751,
+            "heapBytes": 61283288,
+            "cpu": {
+              "user": 1245887,
+              "system": 197468
+            },
+            "uptime": 2.429317792
+          },
+          "zones": [
+            {
+              "id": "obelisk-refuge",
+              "version": 1,
+              "players": 1,
+              "cells": 1
+            }
+          ]
+        },
+        "metrics": {
+          "tickP95": 0.5349149999999554,
+          "tickP99": 1.0408370000000104,
+          "driftP95": 5.133329000000003,
+          "snapshotP95": 0
+        }
+      }
+    },
+    {
+      "connections": 2,
+      "admitted": 2,
+      "rejected": 0,
+      "entryP95": 83.41783299999997,
+      "rttP95": 4,
+      "messagesPerSecond": 22.001518647490805,
+      "bytesPerSecond": 15669.081553131178,
+      "health": {
+        "ok": true,
+        "rooms": 0,
+        "connections": 2,
+        "tickRate": 25,
+        "build": "limiar-phase6.5-v1",
+        "sharedWorld": {
+          "enabled": true,
+          "protocol": 1,
+          "capacityPerZone": 20,
+          "authority": "single",
+          "metrics": {
+            "snapshotBatchP95": 0.4727619999998751,
+            "heapBytes": 65890344,
+            "cpu": {
+              "user": 1294923,
+              "system": 202648
+            },
+            "uptime": 4.053232047
+          },
+          "zones": [
+            {
+              "id": "obelisk-refuge",
+              "version": 1,
+              "players": 2,
+              "cells": 1
+            }
+          ]
+        },
+        "metrics": {
+          "tickP95": 0.5023670000000493,
+          "tickP99": 1.8166909999999916,
+          "driftP95": 3.7873609999996916,
+          "snapshotP95": 0
+        }
+      }
+    },
+    {
+      "connections": 5,
+      "admitted": 5,
+      "rejected": 0,
+      "entryP95": 83.41783299999997,
+      "rttP95": 4,
+      "messagesPerSecond": 54.006024876131185,
+      "bytesPerSecond": 69923.80065258496,
+      "health": {
+        "ok": true,
+        "rooms": 0,
+        "connections": 5,
+        "tickRate": 25,
+        "build": "limiar-phase6.5-v1",
+        "sharedWorld": {
+          "enabled": true,
+          "protocol": 1,
+          "capacityPerZone": 20,
+          "authority": "single",
+          "metrics": {
+            "snapshotBatchP95": 0.4727619999998751,
+            "heapBytes": 65750856,
+            "cpu": {
+              "user": 1381686,
+              "system": 211108
+            },
+            "uptime": 5.77444371
+          },
+          "zones": [
+            {
+              "id": "obelisk-refuge",
+              "version": 1,
+              "players": 5,
+              "cells": 1
+            }
+          ]
+        },
+        "metrics": {
+          "tickP95": 0.5849090000001524,
+          "tickP99": 1.0408370000000104,
+          "driftP95": 3.1375770000004195,
+          "snapshotP95": 0
+        }
+      }
+    },
+    {
+      "connections": 10,
+      "admitted": 10,
+      "rejected": 0,
+      "entryP95": 83.41783299999997,
+      "rttP95": 4,
+      "messagesPerSecond": 109.34914441772243,
+      "bytesPerSecond": 242452.3901709679,
+      "health": {
+        "ok": true,
+        "rooms": 0,
+        "connections": 10,
+        "tickRate": 25,
+        "build": "limiar-phase6.5-v1",
+        "sharedWorld": {
+          "enabled": true,
+          "protocol": 1,
+          "capacityPerZone": 20,
+          "authority": "single",
+          "metrics": {
+            "snapshotBatchP95": 0.5737330000001748,
+            "heapBytes": 63945064,
+            "cpu": {
+              "user": 1501565,
+              "system": 228746
+            },
+            "uptime": 7.569264606
+          },
+          "zones": [
+            {
+              "id": "obelisk-refuge",
+              "version": 1,
+              "players": 10,
+              "cells": 1
+            }
+          ]
+        },
+        "metrics": {
+          "tickP95": 0.6645680000001448,
+          "tickP99": 1.0408370000000104,
+          "driftP95": 3.0875350000001163,
+          "snapshotP95": 0
+        }
+      }
+    },
+    {
+      "connections": 20,
+      "admitted": 20,
+      "rejected": 0,
+      "entryP95": 83.41783299999997,
+      "rttP95": 5,
+      "messagesPerSecond": 215.6088590816059,
+      "bytesPerSecond": 895120.1422605353,
+      "health": {
+        "ok": true,
+        "rooms": 0,
+        "connections": 20,
+        "tickRate": 25,
+        "build": "limiar-phase6.5-v1",
+        "sharedWorld": {
+          "enabled": true,
+          "protocol": 1,
+          "capacityPerZone": 20,
+          "authority": "single",
+          "metrics": {
+            "snapshotBatchP95": 1.484957000000577,
+            "heapBytes": 57584480,
+            "cpu": {
+              "user": 1860487,
+              "system": 298851
+            },
+            "uptime": 9.661821816
+          },
+          "zones": [
+            {
+              "id": "obelisk-refuge",
+              "version": 1,
+              "players": 20,
+              "cells": 1
+            }
+          ]
+        },
+        "metrics": {
+          "tickP95": 1.147555999999895,
+          "tickP99": 1.8611060000002908,
+          "driftP95": 2.902043999999478,
+          "snapshotP95": 0
+        }
+      }
+    },
+    {
+      "connections": 50,
+      "admitted": 20,
+      "rejected": 30,
+      "entryP95": 83.41783299999997,
+      "rttP95": 1,
+      "messagesPerSecond": 244.08140212393383,
+      "bytesPerSecond": 898195.5518093102,
+      "health": {
+        "ok": true,
+        "rooms": 0,
+        "connections": 50,
+        "tickRate": 25,
+        "build": "limiar-phase6.5-v1",
+        "sharedWorld": {
+          "enabled": true,
+          "protocol": 1,
+          "capacityPerZone": 20,
+          "authority": "single",
+          "metrics": {
+            "snapshotBatchP95": 0.8975239999999758,
+            "heapBytes": 60382208,
+            "cpu": {
+              "user": 3665574,
+              "system": 561598
+            },
+            "uptime": 73.792397575
+          },
+          "zones": [
+            {
+              "id": "obelisk-refuge",
+              "version": 1,
+              "players": 20,
+              "cells": 1
+            }
+          ]
+        },
+        "metrics": {
+          "tickP95": 0.883122999999614,
+          "tickP99": 1.5617010000005394,
+          "driftP95": 0.9419839999973192,
+          "snapshotP95": 0
+        }
+      }
+    }
+  ]
+}

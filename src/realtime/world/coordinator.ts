@@ -58,6 +58,7 @@ export class WorldCoordinator {
   readonly presence = new Map<string, WorldPresence>();
   private queues = new Map<string, Promise<unknown>>();
   private snapshotClock = 0;
+  private snapshotDurations: number[] = [];
   private accumulator = 0;
   private flushing = false;
   private nextFlush = 0;
@@ -574,15 +575,23 @@ export class WorldCoordinator {
     this.snapshotClock += dt;
     if (this.snapshotClock >= 0.1) {
       this.snapshotClock %= 0.1;
+      const snapshotStarted = performance.now();
       for (const p of this.presence.values()) {
         this.processEvents(p);
         p.connection.send(p.zone.snapshot(p.avatar));
         if (p.avatar.gathering) this.sendResourceState(p);
       }
+      if (process.env.REALTIME_DIAGNOSTICS === "1") {
+        this.snapshotDurations.push(performance.now() - snapshotStarted);
+        if (this.snapshotDurations.length > 6000)
+          this.snapshotDurations.splice(0, 1000);
+      }
     }
   }
   async maintenance() {
-    await this.flushRewards();
+    await this.flushRewards().catch(() =>
+      console.error("World field rewards pending retry."),
+    );
     await this.social.maintenance();
     for (const p of [...this.presence.values()])
       if (
@@ -599,6 +608,19 @@ export class WorldCoordinator {
       protocol: WORLD_PROTOCOL,
       capacityPerZone: WORLD_ZONE_CAPACITY,
       authority: "single",
+      ...(process.env.REALTIME_DIAGNOSTICS === "1"
+        ? {
+            metrics: {
+              snapshotBatchP95:
+                [...this.snapshotDurations].sort((a, b) => a - b)[
+                  Math.floor(this.snapshotDurations.length * 0.95)
+                ] ?? 0,
+              heapBytes: process.memoryUsage().heapUsed,
+              cpu: process.cpuUsage(),
+              uptime: process.uptime(),
+            },
+          }
+        : {}),
       zones: [...this.zones.values()].map((z) => ({
         id: z.zoneId,
         version: z.definition.version,

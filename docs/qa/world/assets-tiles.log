@@ -1,0 +1,29 @@
+
+> limiar@2.0.0 assets:tiles:validate
+> node scripts/generate-tile-metadata.mjs --validate
+
+ground/cave/source.png: 64 slots; confidence=1; warnings=0
+ground/corrupted/source.png: 64 slots; confidence=1; warnings=0
+ground/dead/source.png: 64 slots; confidence=1; warnings=0
+ground/forest/source-a.png: 64 slots; confidence=1; warnings=0
+ground/forest/source-b.png: 64 slots; confidence=1; warnings=0
+ground/lava/source.png: 64 slots; confidence=1; warnings=0
+ground/rock/source.png: 64 slots; confidence=1; warnings=0
+ground/ruins/source.png: 64 slots; confidence=1; warnings=0
+ground/sand/source.png: 64 slots; confidence=1; warnings=0
+ground/swamp/source.png: 64 slots; confidence=1; warnings=0
+props/beast_damage/source-a.png: 64 slots; confidence=0.95; warnings=4
+props/beast_damage/source-b.png: 64 slots; confidence=0.95; warnings=4
+props/cave/source.png: 64 slots; confidence=0.9372; warnings=1
+props/corruption/source.png: 64 slots; confidence=0.9604; warnings=0
+props/crystals/source.png: 64 slots; confidence=0.95; warnings=0
+props/minerals/source.png: 64 slots; confidence=1; warnings=0
+props/mines/source.png: 64 slots; confidence=0.8822; warnings=0
+props/rocks/source.png: 64 slots; confidence=0.9759; warnings=0
+props/ruins/source.png: 64 slots; confidence=0.9209; warnings=2
+props/swamp/source.png: 64 slots; confidence=0.9978; warnings=0
+props/trees/dead/source.png: 64 slots; confidence=1; warnings=0
+props/trees/living/source.png: 64 slots; confidence=0.9736; warnings=0
+props/trees/petrified/source.png: 64 slots; confidence=1; warnings=0
+props/volcano/source.png: 64 slots; confidence=0.9444; warnings=0
+Validated 24 sidecars, 23 canonical atlases, manifest and static imports. Sources unchanged.

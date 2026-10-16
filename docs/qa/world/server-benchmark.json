@@ -1,0 +1,70 @@
+{
+  "at": "2026-10-16T03:23:30.640Z",
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "logicalCpus": 5,
+  "totalMemoryBytes": 35743784960,
+  "method": "Headless WorldZone simulation and JSON snapshots. No sockets, database or artificial reward grants. These CPU measurements are not WAN latency or production capacity.",
+  "results": [
+    {
+      "population": 1,
+      "simulatedSeconds": 30,
+      "tickP50": 0.016543999999953485,
+      "tickP95": 0.05522099999996044,
+      "tickP99": 0.21583899999995992,
+      "snapshotsBatchP95": 0.04023000000006505,
+      "snapshotBytesP95": 847,
+      "heapDeltaBytes": 2992608,
+      "maxPlayersInSnapshot": 1,
+      "queuedDiscreteRewardEvents": 2
+    },
+    {
+      "population": 2,
+      "simulatedSeconds": 30,
+      "tickP50": 0.021982999999977437,
+      "tickP95": 0.0711949999999888,
+      "tickP99": 0.14213999999992666,
+      "snapshotsBatchP95": 0.07468099999994138,
+      "snapshotBytesP95": 934,
+      "heapDeltaBytes": 6649112,
+      "maxPlayersInSnapshot": 2,
+      "queuedDiscreteRewardEvents": 2
+    },
+    {
+      "population": 5,
+      "simulatedSeconds": 30,
+      "tickP50": 0.013218999999935477,
+      "tickP95": 0.08894099999997707,
+      "tickP99": 0.3663820000000442,
+      "snapshotsBatchP95": 0.17404700000008688,
+      "snapshotBytesP95": 2435,
+      "heapDeltaBytes": -6094032,
+      "maxPlayersInSnapshot": 5,
+      "queuedDiscreteRewardEvents": 3
+    },
+    {
+      "population": 10,
+      "simulatedSeconds": 30,
+      "tickP50": 0.0208309999999301,
+      "tickP95": 0.1391159999999445,
+      "tickP99": 0.21195399999999154,
+      "snapshotsBatchP95": 0.3293670000000475,
+      "snapshotBytesP95": 5114,
+      "heapDeltaBytes": 1937552,
+      "maxPlayersInSnapshot": 10,
+      "queuedDiscreteRewardEvents": 3
+    },
+    {
+      "population": 20,
+      "simulatedSeconds": 30,
+      "tickP50": 0.02424600000006194,
+      "tickP95": 0.1976519999999482,
+      "tickP99": 0.43787799999995514,
+      "snapshotsBatchP95": 0.7874249999999847,
+      "snapshotBytesP95": 7525,
+      "heapDeltaBytes": -7663496,
+      "maxPlayersInSnapshot": 20,
+      "queuedDiscreteRewardEvents": 3
+    }
+  ]
+}

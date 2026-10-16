@@ -1,0 +1,13 @@
+
+> limiar@2.0.0 test
+> vitest run tests/rpg-world-realtime.test.ts tests/rpg-world-capacity.test.ts
+
+
+ RUN  v5.0.1 /workspace/survivor_game
+
+
+ Test Files  2 passed (2)
+      Tests  3 passed (3)
+   Start at  18:35:29
+   Duration  104.35s (tests 99%)
+

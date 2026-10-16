@@ -127,6 +127,9 @@ it("runs field weapons, produces server evidence, respawns and keeps Refuge safe
   expect(event.proof.kind).toBe("FIELD_ENEMY_DEFEAT");
   expect(a.player.level).toBe(1);
   expect(a.xp).toBe(0);
+  expect(
+    worldSnapshot.parse(zone.snapshot(a)).players[0].attackSequence,
+  ).toBeGreaterThan(0);
   expect(zone.gems).toHaveLength(0);
   expect(
     worldSnapshot

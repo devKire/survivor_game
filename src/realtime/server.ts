@@ -366,6 +366,9 @@ wss.on("connection", (ws) => {
       return;
     }
     try {
+      // A preceding queued WORLD_ENTER may have completed since receipt of this command.
+      if (world.has(c.userId) && !v.type.startsWith("WORLD_") && !["SYNC", "HELLO", "RESYNC"].includes(v.type))
+        throw new UserError("Saia do mundo antes de iniciar outra atividade.");
       if(v.type.startsWith("WORLD_")) {
         if(!c.world)throw new UserError("Autenticação necessária.");
         if(v.type==="WORLD_ENTER" && (c.room || arena.active.has(c.userId) || arena.queue.has(c.userId)))

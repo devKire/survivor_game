@@ -2,10 +2,21 @@ import { Client } from "pg";
 import { getDatabaseUrl } from "../../server/env";
 
 /** Session advisory lock, held by a dedicated connection for the entire authority lifetime. */
-export async function acquireRealtimeAuthority(onLost: () => void) {
-  const url = new URL(getDatabaseUrl());
+export function realtimeAuthorityUrl(connection: string) {
+  const url = new URL(connection);
+  // Session advisory locks cannot be held through transaction-mode PgBouncer.
+  // Neon exposes the same database/credentials at its corresponding direct endpoint.
+  if (url.hostname.endsWith(".neon.tech")) {
+    const labels = url.hostname.split(".");
+    labels[0] = labels[0].replace(/-pooler$/, "");
+    url.hostname = labels.join(".");
+  }
   if (url.searchParams.get("sslmode") === "require")
     url.searchParams.set("sslmode", "verify-full");
+  return url.toString();
+}
+export async function acquireRealtimeAuthority(onLost: () => void) {
+  const url = new URL(realtimeAuthorityUrl(getDatabaseUrl()));
   const client = new Client({
     connectionString: url.toString(),
     connectionTimeoutMillis: 10000,
