@@ -19,6 +19,7 @@ import {
 import { StatsPreview } from "../StatsPreview";
 import { compareRpgItemAction } from "../../../server/rpg/preview-action";
 import EquipmentForm from "./EquipmentForm";
+import { useWorldTransport } from "../world/WorldActionContext";
 import styles from "../rpg.module.css";
 
 export default function EquipmentInventory({
@@ -32,6 +33,7 @@ export default function EquipmentInventory({
   revision: number;
   requestId: string;
 }) {
+  const world = useWorldTransport();
   const [characterId, setCharacterId] = useState(activeCharacter);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [requestId, setRequestId] = useState(initialRequest);
@@ -119,8 +121,9 @@ export default function EquipmentInventory({
         </select>
       </label>
       <p className={styles.note}>
-        Prévia para a Expedição RPG. Survivor e PvP não recebem estes bônus.
-        Mudanças valem na próxima sessão RPG.
+        {world
+          ? "Prepare sua build no Refúgio. As alterações valem ao voltar para explorar as ruínas."
+          : "Prévia para a Expedição RPG. Survivor e PvP não recebem estes bônus. Mudanças valem na próxima sessão RPG."}
       </p>
       <div className={styles.layout}>
         <section className={styles.panel} aria-label="Equipamentos por slot">

@@ -114,3 +114,36 @@ describe("Authoritative shared region", () => {
     expect(zone.world.chunks.size).toBe(0);
   });
 });
+
+it("runs field weapons, produces server evidence, respawns and keeps Refuge safe", () => {
+  const zone = new WorldZone("ruins-outskirts", randomUUID()),
+    a = add(zone, "fighter");
+  Object.assign(a.player, { x: 260, y: 160 });
+  for (let i = 0; i < 1000 && !zone.field!.pending.length; i++)
+    zone.update(0.04);
+  expect(zone.field!.pending.length).toBeGreaterThan(0);
+  const event = zone.field!.pending[0];
+  expect(event.proof.participants.map((p) => p.userId)).toEqual(["fighter"]);
+  expect(event.proof.kind).toBe("FIELD_ENEMY_DEFEAT");
+  expect(a.player.level).toBe(1);
+  expect(a.xp).toBe(0);
+  expect(zone.gems).toHaveLength(0);
+  expect(
+    worldSnapshot
+      .parse(zone.snapshot(a))
+      .entities.some((e) => e.kind === "enemy"),
+  ).toBe(true);
+  a.player.invulnerable = 0;
+  zone.hurtPlayer(10000, a.player);
+  expect(a.player.health).toBe(0);
+  for (let i = 0; i < 130; i++) zone.update(0.04);
+  expect(a.player.health).toBe(a.player.maxHealth);
+  expect(Math.hypot(a.player.x, a.player.y)).toBe(0);
+  const refuge = new WorldZone("obelisk-refuge", randomUUID()),
+    b = add(refuge, "safe");
+  refuge.hurtPlayer(10000, b.player);
+  expect(b.player.health).toBe(b.player.maxHealth);
+  expect(refuge.field).toBeUndefined();
+  zone.dispose();
+  refuge.dispose();
+});

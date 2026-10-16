@@ -1,3 +1,6 @@
+import { WorldFieldCombat } from "./combat";
+import { WORLD_FIELD_V1 } from "../../game/content/rpg/world-combat";
+import type { Enemy } from "../../game/core/types";
 import {
   startGathering,
   assertGathering,
@@ -62,6 +65,12 @@ export class WorldZone extends GameSimulation {
   readonly avatars = new Map<string, WorldAvatar>();
   readonly interest = new WorldInterest<WorldPublicPlayer>();
   readonly nodes;
+  readonly field?: WorldFieldCombat;
+  readonly entityInterest = new WorldInterest<
+    WorldSnapshot["entities"][number]
+  >();
+  private visualIds = new WeakMap<object, string>();
+  private visualSequence = 0;
   tick = 0;
   emptySince = 0;
   reservations = 0;
@@ -82,6 +91,8 @@ export class WorldZone extends GameSimulation {
     this.gems = [];
     this.bullets.clear();
     this.areas = [];
+    if (!this.definition.safe)
+      this.field = new WorldFieldCombat(this, authorityId);
   }
   createAvatar(
     data: Omit<
@@ -217,6 +228,86 @@ export class WorldZone extends GameSimulation {
         ?.player ?? this.player
     );
   }
+  override damageEnemy(
+    e: Enemy,
+    damage: number,
+    w: Weapon | null,
+    knock = 0,
+    allowCrit = true,
+    opts: { status?: string; area?: boolean; synergy?: boolean } = {},
+  ) {
+    const owner = [...this.avatars.values()].find(
+      (a) => a.publicId === (w?.ownerId ?? e.lastHitOwner),
+    );
+    if (!this.definition.safe && !e.dead && damage > 0)
+      this.field?.beforeDamage(e, owner);
+    return super.damageEnemy(e, damage, w, knock, allowCrit, opts);
+  }
+  protected override onEnemyDefeated(enemy: Enemy) {
+    this.field?.defeated(enemy);
+  }
+  override hurtPlayer(damage: number, p: Player = this.player) {
+    if (
+      this.definition.safe ||
+      Math.hypot(p.x, p.y) <= WORLD_FIELD_V1.safeRadius
+    )
+      return;
+    super.hurtPlayer(damage, p);
+    const a = [...this.avatars.values()].find((a) => a.player === p);
+    if (a) {
+      a.gathering = undefined;
+      if (p.health <= 0) {
+        a.respawnAt ??= this.run.time + WORLD_FIELD_V1.playerRespawnSeconds;
+        a.input = { x: 0, y: 0 };
+      }
+    }
+  }
+  private indexCombat() {
+    this.entityInterest.clear();
+    for (const e of this.enemies)
+      if (!e.dead)
+        this.entityInterest.upsert({
+          id: `enemy:${e.id}`,
+          kind: "enemy",
+          type: e.type,
+          x: e.x,
+          y: e.y,
+          r: e.r,
+          health: e.hp,
+          maxHealth: e.maxHp,
+          color: e.color,
+        });
+    const id = (o: object) => {
+      let value = this.visualIds.get(o);
+      if (!value) {
+        value = `effect:${++this.visualSequence}`;
+        this.visualIds.set(o, value);
+      }
+      return value;
+    };
+    for (const b of this.bullets.items)
+      this.entityInterest.upsert({
+        id: id(b),
+        kind: "bullet",
+        type: b.kind,
+        x: b.x,
+        y: b.y,
+        r: b.r,
+        color: b.color,
+        dx: b.vx,
+        dy: b.vy,
+      });
+    for (const a of this.areas)
+      this.entityInterest.upsert({
+        id: id(a),
+        kind: "area",
+        type: a.kind,
+        x: a.x,
+        y: a.y,
+        r: a.r,
+        color: a.enemy ? "#c35959" : "#d5c791",
+      });
+  }
   override finish() {} // No victory, run settlement, or world termination.
   override dropXP() {} // No temporary XP/level-up or Survivor drops.
   override pushPickup() {
@@ -232,6 +323,20 @@ export class WorldZone extends GameSimulation {
     this.run.simTime += dt;
     this.tick++;
     for (const a of this.avatars.values()) {
+      a.player.invulnerable = Math.max(0, a.player.invulnerable - dt);
+      a.player.hurtFlash = Math.max(0, a.player.hurtFlash - dt);
+      if (a.respawnAt !== undefined && this.run.time >= a.respawnAt) {
+        Object.assign(a.player, this.definition.spawn);
+        a.player.health = a.player.maxHealth;
+        a.player.invulnerable = 2;
+        a.respawnAt = undefined;
+        a.input = { x: 0, y: 0 };
+      }
+      if (a.player.health > 0)
+        a.player.health = Math.min(
+          a.player.maxHealth,
+          a.player.health + a.player.stats.recovery * dt,
+        );
       const move =
         !a.busy &&
         a.player.health > 0 &&
@@ -257,7 +362,12 @@ export class WorldZone extends GameSimulation {
 
       this.index(a);
     }
-    if (!this.definition.safe) this.world.update();
+    if (!this.definition.safe) {
+      this.world.update();
+      this.field?.update(dt);
+      this.indexCombat();
+    }
+    for (const a of this.avatars.values()) this.index(a);
   }
   snapshot(a: WorldAvatar): WorldSnapshot {
     return {
@@ -272,7 +382,7 @@ export class WorldZone extends GameSimulation {
       selfId: a.publicId,
       ack: a.sequence,
       players: this.interest.query(a.player),
-      entities: [],
+      entities: this.entityInterest.query(a.player).slice(0, 500),
       self: {
         level: a.profileLevel,
         xp: a.xp,
@@ -284,6 +394,7 @@ export class WorldZone extends GameSimulation {
   dispose() {
     this.avatars.clear();
     this.interest.clear();
+    this.entityInterest.clear();
     this.world.chunks.clear();
     this.bullets.clear();
     this.areas = [];

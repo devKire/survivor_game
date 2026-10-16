@@ -59,6 +59,12 @@ describe.skipIf(
             "utf8",
           ),
         );
+        await c.query(
+          await readFile(
+            "prisma/migrations/20261015020000_rpg_world_visit_identity/migration.sql",
+            "utf8",
+          ),
+        );
         for (let i = 0; i < tables.length; i++) {
           const rows = (await c.query(`SELECT * FROM limiar."${tables[i]}"`))
             .rows;
@@ -85,6 +91,14 @@ describe.skipIf(
               `UPDATE limiar."RpgResourceClaim" SET quantity=1 WHERE id='claim'`,
             ),
           ).rejects.toThrow();
+          await c.query(
+            `INSERT INTO limiar."RpgCharacter" (id,"userId","characterId","updatedAt") VALUES ('ivo','u','ivo',now())`,
+          );
+          await expect(
+            c.query(
+              `UPDATE limiar."RpgWorldVisit" SET "characterId"='ivo' WHERE id='visit'`,
+            ),
+          ).rejects.toThrow(/Immutable/);
           await c.query(`DELETE FROM limiar."User" WHERE id='u'`);
           expect(
             (await c.query(`SELECT * FROM limiar."RpgWorldVisit"`)).rowCount,

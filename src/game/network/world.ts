@@ -1,3 +1,4 @@
+import { worldFieldResult } from "../core/rpg/world/rewards";
 import { z } from "zod";
 import { WORLD_PROTOCOL } from "../core/rpg/world/types";
 import { explorationNodeId } from "../core/rpg/exploration/gathering";
@@ -8,6 +9,7 @@ const epoch = z.uuid(),
 export const worldZoneId = z.enum(["obelisk-refuge", "ruins-outskirts"]);
 export const worldOperation = z.enum([
   "PROFILE",
+  "REWARDS",
   "CHARACTER",
   "ATTRIBUTES",
   "EQUIPMENT",
@@ -131,6 +133,19 @@ export const worldSnapshot = z.object({
   }),
 });
 export const worldMessages = [
+  z.object({
+    type: z.literal("WORLD_REWARDS"),
+    rewards: z
+      .array(
+        z.object({
+          id: z.uuid(),
+          xp: z.number().int().min(0).max(3),
+          revision: z.number().int(),
+          result: worldFieldResult,
+        }),
+      )
+      .max(160),
+  }),
   worldSnapshot,
   z.object({
     type: z.literal("WORLD_RESULT"),

@@ -1,3 +1,9 @@
+import { WorldSocial } from "./social";
+import {
+  persistWorldFieldEvent,
+  settleWorldFieldEvent,
+  recoverWorldFieldRewards,
+} from "../../server/rpg/world/rewards";
 import { executeWorldService } from "./services";
 import { rpgProfileData } from "../../server/rpg/profile";
 import { buildRpgCombatLoadout } from "../../server/rpg/loadout";
@@ -47,11 +53,14 @@ export interface WorldPresence {
 }
 export class WorldCoordinator {
   readonly authorityId = randomUUID();
+  readonly social = new WorldSocial(this);
   readonly zones = new Map<WorldZoneId, WorldZone>();
   readonly presence = new Map<string, WorldPresence>();
   private queues = new Map<string, Promise<unknown>>();
   private snapshotClock = 0;
   private accumulator = 0;
+  private flushing = false;
+  private nextFlush = 0;
   async serialized<T>(userId: string, operation: () => Promise<T>): Promise<T> {
     const previous = this.queues.get(userId) ?? Promise.resolve();
     const next = previous.catch(() => {}).then(operation);
@@ -121,6 +130,7 @@ export class WorldCoordinator {
       transitions: new Map(),
     });
     await this.refreshResources(this.current(c));
+    await this.social.refresh(c.userId);
     c.send(zone.snapshot(avatar));
   }
   async leave(c: WorldConnection) {
@@ -128,6 +138,7 @@ export class WorldCoordinator {
     if (!p || p.connection !== c) return;
     p.zone.remove(c.userId);
     this.presence.delete(c.userId);
+    await this.social.departed(c.userId);
     await closeWorldVisit(c.userId, p.avatar.visitId);
     c.send({
       type: "WORLD_LEFT",
@@ -174,6 +185,7 @@ export class WorldCoordinator {
       p.avatar.discoveryPending.clear();
       dest.add(p.avatar);
       p.zone = dest;
+      if (dest.definition.safe) await this.refreshAvatar(p);
       p.transitions.set(v.requestId, { portalId: v.portalId });
       if (p.transitions.size > 16)
         p.transitions.delete(p.transitions.keys().next().value!);
@@ -398,6 +410,14 @@ export class WorldCoordinator {
       v.type === "WORLD_TRANSITION" ? undefined : v.epoch,
     );
     p.lastActivity = Date.now();
+    if (v.type === "WORLD_CHAT") {
+      await this.social.chat(c, v);
+      return;
+    }
+    if (v.type === "WORLD_GROUP") {
+      await this.social.group(c, v);
+      return;
+    }
     if (v.type === "WORLD_TRANSITION") {
       await this.transition(c, v);
       return;
@@ -484,14 +504,66 @@ export class WorldCoordinator {
     if (Math.hypot(v.moveX, v.moveY) > 0.01) p.lastActivity = Date.now();
     p.zone.acceptMovement(c.userId, v);
   }
+  async flushRewards() {
+    if (this.flushing || !isRpgSharedWorldEnabled()) return;
+    this.flushing = true;
+    try {
+      const settled: Awaited<ReturnType<typeof settleWorldFieldEvent>> = [];
+      for (const zone of this.zones.values()) {
+        const events = zone.field?.pending;
+        for (let i = 0; events?.length && i < 8; i++) {
+          const event = events[0];
+          await persistWorldFieldEvent(event);
+          events.shift(); // From this point startup recovery owns the immutable evidence.
+          settled.push(...(await settleWorldFieldEvent(event.id)));
+        }
+      }
+      settled.push(...(await recoverWorldFieldRewards()));
+      for (const userId of new Set(settled.map((r) => r.userId))) {
+        const p = this.presence.get(userId);
+        if (!p) continue;
+        await this.serialized(userId, async () => {
+          if (this.presence.get(userId) !== p) return;
+          await this.refreshAvatar(p);
+          await this.refreshResources(p);
+          p.connection.send({
+            type: "WORLD_REWARDS",
+            rewards: settled
+              .filter((r) => r.userId === userId)
+              .map((r) => ({
+                id: r.eventId,
+                xp: r.xpGranted,
+                revision: r.revision,
+                result: r.result,
+              })),
+          });
+        });
+      }
+    } finally {
+      this.flushing = false;
+    }
+  }
   step(dt: number) {
+    if (
+      Date.now() >= this.nextFlush &&
+      [...this.zones.values()].some((z) => z.field?.pending.length)
+    ) {
+      this.nextFlush = Date.now() + 1000;
+      void this.flushRewards().catch(() => {
+        console.error("World field rewards pending retry.");
+      });
+    }
     this.accumulator += Math.min(0.2, Math.max(0, dt));
     while (this.accumulator >= 0.04) {
       for (const zone of this.zones.values()) zone.update(0.04);
       this.accumulator -= 0.04;
     }
     for (const zone of this.zones.values()) {
-      if (!zone.avatars.size && !zone.reservations) {
+      if (
+        !zone.avatars.size &&
+        !zone.reservations &&
+        !zone.field?.pending.length
+      ) {
         zone.emptySince ||= Date.now();
         if (Date.now() - zone.emptySince > 30000) {
           zone.dispose();
@@ -510,6 +582,8 @@ export class WorldCoordinator {
     }
   }
   async maintenance() {
+    await this.flushRewards();
+    await this.social.maintenance();
     for (const p of [...this.presence.values()])
       if (
         !isRpgSharedWorldEnabled() ||

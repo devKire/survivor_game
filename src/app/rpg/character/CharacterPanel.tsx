@@ -8,7 +8,13 @@ import { StatsPreview } from "../StatsPreview";
 import { slotLabels } from "../presentation";
 import CharacterForm from "./CharacterForms";
 
-export default function CharacterPanel({ profile, embedded=false }: { profile: Awaited<ReturnType<typeof rpgProfileData>>; embedded?:boolean }) {
+export default function CharacterPanel({
+  profile,
+  embedded = false,
+}: {
+  profile: Awaited<ReturnType<typeof rpgProfileData>>;
+  embedded?: boolean;
+}) {
   const presentation = rpgPresentation(profile);
   const active = profile.characters.find(
     (character) => character.id === profile.activeCharacterId,
@@ -21,9 +27,11 @@ export default function CharacterPanel({ profile, embedded=false }: { profile: A
       <p className="lede">
         Progressão persistente separada para cada sobrevivente desbloqueado.
       </p>
-      {!embedded && <nav className="actions">
-        <Link href="/rpg/inventory">Ver inventário RPG</Link>
-      </nav>}
+      {!embedded && (
+        <nav className="actions">
+          <Link href="/rpg/inventory">Ver inventário RPG</Link>
+        </nav>
+      )}
       <div className="cards">
         {profile.characters.map((character) => {
           const definition =
@@ -95,7 +103,9 @@ export default function CharacterPanel({ profile, embedded=false }: { profile: A
                   );
                 })}
               </ul>
-              <Link href="/rpg/inventory">Gerenciar equipamentos</Link>
+              {!embedded && (
+                <Link href="/rpg/inventory">Gerenciar equipamentos</Link>
+              )}
             </article>
           );
         })}
