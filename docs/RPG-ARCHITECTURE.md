@@ -113,4 +113,12 @@ Catálogos versionados e regras puras em `game/{core,content}/rpg`, serviços au
 
 RpgWorldVisit registra checkpoint seguro e identidade imutável. Gathering usa o mesmo ledger e limites diários da exploração anterior. Eventos e receipts próprios confirmam PvE de campo, com prova autoritativa durável antes do grant. Builds são alteradas somente no Refúgio por serviços com permit espacial privado, mantendo revisão/locks RPG. Nenhuma progressão do mundo modifica PvP, economia Survivor ou UserProgress.version.
 
-O Shell conserva Canvas/RAF/socket nos painéis e transferências; grupos de cinco são sociais, independentes da capacidade de vinte por zona. Uma conexão PostgreSQL direta detém o lock de autoridade antes das recuperações. Ver [entrada e documentos](RPG-SHARED-WORLD.md), [persistência](RPG-WORLD-PERSISTENCE.md) e [rollout](RPG-WORLD-DEPLOYMENT.md). Fase 7 não iniciada.
+O Shell conserva Canvas/RAF/socket nos painéis e transferências; grupos de cinco são sociais, independentes da capacidade de vinte por zona. Uma conexão PostgreSQL direta detém o lock de autoridade antes das recuperações. Ver [entrada e documentos](RPG-SHARED-WORLD.md), [persistência](RPG-WORLD-PERSISTENCE.md) e [rollout](RPG-WORLD-DEPLOYMENT.md).
+
+## Forja dos Ecos (Fase 7)
+
+RPG_CRAFTING_ENABLED=false depende de RPG e mundo compartilhado. Estações físicas vivem no Refúgio público v2, WORLD protocolo 2, com web/realtime coordenados; Refúgio legado e Ruínas mantêm v1. Painéis reutilizam Canvas, RAF, socket, inventário e resolvedor.
+
+RpgCommerceRecord liga histórico/cotas/provenance ao RpgMutationReceipt e ao personagem da conta, sem duplicar saldos. Craft cria equipamento existente; upgrade promove raridade e reforge muda affixes na mesma instância. Receita condicional exige flag canônica de quest REWARDED com receipt durável. Serviços exigem permit espacial revalidado sob lock, revisão e Serializable.
+
+Material/item apenas continua sem persistSave/UserProgress.version; compra/venda que altera GOLD usa ledger e persistSave no mesmo tx, incrementando a versão econômica. GEMS não compra poder RPG. PvP, SAVE_SCHEMA=3, ECONOMY_VERSION=2 e combate Survivor ficam isolados. [Fluxo](RPG-CRAFTING.md), [política](RPG-ECONOMY-POLICY.md), [segurança](RPG-CRAFTING-SECURITY.md), [deploy](RPG-PHASE7-DEPLOYMENT.md).

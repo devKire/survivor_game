@@ -1,0 +1,61 @@
+.panel {
+  color: #e9dfc5;
+}
+.panel nav {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+.panel nav button[aria-pressed="true"] {
+  border-color: #dca967;
+  background: #3b352a;
+}
+.panel button {
+  min-height: 44px;
+  white-space: normal;
+  max-width: 100%;
+}
+.panel button:disabled {
+  opacity: 0.5;
+}
+.list {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+.list article {
+  border-bottom: 1px solid #776a48;
+  padding: 0.7rem 0 1rem;
+}
+.list h3 {
+  margin-top: 0;
+  color: #e7c690;
+}
+.costs {
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
+}
+.confirmation {
+  border: 1px solid #e7b967;
+  background: #302c20;
+  padding: 1rem;
+  margin: 0.8rem 0;
+}
+.confirmation button {
+  margin: 0.4rem 0.5rem 0 0;
+}
+.confirmed {
+  border-left: 3px solid #8bc4a5;
+  padding: 0.7rem;
+  background: #18362c;
+}
+@media (max-width: 640px) {
+  .panel nav button {
+    flex: 1;
+  }
+  .panel p,
+  .panel li {
+    overflow-wrap: anywhere;
+  }
+}

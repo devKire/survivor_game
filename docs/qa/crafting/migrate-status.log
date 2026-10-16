@@ -1,0 +1,8 @@
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "limiar_forge_qa", schemas "limiar" at "127.0.0.1:5433"
+
+17 migrations found in prisma/migrations
+
+Database schema is up to date!

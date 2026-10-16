@@ -1,0 +1,13 @@
+# Persistência da forja
+
+Migração nova `20261016010000_rpg_forge`, atômica com lock_timeout de cinco segundos. Não modifica dados de equipamentos, materiais, moedas, quests ou receipts históricos. Acrescenta RpgCommerceRecord com FK composta para RpgMutationReceipt e personagem da mesma conta. O registro guarda operação, ciclo UTC, instância, contadores de raro/GOLD, resultado público e data. Índices permitem cotas, histórico paginado e provenance de uma instância. Triggers tornam registro e receipt imutáveis e exigem resultado idêntico entre eles.
+
+O ID da instância no histórico é um snapshot auditável, não FK que impediria sua venda: ao vender, a instância é removida atomicamente, conservando os registros de criação/compra/forja/venda. Equipamento de expedição e campo continua com provenance em seus ledgers originais; itens históricos sem prova continuam históricos. Não há reatribuição retroativa ou mudança automática de affixes.
+
+RpgMutationReceipt mantém unicidade conta/requestId para todos os sistemas RPG. O hash considera a intenção estritamente validada e a versão do catálogo. Replay exige o mesmo conteúdo e autorização espacial atual, retorna o resultado original antes da revisão, sem criar seed/instância/custo novamente. Seed de craft/upgrade/reforge nasce no servidor, com domínio criptográfico próprio; não aparece no resultado público. A seed persistida na própria instância permite validação pelo roller existente.
+
+Ordem: lock UserProgress → presença/permit → receipt → revisão/personagem → requisitos/cotas → saldos → item → revisão → receipt/registro. Tudo dentro de rpgTransaction Serializable; somente abortos conhecidos têm retry limitado. Alterações exclusivamente RPG preservam UserProgress.version; compra/venda com GOLD chama ledger e persistSave na mesma transação e incrementa a versão. Não existe transação econômica aninhada.
+
+Cotas por conta/dia UTC, fixado pelo servidor no começo do pedido, são agregadas do histórico confirmado e checadas sob lock. Batch é uma unidade. Um limite não depende de estado React, de rate limit ou de troca de personagem. Overflow/insuficiência falham integralmente. Novo item entra INVENTORY desequipado; upgrade/reforge conservam ID/nível/ownership, rejeitando STASH/equipado/pilha.
+
+A migração também amplia a versão permitida do checkpoint para Refúgio público v2 e permite alterar esse metadado em transferências. Ruínas continuam v1. Identidade de conta/personagem da visita permanece imutável. O Refúgio legado mantém sua geometria v1. Deploy do protocolo correspondente deve ser coordenado; rollback por flag conserva dados e versões novas, sem DROP.

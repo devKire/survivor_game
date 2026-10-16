@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { WORLD_PROTOCOL } from "../src/game/core/rpg/world/types";
 import { randomUUID } from "node:crypto";
 import { spawn, type ChildProcess } from "node:child_process";
 import { once } from "node:events";
@@ -40,7 +41,15 @@ async function peer(id: string, queueArenaDuringEntry = false) {
   const send = (value: unknown) => ws.send(JSON.stringify(value));
   send({ type: "HELLO", ticket: issueTicket(id, id) });
   await until(() => messages.some((m) => m.type === "ACCOUNT"));
-  send({ type: "WORLD_ENTER", protocol: 1 });
+  if (queueArenaDuringEntry) {
+    send({ type: "WORLD_ENTER", protocol: 1 });
+    await until(() =>
+      messages.some(
+        (m) => m.type === "ERROR" && m.message.includes("Atualize"),
+      ),
+    );
+  }
+  send({ type: "WORLD_ENTER", protocol: WORLD_PROTOCOL });
   if (queueArenaDuringEntry)
     send({ type: "ARENA_QUEUE", character: "nara", mode: "DUEL_CASUAL" });
   await until(() => messages.some((m) => m.type === "WORLD_SNAPSHOT"));
@@ -488,7 +497,7 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
       const health = await fetch("http://127.0.0.1:3010/health").then((r) =>
         r.json(),
       );
-      expect(health.sharedWorld.protocol).toBe(1);
+      expect(health.sharedWorld.protocol).toBe(WORLD_PROTOCOL);
       expect(health.sharedWorld.zones).toHaveLength(2);
       for (const a of [reconnect, ...peers.slice(1)])
         a.send({ type: "WORLD_LEAVE", epoch: a.snapshot().epoch });

@@ -1,0 +1,76 @@
+(node:41568) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{
+  "operations": [
+    {
+      "operation": "CRAFT_ITEM",
+      "samples": 20,
+      "durationP50": 12.695030000000088,
+      "durationP95": 54.802629000000024,
+      "statementsP95": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "samples": 20,
+      "durationP50": 13.582922999999937,
+      "durationP95": 21.759983000000034,
+      "statementsP95": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "samples": 20,
+      "durationP50": 13.04923400000007,
+      "durationP95": 18.02403000000004,
+      "statementsP95": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "samples": 20,
+      "durationP50": 12.464008000000149,
+      "durationP95": 17.93381599999998,
+      "statementsP95": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "samples": 20,
+      "durationP50": 13.579948999999942,
+      "durationP95": 20.433602000000064,
+      "statementsP95": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "samples": 20,
+      "durationP50": 12.086991000000125,
+      "durationP95": 20.33051999999998,
+      "statementsP95": 23
+    },
+    {
+      "operation": "CATALOG",
+      "samples": 20,
+      "durationP50": 5.299756000000116,
+      "durationP95": 9.331537000000026,
+      "statementsP95": 14
+    },
+    {
+      "operation": "HISTORY",
+      "samples": 20,
+      "durationP50": 1.857486999999992,
+      "durationP95": 4.102996999999959,
+      "statementsP95": 5
+    }
+  ],
+  "concurrentReplay": {
+    "requests": 5,
+    "durationMs": 106.58614399999988,
+    "statements": 123,
+    "confirmedResponses": 5,
+    "records": 1
+  },
+  "competingRevision": {
+    "requests": 5,
+    "durationMs": 70.74361900000031,
+    "statements": 131,
+    "confirmed": 1,
+    "rejected": 4
+  }
+}

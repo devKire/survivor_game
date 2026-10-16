@@ -17,7 +17,9 @@ import { gatheringReady } from "../../game/core/rpg/exploration/runtime";
 import { gatheringCycle } from "../../game/core/rpg/exploration/gathering";
 import { explorationResource } from "../../game/content/rpg/exploration-resources";
 import { inDiscoveryRange } from "../../game/core/rpg/exploration/generation";
-import { REFUGE } from "../../game/content/rpg/refuge";
+import { WORLD_REFUGE as REFUGE } from "../../game/content/rpg/world-refuge";
+import { isCraftingOperation } from "../../game/core/rpg/crafting/types";
+import { craftingMetrics } from "../../server/rpg/crafting/metrics";
 import { withinWorldInteraction } from "../../game/core/rpg/world/rules";
 import { randomUUID } from "node:crypto";
 import type { WorldCommand } from "../../game/network/world";
@@ -368,6 +370,8 @@ export class WorldCoordinator {
     c: WorldConnection,
     v: Extract<WorldCommand, { type: "WORLD_RPC" }>,
   ) {
+    if (isCraftingOperation(v.operation) && (!v.args || typeof v.args !== "object" || !("requestId" in v.args) || v.args.requestId !== v.requestId))
+      throw new UserError("Identificador de pedido inconsistente.");
     const p = this.current(c, v.epoch);
     p.avatar.busy = true;
     p.avatar.gathering = undefined;
@@ -454,7 +458,7 @@ export class WorldCoordinator {
         epoch: p.avatar.epoch,
         targetId: target.id,
         service:
-          target.visual === "npc" ? "NPC" : (target.service ?? "CHARACTER"),
+          target.worldService ?? (target.visual === "npc" ? "NPC" : (target.service ?? "CHARACTER")),
       });
       return;
     }
@@ -615,6 +619,7 @@ export class WorldCoordinator {
                 [...this.snapshotDurations].sort((a, b) => a - b)[
                   Math.floor(this.snapshotDurations.length * 0.95)
                 ] ?? 0,
+              crafting: craftingMetrics(),
               heapBytes: process.memoryUsage().heapUsed,
               cpu: process.cpuUsage(),
               uptime: process.uptime(),

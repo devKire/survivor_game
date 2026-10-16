@@ -1,0 +1,882 @@
+{
+  "at": "2026-10-16T04:43:20.426Z",
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "logicalCpus": 5,
+  "method": "Twenty isolated accounts, sequential service calls with internal fixture permits; no network or gameplay claim. pg.Client.query counts include transaction boundaries. Five-request groups measure aggregate query counts and wall time including lock waits, not individual lock durations. No competing browser/realtime suite.",
+  "operations": [
+    {
+      "operation": "CRAFT_ITEM",
+      "samples": 20,
+      "durationP50": 12.695030000000088,
+      "durationP95": 54.802629000000024,
+      "statementsP95": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "samples": 20,
+      "durationP50": 13.582922999999937,
+      "durationP95": 21.759983000000034,
+      "statementsP95": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "samples": 20,
+      "durationP50": 13.04923400000007,
+      "durationP95": 18.02403000000004,
+      "statementsP95": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "samples": 20,
+      "durationP50": 12.464008000000149,
+      "durationP95": 17.93381599999998,
+      "statementsP95": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "samples": 20,
+      "durationP50": 13.579948999999942,
+      "durationP95": 20.433602000000064,
+      "statementsP95": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "samples": 20,
+      "durationP50": 12.086991000000125,
+      "durationP95": 20.33051999999998,
+      "statementsP95": 23
+    },
+    {
+      "operation": "CATALOG",
+      "samples": 20,
+      "durationP50": 5.299756000000116,
+      "durationP95": 9.331537000000026,
+      "statementsP95": 14
+    },
+    {
+      "operation": "HISTORY",
+      "samples": 20,
+      "durationP50": 1.857486999999992,
+      "durationP95": 4.102996999999959,
+      "statementsP95": 5
+    }
+  ],
+  "concurrentReplay": {
+    "requests": 5,
+    "durationMs": 106.58614399999988,
+    "statements": 123,
+    "confirmedResponses": 5,
+    "records": 1
+  },
+  "competingRevision": {
+    "requests": 5,
+    "durationMs": 70.74361900000031,
+    "statements": 131,
+    "confirmed": 1,
+    "rejected": 4
+  },
+  "catalogBytesP95": 4311,
+  "raw": [
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 54.802629000000024,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 21.759983000000034,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 15.659894000000008,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 17.93381599999998,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 20.433602000000064,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 20.33051999999998,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 9.331537000000026,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 3.911882999999989,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 13.92373699999996,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 15.012968,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 14.581850000000031,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 12.810672000000068,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 18.903290000000084,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 12.864399999999932,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 5.68544600000007,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.611872999999946,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 12.205657000000087,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 14.85300099999995,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 15.848572999999988,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 15.31305199999997,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 18.72028899999998,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 12.209341999999992,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 5.991558999999938,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 2.386068000000023,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 15.588167999999882,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 14.83522499999981,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 14.580588000000034,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 14.846491000000015,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 15.125393999999915,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 12.044268000000102,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 4.824233000000049,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 2.7589190000001054,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 12.695030000000088,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 13.596873999999843,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 13.04923400000007,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 12.464008000000149,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 13.639196999999967,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 11.23477200000002,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 4.885253000000148,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.8153039999999692,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 11.14170399999989,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 14.591143999999986,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 18.02403000000004,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 12.18140100000005,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 13.579948999999942,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 10.010371000000077,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 4.857122000000118,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 4.102996999999959,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 11.614072000000078,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 12.314388000000008,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 11.622213999999985,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 12.32939999999985,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 13.581850999999915,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 10.562908000000107,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 4.600050999999894,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.4504349999999704,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 11.525951999999961,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 11.505121000000145,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 12.157515999999987,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 10.138429000000087,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 12.273357000000033,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 12.103847000000087,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 4.42125800000008,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.857486999999992,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 13.748428000000104,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 13.582922999999937,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 11.37668100000019,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 11.43905400000017,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 11.848107999999911,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 13.599296999999979,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 5.299756000000116,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.5993550000000596,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 11.351603000000068,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 11.562366000000111,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 11.261551000000054,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 10.574794999999995,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 10.665338999999904,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 13.086839000000055,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 5.091928999999936,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.8314179999999851,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 12.270308000000114,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 11.59143899999981,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 13.714187999999922,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 13.776403999999957,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 13.93788799999993,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 13.212945999999874,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 5.6795280000001185,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.8679709999998977,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 13.601781000000074,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 11.302642000000105,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 10.199059999999918,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 10.076759000000038,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 10.077085000000125,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 11.13112799999999,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 8.069471000000021,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 2.2652689999999893,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 12.735820999999987,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 13.071001000000024,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 12.85692999999992,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 14.15607,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 14.190601000000015,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 12.774967999999944,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 6.201825000000099,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.860830999999962,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 13.640218000000004,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 13.875836000000163,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 14.390988000000107,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 11.431732999999895,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 14.29651899999999,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 12.370449999999892,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 5.108443000000079,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.5989650000001348,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 10.700640999999905,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 10.147363000000041,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 10.271607000000131,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 10.25201799999968,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 12.355919000000085,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 11.765917000000172,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 5.076956000000337,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.504203999999845,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 12.00971699999991,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 12.15934900000002,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 11.941687000000002,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 10.955437999999958,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 12.010457999999744,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 10.912876000000324,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 5.464400000000296,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.9555410000002666,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 17.453386000000137,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 13.400153000000046,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 13.151745000000119,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 13.15701399999989,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 12.128172000000177,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 11.541204000000107,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 7.121569000000363,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 2.047827999999754,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 12.782909999999902,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 15.197050000000218,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 11.66082200000028,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 14.11978100000033,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 11.550348000000213,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 9.614876000000095,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 4.412783999999647,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.5415189999998802,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 11.547849000000042,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 14.6304769999997,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 13.649180999999771,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 12.290752999999768,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 11.643957000000228,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 11.40763700000025,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 5.166077999999743,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.6898080000000846,
+      "statements": 5
+    },
+    {
+      "operation": "CRAFT_ITEM",
+      "durationMs": 12.05199999999968,
+      "statements": 23
+    },
+    {
+      "operation": "UPGRADE_ITEM",
+      "durationMs": 10.710356000000047,
+      "statements": 23
+    },
+    {
+      "operation": "REFORGE_ITEM",
+      "durationMs": 12.45475499999975,
+      "statements": 23
+    },
+    {
+      "operation": "BUY_FROM_VENDOR",
+      "durationMs": 12.630035000000134,
+      "statements": 22
+    },
+    {
+      "operation": "SELL_TO_VENDOR",
+      "durationMs": 12.991088000000218,
+      "statements": 22
+    },
+    {
+      "operation": "REFINE_MATERIAL",
+      "durationMs": 12.086991000000125,
+      "statements": 23
+    },
+    {
+      "operation": "CATALOG",
+      "durationMs": 5.762640999999803,
+      "statements": 14
+    },
+    {
+      "operation": "HISTORY",
+      "durationMs": 1.4510950000003504,
+      "statements": 5
+    }
+  ]
+}

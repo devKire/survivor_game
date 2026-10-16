@@ -18,9 +18,18 @@ export interface RefugeTarget extends RefugePoint {
   readonly radius: number;
   readonly collisionRadius: number;
   readonly service?: RefugeService;
+  readonly worldService?: "FORGE" | "REFINEMENT" | "TRADER";
   readonly dialogueId?: string;
   readonly visual:
-    "obelisk" | "arsenal" | "stash" | "board" | "portal" | "character" | "npc";
+    | "obelisk"
+    | "arsenal"
+    | "stash"
+    | "board"
+    | "portal"
+    | "character"
+    | "npc"
+    | "forge"
+    | "refinery";
 }
 export interface RefugeDialogue {
   readonly id: string;

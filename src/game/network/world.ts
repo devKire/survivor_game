@@ -1,4 +1,5 @@
 import { worldFieldResult } from "../core/rpg/world/rewards";
+import { CRAFTING_OPERATIONS } from "../core/rpg/crafting/types";
 import { z } from "zod";
 import { WORLD_PROTOCOL } from "../core/rpg/world/types";
 import { explorationNodeId } from "../core/rpg/exploration/gathering";
@@ -17,12 +18,15 @@ export const worldOperation = z.enum([
   "JOURNAL",
   "QUEST",
   "DIALOGUE",
+  "CRAFTING_CATALOG",
+  "CRAFTING_HISTORY",
+  ...CRAFTING_OPERATIONS,
 ]);
 export const worldCommands = [
   z
     .object({
       type: z.literal("WORLD_ENTER"),
-      protocol: z.literal(WORLD_PROTOCOL),
+      protocol: z.number().int().min(1).max(WORLD_PROTOCOL),
     })
     .strict(),
   z
@@ -120,7 +124,7 @@ export const worldSnapshot = z.object({
   instanceId: id,
   epoch,
   zoneId: worldZoneId,
-  zoneVersion: z.literal(1),
+  zoneVersion: z.union([z.literal(1), z.literal(2)]),
   tick: z.number().int().min(0),
   selfId: id,
   ack: z.number().int(),

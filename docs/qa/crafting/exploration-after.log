@@ -1,0 +1,12 @@
+
+> limiar@2.0.0 test
+> vitest run tests/rpg-exploration-realtime.test.ts
+
+
+ RUN  v5.0.1 /workspace/survivor_game
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  04:53:27
+   Duration  28.69s (tests 97%, transform 2%, import 1%)

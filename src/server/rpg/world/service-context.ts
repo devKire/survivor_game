@@ -35,6 +35,17 @@ export async function assertWorldMutationAllowed(
     );
   requireRpgSharedWorldEnabled();
   permit.assertLive();
+  return visit;
+}
+/** Economic world services cannot run without an active spatial authority. */
+export async function assertActiveWorldServicePermit(
+  tx: Prisma.TransactionClient,
+  userId: string,
+) {
+  const visit = await assertWorldMutationAllowed(tx, userId);
+  if (!visit || visit.checkpointZone !== "obelisk-refuge")
+    throw new UserError("Utilize a estação dentro do Refúgio.");
+  return visit;
 }
 export function recheckWorldServicePermit() {
   const permit = permits.getStore();

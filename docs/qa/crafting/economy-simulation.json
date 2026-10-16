@@ -1,0 +1,370 @@
+{
+  "at": "2026-10-16T14:24:08.390Z",
+  "version": 1,
+  "sources": [
+    {
+      "materialId": "weathered-ore",
+      "nodes": 8,
+      "quantity": 2,
+      "gatherSeconds": 1.8
+    },
+    {
+      "materialId": "ruins-fiber",
+      "nodes": 7,
+      "quantity": 2,
+      "gatherSeconds": 1.2
+    },
+    {
+      "materialId": "obelisk-dust",
+      "nodes": 7,
+      "quantity": 1,
+      "gatherSeconds": 2.2
+    }
+  ],
+  "profiles": [
+    {
+      "profile": "INICIANTE",
+      "level": 1,
+      "fieldKills": 3,
+      "bossKills": 0,
+      "expeditions": 0,
+      "dailyClaims": 18,
+      "materials": {
+        "weathered-ore": 12,
+        "ruins-fiber": 12,
+        "obelisk-dust": 9
+      },
+      "gatheringSecondsExcludingTravel": 31.200000000000003,
+      "guaranteedRepeatableShards": 0,
+      "expectedBonusShards": 0,
+      "expectedRepeatableShards": 0,
+      "oneTimeStoryShards": 0,
+      "firstMantleClaims": 3,
+      "firstMantleGatherSecondsExcludingTravel": 4.2,
+      "firstRareCharmNeeds": "2 herb claims and 3 dust sources; field kills can supply dust. Story unlock is not required.",
+      "maximumVendorGoldDaily": 5,
+      "goldWeaponCost": 12,
+      "survivorCompletionsForWeapon": {
+        "tenMinutes": 6,
+        "fifteenMinutes": 4,
+        "thirtyMinutes": 2
+      },
+      "vendorBuySellNetGold": [
+        -11,
+        -9
+      ],
+      "advancedRecipeNote": "Requires level 5 and material-samples-delivered. Eligible expedition completion and boss rewards include guaranteed shards, plus weighted boss bonuses. Activity participation is assumed, never an automatic daily grant."
+    },
+    {
+      "profile": "INTERMEDIÁRIO",
+      "level": 5,
+      "fieldKills": 10,
+      "bossKills": 1,
+      "expeditions": 1,
+      "dailyClaims": 18,
+      "materials": {
+        "weathered-ore": 12,
+        "ruins-fiber": 12,
+        "obelisk-dust": 22
+      },
+      "gatheringSecondsExcludingTravel": 31.200000000000003,
+      "guaranteedRepeatableShards": 2,
+      "expectedBonusShards": 0.30000000000000004,
+      "expectedRepeatableShards": 2.3,
+      "oneTimeStoryShards": 2,
+      "firstMantleClaims": 3,
+      "firstMantleGatherSecondsExcludingTravel": 4.2,
+      "firstRareCharmNeeds": "2 herb claims and 3 dust sources; field kills can supply dust. Story unlock is not required.",
+      "maximumVendorGoldDaily": 5,
+      "goldWeaponCost": 12,
+      "survivorCompletionsForWeapon": {
+        "tenMinutes": 6,
+        "fifteenMinutes": 4,
+        "thirtyMinutes": 2
+      },
+      "vendorBuySellNetGold": [
+        -11,
+        -9
+      ],
+      "advancedRecipeNote": "Requires level 5 and material-samples-delivered. Eligible expedition completion and boss rewards include guaranteed shards, plus weighted boss bonuses. Activity participation is assumed, never an automatic daily grant."
+    },
+    {
+      "profile": "AVANÇADO",
+      "level": 20,
+      "fieldKills": 20,
+      "bossKills": 3,
+      "expeditions": 2,
+      "dailyClaims": 18,
+      "materials": {
+        "weathered-ore": 12,
+        "ruins-fiber": 12,
+        "obelisk-dust": 40
+      },
+      "gatheringSecondsExcludingTravel": 31.200000000000003,
+      "guaranteedRepeatableShards": 5,
+      "expectedBonusShards": 0.9000000000000001,
+      "expectedRepeatableShards": 5.9,
+      "oneTimeStoryShards": 2,
+      "firstMantleClaims": 3,
+      "firstMantleGatherSecondsExcludingTravel": 4.2,
+      "firstRareCharmNeeds": "2 herb claims and 3 dust sources; field kills can supply dust. Story unlock is not required.",
+      "maximumVendorGoldDaily": 5,
+      "goldWeaponCost": 12,
+      "survivorCompletionsForWeapon": {
+        "tenMinutes": 6,
+        "fifteenMinutes": 4,
+        "thirtyMinutes": 2
+      },
+      "vendorBuySellNetGold": [
+        -11,
+        -9
+      ],
+      "advancedRecipeNote": "Requires level 5 and material-samples-delivered. Eligible expedition completion and boss rewards include guaranteed shards, plus weighted boss bonuses. Activity participation is assumed, never an automatic daily grant."
+    }
+  ],
+  "recipes": [
+    {
+      "id": "recipe:blade-weathered",
+      "version": 1,
+      "name": "Lâmina Gasta",
+      "stationId": "refuge:forge",
+      "outputItemId": "blade-weathered",
+      "outputQuantity": 1,
+      "rarity": "COMMON",
+      "itemLevel": 1,
+      "materials": [
+        {
+          "materialId": "weathered-ore",
+          "amount": 6
+        },
+        {
+          "materialId": "obelisk-dust",
+          "amount": 2
+        }
+      ],
+      "minLevel": 1,
+      "requirements": []
+    },
+    {
+      "id": "recipe:mantle-ash",
+      "version": 1,
+      "name": "Manto de Cinzas",
+      "stationId": "refuge:forge",
+      "outputItemId": "mantle-ash",
+      "outputQuantity": 1,
+      "rarity": "COMMON",
+      "itemLevel": 1,
+      "materials": [
+        {
+          "materialId": "weathered-ore",
+          "amount": 2
+        },
+        {
+          "materialId": "ruins-fiber",
+          "amount": 4
+        }
+      ],
+      "minLevel": 1,
+      "requirements": []
+    },
+    {
+      "id": "recipe:charm-obelisk",
+      "version": 1,
+      "name": "Talismã do Obelisco",
+      "stationId": "refuge:forge",
+      "outputItemId": "charm-obelisk",
+      "outputQuantity": 1,
+      "rarity": "RARE",
+      "itemLevel": 1,
+      "materials": [
+        {
+          "materialId": "ruins-fiber",
+          "amount": 4
+        },
+        {
+          "materialId": "obelisk-dust",
+          "amount": 3
+        }
+      ],
+      "minLevel": 1,
+      "requirements": []
+    },
+    {
+      "id": "recipe:blade-echo",
+      "version": 1,
+      "name": "Lâmina do Eco",
+      "stationId": "refuge:forge",
+      "outputItemId": "blade-echo",
+      "outputQuantity": 1,
+      "rarity": "RARE",
+      "itemLevel": 5,
+      "materials": [
+        {
+          "materialId": "weathered-ore",
+          "amount": 8
+        },
+        {
+          "materialId": "obelisk-dust",
+          "amount": 4
+        },
+        {
+          "materialId": "echo-shard",
+          "amount": 1
+        }
+      ],
+      "minLevel": 5,
+      "requirements": [
+        {
+          "kind": "STORY_FLAG",
+          "flagId": "material-samples-delivered"
+        }
+      ]
+    },
+    {
+      "id": "recipe:mantle-still",
+      "version": 1,
+      "name": "Manto da Quietude",
+      "stationId": "refuge:forge",
+      "outputItemId": "mantle-still",
+      "outputQuantity": 1,
+      "rarity": "RARE",
+      "itemLevel": 5,
+      "materials": [
+        {
+          "materialId": "ruins-fiber",
+          "amount": 8
+        },
+        {
+          "materialId": "obelisk-dust",
+          "amount": 2
+        },
+        {
+          "materialId": "echo-shard",
+          "amount": 1
+        }
+      ],
+      "minLevel": 5,
+      "requirements": [
+        {
+          "kind": "STORY_FLAG",
+          "flagId": "material-samples-delivered"
+        }
+      ]
+    },
+    {
+      "id": "recipe:charm-lens",
+      "version": 1,
+      "name": "Lente do Limiar",
+      "stationId": "refuge:forge",
+      "outputItemId": "charm-lens",
+      "outputQuantity": 1,
+      "rarity": "RARE",
+      "itemLevel": 5,
+      "materials": [
+        {
+          "materialId": "ruins-fiber",
+          "amount": 3
+        },
+        {
+          "materialId": "obelisk-dust",
+          "amount": 6
+        },
+        {
+          "materialId": "echo-shard",
+          "amount": 2
+        }
+      ],
+      "minLevel": 5,
+      "requirements": [
+        {
+          "kind": "STORY_FLAG",
+          "flagId": "material-samples-delivered"
+        }
+      ]
+    }
+  ],
+  "refinements": [
+    {
+      "id": "refine:residual-dust",
+      "version": 1,
+      "name": "Refinamento de resíduos",
+      "stationId": "refuge:refinery",
+      "materials": [
+        {
+          "materialId": "weathered-ore",
+          "amount": 6
+        },
+        {
+          "materialId": "ruins-fiber",
+          "amount": 4
+        }
+      ],
+      "output": {
+        "materialId": "obelisk-dust",
+        "amount": 1
+      }
+    }
+  ],
+  "stocks": [
+    {
+      "id": "stock:blade",
+      "itemId": "blade-weathered",
+      "rarity": "COMMON",
+      "level": 1,
+      "cost": {
+        "gold": 12,
+        "materials": []
+      }
+    },
+    {
+      "id": "stock:mantle",
+      "itemId": "mantle-ash",
+      "rarity": "COMMON",
+      "level": 1,
+      "cost": {
+        "gold": 10,
+        "materials": []
+      }
+    },
+    {
+      "id": "stock:barter-mantle",
+      "itemId": "mantle-ash",
+      "rarity": "COMMON",
+      "level": 1,
+      "cost": {
+        "gold": 0,
+        "materials": [
+          {
+            "materialId": "weathered-ore",
+            "amount": 2
+          },
+          {
+            "materialId": "ruins-fiber",
+            "amount": 6
+          }
+        ]
+      }
+    }
+  ],
+  "limits": {
+    "inventoryCreationCap": 200,
+    "rareCrafts": 2,
+    "goldGranted": 5,
+    "operations": {
+      "CRAFT_ITEM": 6,
+      "REFINE_MATERIAL": 3,
+      "UPGRADE_ITEM": 2,
+      "REFORGE_ITEM": 3,
+      "BUY_FROM_VENDOR": 2,
+      "SELL_TO_VENDOR": 3
+    }
+  },
+  "assumptions": [
+    "Eighteen daily claims allocated six to each resource; limited by actual generated nodes, not client values.",
+    "At most twelve per visit, requiring another visit for eighteen claims; no quota reset.",
+    "Travel, combat survival and quest navigation times are deliberately excluded; gather seconds are a lower bound, not predicted playtime.",
+    "Profiles are availability scenarios with assumed levels, not grants or expected automatic progression.",
+    "Field rewards have their existing twenty/day account cap. No source sells materials for GOLD and no conversion yields a shard.",
+    "Buy/sell cycles lose GOLD. Craft/refine consume finite nonpurchasable inputs; sales also have three/day and five GOLD/day caps."
+  ]
+}

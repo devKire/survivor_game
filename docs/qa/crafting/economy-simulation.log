@@ -1,0 +1,123 @@
+{
+  "sources": [
+    {
+      "materialId": "weathered-ore",
+      "nodes": 8,
+      "quantity": 2,
+      "gatherSeconds": 1.8
+    },
+    {
+      "materialId": "ruins-fiber",
+      "nodes": 7,
+      "quantity": 2,
+      "gatherSeconds": 1.2
+    },
+    {
+      "materialId": "obelisk-dust",
+      "nodes": 7,
+      "quantity": 1,
+      "gatherSeconds": 2.2
+    }
+  ],
+  "profiles": [
+    {
+      "profile": "INICIANTE",
+      "level": 1,
+      "fieldKills": 3,
+      "bossKills": 0,
+      "expeditions": 0,
+      "dailyClaims": 18,
+      "materials": {
+        "weathered-ore": 12,
+        "ruins-fiber": 12,
+        "obelisk-dust": 9
+      },
+      "gatheringSecondsExcludingTravel": 31.200000000000003,
+      "guaranteedRepeatableShards": 0,
+      "expectedBonusShards": 0,
+      "expectedRepeatableShards": 0,
+      "oneTimeStoryShards": 0,
+      "firstMantleClaims": 3,
+      "firstMantleGatherSecondsExcludingTravel": 4.2,
+      "firstRareCharmNeeds": "2 herb claims and 3 dust sources; field kills can supply dust. Story unlock is not required.",
+      "maximumVendorGoldDaily": 5,
+      "goldWeaponCost": 12,
+      "survivorCompletionsForWeapon": {
+        "tenMinutes": 6,
+        "fifteenMinutes": 4,
+        "thirtyMinutes": 2
+      },
+      "vendorBuySellNetGold": [
+        -11,
+        -9
+      ],
+      "advancedRecipeNote": "Requires level 5 and material-samples-delivered. Eligible expedition completion and boss rewards include guaranteed shards, plus weighted boss bonuses. Activity participation is assumed, never an automatic daily grant."
+    },
+    {
+      "profile": "INTERMEDIÁRIO",
+      "level": 5,
+      "fieldKills": 10,
+      "bossKills": 1,
+      "expeditions": 1,
+      "dailyClaims": 18,
+      "materials": {
+        "weathered-ore": 12,
+        "ruins-fiber": 12,
+        "obelisk-dust": 22
+      },
+      "gatheringSecondsExcludingTravel": 31.200000000000003,
+      "guaranteedRepeatableShards": 2,
+      "expectedBonusShards": 0.30000000000000004,
+      "expectedRepeatableShards": 2.3,
+      "oneTimeStoryShards": 2,
+      "firstMantleClaims": 3,
+      "firstMantleGatherSecondsExcludingTravel": 4.2,
+      "firstRareCharmNeeds": "2 herb claims and 3 dust sources; field kills can supply dust. Story unlock is not required.",
+      "maximumVendorGoldDaily": 5,
+      "goldWeaponCost": 12,
+      "survivorCompletionsForWeapon": {
+        "tenMinutes": 6,
+        "fifteenMinutes": 4,
+        "thirtyMinutes": 2
+      },
+      "vendorBuySellNetGold": [
+        -11,
+        -9
+      ],
+      "advancedRecipeNote": "Requires level 5 and material-samples-delivered. Eligible expedition completion and boss rewards include guaranteed shards, plus weighted boss bonuses. Activity participation is assumed, never an automatic daily grant."
+    },
+    {
+      "profile": "AVANÇADO",
+      "level": 20,
+      "fieldKills": 20,
+      "bossKills": 3,
+      "expeditions": 2,
+      "dailyClaims": 18,
+      "materials": {
+        "weathered-ore": 12,
+        "ruins-fiber": 12,
+        "obelisk-dust": 40
+      },
+      "gatheringSecondsExcludingTravel": 31.200000000000003,
+      "guaranteedRepeatableShards": 5,
+      "expectedBonusShards": 0.9000000000000001,
+      "expectedRepeatableShards": 5.9,
+      "oneTimeStoryShards": 2,
+      "firstMantleClaims": 3,
+      "firstMantleGatherSecondsExcludingTravel": 4.2,
+      "firstRareCharmNeeds": "2 herb claims and 3 dust sources; field kills can supply dust. Story unlock is not required.",
+      "maximumVendorGoldDaily": 5,
+      "goldWeaponCost": 12,
+      "survivorCompletionsForWeapon": {
+        "tenMinutes": 6,
+        "fifteenMinutes": 4,
+        "thirtyMinutes": 2
+      },
+      "vendorBuySellNetGold": [
+        -11,
+        -9
+      ],
+      "advancedRecipeNote": "Requires level 5 and material-samples-delivered. Eligible expedition completion and boss rewards include guaranteed shards, plus weighted boss bonuses. Activity participation is assumed, never an automatic daily grant."
+    }
+  ]
+}

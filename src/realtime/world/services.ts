@@ -1,7 +1,21 @@
 import { worldRewardHistory } from "../../server/rpg/world/rewards";
+import {
+  craftingCatalog,
+  craftingCatalogInput,
+  craftingHistory,
+  craftingHistoryInput,
+} from "../../server/rpg/crafting/catalog";
+import { mutateCrafting } from "../../server/rpg/crafting/service";
+import {
+  craftingCommandSchema,
+  isCraftingOperation,
+} from "../../game/core/rpg/crafting/types";
+import { craftingStation } from "../../game/core/rpg/crafting/rules";
+import { requireRpgCraftingEnabled } from "../../server/rpg/guard";
+import { recordCraftingMetric } from "../../server/rpg/crafting/metrics";
 import { z } from "zod";
 import { UserError } from "../../server/security";
-import { REFUGE } from "../../game/content/rpg/refuge";
+import { WORLD_REFUGE as REFUGE } from "../../game/content/rpg/world-refuge";
 import { withinWorldInteraction } from "../../game/core/rpg/world/rules";
 import type { WorldOperation } from "../../game/network/world";
 import { rpgProfileData } from "../../server/rpg/profile";
@@ -40,6 +54,38 @@ export function authorizeWorldService(
   if (p.avatar.player.health <= 0)
     throw new UserError("Aguarde o retorno ao ponto seguro.");
   if (
+    isCraftingOperation(operation) ||
+    operation === "CRAFTING_CATALOG" ||
+    operation === "CRAFTING_HISTORY"
+  ) {
+    requireRpgCraftingEnabled();
+    let station: string;
+    if (isCraftingOperation(operation)) {
+      const parsed = craftingCommandSchema.safeParse(args);
+      if (!parsed.success) {
+        recordCraftingMetric("invalid-intent", operation);
+        throw new UserError(
+          "Pedido de estação inválido. Atualize os dados e tente novamente.",
+        );
+      }
+      const command = parsed.data;
+      if (command.operation !== operation)
+        throw new UserError("Operação de estação inválida.");
+      station = craftingStation(command.operation);
+    } else
+      station = (
+        operation === "CRAFTING_CATALOG"
+          ? craftingCatalogInput
+          : craftingHistoryInput
+      ).parse(args).stationId;
+    if (!near(p, station)) {
+      recordCraftingMetric("spatial-rejected", operation);
+      throw new UserError(
+        "Aproxime-se da estação no Refúgio para utilizar este serviço.",
+      );
+    }
+  }
+  if (
     ["CHARACTER", "ATTRIBUTES", "EQUIPMENT"].includes(operation) &&
     p.zone.zoneId !== "obelisk-refuge"
   )
@@ -77,6 +123,11 @@ export async function executeWorldService(
   return withWorldServicePermit(
     { userId: c.userId, visitId: p.avatar.visitId, assertLive },
     async () => {
+      if (operation === "CRAFTING_CATALOG")
+        return craftingCatalog(c.userId, args);
+      if (operation === "CRAFTING_HISTORY")
+        return craftingHistory(c.userId, args);
+      if (isCraftingOperation(operation)) return mutateCrafting(c.userId, args);
       if (operation === "PROFILE") {
         z.object({}).strict().parse(args);
         const profile = await rpgProfileData(c.userId);

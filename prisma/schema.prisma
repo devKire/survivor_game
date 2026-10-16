@@ -83,6 +83,7 @@ model RpgCharacter {
   explorations  RpgExplorationParticipant[]
   worldVisits   RpgWorldVisit[]
   worldRewards  RpgWorldRewardReceipt[]
+  commerceRecords RpgCommerceRecord[]
   quests        RpgQuestProgress[]
 
   @@unique([userId, characterId])
@@ -136,9 +137,32 @@ model RpgMutationReceipt {
   result      Json
   createdAt   DateTime   @default(now())
   profile     RpgProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  commerceRecord RpgCommerceRecord?
 
   @@unique([userId, requestId])
   @@index([userId, createdAt])
+  @@schema("limiar")
+}
+
+model RpgCommerceRecord {
+  userId String
+  requestId String
+  characterId String
+  operation String
+  catalogVersion Int @default(1)
+  cycle Int
+  instanceId String?
+  rareCreated Int @default(0)
+  goldGranted Int @default(0)
+  result Json
+  createdAt DateTime @default(now())
+  receipt RpgMutationReceipt @relation(fields: [userId, requestId], references: [userId, requestId], onDelete: Cascade)
+  character RpgCharacter @relation(fields: [userId, characterId], references: [userId, characterId], onDelete: Cascade)
+
+  @@id([userId, requestId])
+  @@index([userId, cycle, operation])
+  @@index([userId, createdAt, requestId])
+  @@index([userId, instanceId, createdAt])
   @@schema("limiar")
 }
 
