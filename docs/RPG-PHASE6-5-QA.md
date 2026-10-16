@@ -89,6 +89,18 @@ O setup reutilizável do ambiente usa Node 22, Chromium e PostgreSQL isolado; `i
 
 ## Entrega em PRs
 
-Ordem A → F → B → C → D → E → G. A migração precede consumidores por dependência. Cada PR contém um commit lógico e descreve seus arquivos/risco/validação; G reúne QA e correções encontradas durante integração. A revisão conjunta deve usar a comparação da branch consolidada com main. Links serão registrados após a criação; nenhum merge será executado.
+Ordem A → F → B → C → D → E → G. A migração precede consumidores por dependência. Cada etapa possui um commit lógico de implementação; G também recebe o registro final dos links. As descrições informam arquivos, risco e validação. G reúne QA e correções encontradas durante integração. Revisão conjunta: [comparação consolidada](https://github.com/devKire/survivor_game/compare/main...codex/rpg-phase6-5). Os sete PRs estão abertos; nenhum merge foi executado.
 
 O [manifesto de arquivos](qa/world/files.txt) lista as alterações de código, schema, testes e documentação em relação à main. Os checks acima foram executados na stack integrada, não repetidos isoladamente em cada commit intermediário. Artefatos históricos produzidos pelos testes foram restaurados; os resultados desta fase ficam em `docs/qa/world`.
+
+| PR | Escopo | Branch → base | Commit principal |
+| --- | --- | --- | --- |
+| [A — #38](https://github.com/devKire/survivor_game/pull/38) | Domínio, catálogo, protocolo WORLD e índice espacial | `codex/rpg-phase6-5-domain` → `main` | `f2a2be5` |
+| [F — #39](https://github.com/devKire/survivor_game/pull/39) | Schema aditivo, origem dos claims, checkpoints e testes de migração | `codex/rpg-phase6-5-compat` → `codex/rpg-phase6-5-domain` | `2aedd32` |
+| [B — #40](https://github.com/devKire/survivor_game/pull/40) | Autoridade, presença, movimento, transição e reconnect | `codex/rpg-phase6-5-server` → `codex/rpg-phase6-5-compat` | `080489b` |
+| [C — #41](https://github.com/devKire/survivor_game/pull/41) | Shell, HUD, minimapa, sprites e painéis persistentes | `codex/rpg-phase6-5-client` → `codex/rpg-phase6-5-server` | `2aec555` |
+| [D — #42](https://github.com/devKire/survivor_game/pull/42) | Serviços espaciais, gathering e descobertas compatíveis | `codex/rpg-phase6-5-zones` → `codex/rpg-phase6-5-client` | `6cd3282` |
+| [E — #43](https://github.com/devKire/survivor_game/pull/43) | Grupos/chat, PvE, provas duráveis e receipts de recompensa | `codex/rpg-phase6-5-social-pve` → `codex/rpg-phase6-5-zones` | `7ee7f08` |
+| [G — #44](https://github.com/devKire/survivor_game/pull/44) | Correções de integração, QA real, benchmarks e rollout | `codex/rpg-phase6-5` → `codex/rpg-phase6-5-social-pve` | `38f8138` |
+
+Após integrar uma etapa, o mantenedor deve revisar a base da próxima conforme sua estratégia de merge. As branches foram publicadas, preservando a ordem das dependências. As duas migrações continuam pendentes de implantação no ambiente de produção; o rollout permanece desligado.
