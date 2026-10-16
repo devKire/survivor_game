@@ -474,7 +474,7 @@ export class WorldGame {
           ? { x: row.dx, y: row.dy }
           : { x: player.x - old.x, y: player.y - old.y },
       );
-      this.renderer.player(player, this.elapsed);
+      this.renderer.player(player, this.elapsed, row.attackSequence);
       c.font = "12px monospace";
       c.textAlign = "center";
       c.fillStyle = "#e8dcc0";

@@ -2,6 +2,7 @@ import "dotenv/config";
 import { randomUUID } from "node:crypto";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { db } from "../src/server/db";
+import { createTeam, updateTeam, startTeam } from "../src/server/teams";
 import {
   openWorldVisit,
   checkpointWorldVisit,
@@ -9,7 +10,10 @@ import {
 } from "../src/server/rpg/world/presence";
 import { selectRpgCharacter } from "../src/server/rpg/mutations";
 import { withWorldServicePermit } from "../src/server/rpg/world/service-context";
-import { acquireRealtimeAuthority } from "../src/realtime/world/lease";
+import {
+  acquireRealtimeAuthority,
+  realtimeAuthorityUrl,
+} from "../src/realtime/world/lease";
 const users: string[] = [];
 describe.skipIf(process.env.RUN_DATABASE_TESTS !== "1")(
   "World presence PostgreSQL",
@@ -94,6 +98,38 @@ describe.skipIf(process.env.RUN_DATABASE_TESTS !== "1")(
         await db().rpgWorldVisit.count({ where: { activeUserId: userId } }),
       ).toBe(0);
     });
+    it("serializes a shared-world entry against a concurrent Survivor team start", async () => {
+      vi.stubEnv("RPG_ENABLED", "true");
+      vi.stubEnv("RPG_SHARED_WORLD_ENABLED", "true");
+      const userId = "activity_" + randomUUID();
+      users.push(userId);
+      await db().user.create({
+        data: { id: userId, name: "Eco", email: userId + "@example.test" },
+      });
+      const initial = await openWorldVisit(userId, randomUUID(), () => {});
+      await closeWorldVisit(userId, initial.visit.id);
+      const team = await createTeam(userId);
+      try {
+        await updateTeam(userId, { ready: true });
+        const outcomes = await Promise.allSettled([
+          startTeam(userId),
+          openWorldVisit(userId, randomUUID(), () => {}),
+        ]);
+        expect(outcomes.filter((r) => r.status === "fulfilled")).toHaveLength(
+          1,
+        );
+        const active = await db().rpgWorldVisit.count({
+          where: { activeUserId: userId },
+        });
+        const current = await db().team.findUniqueOrThrow({
+          where: { id: team.id },
+        });
+        expect(active + Number(current.status === "RUNNING")).toBe(1);
+      } finally {
+        await db().gameSession.deleteMany({ where: { teamId: team.id } });
+        await db().team.delete({ where: { id: team.id } });
+      }
+    });
     it("allows exactly one realtime authority and releases ownership safely", async () => {
       let lost = false;
       const release = await acquireRealtimeAuthority(() => {
@@ -113,3 +149,18 @@ describe.skipIf(process.env.RUN_DATABASE_TESTS !== "1")(
     });
   },
 );
+
+it("uses a direct Neon endpoint for authority locks and preserves TLS verification", () => {
+  const u = new URL(
+    realtimeAuthorityUrl(
+      "postgresql://name:development-only@ep-example-pooler.us-east-2.aws.neon.tech/db?sslmode=require",
+    ),
+  );
+  expect(u.hostname).toBe("ep-example.us-east-2.aws.neon.tech");
+  expect(u.pathname).toBe("/db");
+  expect(u.username).toBe("name");
+  expect(u.searchParams.get("sslmode")).toBe("verify-full");
+  expect(
+    new URL(realtimeAuthorityUrl("postgresql://localhost:5433/test")).hostname,
+  ).toBe("localhost");
+});

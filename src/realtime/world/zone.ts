@@ -202,6 +202,10 @@ export class WorldZone extends GameSimulation {
         this.run.time - a.lastInput < WORLD_INPUT_TIMEOUT &&
         Math.hypot(a.input.x, a.input.y) > 0.01,
       health: a.player.health,
+      attackSequence: a.player.weapons.reduce(
+        (sum, weapon) => sum + weapon.shots,
+        0,
+      ),
       maxHealth: a.player.maxHealth,
       connected: true,
     };

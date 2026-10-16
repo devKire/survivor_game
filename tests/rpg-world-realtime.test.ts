@@ -20,14 +20,14 @@ const users: string[] = [],
   sockets: WebSocket[] = [];
 let child: ChildProcess;
 const pause = (ms: number) => new Promise((r) => setTimeout(r, ms));
-async function until(f: () => boolean, ms = 15000) {
+async function until(f: () => boolean | Promise<boolean>, ms = 15000) {
   const end = Date.now() + ms;
-  while (!f()) {
+  while (!(await f())) {
     if (Date.now() > end) throw Error("World realtime timeout");
     await pause(25);
   }
 }
-async function peer(id: string) {
+async function peer(id: string, queueArenaDuringEntry = false) {
   const ws = new WebSocket("ws://127.0.0.1:3010", {
     origin: "http://localhost:3000",
   });
@@ -41,7 +41,22 @@ async function peer(id: string) {
   send({ type: "HELLO", ticket: issueTicket(id, id) });
   await until(() => messages.some((m) => m.type === "ACCOUNT"));
   send({ type: "WORLD_ENTER", protocol: 1 });
+  if (queueArenaDuringEntry)
+    send({ type: "ARENA_QUEUE", character: "nara", mode: "DUEL_CASUAL" });
   await until(() => messages.some((m) => m.type === "WORLD_SNAPSHOT"));
+  if (queueArenaDuringEntry) {
+    await until(() =>
+      messages.some(
+        (m) => m.type === "ERROR" && m.message.includes("Saia do mundo"),
+      ),
+    );
+    expect(
+      messages.some(
+        (m) =>
+          m.type === "ARENA_QUEUE_STATUS" || m.type === "ARENA_LOBBY_STATE",
+      ),
+    ).toBe(false);
+  }
   const heartbeat = setInterval(
     () => send({ type: "PING", at: Date.now() }),
     2000,
@@ -86,6 +101,24 @@ async function walk(p: Peer, x: number, y: number) {
   input(p);
   await pause(300);
 }
+async function boot() {
+  child = spawn(
+    process.execPath,
+    ["--conditions=react-server", "--import", "tsx", "src/realtime/server.ts"],
+    {
+      env: { ...process.env, REALTIME_PORT: "3010" },
+      stdio: ["ignore", "pipe", "pipe"],
+    },
+  );
+  let ready = false,
+    errors = "";
+  child.stdout?.on("data", (d) => {
+    if (String(d).includes("LIMIAR realtime")) ready = true;
+  });
+  child.stderr?.on("data", (d) => (errors += String(d)));
+  await until(() => ready || child.exitCode !== null);
+  expect(ready, errors).toBe(true);
+}
 describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
   "Shared world real websocket",
   () => {
@@ -103,27 +136,7 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
     it("shares a zone across six accounts without teams, transfers and reconnects without ghosts", async () => {
       vi.stubEnv("RPG_ENABLED", "true");
       vi.stubEnv("RPG_SHARED_WORLD_ENABLED", "true");
-      child = spawn(
-        process.execPath,
-        [
-          "--conditions=react-server",
-          "--import",
-          "tsx",
-          "src/realtime/server.ts",
-        ],
-        {
-          env: { ...process.env, REALTIME_PORT: "3010" },
-          stdio: ["ignore", "pipe", "pipe"],
-        },
-      );
-      let ready = false,
-        errors = "";
-      child.stdout?.on("data", (d) => {
-        if (String(d).includes("LIMIAR realtime")) ready = true;
-      });
-      child.stderr?.on("data", (d) => (errors += String(d)));
-      await until(() => ready || child.exitCode !== null);
-      expect(ready, errors).toBe(true);
+      await boot();
       const peers: Peer[] = [];
       for (let i = 0; i < 6; i++) {
         const id = "world_" + randomUUID();
@@ -142,7 +155,7 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
             },
           },
         });
-        peers.push(await peer(id));
+        peers.push(await peer(id, i === 0));
       }
       await until(() => peers.every((p) => p.snapshot().players.length === 6));
       expect(new Set(peers.map((p) => p.snapshot().instanceId)).size).toBe(1);
@@ -483,5 +496,95 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
         reconnect.messages.some((m) => m.type === "WORLD_LEFT"),
       );
     }, 150000);
+    it("recovers a real durable field kill after a process crash without duplicate rewards", async () => {
+      const userId = users[5],
+        p = await peer(userId);
+      await db().$executeRawUnsafe(
+        `CREATE FUNCTION limiar.world_qa_receipt_failure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'Injected field commit failure'; END $$`,
+      );
+      await db().$executeRawUnsafe(
+        `CREATE TRIGGER world_qa_receipt_failure BEFORE INSERT ON limiar."RpgWorldRewardReceipt" FOR EACH ROW EXECUTE FUNCTION limiar.world_qa_receipt_failure()`,
+      );
+      try {
+        await walk(p, 380, 620);
+        await walk(p, 380, 735);
+        p.send({
+          type: "WORLD_TRANSITION",
+          epoch: p.snapshot().epoch,
+          portalId: "refuge:exploration-portal",
+          requestId: randomUUID(),
+        });
+        await until(() => p.snapshot().zoneId === "ruins-outskirts");
+        const geometry = new WorldZone("ruins-outskirts", "navigation"),
+          obstacles = Array.from(
+            { length: 9 },
+            (_, i) =>
+              geometry.world.createChunk((i % 3) - 1, Math.floor(i / 3) - 1)
+                .structures,
+          ).flat();
+        for (const point of explorationPath(
+          own(p),
+          { x: 260, y: 160 },
+          obstacles,
+          15,
+        ))
+          await walk(p, point.x, point.y);
+        await until(
+          async () =>
+            !!(await db().rpgWorldRewardEvent.findFirst({
+              where: { status: "PENDING" },
+            })),
+          30000,
+        );
+        const pending = await db().rpgWorldRewardEvent.findFirstOrThrow({
+          where: { status: "PENDING" },
+        });
+        expect(
+          await db().rpgWorldRewardReceipt.count({
+            where: { eventId: pending.id },
+          }),
+        ).toBe(0);
+        expect(await db().rpgItemInstance.count({ where: { userId } })).toBe(0);
+        child.kill("SIGKILL");
+        await once(child, "exit");
+        await db().$executeRawUnsafe(
+          'DROP TRIGGER world_qa_receipt_failure ON limiar."RpgWorldRewardReceipt"',
+        );
+        await db().$executeRawUnsafe(
+          "DROP FUNCTION limiar.world_qa_receipt_failure()",
+        );
+        await boot();
+        const reconnected = await peer(userId);
+        expect(reconnected.snapshot().zoneId).toBe("ruins-outskirts");
+        expect(reconnected.snapshot().epoch).not.toBe(p.snapshot().epoch);
+        const receipt = await db().rpgWorldRewardReceipt.findUniqueOrThrow({
+          where: { eventId_userId: { eventId: pending.id, userId } },
+        });
+        expect(receipt.xpGranted).toBe(3);
+        const inventory = await db().rpgItemInstance.findMany({
+          where: { userId },
+        });
+        expect(inventory).toHaveLength(1);
+        await settleWorldFieldEvent(pending.id);
+        expect(
+          await db().rpgItemInstance.findMany({ where: { userId } }),
+        ).toEqual(inventory);
+        reconnected.send({
+          type: "WORLD_LEAVE",
+          epoch: reconnected.snapshot().epoch,
+        });
+        await until(() =>
+          reconnected.messages.some((m) => m.type === "WORLD_LEFT"),
+        );
+        geometry.dispose();
+      } finally {
+        await db().$executeRawUnsafe(
+          'DROP TRIGGER IF EXISTS world_qa_receipt_failure ON limiar."RpgWorldRewardReceipt"',
+        );
+        await db().$executeRawUnsafe(
+          "DROP FUNCTION IF EXISTS limiar.world_qa_receipt_failure()",
+        );
+      }
+    }, 90000);
   },
 );

@@ -41,6 +41,7 @@ export interface WorldPublicPlayer extends Vec {
   dx: number;
   dy: number;
   moving: boolean;
+  attackSequence?: number;
   health: number;
   maxHealth: number;
   connected: boolean;

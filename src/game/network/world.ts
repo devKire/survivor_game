@@ -95,6 +95,7 @@ const player = z.object({
   dx: number,
   dy: number,
   moving: z.boolean(),
+  attackSequence: z.number().int().nonnegative().optional(),
   health: number,
   maxHealth: number,
   connected: z.boolean(),
