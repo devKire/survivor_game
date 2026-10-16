@@ -45,6 +45,7 @@ import {
   hasWorldServicePermit,
 } from "../world/service-context";
 import { recordCraftingMetric } from "./metrics";
+import { craftingAccountContext } from "./context";
 validateCraftingCatalog();
 export function publicCraftingItem(item: RpgEquipment) {
   return publicForgeItem.parse({
@@ -74,7 +75,14 @@ export async function mutateCrafting(
   requireRpgCraftingEnabled();
   if (!hasWorldServicePermit())
     throw new UserError("Utilize a estação dentro do mundo.");
-  const command = craftingCommandSchema.parse(input),
+  const parsed = craftingCommandSchema.safeParse(input);
+  if (!parsed.success) {
+    recordCraftingMetric("invalid-intent", "COMMAND");
+    throw new UserError(
+      "Pedido de estação inválido. Atualize os dados e tente novamente.",
+    );
+  }
+  const command = parsed.data,
     operation = command.operation;
   const payloadHash = createHash("sha256")
     .update(JSON.stringify(command))
@@ -84,9 +92,12 @@ export async function mutateCrafting(
     now = new Date(),
     cycle = Math.floor(now.getTime() / 86400000);
   const started = performance.now();
+  let attempts = 0;
   recordCraftingMetric("started", operation);
   try {
     const outcome = await rpgTransaction(async (tx) => {
+      if (++attempts > 1)
+        recordCraftingMetric("serialization-retry", operation);
       requireRpgCraftingEnabled();
       const save = await lockRpgAccount(tx, userId);
       const visit = await assertActiveWorldServicePermit(tx, userId);
@@ -117,15 +128,7 @@ export async function mutateCrafting(
         !canAccessRpgCharacter(character.characterId, save.unlocked)
       )
         throw new UserError("Personagem indisponível para esta operação.");
-      const flags = await tx.rpgStoryFlag.findMany({
-        where: { userId },
-        select: { flagId: true },
-      });
-      const account = {
-        characterId: character.characterId as "nara" | "orin" | "ivo" | "sena",
-        level: character.level,
-        flags: new Set(flags.map((f) => f.flagId)),
-      };
+      const account = await craftingAccountContext(tx, userId, character);
       const usage = await tx.rpgCommerceRecord.groupBy({
         by: ["operation"],
         where: { userId, cycle },

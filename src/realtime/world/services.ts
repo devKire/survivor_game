@@ -61,7 +61,14 @@ export function authorizeWorldService(
     requireRpgCraftingEnabled();
     let station: string;
     if (isCraftingOperation(operation)) {
-      const command = craftingCommandSchema.parse(args);
+      const parsed = craftingCommandSchema.safeParse(args);
+      if (!parsed.success) {
+        recordCraftingMetric("invalid-intent", operation);
+        throw new UserError(
+          "Pedido de estação inválido. Atualize os dados e tente novamente.",
+        );
+      }
+      const command = parsed.data;
       if (command.operation !== operation)
         throw new UserError("Operação de estação inválida.");
       station = craftingStation(command.operation);

@@ -28,6 +28,7 @@ import {
 import { rpgEquipmentData } from "../equipment";
 import { publicCraftingItem } from "./service";
 import { UserError } from "../../security";
+import { craftingAccountContext } from "./context";
 export const craftingStationSchema = z.enum([
   "refuge:forge",
   "refuge:refinery",
@@ -59,10 +60,6 @@ export async function craftingCatalog(userId: string, input: unknown) {
         },
       });
       const character = profile.activeCharacter!;
-      const flags = await tx.rpgStoryFlag.findMany({
-        where: { userId },
-        select: { flagId: true },
-      });
       const usage = await tx.rpgCommerceRecord.groupBy({
         by: ["operation"],
         where: { userId, cycle: Math.floor(Date.now() / 86400000) },
@@ -88,11 +85,7 @@ export async function craftingCatalog(userId: string, input: unknown) {
         CRAFTING_LIMITS.rareCrafts -
           usage.reduce((n, u) => n + (u._sum.rareCreated ?? 0), 0),
       );
-      const account = {
-        characterId: character.characterId as "nara" | "orin" | "ivo" | "sena",
-        level: character.level,
-        flags: new Set(flags.map((f) => f.flagId)),
-      };
+      const account = await craftingAccountContext(tx, userId, character);
       const recipes = CRAFTING_RECIPES.map((r) => {
         let reason = "";
         try {
