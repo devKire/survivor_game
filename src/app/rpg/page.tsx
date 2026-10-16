@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
+  isRpgSharedWorldEnabled,
   isRpgExplorationEnabled,
   isRpgEnabled,
   isRpgQuestsEnabled,
@@ -16,6 +17,7 @@ import { slotLabels } from "./presentation";
 export const dynamic = "force-dynamic";
 export default async function Page() {
   if (!isRpgEnabled()) notFound();
+  if (isRpgSharedWorldEnabled()) redirect("/rpg/world");
   const user = await requirePageUser("/rpg");
   const profile = await rpgProfileData(user.id);
   const active = profile.characters.find(

@@ -1,0 +1,319 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  background: #081318;
+  color: #e9e0c8;
+  font-family: Georgia, serif;
+}
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+  touch-action: none;
+}
+.root button,
+.root select,
+.root input {
+  font: inherit;
+  color: inherit;
+  background: #152925;
+  border: 1px solid #897e55;
+  border-radius: 2px;
+  min-height: 40px;
+  padding: 6px 12px;
+}
+.root button:hover {
+  background: #28423b;
+}
+.root button:focus-visible,
+.root input:focus-visible {
+  outline: 2px solid #e7cc79;
+}
+.character,
+.map,
+.quest,
+.hotbar,
+.notification,
+.chat,
+.connection,
+.gathering {
+  position: absolute;
+  background: #0a1b1ae8;
+  border: 1px solid #746e4c;
+  padding: 10px;
+  box-shadow: 0 2px 6px #0008;
+}
+.character {
+  left: 14px;
+  top: 14px;
+  width: 235px;
+  display: grid;
+  gap: 4px;
+}
+.character span,
+.character label,
+.map small,
+.quest small {
+  font: 12px monospace;
+  display: block;
+}
+.character label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.character progress {
+  width: 120px;
+  height: 9px;
+  accent-color: #a17d63;
+}
+.map {
+  right: 14px;
+  top: 14px;
+  text-align: center;
+  display: grid;
+  gap: 4px;
+}
+.map button {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+.map strong {
+  font-size: 14px;
+}
+.quest {
+  left: 14px;
+  top: 145px;
+  max-width: 260px;
+}
+.quest button {
+  border: 0;
+  padding: 0;
+  background: none;
+  font-size: 14px;
+  min-height: 28px;
+}
+.hotbar {
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  padding: 7px;
+}
+.hotbar button {
+  font-size: 13px;
+  min-height: 44px;
+}
+.interact {
+  position: absolute;
+  bottom: 86px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 80%;
+}
+.notification {
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  max-width: 34%;
+  font: 13px monospace;
+  pointer-events: none;
+}
+.notification:empty {
+  display: none;
+}
+.chat {
+  right: 14px;
+  bottom: 90px;
+  max-width: 350px;
+  padding: 5px;
+}
+.chat [role="log"] {
+  height: 150px;
+  overflow: auto;
+  font-size: 13px;
+}
+.chat p {
+  margin: 5px;
+}
+.chat form {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.chat input {
+  width: 150px;
+}
+.chat select {
+  max-width: 100px;
+}
+.connection {
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  gap: 10px;
+  text-align: center;
+}
+.connection a {
+  color: #b2d8ca;
+}
+.dialog {
+  width: min(760px, 92vw);
+  max-height: 80dvh;
+  overflow: auto;
+  background: #112421;
+  color: #e9e0c8;
+  border: 2px solid #a89762;
+  box-shadow: 0 0 0 4px #182923;
+  padding: 18px;
+}
+.dialog::backdrop {
+  background: #02090970;
+}
+.dialog header {
+  position: sticky;
+  top: -18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #112421;
+  border-bottom: 1px solid #746e4c;
+  z-index: 2;
+  padding: 10px 0;
+}
+.dialog h2 {
+  margin: 0;
+  font-size: 22px;
+}
+.dialog :global(.rpg-page) {
+  padding: 0;
+  max-width: none;
+}
+.dialog :global(.cards) {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.joystick {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  width: 94px;
+  height: 94px;
+  border: 2px solid #9ba78c;
+  border-radius: 50%;
+  background: #102b2677;
+  touch-action: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.joystick span {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #a5c5b17a;
+}
+.gathering {
+  left: 50%;
+  bottom: 140px;
+  transform: translateX(-50%);
+}
+.gathering progress {
+  width: 200px;
+  accent-color: #a8c8a1;
+}
+@media (pointer: coarse) {
+  .joystick {
+    display: flex;
+  }
+  .hotbar {
+    bottom: 10px;
+    left: auto;
+    right: 10px;
+    transform: none;
+    max-width: calc(100% - 140px);
+    flex-wrap: wrap;
+  }
+  .hotbar button {
+    font-size: 11px;
+    padding: 5px 8px;
+    min-height: 42px;
+  }
+  .interact {
+    bottom: 116px;
+    left: auto;
+    right: 12px;
+    transform: none;
+    max-width: 60%;
+    min-height: 48px !important;
+  }
+  .chat {
+    bottom: 172px;
+    right: 10px;
+  }
+  .character {
+    width: 190px;
+    padding: 6px;
+    left: 8px;
+    top: 8px;
+  }
+  .character progress {
+    width: 80px;
+  }
+  .map {
+    right: 8px;
+    top: 8px;
+    padding: 4px;
+    max-width: 140px;
+  }
+  .map svg {
+    width: 95px;
+    height: 75px;
+  }
+  .map small {
+    font-size: 9px;
+  }
+  .map strong {
+    font-size: 11px;
+  }
+  .quest {
+    top: 130px;
+    left: 8px;
+    max-width: 190px;
+    padding: 6px;
+  }
+  .notification {
+    top: 230px;
+    max-width: 80%;
+    width: max-content;
+  }
+  .dialog {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 14px;
+    border: 1px solid #a89762;
+  }
+  .dialog header {
+    top: -14px;
+  }
+  .chat input {
+    width: 130px;
+  }
+  .gathering {
+    bottom: 175px;
+    left: 10px;
+    transform: none;
+    padding: 6px;
+  }
+  .gathering progress {
+    width: 100px;
+  }
+}
