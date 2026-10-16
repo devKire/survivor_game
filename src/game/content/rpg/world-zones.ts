@@ -1,4 +1,4 @@
-import { REFUGE } from "./refuge";
+import { WORLD_REFUGE as REFUGE } from "./world-refuge";
 import type {
   WorldZoneDefinition,
   WorldZoneId,
@@ -7,7 +7,7 @@ import type {
 export const WORLD_ZONES: Readonly<Record<WorldZoneId, WorldZoneDefinition>> = {
   "obelisk-refuge": {
     id: "obelisk-refuge",
-    version: 1,
+    version: 2,
     name: "O Refúgio",
     safe: true,
     bounds: {

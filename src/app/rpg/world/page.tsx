@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import {
   isRpgSharedWorldEnabled,
   isRpgQuestsEnabled,
+  isRpgCraftingEnabled,
 } from "../../../server/env";
 import { requirePageUser } from "../../../server/hub";
 import { rpgProfileData } from "../../../server/rpg/profile";
@@ -35,6 +36,7 @@ export default async function Page() {
   );
   return (
     <WorldClient
+      craftingEnabled={isRpgCraftingEnabled()}
       initialJournal={journal}
       panels={{
         CHARACTER: <CharacterPanel profile={profile} embedded />,

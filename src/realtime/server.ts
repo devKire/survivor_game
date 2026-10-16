@@ -121,7 +121,7 @@ const server = createServer((req, res) => {
         rooms: rooms.size,
         connections: connections.size,
         tickRate: TICK_HZ,
-        build: process.env.REALTIME_BUILD_ID?.slice(0,80) || "limiar-phase6.5-v1",
+        build: process.env.REALTIME_BUILD_ID?.slice(0,80) || "limiar-phase7-v2",
         sharedWorld: world.diagnostics(),
         ...(realtimeDiagnostics.enabled ? { metrics: realtimeMetrics() } : {}),
       }),

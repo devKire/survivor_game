@@ -119,7 +119,7 @@ export async function craftingCatalog(userId: string, input: unknown) {
         try {
           const item = rpgEquipmentData(r);
           if (item.quantity !== 1) return [];
-          let reason =
+          const reason =
             r.equippedCharacterId || r.equippedSlot
               ? "Desequipe o item antes de usar este serviço."
               : "";

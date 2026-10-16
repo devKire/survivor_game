@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { WORLD_PROTOCOL } from "../src/game/core/rpg/world/types";
 import { randomUUID } from "node:crypto";
 import { spawn, type ChildProcess } from "node:child_process";
 import { once } from "node:events";
@@ -123,7 +124,9 @@ describe.skipIf(process.env.RUN_REALTIME_TESTS !== "1")(
         ws.send(JSON.stringify({ type: "HELLO", ticket: issueTicket(id, id) }));
         await until(() => account);
         entered = performance.now();
-        ws.send(JSON.stringify({ type: "WORLD_ENTER", protocol: 1 }));
+        ws.send(
+          JSON.stringify({ type: "WORLD_ENTER", protocol: WORLD_PROTOCOL }),
+        );
         const heartbeat = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN)
             ws.send(JSON.stringify({ type: "PING", at: Date.now() }));

@@ -1,6 +1,6 @@
 "use client";
 import { WORLD_ZONES } from "../../../game/content/rpg/world-zones";
-import { REFUGE } from "../../../game/content/rpg/refuge";
+import { WORLD_REFUGE as REFUGE } from "../../../game/content/rpg/world-refuge";
 import type { WorldSnapshot } from "../../../game/network/world";
 import type { ExplorationNode } from "../../../game/core/rpg/exploration/types";
 export default function WorldMap({
