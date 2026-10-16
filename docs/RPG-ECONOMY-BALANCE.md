@@ -1,0 +1,17 @@
+# Balanceamento proposto v1 — Forja dos Ecos
+
+As seis receitas usam as quantidades propostas no pedido da Fase 7 e as raridades-base do catálogo existente. Lâmina Gasta/Manto de Cinzas são COMMON; Talismã e variantes nível 5 são RARE. Nenhum novo material, equipamento, moeda ou aumento de modificador-base.
+
+[Simulação reproduzível](../scripts/simulate-rpg-economy.ts), [dados medidos da geração](qa/crafting/economy-simulation.json). Executar com Node 22: `node --conditions=react-server --import tsx scripts/simulate-rpg-economy.ts`. Consulta a geração canônica das Ruínas, sem banco, sem grants, sem modificar a geometria.
+
+O cenário diário distribui dezoito claims em seis por recurso, respeitando os nós realmente gerados. Exige outra visita para ultrapassar doze claims. Isso oferece até doze minérios, doze fibras e seis pós de gathering, mais 3/10/20 pós em cenários com esse número de mortes elegíveis de campo. É uma hipótese de atividade, não promessa de aquisição automática. Uma primeira fabricação de manto exige três claims (um mineral e dois vegetais), independentemente de XP/quest/loja; no mínimo 4,2 segundos de interação, além de deslocamento e riscos do combate, que não foram estimados como tempo de jogo.
+
+O primeiro raro, Talismã, precisa de duas coletas vegetais e três pós; fontes de campo também fornecem pó. Há no máximo dois crafts raros/dia e duas promoções/dia. A promoção RARE→EPIC exige nível 20 e dois fragmentos, impedindo que materiais comuns produzam épicos ilimitadamente. LEGENDARY não é fabricável/promovível. Reforjar substitui affixes por custo, sem garantir melhora nem mudar a raridade.
+
+Fragmentos são raros: duas recompensas narrativas únicas e uma entrada ponderada na tabela boss-v1. No catálogo atual, seis equipamentos com peso dez mais pó/fragmento com peso vinte cada totalizam cem; um boss roll tem 20% de fragmento, média 1,5 unidades quando sorteado. Expectativa 0,3/boss, sem garantia por run, antes de elegibilidade e caps. Não há conversão repetível para fragmento. Receitas avançadas exigem a flag material-samples-delivered; escolhas exclusivas não impedem esse caminho.
+
+GOLD compartilhado é preservado pelo ledger. Lâmina custa 12 e revende por 1; manto custa 10 e revende por 1. Há alternativa de escambo de manto por dois minérios/seis fibras (mais caro que a fabricação), útil sem saldo prévio. Material não é vendido nessa loja; não existe aresta GOLD→material→craft→GOLD lucrativa. Refinamento destrói valor relativo: 6 minérios + 4 fibras → 1 pó, cap três/dia. As valorações internas para análise não são taxa de câmbio.
+
+Venda cria GOLD apenas ao consumir uma instância válida. Cota de três vendas e cinco GOLD/dia limita essa nova fonte, compartilhada por personagens. Ainda altera a oferta global de GOLD; acompanhar em staging antes do rollout. Compra por GOLD requer duas a seis conclusões Survivor dependendo da duração, ou saldo legítimo prévio; não compra equipamento raro/poder PvP. GEMS é completamente excluída deste catálogo.
+
+Cap de criação na forja/comerciante: 200 instâncias existentes na conta; não impede retirada/venda/uso de inventários históricos maiores, não impõe esse cap aos loots anteriores. Batch é uma unidade, sem quantidade livre do cliente. Todos os limites do catálogo terão enforcement transacional e histórico imutável, com testes de concorrência; rate limit de socket permanece apenas proteção adicional.
