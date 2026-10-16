@@ -116,6 +116,6 @@ O [manifesto](qa/crafting/files.txt) lista arquivos relativos à main. Descriç�
 | [C #48](https://github.com/devKire/survivor_game/pull/48), serviços | codex/rpg-phase7-services → codex/rpg-phase7-persistence | 153f6c2 |
 | [D #49](https://github.com/devKire/survivor_game/pull/49), mundo/UI | codex/rpg-phase7-world-ui → codex/rpg-phase7-services | e0b1f66 |
 | [E #50](https://github.com/devKire/survivor_game/pull/50), narrativa/segurança | codex/rpg-phase7-integration → codex/rpg-phase7-world-ui | d71393d |
-| F, QA/rollout | codex/rpg-phase7 → codex/rpg-phase7-integration | aa5f85a (Season), QA a registrar |
+| [F #51](https://github.com/devKire/survivor_game/pull/51), QA/rollout | codex/rpg-phase7 → codex/rpg-phase7-integration | 63bf2e5 (QA), aa5f85a (Season) |
 
-Nenhuma implantação de produção foi realizada. A Fase 8 permanece fora desta entrega.
+As seis branches foram publicadas e os seis PRs estão abertos para revisão. [Comparação consolidada](https://github.com/devKire/survivor_game/compare/main...codex/rpg-phase7). Nenhuma implantação de produção foi realizada. A Fase 8 permanece fora desta entrega.
