@@ -1,6 +1,11 @@
 import "server-only";
 import { isRpgEnabled, isRpgExpeditionsEnabled, isRpgRefugeEnabled, isRpgExplorationEnabled, isRpgQuestsEnabled, isRpgSharedWorldEnabled } from "../env";
 import { UserError } from "../security";
+import { isRpgCraftingEnabled } from "../env";
+
+export function requireRpgCraftingEnabled() {
+  if (!isRpgCraftingEnabled()) throw new UserError("Forja e comércio indisponíveis.");
+}
 
 export function requireRpgEnabled() {
   if (!isRpgEnabled()) throw new UserError("RPG indisponível.");

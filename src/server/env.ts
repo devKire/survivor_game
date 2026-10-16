@@ -110,3 +110,7 @@ export function isRpgQuestsEnabled() {
 export function isRpgSharedWorldEnabled() {
   return isRpgEnabled() && process.env.RPG_SHARED_WORLD_ENABLED?.trim().toLowerCase() === "true";
 }
+
+export function isRpgCraftingEnabled() {
+  return isRpgSharedWorldEnabled() && process.env.RPG_CRAFTING_ENABLED?.trim().toLowerCase() === "true";
+}
