@@ -1,4 +1,5 @@
 "use client";
+import { useWorldTransport } from "../world/WorldActionContext";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -26,10 +27,17 @@ export default function EquipmentForm({
   expectedEquippedItemId?: string;
   disabled?: boolean;
 }) {
-  const [state, action, pending] = useActionState(mutateRpgEquipmentAction, {
-    status: "idle",
-    message: "",
-  } as RpgActionState);
+  const world = useWorldTransport();
+  const [state, action, pending] = useActionState(
+    world
+      ? async (_previous: RpgActionState, form: FormData) =>
+          world.form("EQUIPMENT", form)
+      : mutateRpgEquipmentAction,
+    {
+      status: "idle",
+      message: "",
+    } as RpgActionState,
+  );
   const router = useRouter();
   const label =
     operation === "UNEQUIP_ITEM"

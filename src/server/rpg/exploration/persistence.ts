@@ -1,12 +1,9 @@
+import { applyGatheringClaim, applyDiscoveryProof } from "./claim";
 import "server-only";
 import { assertCanonicalExplorationNode } from "./geometry";
 import type { Prisma } from "../../../generated/prisma/client";
-import {
-  gatheringIntent,
-  gatheringQuantity,
-} from "../../../game/core/rpg/exploration/gathering";
+import { gatheringIntent } from "../../../game/core/rpg/exploration/gathering";
 import { explorationRegion } from "../../../game/content/rpg/exploration-regions";
-import { explorationResource } from "../../../game/content/rpg/exploration-resources";
 import type { ExplorationNode } from "../../../game/core/rpg/exploration/types";
 import { requireRpgExplorationEnabled } from "../guard";
 import { lockRpgAccount, rpgTransaction } from "../transaction";
@@ -53,115 +50,33 @@ export async function persistGathering(evidence: GatheringEvidence) {
     requireRpgExplorationEnabled();
     const s = await lockSession(tx, sessionId);
     await lockRpgAccount(tx, userId);
-    const prior = await tx.rpgResourceClaim.findUnique({
-      where: { userId_requestId: { userId, requestId: intent.requestId } },
-    });
-    if (prior) {
-      if (prior.payloadHash !== payloadHash)
-        throw new UserError("Pedido já utilizado com outra intenção.");
-      return claimResult(prior);
-    }
-    const participant = await tx.rpgExplorationParticipant.findUnique({
-      where: { sessionId_userId: { sessionId, userId } },
-    });
-    if (
-      s.status !== "RUNNING" ||
-      s.session.status !== "RUNNING" ||
-      !participant?.activeUserId ||
-      Date.now() - s.createdAt.getTime() > 900000
-    )
-      throw new UserError("Exploração encerrada.");
-    const region = explorationRegion(s.regionId, s.regionVersion);
-    if (node.regionId !== region.id || node.version !== region.version)
-      throw new UserError("Região inválida.");
-    evidence.assertLive();
-    const existing = await tx.rpgResourceClaim.findUnique({
-      where: {
-        userId_regionId_regionVersion_nodeId_cycle: {
-          userId,
-          regionId: region.id,
-          regionVersion: region.version,
-          nodeId: node.id,
-          cycle,
-        },
+    return applyGatheringClaim(
+      tx,
+      userId,
+      node,
+      cycle,
+      intent,
+      { sessionId },
+      payloadHash,
+      async () => {
+        const participant = await tx.rpgExplorationParticipant.findUnique({
+          where: { sessionId_userId: { sessionId, userId } },
+        });
+        if (
+          s.status !== "RUNNING" ||
+          s.session.status !== "RUNNING" ||
+          !participant?.activeUserId ||
+          Date.now() - s.createdAt.getTime() > 900000
+        )
+          throw new UserError("Exploração encerrada.");
+        const region = explorationRegion(s.regionId, s.regionVersion);
+        if (node.regionId !== region.id || node.version !== region.version)
+          throw new UserError("Região inválida.");
+        evidence.assertLive();
       },
-    });
-    if (existing) return claimResult(existing);
-    const profile = await tx.rpgProfile.findUniqueOrThrow({
-      where: { userId },
-    });
-    if (profile.revision !== intent.expectedRevision)
-      throw new UserError(
-        "O perfil RPG mudou. Atualize a exploração e tente novamente.",
-      );
-    if (
-      (await tx.rpgResourceClaim.count({ where: { userId, cycle } })) >=
-        region.claimsPerCycle ||
-      (await tx.rpgResourceClaim.count({ where: { userId, sessionId } })) >=
-        region.claimsPerSession
-    )
-      throw new UserError(
-        "Limite de coletas atingido nesta sessão ou ciclo UTC.",
-      );
-    const definition = explorationResource(node.definitionId);
-    const balance = await tx.rpgMaterialBalance.findUnique({
-      where: {
-        userId_materialId: { userId, materialId: definition.materialId },
-      },
-    });
-    const quantity = gatheringQuantity(
-      definition.quantity,
-      balance?.amount ?? 0,
-    );
-    if (quantity) {
-      await tx.rpgMaterialBalance.upsert({
-        where: {
-          userId_materialId: { userId, materialId: definition.materialId },
-        },
-        create: { userId, materialId: definition.materialId, amount: quantity },
-        update: { amount: { increment: quantity } },
-      });
-      await tx.rpgProfile.update({
-        where: { userId },
-        data: { revision: { increment: 1 } },
-      });
-    }
-    evidence.assertLive();
-    return claimResult(
-      await tx.rpgResourceClaim.create({
-        data: {
-          sessionId,
-          userId,
-          regionId: region.id,
-          regionVersion: region.version,
-          nodeId: node.id,
-          cycle,
-          requestId: intent.requestId,
-          payloadHash,
-          materialId: definition.materialId,
-          quantity,
-          revision: profile.revision + Number(quantity > 0),
-        },
-      }),
+      evidence.assertLive,
     );
   });
-}
-function claimResult(row: {
-  id: string;
-  nodeId: string;
-  cycle: number;
-  materialId: string;
-  quantity: number;
-  revision: number;
-}) {
-  return {
-    claimId: row.id,
-    nodeId: row.nodeId,
-    cycle: row.cycle,
-    materialId: row.materialId,
-    quantity: row.quantity,
-    revision: row.revision,
-  };
 }
 export async function persistDiscovery(
   sessionId: string,
@@ -188,24 +103,7 @@ export async function persistDiscovery(
     )
       throw new UserError("Exploração encerrada.");
     assertLive();
-    const created = await tx.rpgDiscoveredPoi.createMany({
-      data: [
-        {
-          userId,
-          regionId: node.regionId,
-          regionVersion: node.version,
-          poiId: node.id,
-        },
-      ],
-      skipDuplicates: true,
-    });
-    if (created.count)
-      await tx.rpgProfile.update({
-        where: { userId },
-        data: { revision: { increment: 1 } },
-      });
-    assertLive();
-    return node.id;
+    return applyDiscoveryProof(tx, userId, node, assertLive);
   });
 }
 /** No reward on departure, timeout or recovery. Can run with rollout disabled. */

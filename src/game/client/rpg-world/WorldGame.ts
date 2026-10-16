@@ -3,6 +3,7 @@ import { World, type WorldHost } from "../../core/world";
 import type { Vec, Enemy } from "../../core/types";
 import { ENEMY_DEFINITIONS } from "../../content/catalog";
 import { EXPLORATION_RUINS } from "../../content/rpg/exploration-regions";
+import { explorationResource } from "../../content/rpg/exploration-resources";
 import { REFUGE } from "../../content/rpg/refuge";
 import { WORLD_ZONES } from "../../content/rpg/world-zones";
 import { moveInRefuge, refugeTarget } from "../../core/rpg/refuge/scene";
@@ -79,6 +80,11 @@ export class WorldGame {
   private target?: WorldTarget;
   private samples: number[] = [];
   private frames: number[] = [];
+  private metricsAt = 0;
+  private depleted = new Set<string>();
+  setResources(ids: readonly string[]) {
+    this.depleted = new Set(ids);
+  }
   constructor(
     private canvas: HTMLCanvasElement,
     private send: (v: WorldCommand) => void,
@@ -345,9 +351,18 @@ export class WorldGame {
               kind: refuge.visual === "npc" ? "NPC" : "SERVICE",
             }
           : resource
-            ? { id: resource.id, name: resource.definitionId, kind: "RESOURCE" }
+            ? {
+                id: resource.id,
+                name:
+                  explorationResource(resource.definitionId).name +
+                  (this.depleted.has(resource.id) ? " · coletado" : ""),
+                kind: "RESOURCE",
+              }
             : undefined;
-      if (target?.id !== this.target?.id) {
+      if (
+        target?.id !== this.target?.id ||
+        target?.name !== this.target?.name
+      ) {
         this.target = target;
         this.onTarget(target);
       }
@@ -356,15 +371,19 @@ export class WorldGame {
     this.draw(now);
     this.samples.push(performance.now() - started);
     if (this.samples.length > 240) this.samples.shift();
-    const p95 = (values: number[]) =>
-      [...values].sort((a, b) => a - b)[Math.floor(values.length * 0.95)] ?? 0;
-    Object.assign(this.canvas.dataset, {
-      x: this.context.player.x.toFixed(1),
-      y: this.context.player.y.toFixed(1),
-      renderP95: p95(this.samples).toFixed(3),
-      frameP95: p95(this.frames).toFixed(3),
-      playerIds: this.snapshot?.players.map((p) => p.id).join(",") ?? "",
-    });
+    if (now - this.metricsAt >= 250) {
+      this.metricsAt = now;
+      const p95 = (values: number[]) =>
+        [...values].sort((a, b) => a - b)[Math.floor(values.length * 0.95)] ??
+        0;
+      Object.assign(this.canvas.dataset, {
+        x: this.context.player.x.toFixed(1),
+        y: this.context.player.y.toFixed(1),
+        renderP95: p95(this.samples).toFixed(3),
+        frameP95: p95(this.frames).toFixed(3),
+        playerIds: this.snapshot?.players.map((p) => p.id).join(",") ?? "",
+      });
+    }
     this.frameId = requestAnimationFrame(this.frame);
   };
   private draw(now: number) {
@@ -411,7 +430,26 @@ export class WorldGame {
           this.renderer.structure(structure, this.elapsed);
       for (const node of this.nodes)
         if (this.renderer.visible(node.x, node.y)) {
-          c.strokeStyle = node.kind === "POI" ? "#d5b275" : "#90c4a5";
+          const used = this.depleted.has(node.id);
+          if (node.kind === "RESOURCE") {
+            const resource = explorationResource(node.definitionId);
+            this.refuge.tiles.drawProp(
+              c,
+              resolvePropAtlas(
+                resource.category === "MINERAL"
+                  ? "rocks"
+                  : resource.category === "CRYSTAL"
+                    ? "crystals"
+                    : "trees_living",
+              ),
+              0,
+              node.x,
+              node.y,
+              used ? 20 : 40,
+            );
+          }
+          c.strokeStyle =
+            node.kind === "POI" ? "#d5b275" : used ? "#687570" : "#90c4a5";
           c.lineWidth = 2;
           this.renderer.circle(node.x, node.y, 22);
           c.stroke();

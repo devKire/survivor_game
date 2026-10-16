@@ -1,18 +1,17 @@
 import { CoopSimulation } from "../../coop";
 import { CHUNK_SIZE } from "../../../content/catalog";
 import { EXPLORATION_RUINS as region } from "../../../content/rpg/exploration-regions";
-import { explorationResource } from "../../../content/rpg/exploration-resources";
 import { generateExploration, inDiscoveryRange } from "./generation";
-import { gatheringCycle, gatheringIntent } from "./gathering";
+import { gatheringIntent } from "./gathering";
 import type { ExplorationNode } from "./types";
-export interface ActiveGathering {
-  node: ExplorationNode;
-  intent: ReturnType<typeof gatheringIntent.parse>;
-  cycle: number;
-  startedAt: number;
-  elapsed: number;
-  pending: boolean;
-}
+import {
+  startGathering,
+  gatheringReady,
+  assertGathering,
+  advanceGathering,
+  type ActiveGathering,
+} from "./runtime";
+export type { ActiveGathering } from "./runtime";
 /** Movement/collision/input and party identity remain inherited. No waves or reward ledger. */
 export class ExplorationSimulation extends CoopSimulation {
   readonly levels = new Map<string, number>();
@@ -58,16 +57,14 @@ export class ExplorationSimulation extends CoopSimulation {
         b.minChunkY * CHUNK_SIZE + p.r,
         Math.min((b.maxChunkY + 1) * CHUNK_SIZE - p.r, p.y),
       );
-      const gather = this.gathering.get(m.id);
-      if (gather) {
-        if (
-          Math.hypot(p.x - gather.node.x, p.y - gather.node.y) >
-            gather.node.radius ||
-          Math.hypot(input.moveX, input.moveY) > 0.01
-        )
-          this.gathering.delete(m.id);
-        else gather.elapsed += dt * 1000;
-      }
+      const gather = advanceGathering(
+        this.gatheringActor(m.id),
+        { x: input.moveX, y: input.moveY },
+        this.gathering.get(m.id),
+        dt,
+      );
+      if (gather) this.gathering.set(m.id, gather);
+      else this.gathering.delete(m.id);
     }
     this.world.update();
     if (
@@ -79,6 +76,17 @@ export class ExplorationSimulation extends CoopSimulation {
       this.gathering.clear();
     }
   }
+  private gatheringActor(userId: string) {
+    const m = this.members.get(userId);
+    return m
+      ? {
+          x: m.player.x,
+          y: m.player.y,
+          available: !this.ended && m.connected && !this.departed.has(userId),
+          level: this.levels.get(userId)!,
+        }
+      : undefined;
+  }
   startGather(
     userId: string,
     raw: unknown,
@@ -86,56 +94,24 @@ export class ExplorationSimulation extends CoopSimulation {
     wall = Date.now(),
   ) {
     const intent = gatheringIntent.parse(raw),
-      m = this.members.get(userId);
-    const node = this.nodes.find(
-      (n) => n.id === intent.nodeId && n.kind === "RESOURCE",
+      node = this.nodes.find((n) => n.id === intent.nodeId);
+    this.gathering.set(
+      userId,
+      startGathering(
+        this.gatheringActor(userId),
+        node,
+        intent,
+        this.gathering.get(userId),
+        now,
+        wall,
+      ),
     );
-    if (
-      this.ended ||
-      !m?.connected ||
-      this.departed.has(userId) ||
-      !node ||
-      Math.hypot(m.player.x - node.x, m.player.y - node.y) > node.radius
-    )
-      throw new Error("Aproxime-se de um recurso disponível.");
-    const existing = this.gathering.get(userId);
-    if (existing) {
-      if (JSON.stringify(existing.intent) === JSON.stringify(intent)) return;
-      throw new Error("Uma coleta já está em andamento.");
-    }
-    const loadout = this.levels.get(userId)!;
-    if (loadout < explorationResource(node.definitionId).minimumLevel)
-      throw new Error("Nível insuficiente.");
-    this.gathering.set(userId, {
-      node,
-      intent,
-      cycle: gatheringCycle(wall),
-      startedAt: now,
-      elapsed: 0,
-      pending: false,
-    });
   }
   gatheringReady(userId: string, now = performance.now()) {
-    const g = this.gathering.get(userId);
-    if (!g || g.pending) return undefined;
-    const duration = explorationResource(g.node.definitionId).durationMs;
-    return g.elapsed >= duration && now - g.startedAt >= duration
-      ? g
-      : undefined;
+    return gatheringReady(this.gathering.get(userId), now);
   }
   assertGather(userId: string, g: ActiveGathering) {
-    const m = this.members.get(userId);
-    if (
-      this.ended ||
-      !m?.connected ||
-      this.departed.has(userId) ||
-      this.gathering.get(userId) !== g ||
-      g.elapsed < explorationResource(g.node.definitionId).durationMs ||
-      performance.now() - g.startedAt <
-        explorationResource(g.node.definitionId).durationMs ||
-      Math.hypot(m.player.x - g.node.x, m.player.y - g.node.y) > g.node.radius
-    )
-      throw new Error("Coleta cancelada.");
+    assertGathering(this.gatheringActor(userId), g, this.gathering.get(userId));
   }
   nearbyDiscoveries(userId: string) {
     const m = this.members.get(userId);

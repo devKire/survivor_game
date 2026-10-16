@@ -1,3 +1,9 @@
+import {
+  startGathering,
+  assertGathering,
+  advanceGathering,
+} from "../../game/core/rpg/exploration/runtime";
+import { gatheringIntent } from "../../game/core/rpg/exploration/gathering";
 import { GameSimulation } from "../../game/core/simulation";
 import { Player, Weapon } from "../../game/core/entities";
 import { freshSave } from "../../game/core/save";
@@ -34,6 +40,8 @@ export interface WorldAvatar {
   player: Player;
   loadout: RpgCombatLoadout;
   xp: number;
+  profileLevel: number;
+  refreshPending?: boolean;
   revision: number;
   sequence: number;
   input: Vec;
@@ -48,6 +56,7 @@ export interface WorldAvatar {
 }
 /** A region engine, not a run. Reuses collision, entities, weapons and combat primitives. */
 export class WorldZone extends GameSimulation {
+  readonly activityKind = "RPG_SHARED_WORLD";
   readonly definition;
   readonly instanceId: string;
   readonly avatars = new Map<string, WorldAvatar>();
@@ -86,6 +95,7 @@ export class WorldZone extends GameSimulation {
       | "discoveries"
       | "discoveryPending"
       | "cycle"
+      | "profileLevel"
     >,
   ): WorldAvatar {
     const player = new Player(data.loadout.characterId, {}, "PVE", {
@@ -100,6 +110,7 @@ export class WorldZone extends GameSimulation {
     Object.assign(player, this.definition.spawn);
     return {
       ...data,
+      profileLevel: data.loadout.level,
       player,
       input: { x: 0, y: 0 },
       sequence: 0,
@@ -140,12 +151,37 @@ export class WorldZone extends GameSimulation {
       avatar.gathering = undefined;
     return true;
   }
+  gatheringActor(a: WorldAvatar) {
+    return {
+      x: a.player.x,
+      y: a.player.y,
+      level: a.loadout.level,
+      available:
+        !this.definition.safe &&
+        !a.busy &&
+        a.player.health > 0 &&
+        this.avatars.get(a.userId) === a,
+    };
+  }
+  startGather(a: WorldAvatar, raw: unknown) {
+    const intent = gatheringIntent.parse(raw),
+      node = this.nodes.find((n) => n.id === intent.nodeId);
+    a.gathering = startGathering(
+      this.gatheringActor(a),
+      node,
+      intent,
+      a.gathering,
+    );
+  }
+  assertGather(a: WorldAvatar, g: ActiveGathering) {
+    assertGathering(this.gatheringActor(a), g, a.gathering);
+  }
   publicPlayer(a: WorldAvatar): WorldPublicPlayer {
     return {
       id: a.publicId,
       name: a.name,
       character: a.loadout.characterId,
-      level: a.loadout.level,
+      level: a.profileLevel,
       x: a.player.x,
       y: a.player.y,
       dx: a.player.dx,
@@ -158,6 +194,9 @@ export class WorldZone extends GameSimulation {
       maxHealth: a.player.maxHealth,
       connected: true,
     };
+  }
+  refreshPresence(a: WorldAvatar) {
+    this.index(a);
   }
   private index(a: WorldAvatar) {
     this.interest.upsert(this.publicPlayer(a));
@@ -209,18 +248,13 @@ export class WorldZone extends GameSimulation {
         a.player.dx = move.x;
         a.player.dy = move.y;
       }
-      if (a.gathering) {
-        if (
-          a.busy ||
-          a.player.health <= 0 ||
-          Math.hypot(
-            a.player.x - a.gathering.node.x,
-            a.player.y - a.gathering.node.y,
-          ) > a.gathering.node.radius
-        )
-          a.gathering = undefined;
-        else a.gathering.elapsed += dt * 1000;
-      }
+      a.gathering = advanceGathering(
+        this.gatheringActor(a),
+        move,
+        a.gathering,
+        dt,
+      );
+
       this.index(a);
     }
     if (!this.definition.safe) this.world.update();
@@ -240,7 +274,7 @@ export class WorldZone extends GameSimulation {
       players: this.interest.query(a.player),
       entities: [],
       self: {
-        level: a.loadout.level,
+        level: a.profileLevel,
         xp: a.xp,
         revision: a.revision,
         speed: this.definition.safe ? 190 : a.player.speed,

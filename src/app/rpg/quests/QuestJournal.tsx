@@ -1,4 +1,6 @@
 "use client";
+import { useWorldTransport } from "../world/WorldActionContext";
+import type { QuestMutationResult } from "../../../server/rpg/quests/types";
 import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
 import {
@@ -45,6 +47,7 @@ export default function QuestJournal({
   npcId?: string;
   onChange?: (journal: QuestJournalData) => void;
 }) {
+  const world = useWorldTransport();
   const [journal, setJournal] = useState(initial),
     [dialogue, setDialogue] = useState<DialogueView>(),
     [message, setMessage] = useState(""),
@@ -73,15 +76,27 @@ export default function QuestJournal({
     };
     start(async () => {
       try {
-        const result =
-          kind === "ACCEPT" || kind === "CLAIM"
-            ? await questCommand({ ...common, kind, questId: id })
-            : await dialogueCommand({
-                ...common,
-                kind,
-                npcId: id,
-                ...(kind === "CHOOSE" ? { choiceId } : {}),
-              });
+        const quest = kind === "ACCEPT" || kind === "CLAIM";
+        const intent = quest
+          ? { ...common, kind, questId: id }
+          : {
+              ...common,
+              kind,
+              npcId: id,
+              ...(kind === "CHOOSE" ? { choiceId } : {}),
+            };
+        const result = world
+          ? {
+              ok: true as const,
+              ...((await world.rpc(
+                quest ? "QUEST" : "DIALOGUE",
+                intent,
+              )) as QuestMutationResult),
+            }
+          : quest
+            ? await questCommand(intent)
+            : await dialogueCommand(intent);
+
         if (!result.ok) {
           setFailed(true);
           setMessage(result.error);
@@ -93,10 +108,12 @@ export default function QuestJournal({
         setMessage(result.message);
         setFailed(false);
         if (result.dialogue) setDialogue(result.dialogue);
-      } catch {
+      } catch (error) {
         setFailed(true);
         setMessage(
-          "Conexão interrompida. Repita a mesma ação para consultar sua confirmação.",
+          world && error instanceof Error
+            ? error.message
+            : "Conexão interrompida. Repita a mesma ação para consultar sua confirmação.",
         );
       }
     });
@@ -104,7 +121,16 @@ export default function QuestJournal({
   function refresh(cursor?: string) {
     start(async () => {
       try {
-        const result = await refreshQuestJournal(cursor ? { cursor } : {});
+        const result = world
+          ? {
+              ok: true as const,
+              journal: (await world.rpc(
+                "JOURNAL",
+                cursor ? { cursor } : {},
+              )) as QuestJournalData,
+              message: "Diário atualizado.",
+            }
+          : await refreshQuestJournal(cursor ? { cursor } : {});
         if (result.ok) {
           setJournal(result.journal);
           onChange?.(result.journal);
@@ -131,14 +157,16 @@ export default function QuestJournal({
         <button disabled={pending} onClick={() => refresh()}>
           Atualizar diário
         </button>
-        {npcId && <Link href="/rpg/quests">Abrir diário completo</Link>}
+        {npcId && !world && (
+          <Link href="/rpg/quests">Abrir diário completo</Link>
+        )}
       </nav>
       <p role={failed ? "alert" : "status"}>
         {pending ? "Confirmando…" : message}
       </p>
       <nav className="actions" aria-label="Conversas narrativas">
         {Object.entries(questNpcNames)
-          .filter(([id]) => !npcId || id === npcId)
+          .filter(([id]) => (!world || !!npcId) && (!npcId || id === npcId))
           .map(([id, name]) => (
             <button
               key={id}
