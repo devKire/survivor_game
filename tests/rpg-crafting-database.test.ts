@@ -8,6 +8,10 @@ import {
 } from "../src/server/rpg/world/presence";
 import { withWorldServicePermit } from "../src/server/rpg/world/service-context";
 import { mutateCrafting } from "../src/server/rpg/crafting/service";
+import {
+  craftingCatalog,
+  craftingHistory,
+} from "../src/server/rpg/crafting/catalog";
 import { rpgEquipmentData } from "../src/server/rpg/equipment";
 import { equipmentModifiers } from "../src/game/core/rpg/equipment";
 import {
@@ -387,6 +391,47 @@ describe.skipIf(process.env.RUN_DATABASE_TESTS !== "1")(
         () => {},
       );
       await expect(a.run(await command(a))).rejects.toThrow(/Refúgio/);
+    });
+    it("projects a consistent station catalog and owned history without private roll data", async () => {
+      const a = await account(),
+        b = await account();
+      const made = await a.run(await command(a)),
+        other = await b.run(await command(b));
+      const read = <T>(fn: () => Promise<T>) =>
+        withWorldServicePermit(
+          { userId: a.userId, visitId: a.entry.visit.id, assertLive: () => {} },
+          fn,
+        );
+      const catalog = await read(() =>
+        craftingCatalog(a.userId, { stationId: "refuge:forge" }),
+      );
+      expect(catalog.revision).toBe(made.revision);
+      expect(catalog.items[0].id).toBe(made.item!.id);
+      expect(
+        catalog.recipes.find((r) => r.outputItemId === "blade-echo")?.reason,
+      ).toMatch(/Nível/);
+      expect(catalog.remaining.CRAFT_ITEM).toBe(5);
+      const history = await read(() =>
+        craftingHistory(a.userId, { stationId: "refuge:forge" }),
+      );
+      expect(history.records).toEqual([made]);
+      expect(history.next).toBeNull();
+      expect(JSON.stringify({ catalog, history })).not.toMatch(
+        /rollSeed|userId|visitId|authorityId|payloadHash/,
+      );
+      await expect(
+        read(() =>
+          craftingHistory(a.userId, {
+            stationId: "refuge:forge",
+            cursor: other.requestId,
+          }),
+        ),
+      ).rejects.toThrow(/Histórico/);
+      await expect(
+        read(() =>
+          craftingCatalog(a.userId, { stationId: "refuge:forge", price: 0 }),
+        ),
+      ).rejects.toThrow();
     });
   },
 );

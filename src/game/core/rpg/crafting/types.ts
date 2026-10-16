@@ -88,6 +88,19 @@ export const craftingCommandSchema = z.discriminatedUnion("operation", [
 ]);
 export type CraftingCommand = z.infer<typeof craftingCommandSchema>;
 export type CraftingOperation = CraftingCommand["operation"];
+export const CRAFTING_OPERATIONS = [
+  "CRAFT_ITEM",
+  "REFINE_MATERIAL",
+  "UPGRADE_ITEM",
+  "REFORGE_ITEM",
+  "BUY_FROM_VENDOR",
+  "SELL_TO_VENDOR",
+] as const;
+export function isCraftingOperation(
+  operation: string,
+): operation is CraftingOperation {
+  return (CRAFTING_OPERATIONS as readonly string[]).includes(operation);
+}
 const material = z
   .object({
     materialId: z.enum(MATERIAL_IDS),
