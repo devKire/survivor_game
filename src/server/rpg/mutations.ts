@@ -1,3 +1,4 @@
+import { assertWorldMutationAllowed, recheckWorldServicePermit } from "./world/service-context";
 import "server-only";
 import { createHash } from "node:crypto";
 import { z } from "zod";
@@ -75,12 +76,14 @@ async function mutate(
     .digest("hex");
   return rpgTransaction(async (tx) => {
     const save = await lockRpgAccount(tx, userId);
+    await assertWorldMutationAllowed(tx,userId);
     const prior = await tx.rpgMutationReceipt.findUnique({
       where: { userId_requestId: { userId, requestId: value.requestId } },
     });
     if (prior) {
       if (prior.operation !== operation || prior.payloadHash !== payloadHash)
         throw new UserError("requestId já utilizado por outra mutação RPG.");
+      recheckWorldServicePermit();
       return resultSchema.parse(prior.result);
     }
     if (!canAccessRpgCharacter(value.characterId, save.unlocked))
@@ -148,6 +151,7 @@ async function mutate(
         result,
       },
     });
+    recheckWorldServicePermit();
     return result;
   });
 }

@@ -1,9 +1,11 @@
+import { worldCommands, worldMessages } from "./world";
 import { explorationNodeId } from "../core/rpg/exploration/gathering";
 import { arenaCommands, arenaMessages } from "./pvp";
 import { z } from "zod";
 import { saveSchema } from "../core/save";
 const id = z.string().min(1).max(100);
 export const clientMessage = z.discriminatedUnion("type", [
+  ...worldCommands,
   ...arenaCommands,
   z
     .object({
@@ -386,6 +388,7 @@ export const friendSchema = z.object({
   presence: z.string(),
 });
 export const serverMessage = z.union([
+  ...worldMessages,
   ...arenaMessages,
   z.object({
     type: z.literal("EXPLORATION_STATE"),

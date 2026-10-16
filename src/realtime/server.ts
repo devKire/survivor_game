@@ -1,3 +1,8 @@
+import { recoverWorldFieldRewards } from "../server/rpg/world/rewards";
+import { WorldCoordinator, type WorldConnection } from "./world/coordinator";
+import { acquireRealtimeAuthority } from "./world/lease";
+import { recoverWorldVisits } from "../server/rpg/world/presence";
+import { worldCommand } from "../game/network/world";
 import { ExplorationSimulation } from "../game/core/rpg/exploration/simulation";
 import {
   createAuthorizedExploration,
@@ -40,6 +45,7 @@ import {
   getRealtimeSecret,
 } from "../server/env";
 interface Connection {
+  world?: WorldConnection;
   ws: WebSocket;
   userId: string;
   sessionId: string;
@@ -70,6 +76,7 @@ interface Room {
   retryAfter?: number;
   endedAt?: number;
 }
+let shuttingDown = false;
 const connections = new Set<Connection>(),
   rooms = new Map<string, Room>(),
   nonces = new Map<string, number>(),
@@ -101,6 +108,7 @@ function realtimeMetrics() {
     snapshotP95: percentile(realtimeDiagnostics.snapshotDurations, 0.95),
   };
 }
+const world = new WorldCoordinator();
 const origin = getRealtimeOrigin();
 const port = getRealtimePort();
 getRealtimeSecret();
@@ -113,6 +121,8 @@ const server = createServer((req, res) => {
         rooms: rooms.size,
         connections: connections.size,
         tickRate: TICK_HZ,
+        build: process.env.REALTIME_BUILD_ID?.slice(0,80) || "limiar-phase6.5-v1",
+        sharedWorld: world.diagnostics(),
         ...(realtimeDiagnostics.enabled ? { metrics: realtimeMetrics() } : {}),
       }),
     );
@@ -234,6 +244,7 @@ async function hello(c: Connection, ticket: string) {
     where: { id: c.userId },
     data: { lastSeenAt: new Date() },
   });
+  c.world = { userId:c.userId, username:c.username, sessionId:c.sessionId, isOpen:()=>c.ws.readyState===WebSocket.OPEN, send:message=>send(c,message) };
   await sync(c);
   arena.reconnect(c.userId);
 }
@@ -297,6 +308,14 @@ wss.on("connection", (ws) => {
       return;
     }
     const room = c.room ? rooms.get(c.room) : undefined;
+    if (world.has(c.userId) && !v.type.startsWith("WORLD_") && !["SYNC","HELLO","RESYNC"].includes(v.type)) {
+      send(c,{type:"ERROR",message:"Saia do mundo antes de iniciar outra atividade."}); return;
+    }
+    if (v.type === "WORLD_INPUT") {
+      try { if(c.world) world.input(c.world,v); }
+      catch { send(c,{type:"ERROR",message:"Presença desatualizada. Reconecte."}); }
+      return;
+    }
     if (v.type === "ARENA_INPUT") {
       void arena.handle(c.userId, c.username, v);
       return;
@@ -310,6 +329,7 @@ wss.on("connection", (ws) => {
       return;
     }
     if (
+      v.type.startsWith("WORLD_") ||
       v.type.startsWith("GATHER_") ||
       v.type.startsWith("EXPLORATION_") ||
       v.type.startsWith("ARENA_") ||
@@ -346,6 +366,16 @@ wss.on("connection", (ws) => {
       return;
     }
     try {
+      // A preceding queued WORLD_ENTER may have completed since receipt of this command.
+      if (world.has(c.userId) && !v.type.startsWith("WORLD_") && !["SYNC", "HELLO", "RESYNC"].includes(v.type))
+        throw new UserError("Saia do mundo antes de iniciar outra atividade.");
+      if(v.type.startsWith("WORLD_")) {
+        if(!c.world)throw new UserError("Autenticação necessária.");
+        if(v.type==="WORLD_ENTER" && (c.room || arena.active.has(c.userId) || arena.queue.has(c.userId)))
+          throw new UserError("Encerre a atividade atual antes de entrar no mundo.");
+        await world.serialized(c.userId,()=>world.handle(c.world!,worldCommand.parse(v)));
+        return;
+      }
       if (v.type === "HELLO") {
         if (c.userId) throw new UserError("Conexão já autenticada.");
         await hello(c, v.ticket);
@@ -504,7 +534,9 @@ wss.on("connection", (ws) => {
       if (v.type === "INTERACT")
         room?.game.interactOnline(c.userId, v.structure, v.accept);
     } catch (e) {
-      send(c, {
+      if(v.type.startsWith("WORLD_") && "requestId" in v) {
+        send(c,{type:"WORLD_RESULT",requestId:v.requestId,ok:false,message:e instanceof UserError?e.message:"Não foi possível confirmar. Repita o mesmo pedido."});
+      } else send(c, {
         type: "ERROR",
         message:
           e instanceof UserError
@@ -519,6 +551,8 @@ wss.on("connection", (ws) => {
   ws.on("close", () => {
     clearTimeout(authTimer);
     connections.delete(c);
+    if(shuttingDown)return;
+    if(c.world)void world.serialized(c.userId,()=>world.leave(c.world!)).catch(()=>{});
     if (c.userId && !online(c.userId).length) {
       arena.disconnect(c.userId);
       if (c.room) rooms.get(c.room)?.game.disconnect(c.userId);
@@ -575,6 +609,7 @@ const interval = setInterval(() => {
     Math.abs(now - previous - 1000 / TICK_HZ),
   );
   previous = now;
+  world.step(elapsed);
   for (const room of rooms.values()) {
     room.accumulator += elapsed;
     while (room.accumulator >= 1 / TICK_HZ && !room.game.ended) {
@@ -683,6 +718,7 @@ const maintenance = setInterval(async () => {
           c.ws.close(4401, "Sessão expirada.");
       }
     }
+    await world.maintenance();
     await recoverRpgRewards((sessionId) =>
       console.error("RPG reward recovery pending", sessionId),
     );
@@ -693,6 +729,13 @@ const maintenance = setInterval(async () => {
     maintaining = false;
   }
 }, 10000);
+const releaseAuthority = await acquireRealtimeAuthority(()=>{
+  console.error("Realtime authority connection lost; shutting down.");
+  for(const c of connections)c.ws.terminate();
+  process.exit(1);
+});
+await recoverWorldVisits();
+await recoverWorldFieldRewards();
 await interruptLostExplorations();
 await interruptLostRpgExpeditions();
 await db().gameSession.updateMany({
@@ -714,17 +757,19 @@ server.listen(port, "0.0.0.0", () =>
   console.log(`LIMIAR realtime · ${TICK_HZ} Hz · snapshots ${SNAPSHOT_HZ} Hz`),
 );
 function close() {
-  clearInterval(arenaTimer);
-  clearInterval(arenaQueueTimer);
-  clearInterval(interval);
-  clearInterval(maintenance);
-  for (const c of connections) c.ws.close(1012, "Servidor reiniciando.");
-  wss.close();
-  server.close();
-  void db().$disconnect();
+  if(shuttingDown)return;
+  shuttingDown=true;
+  clearInterval(arenaTimer);clearInterval(arenaQueueTimer);clearInterval(interval);clearInterval(maintenance);
+  const peers=[...connections];
+  const cleanup=Promise.allSettled(peers.filter(c=>c.world).map(c=>world.serialized(c.userId,()=>world.leave(c.world!))));
+  for(const c of peers)c.ws.close(1012,"Servidor reiniciando.");
+  const deadline=setTimeout(()=>{for(const c of peers)c.ws.terminate();},1500);deadline.unref();
+  wss.close();server.close();
+  void cleanup.finally(async()=>{await releaseAuthority();await db().$disconnect();});
 }
+
 process.on("SIGTERM", close);
 process.on("SIGINT", close);
 
 // Test harnesses can inspect the authority in-process; never exposed over HTTP/WS.
-export { rooms, realtimeDiagnostics };
+export { rooms, realtimeDiagnostics, world };

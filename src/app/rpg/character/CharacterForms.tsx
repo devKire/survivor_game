@@ -1,4 +1,5 @@
 "use client";
+import { useWorldTransport } from "../world/WorldActionContext";
 
 import { useActionState, useId, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -36,8 +37,14 @@ export default function CharacterForm({
   points?: number;
 }) {
   const allocation = points !== undefined;
+  const world = useWorldTransport();
   const [state, action, pending] = useActionState(
-    allocation ? allocateRpgAttributesAction : selectRpgCharacterAction,
+    world
+      ? async (_previous: RpgActionState, form: FormData) =>
+          world.form(allocation ? "ATTRIBUTES" : "CHARACTER", form)
+      : allocation
+        ? allocateRpgAttributesAction
+        : selectRpgCharacterAction,
     initialState,
   );
   const [requestId, setRequestId] = useState(initialRequest);

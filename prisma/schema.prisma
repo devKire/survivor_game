@@ -59,6 +59,8 @@ model RpgProfile {
   quests            RpgQuestProgress[]
   narrativeChoices  RpgNarrativeChoice[]
   dialogueStates    RpgDialogueState[]
+  worldVisits       RpgWorldVisit[]
+  worldRewards      RpgWorldRewardReceipt[]
 
   @@unique([activeCharacterId, userId])
   @@schema("limiar")
@@ -79,6 +81,8 @@ model RpgCharacter {
   equippedItems RpgItemInstance[] @relation("RpgEquippedItems")
   expeditions   RpgExpeditionParticipant[]
   explorations  RpgExplorationParticipant[]
+  worldVisits   RpgWorldVisit[]
+  worldRewards  RpgWorldRewardReceipt[]
   quests        RpgQuestProgress[]
 
   @@unique([userId, characterId])
@@ -583,7 +587,8 @@ model RpgExplorationParticipant {
 }
 model RpgResourceClaim {
   id String @id @default(cuid())
-  sessionId String
+  worldVisitId String?
+  sessionId String?
   userId String
   regionId String
   regionVersion Int
@@ -596,7 +601,8 @@ model RpgResourceClaim {
   quantity Int
   revision Int
   createdAt DateTime @default(now())
-  participant RpgExplorationParticipant @relation(fields: [sessionId, userId], references: [sessionId, userId], onDelete: Cascade)
+  participant RpgExplorationParticipant? @relation(fields: [sessionId, userId], references: [sessionId, userId], onDelete: Cascade)
+  worldVisit RpgWorldVisit? @relation(fields: [worldVisitId, userId], references: [id, userId], onDelete: Cascade)
   @@unique([userId, regionId, regionVersion, nodeId, cycle])
   @@unique([userId, requestId])
   @@index([userId, cycle])
@@ -708,5 +714,60 @@ model RpgDialogueState {
   profile         RpgProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@id([userId, npcId])
+  @@schema("limiar")
+}
+
+
+model RpgWorldVisit {
+  id String @id @default(cuid())
+  userId String
+  characterId String
+  activeUserId String? @unique
+  authorityId String
+  epoch String
+  checkpointZone String @default("obelisk-refuge")
+  zoneVersion Int @default(1)
+  entryRevision Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  endedAt DateTime?
+  profile RpgProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  character RpgCharacter @relation(fields: [userId, characterId], references: [userId, characterId], onDelete: Cascade)
+  claims RpgResourceClaim[]
+  @@unique([id, userId])
+  @@index([userId, createdAt, id])
+  @@schema("limiar")
+}
+
+model RpgWorldRewardEvent {
+  id String @id
+  authorityId String
+  zoneId String
+  zoneVersion Int @default(1)
+  privateSeed String
+  proof Json
+  status String @default("PENDING")
+  occurredAt DateTime
+  createdAt DateTime @default(now())
+  settledAt DateTime?
+  receipts RpgWorldRewardReceipt[]
+  @@index([status, createdAt, id])
+  @@schema("limiar")
+}
+
+model RpgWorldRewardReceipt {
+  eventId String
+  userId String
+  characterId String
+  cycle Int
+  xpGranted Int
+  revision Int
+  result Json
+  createdAt DateTime @default(now())
+  event RpgWorldRewardEvent @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  profile RpgProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  character RpgCharacter @relation(fields: [userId, characterId], references: [userId, characterId], onDelete: Cascade)
+  @@id([eventId, userId])
+  @@index([userId, cycle, createdAt])
   @@schema("limiar")
 }

@@ -1,5 +1,5 @@
 import "server-only";
-import { isRpgEnabled, isRpgExpeditionsEnabled, isRpgRefugeEnabled, isRpgExplorationEnabled, isRpgQuestsEnabled } from "../env";
+import { isRpgEnabled, isRpgExpeditionsEnabled, isRpgRefugeEnabled, isRpgExplorationEnabled, isRpgQuestsEnabled, isRpgSharedWorldEnabled } from "../env";
 import { UserError } from "../security";
 
 export function requireRpgEnabled() {
@@ -21,4 +21,8 @@ export function requireRpgExplorationEnabled() {
 
 export function requireRpgQuestsEnabled() {
   if (!isRpgQuestsEnabled()) throw new UserError("Missões RPG indisponíveis.");
+}
+
+export function requireRpgSharedWorldEnabled() {
+  if (!isRpgSharedWorldEnabled()) throw new UserError("Mundo compartilhado indisponível.");
 }

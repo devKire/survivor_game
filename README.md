@@ -35,6 +35,14 @@ Abra **http://localhost:3000**. Crie contas, crie uma equipe, compartilhe o cód
 
 ## RPG (rollout controlado)
 
+O novo [mundo compartilhado da Fase 6.5](docs/RPG-SHARED-WORLD.md) usa
+`RPG_ENABLED=true` e `RPG_SHARED_WORLD_ENABLED=true` no web **e** realtime.
+Com a flag habilitada, `/rpg` entra no Refúgio público sem lobby; o portal físico
+leva às Ruínas. Grupos continuam opcionais e limitados a cinco; a zona admite
+vinte jogadores. Painéis, gathering e recompensas PvE funcionam no mesmo Canvas.
+A flag permanece `false` por padrão. Consulte [deploy e rollback](docs/RPG-WORLD-DEPLOYMENT.md)
+e [evidências de QA](docs/RPG-PHASE6-5-QA.md) antes do rollout.
+
 `RPG_ENABLED=false`, `RPG_EXPEDITIONS_ENABLED=false`, `RPG_REFUGE_ENABLED=false` e `RPG_EXPLORATION_ENABLED=false` são os padrões seguros.
 A exploração usa RPG_ENABLED e RPG_EXPLORATION_ENABLED no web e realtime; entrada em `/rpg/exploration` ou no portal do Refúgio. Veja [região, gathering e segurança](docs/RPG-EXPLORATION.md).
 O Refúgio requer RPG e sua flag própria; consulte [cena, serviços e Depósito](docs/RPG-REFUGE.md).

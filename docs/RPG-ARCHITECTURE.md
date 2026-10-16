@@ -106,3 +106,11 @@ RPG_EXPLORATION é uma atividade independente das recompensas RPG_EXPEDITION. Re
 ## Quests, diálogos e narrativa (Fase 6)
 
 Catálogos versionados e regras puras em `game/{core,content}/rpg`, serviços autenticados em `server/rpg/quests`. A reconciliação lê descobertas, claims e receipts de expedição confirmados; não adiciona consultas ao tick nem aceita provas do cliente. Provas deduplicadas, escolhas exclusivas, custos, XP e materiais usam transações Serializable, lock da conta, revisão RPG e receipts. O beneficiário é congelado no aceite. `RPG_QUESTS_ENABLED=false` controla o rollout independentemente das outras atividades. Ver [quests](RPG-QUESTS.md), [segurança](RPG-QUEST-SECURITY.md), [conteúdo proposto](RPG-NARRATIVE-CONTENT.md) e [QA](RPG-PHASE6-QA.md).
+
+## Mundo compartilhado (Fase 6.5)
+
+`RPG_SHARED_WORLD_ENABLED=false` controla uma atividade pública independente de Team/GameSession. WorldCoordinator/WorldZone reutilizam movimento, colisão, Player, armas e renderers; não executam WaveDirector ou settlement Survivor. O adaptador de loadout usa o contexto RPG existente, enquanto a atividade e sua proveniência são `RPG_SHARED_WORLD`. RunState, RunSnapshot, SAVE_SCHEMA=3 e ECONOMY_VERSION=2 permanecem intactos.
+
+RpgWorldVisit registra checkpoint seguro e identidade imutável. Gathering usa o mesmo ledger e limites diários da exploração anterior. Eventos e receipts próprios confirmam PvE de campo, com prova autoritativa durável antes do grant. Builds são alteradas somente no Refúgio por serviços com permit espacial privado, mantendo revisão/locks RPG. Nenhuma progressão do mundo modifica PvP, economia Survivor ou UserProgress.version.
+
+O Shell conserva Canvas/RAF/socket nos painéis e transferências; grupos de cinco são sociais, independentes da capacidade de vinte por zona. Uma conexão PostgreSQL direta detém o lock de autoridade antes das recuperações. Ver [entrada e documentos](RPG-SHARED-WORLD.md), [persistência](RPG-WORLD-PERSISTENCE.md) e [rollout](RPG-WORLD-DEPLOYMENT.md). Fase 7 não iniciada.

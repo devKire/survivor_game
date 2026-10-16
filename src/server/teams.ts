@@ -237,6 +237,8 @@ export async function startTeam(userId: string) {
       })
     )
       throw new UserError("Um membro está em partida competitiva.");
+    if (await tx.rpgWorldVisit.count({where:{activeUserId:{in:team.members.map(m=>m.userId)}}}))
+      throw new UserError("Um membro está no mundo compartilhado. Saia dele antes de iniciar uma partida.");
     await tx.team.update({
       where: { id: team.id },
       data: { status: "RUNNING" },
