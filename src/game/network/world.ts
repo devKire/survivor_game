@@ -1,4 +1,5 @@
 import { worldFieldResult } from "../core/rpg/world/rewards";
+import { CRAFTING_OPERATIONS } from "../core/rpg/crafting/types";
 import { z } from "zod";
 import { WORLD_PROTOCOL } from "../core/rpg/world/types";
 import { explorationNodeId } from "../core/rpg/exploration/gathering";
@@ -17,6 +18,9 @@ export const worldOperation = z.enum([
   "JOURNAL",
   "QUEST",
   "DIALOGUE",
+  "CRAFTING_CATALOG",
+  "CRAFTING_HISTORY",
+  ...CRAFTING_OPERATIONS,
 ]);
 export const worldCommands = [
   z
