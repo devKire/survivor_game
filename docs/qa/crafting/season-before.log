@@ -43,4 +43,3 @@ AssertionError: expected [ 'P2002', 'P2002', 'P2002', …(4) ] to deeply equal [
       Tests  1 failed (1)
    Start at  04:53:02
    Duration  694ms (tests 39%, transform 36%, import 23%, setup 2%, worker 1%)
-

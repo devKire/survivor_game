@@ -21,7 +21,7 @@ Running 2 tests using 1 worker
   ✓  2 tests/browser/rpg-crafting.spec.ts:263:1 › mobile forge confirmation and continuous Canvas (isolated material fixture) (11.8s)
 
 
-  1) tests/browser/rpg-crafting.spec.ts:19:1 › real gathering to forge, rarity upgrade, equipment, barter, sale and persistent world 
+  1) tests/browser/rpg-crafting.spec.ts:19:1 › real gathering to forge, rarity upgrade, equipment, barter, sale and persistent world
 
     Error: expect(received).toBe(expected) // Object.is equality
 
@@ -51,5 +51,5 @@ Running 2 tests using 1 worker
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
   1 failed
-    tests/browser/rpg-crafting.spec.ts:19:1 › real gathering to forge, rarity upgrade, equipment, barter, sale and persistent world 
+    tests/browser/rpg-crafting.spec.ts:19:1 › real gathering to forge, rarity upgrade, equipment, barter, sale and persistent world
   1 passed (1.3m)

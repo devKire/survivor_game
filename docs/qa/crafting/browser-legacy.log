@@ -25,16 +25,16 @@ Running 23 tests using 1 worker
   ✓   9 tests/browser/rpg-expeditions.spec.ts:7:1 › public RPG expedition reaches confirmed rewards, persistent XP, usable inventory and private history (13.5s)
   ✓  10 tests/browser/rpg-exploration.spec.ts:69:1 › exploration flags and safe authentication callbacks (964ms)
 [WebServer] [browser] Each child in a list should have a unique "key" prop.
-[WebServer] 
-[WebServer] Check the render method of `RefugeClient`. It was passed a child from Page. See https://react.dev/link/warning-keys for more information. 
+[WebServer]
+[WebServer] Check the render method of `RefugeClient`. It was passed a child from Page. See https://react.dev/link/warning-keys for more information.
   ✓  11 tests/browser/rpg-exploration.spec.ts:83:1 › real refuge to exploration, gathering, discovery, reconnect, mobile, journal and persistent inventory (28.7s)
   ✓  12 tests/browser/rpg-quests.spec.ts:65:1 › quest rollout and authentication (909ms)
   ✓  13 tests/browser/rpg-quests.spec.ts:130:1 › real three-quest arc, exclusive dialogue choice, exploration, delivery, side quest and refresh (1.5m)
   ✓  14 tests/browser/rpg-quests.spec.ts:310:1 › quest tabs, network retry, private journal and mobile dialogue controls (7.4s)
   ✓  15 tests/browser/rpg-refuge.spec.ts:11:1 › Refuge rollout and safe login callbacks (1.2s)
 [WebServer] [browser] Each child in a list should have a unique "key" prop.
-[WebServer] 
-[WebServer] Check the render method of `RefugeClient`. It was passed a child from Page. See https://react.dev/link/warning-keys for more information. 
+[WebServer]
+[WebServer] Check the render method of `RefugeClient`. It was passed a child from Page. See https://react.dev/link/warning-keys for more information.
 [WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: ground_forest-a (src/game/client/tile-renderer.ts:14:13)
 [WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: ground_ruins (src/game/client/tile-renderer.ts:14:13)
 [WebServer] [browser] [tiles] Atlas unavailable; legacy fallback: props_trees_living (src/game/client/tile-renderer.ts:14:13)
