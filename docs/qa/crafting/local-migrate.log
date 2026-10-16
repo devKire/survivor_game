@@ -1,0 +1,64 @@
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "limiar_forge_qa", schemas "limiar" at "127.0.0.1:5433"
+
+17 migrations found in prisma/migrations
+
+Applying migration `20260915220000_initial`
+Applying migration `202609170001_expedition_duration`
+Applying migration `20260923213000_economy_gems`
+Applying migration `20260923220000_cosmetics`
+Applying migration `20260923223000_echoes`
+Applying migration `20260923230000_arena`
+Applying migration `20260923233000_ranked`
+Applying migration `20261008170000_rpg_phase_1`
+Applying migration `20261008180000_rpg_foundation_hardening`
+Applying migration `20261009100000_rpg_equipment`
+Applying migration `20261009200000_rpg_rewards`
+Applying migration `20261011100000_rpg_refuge_storage`
+Applying migration `20261012100000_rpg_exploration`
+Applying migration `20261013120000_rpg_phase_6`
+Applying migration `20261015010000_rpg_shared_world`
+Applying migration `20261015020000_rpg_world_visit_identity`
+Applying migration `20261016010000_rpg_forge`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260915220000_initial/
+    └─ migration.sql
+  └─ 202609170001_expedition_duration/
+    └─ migration.sql
+  └─ 20260923213000_economy_gems/
+    └─ migration.sql
+  └─ 20260923220000_cosmetics/
+    └─ migration.sql
+  └─ 20260923223000_echoes/
+    └─ migration.sql
+  └─ 20260923230000_arena/
+    └─ migration.sql
+  └─ 20260923233000_ranked/
+    └─ migration.sql
+  └─ 20261008170000_rpg_phase_1/
+    └─ migration.sql
+  └─ 20261008180000_rpg_foundation_hardening/
+    └─ migration.sql
+  └─ 20261009100000_rpg_equipment/
+    └─ migration.sql
+  └─ 20261009200000_rpg_rewards/
+    └─ migration.sql
+  └─ 20261011100000_rpg_refuge_storage/
+    └─ migration.sql
+  └─ 20261012100000_rpg_exploration/
+    └─ migration.sql
+  └─ 20261013120000_rpg_phase_6/
+    └─ migration.sql
+  └─ 20261015010000_rpg_shared_world/
+    └─ migration.sql
+  └─ 20261015020000_rpg_world_visit_identity/
+    └─ migration.sql
+  └─ 20261016010000_rpg_forge/
+    └─ migration.sql
+
+All migrations have been successfully applied.

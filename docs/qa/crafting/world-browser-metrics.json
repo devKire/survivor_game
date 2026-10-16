@@ -1,0 +1,9 @@
+{
+  "instances": 1,
+  "rafLoops": 1,
+  "mounts": 2,
+  "disposed": 1,
+  "networkClients": 1,
+  "renderP95": "5.600",
+  "frameP95": "33.300"
+}

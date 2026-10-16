@@ -15,16 +15,18 @@ export async function currentSeason() {
     y = now.getUTCFullYear(),
     m = now.getUTCMonth(),
     id = `${y}-${String(m + 1).padStart(2, "0")}`;
-  return db().season.upsert({
-    where: { id },
-    create: {
+  // Prisma's empty-update upsert can race during concurrent first access.
+  // Native INSERT ON CONFLICT keeps existing season metadata unchanged.
+  await db().season.createMany({
+    data: {
       id,
       name: `Ecos · ${id}`,
       startsAt: new Date(Date.UTC(y, m, 1)),
       endsAt: new Date(Date.UTC(y, m + 1, 1)),
     },
-    update: {},
+    skipDuplicates: true,
   });
+  return db().season.findUniqueOrThrow({ where: { id } });
 }
 export async function getRating(userId: string, mode: string) {
   const season = await currentSeason();

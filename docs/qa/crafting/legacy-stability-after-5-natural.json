@@ -1,0 +1,360 @@
+{
+  "seconds": 61.127,
+  "metrics": [
+    {
+      "remoteGameInstances": 0,
+      "remoteGameCreated": 2,
+      "rafLoops": 0,
+      "reactGameMounts": 2,
+      "accountRenders": 56,
+      "canvasResizes": 1,
+      "snapshots": 349,
+      "fullSnapshots": 1,
+      "resyncRequests": 0,
+      "duplicateSnapshots": 0,
+      "inputs": 857,
+      "payloadBytes": 2431229,
+      "corrections": 124,
+      "rtt": {
+        "count": 34,
+        "mean": 8.135294117471751,
+        "p50": 2.2000000029802322,
+        "p95": 15,
+        "p99": 178.90000000596046
+      },
+      "entities": 65,
+      "backpressureEvents": 0,
+      "extrapolations": 58,
+      "interpolationDelay": 143.9747299852233,
+      "entityUpserts": 244,
+      "entityRemovals": 179,
+      "longTasks": 15,
+      "longTaskMs": 1283,
+      "enabled": true,
+      "fps": 21.46213471962487,
+      "low1": 8.568980291345277,
+      "frame": {
+        "count": 749,
+        "mean": 46.59368758344457,
+        "p50": 33.400000000001455,
+        "p95": 83.40000000000146,
+        "p99": 116.70000000000073
+      },
+      "snapshotCadence": {
+        "count": 348,
+        "mean": 99.76063218391661,
+        "p50": 90.60000000149012,
+        "p95": 132.39999999850988,
+        "p99": 203.39999999850988
+      },
+      "snapshotApplyDuration": {
+        "count": 349,
+        "mean": 0.7275071634689512,
+        "p50": 0.5,
+        "p95": 2.399999998509884,
+        "p99": 3.8000000044703484
+      },
+      "snapshotDecodeDuration": {
+        "count": 349,
+        "mean": 1.2942693407052226,
+        "p50": 0.7000000029802322,
+        "p95": 3.5,
+        "p99": 13.899999998509884
+      },
+      "renderDuration": {
+        "count": 747,
+        "mean": 5.753547523474917,
+        "p50": 3.6999999955296516,
+        "p95": 12,
+        "p99": 29.600000001490116
+      }
+    },
+    {
+      "remoteGameInstances": 0,
+      "remoteGameCreated": 2,
+      "rafLoops": 0,
+      "reactGameMounts": 2,
+      "accountRenders": 54,
+      "canvasResizes": 1,
+      "snapshots": 349,
+      "fullSnapshots": 1,
+      "resyncRequests": 0,
+      "duplicateSnapshots": 0,
+      "inputs": 858,
+      "payloadBytes": 2345004,
+      "corrections": 1,
+      "rtt": {
+        "count": 34,
+        "mean": 10.702941176426762,
+        "p50": 1.9000000059604645,
+        "p95": 24.30000000447035,
+        "p99": 242.79999999701977
+      },
+      "entities": 75,
+      "backpressureEvents": 0,
+      "extrapolations": 27,
+      "interpolationDelay": 135.88050380798336,
+      "entityUpserts": 217,
+      "entityRemovals": 142,
+      "longTasks": 8,
+      "longTaskMs": 824,
+      "enabled": true,
+      "fps": 21.462212207924086,
+      "low1": 7.501875468867258,
+      "frame": {
+        "count": 749,
+        "mean": 46.59351935914551,
+        "p50": 33.400000000001455,
+        "p95": 83.40000000000146,
+        "p99": 133.29999999999927
+      },
+      "snapshotCadence": {
+        "count": 348,
+        "mean": 99.90172413792247,
+        "p50": 88.40000000596046,
+        "p95": 132,
+        "p99": 199.20000000298023
+      },
+      "snapshotApplyDuration": {
+        "count": 349,
+        "mean": 0.6902578795664973,
+        "p50": 0.5,
+        "p95": 1.6000000014901161,
+        "p99": 4.799999997019768
+      },
+      "snapshotDecodeDuration": {
+        "count": 349,
+        "mean": 1.0627507166269856,
+        "p50": 0.7000000029802322,
+        "p95": 2.7999999970197678,
+        "p99": 5.600000001490116
+      },
+      "renderDuration": {
+        "count": 747,
+        "mean": 5.852744310495844,
+        "p50": 4.200000002980232,
+        "p95": 12.900000005960464,
+        "p99": 24.899999998509884
+      }
+    },
+    {
+      "remoteGameInstances": 0,
+      "remoteGameCreated": 2,
+      "rafLoops": 0,
+      "reactGameMounts": 2,
+      "accountRenders": 52,
+      "canvasResizes": 1,
+      "snapshots": 349,
+      "fullSnapshots": 1,
+      "resyncRequests": 0,
+      "duplicateSnapshots": 0,
+      "inputs": 846,
+      "payloadBytes": 2347600,
+      "corrections": 1,
+      "rtt": {
+        "count": 33,
+        "mean": 21.999999998871125,
+        "p50": 2.100000001490116,
+        "p95": 30.80000000447035,
+        "p99": 603.8999999985099
+      },
+      "entities": 77,
+      "backpressureEvents": 0,
+      "extrapolations": 19,
+      "interpolationDelay": 135.7495297313514,
+      "entityUpserts": 218,
+      "entityRemovals": 141,
+      "longTasks": 11,
+      "longTaskMs": 1179,
+      "enabled": true,
+      "fps": 21.06104574195514,
+      "low1": 8.568980291345277,
+      "frame": {
+        "count": 735,
+        "mean": 47.481023129251696,
+        "p50": 33.400000000001455,
+        "p95": 83.40000000000146,
+        "p99": 116.70000000000073
+      },
+      "snapshotCadence": {
+        "count": 348,
+        "mean": 99.8629310344742,
+        "p50": 90.30000000447035,
+        "p95": 130.5,
+        "p99": 296
+      },
+      "snapshotApplyDuration": {
+        "count": 349,
+        "mean": 0.7289398282680949,
+        "p50": 0.5,
+        "p95": 2.899999998509884,
+        "p99": 4.800000004470348
+      },
+      "snapshotDecodeDuration": {
+        "count": 349,
+        "mean": 1.1670487105077865,
+        "p50": 0.7000000029802322,
+        "p95": 3.399999998509884,
+        "p99": 8.600000001490116
+      },
+      "renderDuration": {
+        "count": 733,
+        "mean": 6.143246930585551,
+        "p50": 4.299999997019768,
+        "p95": 12.099999994039536,
+        "p99": 26.5
+      }
+    },
+    {
+      "remoteGameInstances": 0,
+      "remoteGameCreated": 2,
+      "rafLoops": 0,
+      "reactGameMounts": 2,
+      "accountRenders": 50,
+      "canvasResizes": 1,
+      "snapshots": 349,
+      "fullSnapshots": 1,
+      "resyncRequests": 0,
+      "duplicateSnapshots": 0,
+      "inputs": 854,
+      "payloadBytes": 2350007,
+      "corrections": 3,
+      "rtt": {
+        "count": 32,
+        "mean": 10.346875001909211,
+        "p50": 2.100000001490116,
+        "p95": 20.200000002980232,
+        "p99": 229.80000000447035
+      },
+      "entities": 77,
+      "backpressureEvents": 0,
+      "extrapolations": 2,
+      "interpolationDelay": 136.77652354312977,
+      "entityUpserts": 219,
+      "entityRemovals": 142,
+      "longTasks": 11,
+      "longTaskMs": 1011,
+      "enabled": true,
+      "fps": 21.64447806648933,
+      "low1": 7.5018754688672065,
+      "frame": {
+        "count": 755,
+        "mean": 46.20116026490063,
+        "p50": 33.400000000000546,
+        "p95": 83.40000000000146,
+        "p99": 133.30000000000018
+      },
+      "snapshotCadence": {
+        "count": 348,
+        "mean": 99.73534482760333,
+        "p50": 89.80000000447035,
+        "p95": 130.70000000298023,
+        "p99": 161.10000000149012
+      },
+      "snapshotApplyDuration": {
+        "count": 349,
+        "mean": 0.6982808022581062,
+        "p50": 0.5,
+        "p95": 2,
+        "p99": 5.299999997019768
+      },
+      "snapshotDecodeDuration": {
+        "count": 349,
+        "mean": 0.9756446992044463,
+        "p50": 0.7000000029802322,
+        "p95": 2.399999998509884,
+        "p99": 5.700000002980232
+      },
+      "renderDuration": {
+        "count": 752,
+        "mean": 5.80345744678275,
+        "p50": 4.299999997019768,
+        "p95": 12.200000002980232,
+        "p99": 25.100000001490116
+      }
+    },
+    {
+      "remoteGameInstances": 0,
+      "remoteGameCreated": 2,
+      "rafLoops": 0,
+      "reactGameMounts": 2,
+      "accountRenders": 47,
+      "canvasResizes": 1,
+      "snapshots": 349,
+      "fullSnapshots": 1,
+      "resyncRequests": 0,
+      "duplicateSnapshots": 0,
+      "inputs": 849,
+      "payloadBytes": 2349945,
+      "corrections": 1,
+      "rtt": {
+        "count": 31,
+        "mean": 4.703225805874793,
+        "p50": 2.100000001490116,
+        "p95": 17.5,
+        "p99": 45.399999998509884
+      },
+      "entities": 79,
+      "backpressureEvents": 0,
+      "extrapolations": 18,
+      "interpolationDelay": 139.8035775695061,
+      "entityUpserts": 219,
+      "entityRemovals": 140,
+      "longTasks": 7,
+      "longTaskMs": 881,
+      "enabled": true,
+      "fps": 21.050940871086244,
+      "low1": 8.561643835616492,
+      "frame": {
+        "count": 735,
+        "mean": 47.50381496598633,
+        "p50": 33.400000000001455,
+        "p95": 83.39999999999964,
+        "p99": 116.79999999999927
+      },
+      "snapshotCadence": {
+        "count": 348,
+        "mean": 99.91695402299278,
+        "p50": 91.60000000149012,
+        "p95": 134.70000000298023,
+        "p99": 210.5
+      },
+      "snapshotApplyDuration": {
+        "count": 349,
+        "mean": 0.6793696277249167,
+        "p50": 0.5,
+        "p95": 1.7999999970197678,
+        "p99": 5.299999997019768
+      },
+      "snapshotDecodeDuration": {
+        "count": 349,
+        "mean": 0.9939828080826981,
+        "p50": 0.7000000029802322,
+        "p95": 2.8000000044703484,
+        "p99": 6.299999997019768
+      },
+      "renderDuration": {
+        "count": 732,
+        "mean": 6.289480874253834,
+        "p50": 4.399999998509884,
+        "p95": 13.100000001490116,
+        "p99": 23
+      }
+    }
+  ],
+  "server": {
+    "ok": true,
+    "rooms": 1,
+    "connections": 5,
+    "tickRate": 25,
+    "build": "limiar-phase7-v2",
+    "sharedWorld": {
+      "enabled": false,
+      "protocol": 2,
+      "capacityPerZone": 20,
+      "authority": "single",
+      "zones": []
+    }
+  },
+  "errors": []
+}

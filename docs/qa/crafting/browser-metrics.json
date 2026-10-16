@@ -1,0 +1,13 @@
+{
+  "durationMs": 262188.715987,
+  "claims": 11,
+  "shell": {
+    "instances": 1,
+    "rafLoops": 1,
+    "mounts": 2,
+    "disposed": 1,
+    "networkClients": 1,
+    "renderP95": "3.300",
+    "frameP95": "16.800"
+  }
+}

@@ -10,7 +10,7 @@ Comandos discretos têm fila limitada e limite de frequência; input possui cami
 
 ## Persistência e recompensas
 
-Mutações usam lock UserProgress, Serializable, revisão RPG e receipts existentes. Somente abortos transitórios conhecidos têm retries limitados. Operações RPG não incrementam UserProgress.version nem alteram GOLD/GEMS. FKs compostas, checks e índices conservam ownership; claims têm exatamente uma origem entre sessão e visita de mundo. Limites de gathering são compartilhados entre os modos antigo e novo.
+Mutações usam lock UserProgress, Serializable, revisão RPG e receipts existentes. Somente abortos transitórios conhecidos têm retries limitados. Operações apenas RPG não incrementam UserProgress.version nem alteram GOLD/GEMS. A Fase 7 admite compra/venda com GOLD pelo ledger e persistSave atômicos, incrementando a versão nesses casos; GEMS permanece fora da forja. FKs compostas, checks e índices conservam ownership; claims têm exatamente uma origem entre sessão e visita de mundo. Limites de gathering são compartilhados entre os modos antigo e novo.
 
 O evento PvE nasce de dano/morte observados na simulação, com participantes elegíveis, identificador de ocorrência e seed privada crypto. Persistir a prova precede qualquer grant; evento e receipt são imutáveis. Settlement trava evento e contas em ordem estável e grava XP, nível, atributos, material, item e receipt no mesmo commit. Retry retorna o receipt já confirmado. Evento PENDING sobrevive a crash; resultado ainda em memória é perdido sem recompensa inventada. A fila é limitada e suspende novos spawns quando se aproxima do limite.
 

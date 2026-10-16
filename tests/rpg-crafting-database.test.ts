@@ -290,7 +290,14 @@ describe.skipIf(process.env.RUN_DATABASE_TESTS !== "1")(
       await expect(a.run(await sale(a))).rejects.toThrow(/inventário/);
       await db().rpgItemInstance.update({
         where: { id: made.item!.id },
-        data: { location: "INVENTORY" },
+        data: { location: "INVENTORY", itemId: "fixture:missing-definition" },
+      });
+      const corruptState = await state(a);
+      await expect(a.run(await sale(a))).rejects.toThrow();
+      expect(await state(a)).toEqual(corruptState);
+      await db().rpgItemInstance.update({
+        where: { id: made.item!.id },
+        data: { itemId: made.item!.itemId },
       });
       await a.run(await sale(a));
       await expect(a.run(await sale(a))).rejects.toThrow(/próprio/);

@@ -4,7 +4,7 @@ Com `RPG_ENABLED=true` e `RPG_SHARED_WORLD_ENABLED=true`, `/rpg` encaminha o jog
 
 O personagem permanente entra com a build validada no servidor. WASD/setas e joystick enviam intenções; E ou toque interage. C/I/J/M/P abrem personagem, inventário, diário, mapa e grupo sem desmontar Canvas ou socket. Depósito, diálogos e missões exigem proximidade dos respectivos serviços. Personagem, atributos e equipamentos mudam apenas no Refúgio. A saída física leva às Ruínas; o retorno conserva o mesmo Shell e atualiza a build.
 
-Nas Ruínas existem recursos e descobertas da geração procedural atual, compartilhando os limites diários históricos por conta. O combate de campo reutiliza armas e IA existentes; mortes observadas pelo servidor podem gerar XP, material e equipamento, confirmados no painel de recompensas. Morrer retorna à entrada segura após cinco segundos. Reconectar retorna ao checkpoint de zona, sem reconstruir mortes não confirmadas. Não há crafting, comércio novo ou Fase 7.
+Nas Ruínas existem recursos e descobertas da geração procedural atual, compartilhando os limites diários históricos por conta. O combate de campo reutiliza armas e IA existentes; mortes observadas pelo servidor podem gerar XP, material e equipamento, confirmados no painel de recompensas. Morrer retorna à entrada segura após cinco segundos. Reconectar retorna ao checkpoint de zona, sem reconstruir mortes não confirmadas. A [Fase 7](RPG-CRAFTING.md) acrescenta forja, refino e comerciante físicos no mesmo Shell, com RPG_CRAFTING_ENABLED=false. Refúgio público passa a v2/WORLD protocolo 2; Ruínas e Refúgio legado conservam suas versões. [Rollout coordenado](RPG-PHASE7-DEPLOYMENT.md).
 
 ## Mapa da implementação
 

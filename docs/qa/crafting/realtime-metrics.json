@@ -1,0 +1,59 @@
+{
+  "at": "2026-10-16T14:24:18.791Z",
+  "method": "Authenticated loopback WebSocket after real gathering, craft/replay and malformed/remote rejections; normal simulation with one player, no fixture resources in this scenario.",
+  "craftDurationMs": 50.0938410000017,
+  "responseBytes": 503,
+  "health": {
+    "ok": true,
+    "rooms": 0,
+    "connections": 1,
+    "tickRate": 25,
+    "build": "limiar-phase7-v2",
+    "sharedWorld": {
+      "enabled": true,
+      "protocol": 2,
+      "capacityPerZone": 20,
+      "authority": "single",
+      "metrics": {
+        "snapshotBatchP95": 0.7104900000003909,
+        "crafting": {
+          "counts": {
+            "CRAFT_ITEM:spatial-rejected": 2,
+            "CRAFT_ITEM:started": 3,
+            "CRAFT_ITEM:confirmed": 1,
+            "CRAFT_ITEM:replayed": 1,
+            "CRAFT_ITEM:rejected": 1,
+            "CRAFT_ITEM:invalid-intent": 1
+          },
+          "durationP95": 26.571182000006957
+        },
+        "heapBytes": 62220856,
+        "cpu": {
+          "user": 3047429,
+          "system": 310869
+        },
+        "uptime": 36.070004982
+      },
+      "zones": [
+        {
+          "id": "obelisk-refuge",
+          "version": 2,
+          "players": 1,
+          "cells": 1
+        },
+        {
+          "id": "ruins-outskirts",
+          "version": 1,
+          "players": 0,
+          "cells": 0
+        }
+      ]
+    },
+    "metrics": {
+      "tickP95": 0.8169779999998354,
+      "tickP99": 2.247376999999915,
+      "driftP95": 1.6713420000014594,
+      "snapshotP95": 0
+    }
+  }
+}

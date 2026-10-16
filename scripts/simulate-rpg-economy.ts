@@ -9,6 +9,9 @@ import {
   CRAFTING_LIMITS,
 } from "../src/game/content/rpg/crafting";
 import { validateCraftingCatalog } from "../src/game/core/rpg/crafting/validation";
+import { RPG_REWARD_PROFILES_V1 } from "../src/game/content/rpg/reward-profiles";
+import { RPG_LOOT_TABLES_V1 } from "../src/game/content/rpg/loot-tables";
+import { equipmentDefinition } from "../src/game/core/rpg/equipment";
 validateCraftingCatalog();
 const zone = new WorldZone("ruins-outskirts", randomUUID());
 const nodes = zone.nodes.filter((n) => n.kind === "RESOURCE");
@@ -27,15 +30,56 @@ const sources = ["weathered-ore", "ruins-fiber", "obelisk-dust"].map(
   },
 );
 const rows = [
-  { profile: "INICIANTE", level: 1, fieldKills: 3, bossKills: 0 },
-  { profile: "INTERMEDIÁRIO", level: 5, fieldKills: 10, bossKills: 1 },
-  { profile: "AVANÇADO", level: 20, fieldKills: 20, bossKills: 3 },
+  {
+    profile: "INICIANTE",
+    level: 1,
+    fieldKills: 3,
+    bossKills: 0,
+    expeditions: 0,
+  },
+  {
+    profile: "INTERMEDIÁRIO",
+    level: 5,
+    fieldKills: 10,
+    bossKills: 1,
+    expeditions: 1,
+  },
+  {
+    profile: "AVANÇADO",
+    level: 20,
+    fieldKills: 20,
+    bossKills: 3,
+    expeditions: 2,
+  },
 ].map((p) => {
   const claims = sources.map((s) => ({ ...s, claims: Math.min(6, s.nodes) }));
   const materials = Object.fromEntries(
     claims.map((s) => [s.materialId, s.quantity * s.claims]),
   );
   materials["obelisk-dust"] += p.fieldKills;
+  materials["obelisk-dust"] +=
+    p.expeditions * RPG_REWARD_PROFILES_V1.EXPEDITION_COMPLETION.dust +
+    p.bossKills * RPG_REWARD_PROFILES_V1.BOSS_DEFEAT.dust;
+  const bossEntries = RPG_LOOT_TABLES_V1["boss-v1"].entries.filter(
+    (e) =>
+      e.type !== "EQUIPMENT" ||
+      equipmentDefinition(e.definitionId).minLevel <= p.level,
+  );
+  const totalWeight = bossEntries.reduce((n, e) => n + e.weight, 0);
+  const weightedShards =
+    bossEntries.reduce(
+      (n, e) =>
+        n +
+        (e.type === "MATERIAL" && e.definitionId === "echo-shard"
+          ? ((e.weight / totalWeight) *
+              (e.minimumQuantity + e.maximumQuantity)) /
+            2
+          : 0),
+      0,
+    ) * p.bossKills;
+  const guaranteedShards =
+    p.expeditions * RPG_REWARD_PROFILES_V1.EXPEDITION_COMPLETION.shards +
+    p.bossKills * RPG_REWARD_PROFILES_V1.BOSS_DEFEAT.shards;
   return {
     ...p,
     dailyClaims: claims.reduce((n, s) => n + s.claims, 0),
@@ -44,8 +88,9 @@ const rows = [
       (n, s) => n + s.claims * s.gatherSeconds,
       0,
     ),
-    // Boss table weights: six equipment entries*10, dust*20, shard*20. Shard rolls average 1.5.
-    expectedRepeatableShards: p.bossKills * 0.2 * 1.5,
+    guaranteedRepeatableShards: guaranteedShards,
+    expectedBonusShards: weightedShards,
+    expectedRepeatableShards: guaranteedShards + weightedShards,
     oneTimeStoryShards: p.level >= 5 ? 2 : 0,
     firstMantleClaims: 3,
     firstMantleGatherSecondsExcludingTravel: 4.2,
@@ -60,7 +105,7 @@ const rows = [
     },
     vendorBuySellNetGold: [-11, -9],
     advancedRecipeNote:
-      "Requires level 5 and material-samples-delivered. Shards are stochastic beyond the two story rewards; expectation is not a guaranteed daily grant.",
+      "Requires level 5 and material-samples-delivered. Eligible expedition completion and boss rewards include guaranteed shards, plus weighted boss bonuses. Activity participation is assumed, never an automatic daily grant.",
   };
 });
 zone.dispose();
